@@ -65,6 +65,10 @@ L:RegisterTranslations("enUS", function()
         shieldwalltrigger = "(.*) gains Shield Wall.",
         shieldwall_warn = "%s - Shield Wall for 20 sec",
         shieldwall_warn_over = "%s - Shield Wall GONE!",
+		
+		proximity_cmd = "proximity",
+		proximity_name = "Proximity Warning",
+		proximity_desc = "Show Proximity Warning Frame",
     }
 end)
 
@@ -129,8 +133,11 @@ end)
 -- module variables
 module.revision = 20005 -- To be overridden by the module!
 module.enabletrigger = { thane, mograine, zeliek, blaumeux } -- string or table {boss, add1, add2}
-module.toggleoptions = { "mark", "shieldwall", -1, "meteor", "void", "wrath", "bosskill" }
+module.toggleoptions = { "mark", "shieldwall", -1, "meteor", "void", "wrath", "proximity", "bosskill" }
 
+-- Proximity Plugin
+module.proximityCheck = function(unit) return CheckInteractDistance(unit, 2) end
+module.proximitySilent = true
 
 -- locals
 local timer = {
@@ -262,6 +269,9 @@ function module:OnEngage()
     if self.db.profile.void then
         self:Bar(L["voidbar"], timer.firstVoid, icon.void)
     end
+	if  self.db.profile.proximity then
+		self:Proximity()
+	end
 
     for i = 0, GetNumRaidMembers() do
         if GetRaidRosterInfo(i) then
@@ -308,6 +318,7 @@ end)
 
 -- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
+	self:RemoveProximity()
 end
 
 
