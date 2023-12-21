@@ -390,12 +390,12 @@ function BigWigsProximity:UpdateProximity()
 	end
 
 	for i = 1, num do
-		local name = GetRaidRosterInfo(i)
+		local name, _, subgroup = GetRaidRosterInfo(i)
 		local unit = "raid"..i
 		if UnitExists(unit) and not UnitIsDeadOrGhost(unit) and not UnitIsUnit(unit, "player") then
 			--if CheckInteractDistance(unit, 2) then -- 1=28 yards; 2=11.11 yards; 3=9.9 yards
 			if func(unit) then
-				table.insert(tooClose, tostring(coloredNames[unit]))
+				table.insert(tooClose, tostring(coloredNames[unit]).." G"..subgroup)
 			end
 		end
 		if tablelength(tooClose) > 4 then break end
