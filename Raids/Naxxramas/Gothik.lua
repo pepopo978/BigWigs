@@ -65,6 +65,7 @@ L:RegisterTranslations("enUS", function() return {
 	inroomwarn = "He's in the room!",
 
 	inroombartext = "In Room",
+	teleporttext = "Teleport",
 } end )
 
 L:RegisterTranslations("esES", function() return {
@@ -140,6 +141,7 @@ local timer = {
 	deathknight = 25,
 	firstRider = 134,
 	rider = 30,
+	sideteleport = 15,
 }
 local icon = {
 	inroom = "Spell_Magic_LesserInvisibilty",
@@ -210,6 +212,7 @@ function module:CHAT_MSG_MONSTER_YELL( msg )
 			self:Message(L["inroomwarn"], "Important")
 		end
 		self:StopRoom()
+		self:Bar(L["teleporttext"], timer.sideteleport, icon.inroom)
 	elseif string.find(msg, L["disabletrigger"]) then
 		self:SendBossDeathSync()
 	end
