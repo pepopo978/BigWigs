@@ -58,6 +58,18 @@ L:RegisterTranslations("enUS", function() return {
 	addcount_cmd = "addcount",
 	addcount_name = "P1 Add counter",
 	addcount_desc = "Counts number of killed adds in P1",
+	
+	abomwarn_cmd = "abomwarn",
+	abomwarn_name = "P1 Aboms alert",
+	abomwarn_desc = "Play sound when Abom spawns",
+	
+	abomwarn_text = "Spawned Abomination ",
+	
+	weaverwarn_cmd = "weaverarn",
+	weaverwarn_name = "P1 Weavers alert",
+	weaverwarn_desc = "Play sound when Weaver spawns",
+	
+	weaverwarn_text = "Spawned Soulweaver ",
 
 	mc_trigger1 = "Your soul, is bound to me now!",
 	mc_trigger2 = "There will be no escape!",
@@ -267,7 +279,7 @@ L:RegisterTranslations("esES", function() return {
 module.revision = 20004 -- To be overridden by the module!
 module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
 --module.wipemobs = { L["add_name"] } -- adds which will be considered in CheckForEngage
-module.toggleoptions = {"frostbolt", "frostboltbar", -1, "frostblast", "proximity", "fissure", "mc", -1, "fbvolley", -1, "detonate", "detonateicon", -1 ,"guardians", -1, "addcount", "phase", "bosskill"}
+module.toggleoptions = {"frostbolt", "frostboltbar", -1, "frostblast", "proximity", "fissure", "mc", -1, "fbvolley", -1, "detonate", "detonateicon", -1, "abomwarn", "weaverwarn","guardians", -1, "addcount", "phase", "bosskill"}
 
 -- Proximity Plugin
 module.proximityCheck = function(unit) return CheckInteractDistance(unit, 2) end
@@ -292,13 +304,13 @@ local timer = {
 	guardians = 7,
 }
 local icon = {
-	abomination = "",
-	soulWeaver = "",
+	abomination = "Spell_Shadow_CallOfBone",
+	soulWeaver = "Spell_Shadow_Possession",
 	frostboltVolley = "Spell_Frost_FrostWard",
 	mindcontrol = "Inv_Belt_18",
-	phase1 = "",
-	phase2 = "",
-	guardians = "",
+	phase1 = "Spell_Shadow_Raisedead",
+	phase2 = "Spell_Shadow_Raisedead",
+	guardians = "Spell_Shadow_Raisedead",
 	frostblast = "Spell_Frost_FreezingBreath",
 	detonate = "Spell_Nature_WispSplode",
 	frostbolt = "Spell_Frost_FrostBolt02",
@@ -388,6 +400,40 @@ function module:OnEngage()
 		numWeavers = 0
 		self:Bar(string.format(L["add_bar"], numAbominations, "Unstoppable Abomination"), timer.phase1, icon.abomination)
 		self:Bar(string.format(L["add_bar"], numWeavers, "Soul Weaver"), timer.phase1, icon.soulWeaver)
+	end
+	
+	if self.db.profile.abomwarn then
+		self:DelayedMessage(44, L["abomwarn_text"].."1", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(72, L["abomwarn_text"].."2", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(100, L["abomwarn_text"].."3", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(130, L["abomwarn_text"].."4", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(153, L["abomwarn_text"].."5", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(176, L["abomwarn_text"].."6", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(193, L["abomwarn_text"].."7", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(212, L["abomwarn_text"].."8", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(232, L["abomwarn_text"].."9", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(252, L["abomwarn_text"].."10", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(268, L["abomwarn_text"].."11", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(285, L["abomwarn_text"].."12", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(300, L["abomwarn_text"].."13", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(318, L["abomwarn_text"].."14", "Personal", nil, "AirHorn", nil)
+	end
+	
+	if self.db.profile.weaverwarn then
+		self:DelayedMessage(44, L["weaverwarn_text"].."1", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(68, L["weaverwarn_text"].."2", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(97, L["weaverwarn_text"].."3", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(130, L["weaverwarn_text"].."4", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(155, L["weaverwarn_text"].."5", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(170, L["weaverwarn_text"].."6", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(190, L["weaverwarn_text"].."7", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(213, L["weaverwarn_text"].."8", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(235, L["weaverwarn_text"].."9", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(256, L["weaverwarn_text"].."10", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(271, L["weaverwarn_text"].."11", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(285, L["weaverwarn_text"].."12", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(294, L["weaverwarn_text"].."13", "Personal", nil, "AirHorn", nil)
+		self:DelayedMessage(300, L["weaverwarn_text"].."14", "Personal", nil, "AirHorn", nil)
 	end
 
 end
