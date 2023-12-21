@@ -13,6 +13,8 @@ local module, L = BigWigs:ModuleDeclaration("Sapphiron", "Naxxramas")
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Sapphiron",
 
+	SapphironsLair = "Sapphiron's Lair",
+
 	deepbreath_cmd = "deepbreath",
 	deepbreath_name = "Deep Breath alert",
 	deepbreath_desc = "Warn when Sapphiron begins to cast Deep Breath.",
@@ -33,6 +35,8 @@ L:RegisterTranslations("enUS", function() return {
 	berserk_warn_10min = "10min to berserk!",
 	berserk_warn_5min = "5min to berserk!",
 	berserk_warn_rest = "%s sec to berserk!",
+
+	firstflight_bar = "Fly phase",
 
 	engage_message = "Sapphiron engaged! Berserk in 15min!",
 
@@ -123,12 +127,14 @@ local timer = {
 	lifedrainAfterFlight = 24,
 	lifedrain = 24,
 	groundPhase = 50,
+	firstflight = 40,
 }
 local icon = {
 	deepbreath = "Spell_Frost_FrostShock",
 	deepbreathInc = "Spell_Arcane_PortalIronForge",
 	lifedrain = "Spell_Shadow_LifeDrain02",
 	berserk = "INV_Shield_01",
+	firstflight = "Spell_Magic_FeatherFall",
 }
 local syncName = {
 	lifedrain = "SapphironLifeDrain"..module.revision,
@@ -148,6 +154,11 @@ local lastTarget = nil
 
 --module:RegisterYellEngage(L["start_trigger"])
 
+-- Big evul hack to enable the module when entering Sapphiron chamber.
+function module:OnRegister()
+	self:RegisterEvent("MINIMAP_ZONE_CHANGED")
+end
+
 -- called after module is enabled
 function module:OnEnable()
 	if self:IsEventScheduled("bwsapphtargetscanner") then
@@ -165,9 +176,9 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "CheckForIcebolt")
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "CheckForIcebolt")
 
-	self:ThrottleSync(4, syncName.lifedrain)
-	self:ThrottleSync(5, syncName.flight)
-	self:ThrottleSync(30, syncName.icebolt)
+	self:ThrottleSync(0, syncName.lifedrain)
+	self:ThrottleSync(0, syncName.flight)
+	self:ThrottleSync(0, syncName.icebolt)
 end
 
 -- called after module is enabled and after each wipe
@@ -194,6 +205,7 @@ function module:OnEngage()
 		-- Lets start a repeated event after 5 seconds of combat so that
 		-- we're sure that the entire raid is in fact in combat when we
 		-- start it.
+		self:Bar(L["firstflight_bar"], timer.firstflight, icon.firstflight)
 		self:ScheduleEvent("besapphdelayed", self.StartTargetScanner, 5, self)
 	end
 end
@@ -213,6 +225,15 @@ end
 ------------------------------
 --      Event Handlers      --
 ------------------------------
+
+function module:MINIMAP_ZONE_CHANGED(msg)
+	if GetMinimapZoneText() ~= L["SapphironsLair"] or self.core:IsModuleActive(module.translatedName) then
+		return
+	end
+
+	-- Activate the Sapphiron mod!
+	self.core:EnableModule(module.translatedName)
+end
 
 function module:CheckForLifeDrain(msg)
 	if string.find(msg, L["lifedrain_trigger"]) or string.find(msg, L["lifedrain_trigger2"]) then
@@ -259,7 +280,6 @@ end
 function module:LifeDrain()
 	if self.db.profile.lifedrain then
 		self:Message(L["lifedrain_message"], "Urgent")
-		self:Bar(L["lifedrain_bar"], timer.lifedrain, icon.lifedrain)
 	end
 end
 
