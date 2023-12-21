@@ -18,6 +18,7 @@ L:RegisterTranslations("enUS", function() return {
 
 	eye_beam_trigger = "Giant Eye Tentacle begins to cast Eye Beam.",
 	eye_beam_trigger_cthun = "Eye of C'Thun begins to cast Eye Beam.",
+	giant_eye_birth_trigger = "Giant Eye Tentacle begins to cast Birth",
 	eyebeam		= "Eye Beam on %s",
 	Unknown = "Unknown", -- Eye Beam on Unknown
 
@@ -92,6 +93,10 @@ L:RegisterTranslations("enUS", function() return {
 	stomach_cmd = "stomach",
 	stomach_name = "Players in Stomach",
 	stomach_desc = "Show players in stomach instead of too close players",
+
+	autotarget_cmd = "autotarget",
+	autotarget_name = "Autotarget giant eye",
+	autotarget_desc = "Automatically target the giant eye instantly when it spawns",
 
 } end )
 
@@ -263,7 +268,7 @@ local eyeofcthun = AceLibrary("Babble-Boss-2.2")["Eye of C'Thun"]
 local cthun = AceLibrary("Babble-Boss-2.2")["C'Thun"]
 module.enabletrigger = {eyeofcthun, cthun} -- string or table {boss, add1, add2}
 --module.wipemobs = { L["add_name"] } -- adds which will be considered in CheckForEngage
-module.toggleoptions = {"rape", -1, "tentacle", "glare", "group", -1, "giant", "acid", "weakened", -1, "proximity", "stomach", "bosskill"}
+module.toggleoptions = {"rape", -1, "tentacle", "glare", "group", -1, "giant", "acid", "autotarget","weakened", -1, "proximity", "stomach", "bosskill"}
 
 -- Proximity Plugin
 module.proximityCheck = function(unit) return CheckInteractDistance(unit, 2) end
@@ -431,6 +436,10 @@ function module:CheckEyeBeam(msg)
 		self:Sync(syncName.eyeBeam)
 		if not cthunstarted then
 			self:SendEngageSync()
+		end
+	elseif string.find(msg, L["giant_eye_birth_trigger]) then
+		if self.db.profile.autotarget then
+			TargetByName("Giant Eye Tentacle", true);
 		end
 	end
 end
