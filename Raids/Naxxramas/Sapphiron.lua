@@ -176,9 +176,9 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "CheckForIcebolt")
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "CheckForIcebolt")
 
-	self:ThrottleSync(0, syncName.lifedrain)
-	self:ThrottleSync(0, syncName.flight)
-	self:ThrottleSync(0, syncName.icebolt)
+	self:ThrottleSync(4, syncName.lifedrain)
+	self:ThrottleSync(5, syncName.flight)
+	self:ThrottleSync(5, syncName.icebolt)
 end
 
 -- called after module is enabled and after each wipe
