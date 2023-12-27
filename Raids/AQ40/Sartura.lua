@@ -221,7 +221,7 @@ end
 function module:OnEngage()
 	if self.db.profile.berserk then
 		self:Message(L["startwarn"], "Important")
-		self:Bar(L["berserktext"], timer.berserk, icon.berserk)
+		self:Bar(L["berserktext"], timer.berserk, icon.berserk, true, "Black")
 		self:DelayedMessage(timer.berserk - 5 * 60, L["warn1"], "Attention", nil, nil, true)
 		self:DelayedMessage(timer.berserk - 3 * 60, L["warn2"], "Attention", nil, nil, true)
 		self:DelayedMessage(timer.berserk - 90, L["warn3"], "Urgent", nil, nil, true)
@@ -230,7 +230,7 @@ function module:OnEngage()
 		self:DelayedMessage(timer.berserk - 10, L["warn6"], "Important", nil, nil, true)
 	end
 	if self.db.profile.whirlwind then
-		self:IntervalBar(L["whirlwindfirstbartext"], timer.earliestFirstWhirlwind, timer.latestFirstWhirlwind, icon.whirlwind)
+		self:IntervalBar(L["whirlwindfirstbartext"], timer.earliestFirstWhirlwind, timer.latestFirstWhirlwind, icon.whirlwind, true, "Blue")
 		self:DelayedMessage(timer.earliestFirstWhirlwind - 3, L["whirlwindinctext"], "Attention", true, "Alarm")
 	end
 end
@@ -288,9 +288,9 @@ end
 function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.whirlwind and self.db.profile.whirlwind then
 		self:Message(L["whirlwindonwarn"], "Important")
-		self:Bar(L["whirlwindbartext"], timer.whirlwind, icon.whirlwind)
+		self:Bar(L["whirlwindbartext"], timer.whirlwind, icon.whirlwind, true, "Red")
 		self:RemoveBar(L["whirlwindnextbartext"])
-		self:DelayedIntervalBar(timer.whirlwind, L["whirlwindnextbartext"], timer.earliestNextWhirlwind, timer.latestNextWhirlwind, icon.whirlwind)
+		self:DelayedIntervalBar(timer.whirlwind, L["whirlwindnextbartext"], timer.earliestNextWhirlwind, timer.latestNextWhirlwind, icon.whirlwind, true, "Blue")
 		self:DelayedMessage(timer.earliestNextWhirlwind+timer.whirlwind - 3, L["whirlwindinctext"], "Attention", true, "Alarm")
 	elseif sync == syncName.whirlwindOver and self.db.profile.whirlwind then
 		self:RemoveBar(L["whirlwindbartext"])

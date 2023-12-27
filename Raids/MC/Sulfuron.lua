@@ -176,7 +176,7 @@ end
 -- called after boss is engaged
 function module:OnEngage()
 	if self.db.profile.knockback then
-		self:Bar(L["knockbacktimer"], timer.firstKnockback, icon.knockback)
+		self:Bar(L["knockbacktimer"], timer.firstKnockback, icon.knockback, true, "black")
 		self:DelayedMessage(timer.firstKnockback - 3, L["knockbackannounce"], "Urgent")
 	end
 	--self:TriggerEvent("BigWigs_StartCounterBar", self, "Priests dead", 4, "Interface\\Icons\\Spell_Holy_BlessedRecovery")
@@ -225,11 +225,11 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		end
 	elseif sync == syncName.heal and self.db.profile.heal then
 		self:Message(L["healwarn"], "Attention", true, "Alarm")
-		self:Bar(L["healbar"], timer.heal, icon.heal)
+		self:Bar(L["healbar"], timer.heal, icon.heal, true, "blue")
 	elseif sync == syncName.knockback and self.db.profile.knockback then
-		self:Bar(L["knockbacktimer"], timer.knockback, icon.knockback)
+		self:Bar(L["knockbacktimer"], timer.knockback, icon.knockback, true, "black")
 		self:DelayedMessage(timer.knockback - 3, L["knockbackannounce"], "Urgent")
 	elseif sync == syncName.flame_spear then
-		self:Bar(L["flame_spear_bar"], timer.flame_spear, icon.flame_spear)
+		self:Bar(L["flame_spear_bar"], timer.flame_spear, icon.flame_spear, true, "red")
 	end
 end

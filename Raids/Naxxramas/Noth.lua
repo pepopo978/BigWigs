@@ -1,14 +1,9 @@
 
-----------------------------------
---      Module Declaration      --
-----------------------------------
-
 local module, L = BigWigs:ModuleDeclaration("Noth the Plaguebringer", "Naxxramas")
 
-
-----------------------------
---      Localization      --
-----------------------------
+module.revision = 30017
+module.enabletrigger = module.translatedName
+module.toggleoptions = {"blink", "teleport", "curse", "cripple", -1, "wave", "bosskill"}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Noth",
@@ -24,121 +19,55 @@ L:RegisterTranslations("enUS", function() return {
 	curse_cmd = "curse",
 	curse_name = "Curse Alert",
 	curse_desc = "Warn for curse",
-
+	
+	cripple_cmd = "cripple",
+	cripple_name = "Cripple Alert",
+	cripple_desc = "Warn for cripple",
+	
 	wave_cmd = "wave",
 	wave_name = "Wave Alert",
 	wave_desc = "Warn for waves",
 
-	starttrigger1 = "Die, trespasser!",
-	starttrigger2 = "Glory to the master!",
-	starttrigger3 = "Your life is forfeit!",
-	startwarn = "Noth the Plaguebringer engaged! 90 seconds till teleport",
-
-	addtrigger = "Rise, my soldiers! Rise and fight once more!",
-
-	blinktrigger = "Noth the Plaguebringer gains Blink.",
-	blinkwarn = "Blink!",
-	blinkwarn5 = "Blink in ~5 seconds!",
-	blinkwarn10 = "Blink in ~10 seconds!",
-	blinkbar = "Possible Blink",
-
-	teleportToBalconyTrigger = "Noth the Plaguebringer teleports to the balcony above!",
-	teleportToRoomTrigger = "Noth the Plaguebringer teleports back into the battle!",
-	teleportwarn = "Teleport! He's on the balcony!",
-	teleportwarn10 = "Teleport in 10 seconds!",
-	teleportwarn30 = "Teleport in 30 seconds!",
-
-	teleportbar = "Teleport!",
-	backbar = "Back in room!",
-
-	backwarn = "He's back in the room for %d seconds!",
-	backwarn10 = "10 seconds until he's back in the room!",
-	backwarn30 = "30 seconds until he's back in the room!",
-
-	cursetrigger = "afflicted by Curse of the Plaguebringer",
-	cursewarn = "Curse! next in ~28 seconds",
-	curse10secwarn = "Curse in ~10 seconds",
-
-	cursebar = "Next Curse",
-
-	wave1bar = "Wave 1",
-	wave2bar = "Wave 2",
-	wave2_message = "Wave 2 in 10sec",
-	wave2s_message = "Wave 2 Spawning!",
+	trigger_start1 = "Die, trespasser!",
+	trigger_start2 = "Glory to the master!",
+	trigger_start3 = "Your life is forfeit!",
+	
+	trigger_curse1 = "afflicted by Curse of the Plaguebringer",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_curse2 = "Curse of the Plaguebringer was resisted",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+	msg_curse = "Curse!",
+	bar_curse = "Curse CD",
+	
+	trigger_cripple1 = "is afflicted by Cripple",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_cripple2 = "Cripple was resisted",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+	msg_cripple = "Cripple!",
+	bar_cripple = "Cripple CD",
+	
+	trigger_blink = "Noth the Plaguebringer gains Blink.",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	msg_blink = "Blink!",
+	bar_blink = "Blink CD",
+	
+	trigger_add = "Rise, my soldiers! Rise and fight once more!",
+	bar_roomWave = "3 Plagued Warriors",
+	
+	bar_wave1 = "Wave 1",
+	bar_wave2 = "Wave 2",
+	
+	msg_tpToBalcony = "Teleport! He's on the balcony!",
+	msg_tpToRoom = "Back in room!",
+	bar_teleport = "Teleport",	
 } end )
 
-L:RegisterTranslations("esES", function() return {
-	--cmd = "Noth",
-
-	--blink_cmd = "blink",
-	blink_name = "Alerta de Traslación",
-	blink_desc = "Avisa para Traslación",
-
-	--teleport_cmd = "teleport",
-	teleport_name = "Alerta de Teletransporte",
-	teleport_desc = "Avisa para teletransporte",
-
-	--curse_cmd = "curse",
-	curse_name = "Alerta de Maldición",
-	curse_desc = "Avisa para Maldición",
-
-	--wave_cmd = "wave",
-	wave_name = "Alerta de Oleadas",
-	wave_desc = "Avisa para Oleadas",
-
-	starttrigger1 = "¡Muere, intruso!",
-	starttrigger2 = "¡Gloria al maestro!",
-	starttrigger3 = "Your life is forfeit!",
-	startwarn = "Entrando en combate con Noth el Pesteador! 90 segundos hasta teletransporte",
-
-	addtrigger = "Rise, my soldiers! Rise and fight once more!",
-
-	blinktrigger = "Noth el Pesteador gana Traslación.",
-	blinkwarn = "¡Translación!",
-	blinkwarn5 = "¡Traslación en ~5 segundos!",
-	blinkwarn10 = "¡Traslación en ~10 segundos!",
-	blinkbar = "Traslación Posible",
-
-	teleportToBalconyTrigger = "Noth the Plaguebringer teleports to the balcony above!",
-	teleportToRoomTrigger = "Noth the Plaguebringer teleports back into the battle!",
-	teleportwarn = "¡Teletransporte! Está en el balcón!",
-	teleportwarn10 = "¡Teletransporte en 10 segundos!",
-	teleportwarn30 = "¡Teletransporte en 30 segundos!",
-
-	teleportbar = "¡Teletransporte!",
-	backbar = "¡Trasera del cuarto!",
-
-	backwarn = "¡Está en el cuarto por %d segundos!",
-	backwarn10 = "¡10 segundos hasta que regrese al cuarto!",
-	backwarn30 = "¡30 segundos hasta que regrese al cuarto!",
-
-	cursetrigger = "sufre de Maldición del Pesteador",
-	cursewarn = "¡Maldición! La próxima en ~28 segundos",
-	curse10secwarn = "Maldición en ~10 segundos",
-
-	cursebar = "Próxima Maldición",
-
-	wave1bar = "Oleada 1",
-	wave2bar = "Oleada 2",
-	wave2_message = "Oleada 2 en 10 segundos",
-	wave2s_message = "¡Aparece Oleada 2!",
-} end )
----------------------------------
---      	Variables 		   --
----------------------------------
-
--- module variables
-module.revision = 20011 -- To be overridden by the module!
-module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
---module.wipemobs = { L["add_name"] } -- adds which will be considered in CheckForEngage
-module.toggleoptions = {"blink", "teleport", "curse", "wave", "bosskill"}
-
-
--- locals
 local timer = {
+	firstCurse = {8,12},
+	curseAfterTeleport = {2,10},
+	curse = {50,60},
+	
+	firstCripple = {30,40},
+	crippleAfterTeleport = {2,10},--5
+	cripple = {30,40},
+	
 	firstBlink = {30,40},
 	regularBlink = {30,40},
-
 	blinkAfterTeleport = {2,10},
 
 	firstRoom = 90,
@@ -151,10 +80,6 @@ local timer = {
 	thirdBalcony = 120, -- ??
 	balcony = 0, -- will be changed during the encounter
 
-	firstCurse = {8,12},
-	curseAfterTeleport = {2,10},
-	curse = {50,60},
-
 	wave1 = {5,7},
 	wave2_1 = {30,37},
 	wave2_2 = {49,56},
@@ -162,120 +87,152 @@ local timer = {
 	wave2 = 0,
 
 	firstWarriorWave = 10,
+	waveAfterTeleport = 10,
 	nextWarriorWave = 30
 }
 local icon = {
-	balcony = "Spell_Magic_LesserInvisibilty",
-	blink = "Spell_Arcane_Blink",
-	wave = "Spell_ChargePositive",
 	curse = "Spell_Shadow_AnimateDead",
-	warrior = "ability_warrior_cleave"
+	cripple = "Spell_Shadow_Cripple",
+	blink = "Spell_Arcane_Blink",
+	add = "ability_warrior_cleave",
+	teleport = "Spell_Magic_LesserInvisibilty",
+	wave = "Spell_ChargePositive"
 }
 local syncName = {
-	blink = "NothBlink"..module.revision,
 	curse = "NothCurse"..module.revision,
-	teleportToBalcony = "NothTeleportToBalcony"..module.revision,
-	teleportToRoom = "NothTeleportToRoom"..module.revision,
-	firstWarriorWave = "NothWarriorFirstAdds"..module.revision,
-	nextWarriorWave = "NothWarriorAdds"..module.revision
+	cripple = "NothCripple"..module.revision,
+	blink = "NothBlink"..module.revision,
+	nextRoomWave = "NothRoomWave"..module.revision
 }
-
-local berserkannounced = nil
 
 local balconyPhase = 0
 local bossPos = ''
+bwTimeInRoom = 0
 
-------------------------------
---      Initialization      --
-------------------------------
+module:RegisterYellEngage(L["trigger_start1"])
+module:RegisterYellEngage(L["trigger_start2"])
+module:RegisterYellEngage(L["trigger_start3"])
 
-module:RegisterYellEngage(L["starttrigger1"])
-module:RegisterYellEngage(L["starttrigger2"])
-module:RegisterYellEngage(L["starttrigger3"])
-
--- called after module is enabled
 function module:OnEnable()
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "CheckForBlink")
-
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "CheckForCurse")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "CheckForCurse")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "CheckForCurse")
-
-	self:RegisterEvent("CHAT_MSG_RAID_BOSS_EMOTE", "Teleport")
-	self:RegisterEvent("CHAT_MSG_MONSTER_YELL", "Yell")
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event")--Cripple, Curse
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event")--Cripple, Curse
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event")--Cripple, Curse
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")--Cripple, Curse
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")--Cripple, Curse
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")--Cripple, Curse
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event")--Blink
+	self:RegisterEvent("CHAT_MSG_MONSTER_YELL", "Event")--nextWave
 
 	self:ThrottleSync(5, syncName.blink)
 	self:ThrottleSync(5, syncName.curse)
+	self:ThrottleSync(5, syncName.cripple)
+	self:ThrottleSync(5, syncName.nextRoomWave)
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
 	timer.room = timer.firstRoom
 	timer.balcony = timer.firstBalcony
 	timer.wave2 = timer.wave2_1
 end
 
--- called after boss is engaged
 function module:OnEngage()
-	if self.db.profile.teleport then
-		self:Message(L["startwarn"], "Important")
-		self:Bar(L["teleportbar"], timer.room, icon.balcony)
-		--self:DelayedMessage(timer.room - 30, L["teleportwarn30"], "Urgent")
-		--self:DelayedMessage(timer.room - 10, L["teleportwarn10"], "Urgent")
+	if self.db.profile.curse then
+		self:IntervalBar(L["bar_curse"], timer.firstCurse[1], timer.firstCurse[2], icon.curse, true, "Red")
+	end
+	if self.db.profile.cripple then
+		self:IntervalBar(L["bar_cripple"], timer.firstCripple[1], timer.firstCripple[2], icon.cripple, true, "Cyan")
 	end
 	if self.db.profile.blink then
-		self:IntervalBar(L["blinkbar"], timer.firstBlink[1], timer.firstBlink[2], icon.blink)
-		--self:DelayedMessage(timer.firstBlink[1] - 10, L["blinkwarn10"], "Attention")
-		--self:DelayedMessage(timer.firstBlink[1] - 5, L["blinkwarn5"], "Attention")
+		self:IntervalBar(L["bar_blink"], timer.firstBlink[1], timer.firstBlink[2], icon.blink, true, "Blue")
 	end
-	if self.db.profile.curse then
-		self:IntervalBar(L["cursebar"], timer.firstCurse[1], timer.firstCurse[2], icon.curse)
+	if self.db.profile.teleport then
+		self:Bar(L["bar_teleport"], timer.room, icon.teleport, true, "White")
+	end
+	if self.db.profile.wave then
+		self:Bar(L["bar_roomWave"], timer.firstWarriorWave, icon.add, true, "Black")
 	end
 
-	--todo add warrior adds to settings ?
 	balconyPhase = 0
 	bossPos = 'floor'
-	self:Sync(syncName.firstWarriorWave)
-
+	bwTimeInRoom = GetTime()
+	
 	self:ScheduleEvent("bwnothtobalcony", self.TeleportToBalcony, timer.room, self)
 end
 
--- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
 end
 
-------------------------------
---      Initialization      --
-------------------------------
-
-function module:CheckForCurse(msg)
-	if string.find(msg, L["cursetrigger"]) then
+function module:Event(msg)
+	if string.find(msg, L["trigger_curse1"]) or string.find(msg, L["trigger_curse2"]) then
 		self:Sync(syncName.curse)
-	end
-end
-
-function module:CheckForBlink(msg)
-	if msg == L["blinktrigger"] then
+	elseif string.find(msg, L["trigger_cripple1"]) or string.find(msg, L["trigger_cripple2"]) then
+		self:Sync(syncName.cripple)
+	elseif msg == L["trigger_blink"] then
 		self:Sync(syncName.blink)
+	elseif msg == L["trigger_add"] and bossPos == 'floor' then
+		self:Sync(syncName.nextRoomWave)
 	end
 end
 
-function module:Teleport(msg)
-	if msg == L["teleportToBalconyTrigger"] then
-		self:Sync(syncName.teleportToBalcony)
-	elseif msg == L["teleportToRoomTrigger"] then
-		self:Sync(syncName.teleportToRoom)
+
+
+
+function module:BigWigs_RecvSync(sync, rest, nick)
+	if sync == syncName.curse and self.db.profile.curse then
+		self:Curse()
+	elseif sync == syncName.cripple and self.db.profile.cripple then
+		self:Cripple()
+	elseif sync == syncName.blink and self.db.profile.blink then
+		self:Blink()
+	elseif sync == syncName.nextRoomWave and self.db.profile.wave then
+		self:NextRoomWave()
 	end
 end
 
-function module:Yell(msg)
-	if msg == L['addtrigger'] and bossPos == 'floor' then
-		self:Sync(syncName.nextWarriorWave)
+
+
+
+function module:Curse()
+	self:RemoveBar(L["bar_curse"])
+	if GetTime() < (bwTimeInRoom + timer.room - timer.curse[1]) then
+		self:IntervalBar(L["bar_curse"], timer.curse[1], timer.curse[2], icon.curse, true, "Red")
+	end
+	
+	if UnitClass("Player") == "Mage" or UnitClass("Player") == "Druid" then
+		self:WarningSign(icon.curse, 0.7)
+		self:Message(L["msg_curse"], "Important", nil, "Beware")
 	end
 end
+
+function module:Cripple()
+	self:RemoveBar(L["bar_cripple"])
+	if GetTime() < (bwTimeInRoom + timer.room - timer.cripple[1]) then
+		self:IntervalBar(L["bar_cripple"], timer.cripple[1], timer.cripple[2], icon.cripple, true, "Cyan")
+	end
+	
+	if UnitClass("Player") == "Paladin" or UnitClass("Player") == "Priest" then
+		self:WarningSign(icon.cripple, 0.7)
+		self:Message(L["msg_cripple"], "Important", nil, "Beware")
+	end
+end
+
+function module:Blink()
+	self:RemoveBar(L["bar_blink"])
+	self:Message(L["msg_blink"], "Important")
+	if GetTime() < (bwTimeInRoom + timer.room - timer.regularBlink[1]) then
+		self:IntervalBar(L["bar_blink"], timer.regularBlink[1], timer.regularBlink[2], icon.blink, true, "Blue")
+	end
+end
+
+function module:NextRoomWave()
+	self:RemoveBar(L["bar_roomWave"])
+	if GetTime() < (bwTimeInRoom + timer.room - timer.nextWarriorWave) then
+		self:Bar(L["bar_roomWave"], timer.nextWarriorWave, icon.add, true, "Black")
+	end
+end
+
 
 function module:TeleportToBalcony()
-
 	balconyPhase = balconyPhase + 1
 	bossPos = 'balcony'
 	-- 1 4 champions
@@ -290,39 +247,30 @@ function module:TeleportToBalcony()
 	end
 
 	self:CancelScheduledEvent("bwnothtobalcony")
-
-	self:RemoveBar("3 Plagued Warriors")
-
+	self:RemoveBar(L["bar_curse"])
+	self:RemoveBar(L["bar_cripple"])
+	self:RemoveBar(L["bar_blink"])
+	self:RemoveBar(L["bar_roomWave"])
+	
 	if timer.room == timer.firstRoom then
 		timer.room = timer.secondRoom
 	elseif timer.room == timer.secondRoom then
 		timer.room = timer.thirdRoom
 	end
 
-	--self:CancelDelayedMessage(L["teleportwarn10"])
-	--self:CancelDelayedMessage(L["teleportwarn30"])
-	--self:CancelDelayedMessage(L["curse10secwarn"])
-
-	self:RemoveBar(L["blinkbar"])
-	self:RemoveBar(L["cursebar"])
-
 	if self.db.profile.teleport then
-		self:Message(L["teleportwarn"], "Important")
-		self:Bar(L["backbar"], timer.balcony, icon.balcony)
-		--self:DelayedMessage(timer.balcony - 30, L["backwarn30"], "Urgent")
-		--self:DelayedMessage(timer.balcony - 10, L["backwarn10"], "Urgent")
+		self:Message(L["msg_tpToBalcony"], "Important")
+		self:Bar(L["bar_teleport"], timer.balcony, icon.teleport, true, "White")
 	end
 	if self.db.profile.wave then
-		self:IntervalBar(L["wave1bar"] .. waveText, timer.wave1[1], timer.wave1[2], icon.wave)
-		self:IntervalBar(L["wave2bar"] .. waveText, timer.wave2[1], timer.wave2[2], icon.wave)
-		--self:DelayedMessage(timer.wave2 - 10, L["wave2_message"], "Urgent")
-		--self:DelayedMessage(timer.wave2, L["wave2s_message"], "Urgent")
+		self:IntervalBar(L["bar_wave1"] .. waveText, timer.wave1[1], timer.wave1[2], icon.wave, true, "Black")
+		self:IntervalBar(L["bar_wave2"] .. waveText, timer.wave2[1], timer.wave2[2], icon.wave, true, "Black")
 	end
 	self:ScheduleEvent("bwnothtoroom", self.TeleportToRoom, timer.balcony, self)
 end
 
 function module:TeleportToRoom()
-
+	bwTimeInRoom = GetTime()
 	bossPos = 'floor'
 
 	self:CancelScheduledEvent("bwnothtoroom")
@@ -334,70 +282,21 @@ function module:TeleportToRoom()
 		timer.wave2 = timer.wave2_3
 	end
 
-	if self.db.profile.teleport then
-		self:Message(string.format(L["backwarn"], timer.room), "Important")
-		self:IntervalBar(L["blinkbar"], timer.blinkAfterTeleport[1], timer.blinkAfterTeleport[2], icon.blink)
-		--self:DelayedMessage(timer.blinkAfterTeleport[1] - 10, L["blinkwarn10"], "Attention") -- praeda
-		--self:DelayedMessage(timer.blinkAfterTeleport[1] - 5, L["blinkwarn5"], "Attention") -- praeda
-
-		self:Bar(L["teleportbar"], timer.room, icon.balcony)
-		--self:DelayedMessage(timer.room - 30, L["teleportwarn30"], "Urgent")
-		--self:DelayedMessage(timer.room - 10, L["teleportwarn10"], "Urgent")
-	end
 	if self.db.profile.curse then
-		self:IntervalBar(L["cursebar"], timer.curseAfterTeleport[1], timer.curseAfterTeleport[2], icon.curse)
+		self:IntervalBar(L["bar_curse"], timer.curseAfterTeleport[1], timer.curseAfterTeleport[2], icon.curse, true, "Red")
 	end
-
-	self:ScheduleEvent("bwnothtobalcony", self.TeleportToBalcony, timer.room, self)
-
-end
-
-
-------------------------------
---      Synchronization	    --
-------------------------------
-
-function module:BigWigs_RecvSync(sync, rest, nick)
-	if sync == syncName.curse then
-		self:Curse()
-	elseif sync == syncName.blink then
-		self:Blink()
-	elseif sync == syncName.teleportToBalcony then
-		self:TeleportToBalcony()
-	elseif sync == syncName.teleportToRoom then
-		self:TeleportToRoom()
-	elseif sync == syncName.firstWarriorWave then
-		self:FirstWarriorWave()
-	elseif sync == syncName.nextWarriorWave then
-		self:NextWarriorWave()
+	if self.db.profile.cripple then
+		self:IntervalBar(L["bar_cripple"], timer.crippleAfterTeleport[1], timer.crippleAfterTeleport[2], icon.cripple, true, "Cyan")
 	end
-end
-
-------------------------------
---      Utility	Functions   --
-------------------------------
-
-function module:Curse()
-	if self.db.profile.curse then
-		self:Message(L["cursewarn"], "Important", nil, "Alarm")
-		--self:DelayedMessage(timer.curse - 10, L["curse10secwarn"], "Urgent")
-		self:IntervalBar(L["cursebar"], timer.curse[1], timer.curse[2], icon.curse)
-	end
-end
-
-function module:Blink()
 	if self.db.profile.blink then
-		self:Message(L["blinkwarn"], "Important")
-		--self:DelayedMessage(timer.regularBlink - 10, L["blinkwarn10"], "Attention")
-		--self:DelayedMessage(timer.regularBlink - 5, L["blinkwarn5"], "Attention")
-		self:IntervalBar(L["blinkbar"], timer.regularBlink[1], timer.regularBlink[2], icon.blink)
+		self:IntervalBar(L["bar_blink"], timer.blinkAfterTeleport[1], timer.blinkAfterTeleport[2], icon.blink, true, "Blue")
 	end
-
-end
-
-function module:FirstWarriorWave()
-	self:Bar("First 3 Plagued Warriors", timer.firstWarriorWave, icon.warrior)
-end
-function module:NextWarriorWave()
-	self:Bar("3 Plagued Warriors", timer.nextWarriorWave, icon.warrior)
+	if self.db.profile.wave then
+		self:Bar(L["bar_roomWave"], timer.waveAfterTeleport, icon.add, true, "Black")
+	end
+	if self.db.profile.teleport then
+		self:Message(string.format(L["msg_tpToRoom"], timer.room), "Important")
+		self:Bar(L["bar_teleport"], timer.room, icon.teleport, true, "White")
+	end
+	self:ScheduleEvent("bwnothtobalcony", self.TeleportToBalcony, timer.room, self)
 end

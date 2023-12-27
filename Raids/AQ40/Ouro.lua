@@ -1,14 +1,10 @@
 
-----------------------------------
---      Module Declaration      --
-----------------------------------
-
 local module, L = BigWigs:ModuleDeclaration("Ouro", "Ahn'Qiraj")
 
+module.revision = 30016
+module.enabletrigger = module.translatedName
+module.toggleoptions = {"popcorn", "sounds", "bigicon", "sweep", "sandblast", -1, "emerge", "submerge", -1, "berserk", "bosskill"}
 
-----------------------------
---      Localization      --
-----------------------------
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Ouro",
 
@@ -17,7 +13,19 @@ L:RegisterTranslations("enUS", function() return {
 	sweep_cmd = "sweep",
 	sweep_name = "Sweep Alert",
 	sweep_desc = "Warn for Sweeps",
-
+	
+	popcorn_cmd = "popcorn",
+	popcorn_name = "Popcorn Alert",
+	popcorn_desc = "Warns when you take damage from Popcorn",
+	
+	bigicon_cmd = "bigicon",
+	bigicon_name = "BigIcon Alerts",
+	bigicon_desc = "BigIcon Alert for Sweep, Submerge, Emerge, Popcorn",
+	
+	sounds_cmd = "sounds",
+	sounds_name = "Sound Alerts",
+	sounds_desc = "Sound Alert for Sweep, Submerge, Emerge, Popcorn",
+	
 	sandblast_cmd = "sandblast",
 	sandblast_name = "Sandblast Alert",
 	sandblast_desc = "Warn for Sandblasts",
@@ -64,7 +72,7 @@ L:RegisterTranslations("enUS", function() return {
 	berserkannounce = "Berserk - Berserk!",
 	berserksoonwarn = "Berserk Soon - Get Ready!",
 
-
+	popcorn_trigger = "Dirt Mound's Quake hits you for",
 } end )
 
 L:RegisterTranslations("esES", function() return {
@@ -168,19 +176,6 @@ L:RegisterTranslations("deDE", function() return {
 	berserksoonwarn = "Berserkerwut in K\195\188rze - Bereit machen!",
 } end )
 
-
----------------------------------
---      	Variables 		   --
----------------------------------
-
--- module variables
-module.revision = 20010 -- To be overridden by the module!
-module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
---module.wipemobs = { L["add_name"] } -- adds which will be considered in CheckForEngage
-module.toggleoptions = {"sweep", "sandblast", -1, "emerge", "submerge", -1, "berserk", "bosskill"}
-
-
--- locals
 local timer = {
 	nextSubmerge = 89,
 	sweep = 1.5,
@@ -198,6 +193,10 @@ local icon = {
 	sweep = "Spell_Nature_Thorns",
 	sandblast = "Spell_Nature_Cyclone",
 	submerge = "Spell_Nature_Earthquake",
+	popcorn = "Spell_Nature_Earthquake",
+	collapse = "Ability_Marksmanship",
+	enrage = "ability_druid_challangingroar",
+	ouroTarget = "spell_shadow_charm",
 }
 local syncName = {
 	sweep = "OuroSweep"..module.revision,
@@ -209,19 +208,16 @@ local syncName = {
 
 local berserkannounced = nil
 
-
-------------------------------
---      Initialization      --
-------------------------------
-
--- called after module is enabled
 function module:OnEnable()
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE")
-	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS")
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE")
+	self:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLYPLAYER_HITS", "Event")
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event")
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event")
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event")
 
 	self:RegisterEvent("UNIT_HEALTH")
+	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")
 
 	self:ThrottleSync(10, syncName.sweep)
 	self:ThrottleSync(10, syncName.sandblast)
@@ -230,16 +226,16 @@ function module:OnEnable()
 	self:ThrottleSync(10, syncName.berserk)
 
 	self:ScheduleRepeatingEvent("bwouroengagecheck", self.EngageCheck, 0.5, self)
+	
+	ouroCurrentTarget = nil
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
 	berserkannounced = nil
 	self.started = nil
 	self.phase = nil
 end
 
--- called after boss is engaged
 function module:OnEngage()
 
 	self.phase = "emerged"
@@ -251,22 +247,30 @@ function module:OnEngage()
 	end
 	if self.db.profile.sandblast then
 		self:DelayedMessage(timer.earliestFirstSandblast - 5, L["sandblastwarn"], "Important", nil, nil, true)
-		self:IntervalBar(L["sandblastbartext"], timer.earliestFirstSandblast, timer.latestFirstSandblast, icon.sandblast)
+		self:IntervalBar(L["sandblastbartext"], timer.earliestFirstSandblast, timer.latestFirstSandblast, icon.sandblast, true, "Red")
 	end
 	if self.db.profile.sweep then
 		self:DelayedMessage(timer.earliestFirstSweep - 5, L["sweepwarn"], "Important", nil, nil, true)
-		self:IntervalBar(L["sweepbartext"], timer.earliestFirstSweep, timer.latestFirstSweep, icon.sweep)
+		self:IntervalBar(L["sweepbartext"], timer.earliestFirstSweep, timer.latestFirstSweep, icon.sweep, true, "Blue")
+		if self.db.profile.bigicon then
+			self:DelayedWarningSign(timer.earliestFirstSweep - 5, icon.sweep, 0.7)
+		end
 	end
+	
+	ouroCurrentTarget = nil
+	self:ScheduleRepeatingEvent("ouroTargetCheck", self.OuroTarget, 0.5, self)
 end
 
--- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
 end
 
-
-------------------------------
---      Event Handlers	    --
-------------------------------
+function module:OuroTarget()
+	if UnitName("target") ~= nil and UnitName("targettarget") ~= nil and (IsRaidLeader() or IsRaidOfficer()) then
+		if UnitName("target") == "Ouro" then
+			SetRaidTarget("targettarget",8)
+		end
+	end
+end
 
 function module:UNIT_HEALTH( msg )
 	if UnitName(msg) == boss then
@@ -282,28 +286,6 @@ function module:UNIT_HEALTH( msg )
 	end
 end
 
-function module:CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS(msg)
-	if msg == L["berserktrigger"] then
-		self:Sync(syncName.berserk)
-	end
-end
-
-function module:CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE( msg )
-	if string.find(msg, L["emergetrigger"]) then
-		self:Sync(syncName.emerge)
-		self:DebugMessage("OuroEmerge")
-	end
-end
-
-function module:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE( msg )
-	if string.find(msg, L["sweeptrigger"]) then
-		self:DebugMessage("sweep dmg")
-		self:Sync(syncName.sweep)
-	elseif string.find(msg, L["sandblasttrigger"]) then
-		self:Sync(syncName.sandblast)
-	end
-end
-
 -- there is no emote ...
 function module:CHAT_MSG_MONSTER_EMOTE( msg )
 	if msg == L["berserktrigger"] then
@@ -311,15 +293,40 @@ function module:CHAT_MSG_MONSTER_EMOTE( msg )
 	end
 end
 
+function module:Event(msg)
+	if msg == L["berserktrigger"] then
+		self:Sync(syncName.berserk)
+	end
+	if string.find(msg, L["emergetrigger"]) then
+		self:Sync(syncName.emerge)
+		self:DebugMessage("OuroEmerge")
+	end
+	if string.find(msg, L["sweeptrigger"]) then
+		self:DebugMessage("sweep dmg")
+		self:Sync(syncName.sweep)
+	end
+	if string.find(msg, L["sandblasttrigger"]) then
+		self:Sync(syncName.sandblast)
+	end
+	if string.find(msg, L["popcorn_trigger"]) and self.db.profile.popcorn then
+		self:Popcorn()
+	end
+end
 
-------------------------------
---      Synchronization	    --
-------------------------------
+
+function module:Popcorn()
+	if self.db.profile.bigicon then
+		self:WarningSign(icon.popcorn, 0.7)
+	end
+	if self.db.profile.sounds then
+		self:Sound("Info")
+	end
+end
 
 function module:BigWigs_RecvSync(sync, rest, nick)
-	if sync == syncName.sweep then
+	if sync == syncName.sweep and self.db.profile.sweep then
 		self:Sweep()
-	elseif sync == syncName.sandblast then
+	elseif sync == syncName.sandblast and self.db.profile.sandblast then
 		self:Sandblast()
 	elseif sync == syncName.emerge then
 		self:Emerge()
@@ -330,28 +337,26 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 	end
 end
 
-
-------------------------------
---      Sync Handlers	    --
-------------------------------
-
 function module:Sweep()
 	if self.db.profile.sweep then
 		self:RemoveBar(L["sweepbartext"]) -- remove timer bar
-		self:Bar(L["sweepannounce"], timer.sweep, icon.sweep) -- show cast bar
+		self:Bar(L["sweepannounce"], timer.sweep, icon.sweep, true, "Blue") -- show cast bar
 		self:Message(L["sweepannounce"], "Important", true, "Alarm")
 		self:DelayedMessage(timer.sweepInterval - 5, L["sweepwarn"], "Important", nil, nil, true)
-		self:DelayedBar(timer.sweep, L["sweepbartext"], timer.sweepInterval-timer.sweep, icon.sweep) -- delayed timer bar
+		self:DelayedBar(timer.sweep, L["sweepbartext"], timer.sweepInterval-timer.sweep, icon.sweep, true, "Blue") -- delayed timer bar
+		if self.db.profile.bigicon then
+			self:DelayedWarningSign(timer.sweepInterval - 5, icon.sweep, 0.7)
+		end
 	end
 end
 
 function module:Sandblast()
 	if self.db.profile.sandblast then
 		self:RemoveBar(L["sandblastbartext"]) -- remove timer bar
-		self:Bar(L["sandblastannounce"], timer.sandblast, icon.sandblast) -- show cast bar
+		self:Bar(L["sandblastannounce"], timer.sandblast, icon.sandblast, true, "Red") -- show cast bar
 		self:Message(L["sandblastannounce"], "Important", true, "Alert")
 		self:DelayedMessage(timer.earliestSandblastInterval - 5, L["sandblastwarn"], "Important", nil, nil, true)
-		self:DelayedIntervalBar(timer.sandblast, L["sandblastbartext"], timer.earliestSandblastInterval-timer.sandblast, timer.latestSandblastInterval-timer.sandblast, icon.sandblast) -- delayed timer bar
+		self:DelayedIntervalBar(timer.sandblast, L["sandblastbartext"], timer.earliestSandblastInterval-timer.sandblast, timer.latestSandblastInterval-timer.sandblast, icon.sandblast, true, "Red") -- delayed timer bar
 	end
 end
 
@@ -360,13 +365,14 @@ function module:DoSubmergeCheck()
 		self:ScheduleRepeatingEvent("bwourosubmergecheck", self.SubmergeCheck, 0.5, self)
 	end
 end
+
 function module:Emerge()
 	if self.phase ~= "berserk" then
 		self.phase = "emerged"
 		self:DebugMessage("emerged module")
 		self:CancelScheduledEvent("bwourosubmergecheck")
 		self:ScheduleEvent("bwourosubmergecheck", self.DoSubmergeCheck, 5, self)
-		--self:ScheduleRepeatingEvent("bwourosubmergecheck", self.SubmergeCheck, 1, self)
+
 		self:CancelScheduledEvent("bwsubmergewarn")
 		self:RemoveBar(L["submergebartext"])
 
@@ -377,17 +383,22 @@ function module:Emerge()
 
 		if self.db.profile.sweep then
 			self:DelayedMessage(timer.sweepInterval - 5, L["sweepwarn"], "Important", nil, nil, true)
-			self:Bar(L["sweepbartext"], timer.sweepInterval, icon.sweep)
+			self:Bar(L["sweepbartext"], timer.sweepInterval, icon.sweep, true, "Blue")
+			if self.db.profile.bigicon then
+				self:DelayedWarningSign(timer.sweepInterval - 5, icon.sweep, 0.7)
+			end
 		end
 
 		if self.db.profile.sandblast then
 			self:DelayedMessage(timer.earliestSandblastInterval - 5, L["sandblastwarn"], "Important", nil, nil, true)
-			self:IntervalBar(L["sandblastbartext"], timer.earliestSandblastInterval, timer.latestSandblastInterval, icon.sandblast)
+			self:IntervalBar(L["sandblastbartext"], timer.earliestSandblastInterval, timer.latestSandblastInterval, icon.sandblast, true, "Red")
 		end
 	end
 end
 
 function module:Submerge()
+	self:CancelDelayedWarningSign(icon.sweep)
+	
 	self:CancelDelayedMessage(L["sweepwarn"])
 	self:CancelDelayedMessage(L["sandblastwarn"])
 	self:CancelDelayedMessage(L["emergewarn"])
@@ -402,7 +413,10 @@ function module:Submerge()
 	if self.db.profile.submerge then
 		self:Message(L["submergeannounce"], "Important")
 		self:ScheduleEvent("bwsubmergewarn", "BigWigs_Message", timer.nextEmerge - 5, L["submergewarn"], "Important" )
-		self:Bar(L["submergebartext"], timer.nextEmerge, icon.submerge)
+		self:Bar(L["submergebartext"], timer.nextEmerge, icon.submerge, true, "White")
+		if self.db.profile.bigicon then
+			self:DelayedWarningSign(timer.nextEmerge-10, icon.collapse, 0.7)
+		end
 	end
 end
 
@@ -412,26 +426,31 @@ function module:Berserk()
 	self:CancelDelayedMessage(L["emergewarn"])
 	self:RemoveBar(L["emergebartext"])
 	self:RemoveBar(L["possible_submerge_bar"])
-
+	self:CancelDelayedWarningSign(icon.submerge)
+	self:CancelDelayedSound("RunAway")
+	
 	if self.db.profile.berserk then
 		self:Message(L["berserkannounce"], "Important", true, "Beware")
+		if self.db.profile.bigicon then
+			self:WarningSign(icon.enrage, 0.7)
+		end
 	end
 end
-
-
-------------------------------
---      Utility	Functions   --
-------------------------------
 
 function module:PossibleSubmerge()
 	if self.db.profile.emerge then
 		self:DelayedMessage(timer.nextSubmerge -15, L["emergewarn"], "Important", nil, nil, true)
-		self:Bar(L["possible_submerge_bar"], timer.nextSubmerge, icon.submerge)
+		self:Bar(L["possible_submerge_bar"], timer.nextSubmerge, icon.submerge, true, "White")
+		if self.db.profile.bigicon then
+			self:DelayedWarningSign(timer.nextSubmerge-8, icon.submerge, 0.7)
+		end
+		if self.db.profile.sounds then
+			self:DelayedSound(timer.nextSubmerge-8, "RunAway")
+		end
 	end
 end
 
 function module:SubmergeCheck()
-	-- if the player is dead he can't see ouro: omit this check
 	if self.phase == "emerged" then
 		if not UnitIsDeadOrGhost("player") and not self:IsOuroVisible() then
 			self:DebugMessage("OuroSubmerge")
@@ -442,7 +461,6 @@ end
 
 function module:EngageCheck()
 	if not self.engaged then
-		--self:ScheduleRepeatingEvent("bwouroengagecheck", self.EngageCheck, 1, self)
 		if self:IsOuroVisible() then
 			module:CancelScheduledEvent("bwouroengagecheck")
 

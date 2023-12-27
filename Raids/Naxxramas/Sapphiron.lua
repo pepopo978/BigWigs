@@ -1,14 +1,9 @@
 
-----------------------------------
---      Module Declaration      --
-----------------------------------
-
 local module, L = BigWigs:ModuleDeclaration("Sapphiron", "Naxxramas")
 
-
-----------------------------
---      Localization      --
-----------------------------
+module.revision = 20003
+module.enabletrigger = module.translatedName
+module.toggleoptions = {"berserk", "lifedrain", "deepbreath", "icebolt", -1, "proximity", "bosskill"}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Sapphiron",
@@ -100,22 +95,10 @@ L:RegisterTranslations("esES", function() return {
 	deepbreath_bar = "¡Lanza Aliento de Escarcha!",
 	icebolt_yell = "¡Estoy en Bloqueo de hielo!",
 } end )
----------------------------------
---      	Variables 		   --
----------------------------------
 
--- module variables
-module.revision = 20003 -- To be overridden by the module!
-module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
---module.wipemobs = { L["add_name"] } -- adds which will be considered in CheckForEngage
-module.toggleoptions = {"berserk", "lifedrain", "deepbreath", "icebolt", -1, "proximity", "bosskill"}
-
--- Proximity Plugin
 module.proximityCheck = function(unit) return CheckInteractDistance(unit, 2) end
 module.proximitySilent = false
 
-
--- locals
 local timer = {
 	berserk = 900,
 	deepbreathInc = 23,
@@ -141,14 +124,6 @@ local timeLifeDrain = nil
 local cachedUnitId = nil
 local lastTarget = nil
 
-
-------------------------------
---      Initialization      --
-------------------------------
-
---module:RegisterYellEngage(L["start_trigger"])
-
--- called after module is enabled
 function module:OnEnable()
 	if self:IsEventScheduled("bwsapphtargetscanner") then
 		self:CancelScheduledEvent("bwsapphtargetscanner")
@@ -170,7 +145,6 @@ function module:OnEnable()
 	self:ThrottleSync(30, syncName.icebolt)
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
 	self.started = nil
 	timeLifeDrain = nil
@@ -178,7 +152,6 @@ function module:OnSetup()
 	lastTarget = nil
 end
 
--- called after boss is engaged
 function module:OnEngage()
 	if self.db.profile.berserk then
 		self:Message(L["engage_message"], "Attention")
@@ -198,7 +171,6 @@ function module:OnEngage()
 	end
 end
 
--- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
 	if self:IsEventScheduled("bwsapphtargetscanner") then
 		self:CancelScheduledEvent("bwsapphtargetscanner")
@@ -208,11 +180,6 @@ function module:OnDisengage()
 	end
 	self:RemoveProximity()
 end
-
-
-------------------------------
---      Event Handlers      --
-------------------------------
 
 function module:CheckForLifeDrain(msg)
 	if string.find(msg, L["lifedrain_trigger"]) or string.find(msg, L["lifedrain_trigger2"]) then
@@ -236,10 +203,6 @@ function module:CheckForIcebolt(msg)
 	end
 end
 
-------------------------------
---      Synchronization	    --
-------------------------------
-
 function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.lifedrain then
 		self:LifeDrain()
@@ -251,10 +214,6 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		self:Breath()
 	end
 end
-
-------------------------------
---      Sync Handlers	    --
-------------------------------
 
 function module:LifeDrain()
 	if self.db.profile.lifedrain then
@@ -296,10 +255,6 @@ function module:Breath()
 		self:RemoveProximity()
 	end
 end
-
-------------------------------
---      Target Scanning     --
-------------------------------
 
 function module:StartTargetScanner()
 	if not self:IsEventScheduled("bwsapphtargetscanner") and self.engaged then

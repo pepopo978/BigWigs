@@ -222,7 +222,7 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 	elseif sync == syncName.avatar then
 		self:Avatar()
 		if self.db.profile.avatar then
-			self:Bar(L["avatar_bar"], timer.avatar, icon.avatar)
+			self:Bar(L["avatar_bar"], timer.avatar, icon.avatar, true, "White")
 			self:Message(L["avatar_message"], "Urgent")
 		end
 	elseif sync == syncName.avatarOver then

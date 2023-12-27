@@ -1,61 +1,14 @@
 
-----------------------------------
---      Module Declaration      --
-----------------------------------
-
 local module, L = BigWigs:ModuleDeclaration("High Priest Thekal", "Zul'Gurub")
 
-
-----------------------------
---      Localization      --
-----------------------------
+module.revision = 30012
+module.enabletrigger = module.translatedName
+module.toggleoptions = {"bloodlust", "silence", "cleave", "heal", "disarm", -1, "phase", "punch", "tigers", "frenzy", "enraged", "bosskill"}
+module.wipemobs = {"Zealot Zath", "Zealot Lor'Khan"}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Thekal",
-
-	phase2_trigger = "fill me with your RAGE!",
-	roguename = "Zealot Zath",
-	shamanname = "Zealot Lor'Khan",
-	phaseone_message = "Troll Phase",
-	phasetwo_message = "Tiger Phase",
-	phasetwo_bar = "Tiger Phase",
-	tigers_trigger = "High Priest Thekal performs Summon Zulian Guardians.",
-	forcepunch_trigger = "High Priest Thekal begins to perform Force Punch.",
-	forcepunch_bar = "Force Punch",
-	heal_trigger = "Zealot Lor'Khan begins to cast Great Heal.",
-	enrage_trigger = "High Priest Thekal gains Enrage\.",
-	enrage_message = "Boss is enraged! Spam heals!",
-	tigers_message = "Incoming Tigers!",
-	heal_message = "Zealot Lor'Khan is Healing! Interrupt it!",
-	heal_bar = "Great Heal",
-	disarmself_trigger = "You are afflicted by Disarm.",
-	disarmother_trigger = "(.+) is afflicted by Disarm.",
-	mortalcleaveself_trigger = "You are afflicted by Mortal Cleave.",
-	mortalcleaveother_trigger = "(.+) is afflicted by Mortal Cleave.",
-	silenceself_trigger = "You are afflicted by Silence.",
-	silenceother_trigger = "(.+) is afflicted by Silence.",
-	silenceselfend_trigger = "Silence fades from you.",
-	silenceotherend_trigger = "Silence fades from (.+).",
-	silence_announce = "Silence on %s! Dispel it!",
-	mortalcleave_bar = "Mortal Cleave: %s",
-	silence_bar = "Silence: %s",
-	disarm_bar = "Disarm: %s",
-	bloodlustgain = "(.+) gains Bloodlust.",
-	bloodlustend = "Bloodlust fades from (.+).",
-	bloodlust_bar = "Bloodlust: %s",
-	bloodlustannounce = "Dispel Bloodlust from %s!",
-	frenzybegin_trigger = "High Priest Thekal gains Frenzy.",
-	frenzyend_trigger = "Frenzy fades from High Priest Thekal.",
-	frenzyann = "Frenzy! Tranq now!",
-	frenzy_bar = "Frenzy",
-	death_trigger = "dies.",
-	zath_trigger = "Zealot Zath",
-	lorkhan_trigger = "Zealot Lor'Khan",
-	thekal_trigger = "High Priest Thekal",
-	thekalrescast_trigger = "High Priest Thekal begins to cast Resurrection.",
-	zathrescast_trigger = "Zealot Zath begins to cast Resurrection.",
-	lorkhanrescast_trigger = "Zealot Lor'Khan begins to cast Resurrection.",
-
+	
 	heal_cmd = "heal",
 	heal_name = "Heal alert",
 	heal_desc = "Warn for Lor'Khan's heals.",
@@ -95,6 +48,59 @@ L:RegisterTranslations("enUS", function() return {
 	phase_cmd = "phase",
 	phase_name = "Phase notification",
 	phase_desc = "Announces the boss' phase transitions.",
+	
+	phase2_trigger = "fill me with your RAGE!",
+
+	phaseone_message = "Troll Phase",
+	phasetwo_message = "Tiger Phase",
+	phasetwo_bar = "Tiger Phase",
+	
+	tigers_trigger = "High Priest Thekal performs Summon Zulian Guardians.",
+	tigers_message = "Incoming Tigers!",
+	
+	forcepunch_trigger = "High Priest Thekal begins to perform Force Punch.",
+	forcepunch_bar = "Force Punch",
+	
+	heal_trigger = "Zealot Lor'Khan begins to cast Great Heal.",
+	heal_message = "Zealot Lor'Khan is Healing! Interrupt it!",
+	heal_bar = "Great Heal",
+	
+	enrage_trigger = "High Priest Thekal gains Enrage\.",
+	enrage_message = "Boss is enraged! Spam heals!",
+	
+	disarmself_trigger = "You are afflicted by Disarm.",
+	disarmother_trigger = "(.+) is afflicted by Disarm.",
+	disarm_bar = "Disarm: %s",
+	
+	mortalcleaveself_trigger = "You are afflicted by Mortal Cleave.",
+	mortalcleaveother_trigger = "(.+) is afflicted by Mortal Cleave.",
+	mortalcleave_bar = "Mortal Cleave: %s",
+	
+	silenceself_trigger = "You are afflicted by Silence.",
+	silenceother_trigger = "(.+) is afflicted by Silence.",
+	silenceselfend_trigger = "Silence fades from you.",
+	silenceotherend_trigger = "Silence fades from (.+).",
+	silence_announce = "Silence on %s! Dispel it!",
+	silence_bar = "Silence: %s",
+	
+	bloodlustgain = "(.+) gains Bloodlust.",
+	bloodlustend = "Bloodlust fades from (.+).",
+	bloodlust_bar = "Bloodlust: %s",
+	bloodlustannounce = "Dispel Bloodlust from %s!",
+	
+	frenzybegin_trigger = "High Priest Thekal gains Frenzy.",
+	frenzyend_trigger = "Frenzy fades from High Priest Thekal.",
+	frenzyann = "Frenzy! Tranq now!",
+	frenzy_bar = "Frenzy",
+	
+	death_trigger = "dies.",
+	zath_trigger = "Zealot Zath",
+	lorkhan_trigger = "Zealot Lor'Khan",
+	thekal_trigger = "High Priest Thekal",
+	
+	thekalrescast_trigger = "High Priest Thekal begins to cast Resurrection.",
+	zathrescast_trigger = "Zealot Zath begins to cast Resurrection.",
+	lorkhanrescast_trigger = "Zealot Lor'Khan begins to cast Resurrection.",
 
 	["You have slain %s!"] = true,
 	["Knockback"] = true,
@@ -102,202 +108,6 @@ L:RegisterTranslations("enUS", function() return {
 	["Next Bloodlust"] = true,
 } end )
 
-L:RegisterTranslations("esES", function() return {
-	--cmd = "Thekal",
-
-	phase2_trigger = "fill me with your RAGE!",
-	roguename = "Zelote Zath",
-	shamanname = "Zelote Lor'Khan",
-	phaseone_message = "Fase de Trol",
-	phasetwo_message = "Fase de Tigre",
-	phasetwo_bar = "Fase de Tigre",
-	tigers_trigger = "Sumo sacerdote Thekal Invoca guardianes Zulian.",
-	forcepunch_trigger = "Sumo sacerdote Thekal empieza hacer Puñetazo de fuerza.",
-	forcepunch_bar = "Puñetazo de fuerza",
-	heal_trigger = "Zelote Lor'Khan comienza a lanzar Gran sanación.",
-	enrage_trigger = "Sumo sacerdote Theka gana Enfurecer\.",
-	enrage_message = "¡Jefe está enfurecido! Cúranse!",
-	tigers_message = "¡Tigres entrantes!",
-	heal_message = "¡Zelote Lor'Khan está curando! Interrúmpela!",
-	heal_bar = "Gran sanación",
-	disarmself_trigger = "Sufres de Desactivar.",
-	disarmother_trigger = "(.+) sufre de Desactivar.",
-	mortalcleaveself_trigger = "Sufres de Mella mortal.",
-	mortalcleaveother_trigger = "(.+) sufre de Mella mortal.",
-	silenceself_trigger = "Sufres de Silencio.",
-	silenceother_trigger = "(.+) sufre de Silencio.",
-	silenceselfend_trigger = "Silencio acaba de disiparse.",
-	silenceotherend_trigger = "Silencio desaparece de (.+).",
-	silence_announce = "¡Silencio a %s! Disípalo!",
-	mortalcleave_bar = "Mella mortal: %s",
-	silence_bar = "Silencio: %s",
-	disarm_bar = "Desactivar: %s",
-	bloodlustgain = "(.+) gana Ansia de sangre.",
-	bloodlustend = "Ansia de sangre desaparece de (.+).",
-	bloodlust_bar = "Ansia de sangre: %s",
-	bloodlustannounce = "¡Disipa Ansia de sangre de %s!",
-	frenzybegin_trigger = "Sumo sacerdote Thekal gana Frenesí.",
-	frenzyend_trigger = "Frenesí desaparece de Sumo sacerdote Thekal.",
-	frenzyann = "¡Frenesí! Disparo tranquilizante ahora!",
-	frenzy_bar = "Frenesí",
-	death_trigger = "muere.",
-	zath_trigger = "Zelote Zath",
-	lorkhan_trigger = "Zelote Lor'Khan",
-	thekal_trigger = "Sumo sacerdote Thekal",
-	thekalrescast_trigger = "Sumo sacerdote Thekal comienza a lanzar Resurrección.",
-	zathrescast_trigger = "Zelote Zath comienza a lanzar Resurrección.",
-	lorkhanrescast_trigger = "Zelote Lor'Khan comienza a lanzar Resurrección.",
-
-	--heal_cmd = "heal",
-	heal_name = "Alerta de Curación",
-	heal_desc = "Avisa para la curación de Lor'Khan.",
-
-	--bloodlust_cmd = "bloodlust",
-	bloodlust_name = "Alerta de Ansia de sangre",
-	bloodlust_desc = "Anuncia cual jefe tiene Ansia de sangre.",
-
-	--silence_cmd = "silence",
-	silence_name = "Silencio",
-	silence_desc = "Muestra quien tiene Silencio.",
-
-	--disarm_cmd = "disarm",
-	disarm_name = "Desactivar",
-	disarm_desc = "Avisa para Desactivar de Zelote Lor'Khan.",
-
-	--cleave_cmd = "cleave",
-	cleave_name = "Alerta de Mella mortal",
-	cleave_desc = "Muestra quien tiene Mella mortal.",
-
-	--punch_cmd = "punch",
-	punch_name = "Alerta de Puñetazo de fuerza",
-	punch_desc = "Avisa para Puñetazo de fuerza",
-
-	--tigers_cmd = "tigers",
-	tigers_name = "Alerta de Tigres",
-	tigers_desc = "Avisa cuando aparenzcan los tigres.",
-
-	--frenzy_cmd = "frenzy",
-	frenzy_name = "Alerta de Frenesí",
-	frenzy_desc = "Avisa para el Frenesí de Sumo sacerdote Thekal.",
-
-	--enraged_cmd = "enraged",
-	enraged_name = "Alerta de Enfurecer",
-	enraged_desc = "Avisa para Enfurecer.",
-
-	--phase_cmd = "phase",
-	phase_name = "Alerta de Fase",
-	phase_desc = "Anuncia los cambios de fase del jefe.",
-
-	["You have slain %s!"] = "¡Has matado %s!",
-	["Knockback"] = "Rechazar",
-	["New Adds"] = "Nuevos Tigres",
-	["Next Bloodlust"] = "Próxima Ansia de sangre",
-} end )
-
-L:RegisterTranslations("deDE", function() return {
-	cmd = "Thekal",
-
-	phase2_trigger = "fill me with your RAGE!",
-	roguename = "Zealot Zath",
-	shamanname = "Zealot Lor\'Khan",
-	phaseone_message = "Troll Phase",
-	phasetwo_message = "Tiger Phase",
-	phasetwo_bar = "Tiger Phase",
-	tigers_trigger = "High Priest Thekal f\195\188hrt Zulianische W\195\164chter beschw\195\182ren aus\.",
-	forcepunch_trigger = "High Priest Thekal beginnt Machthieb auszuf\195\188hren\.",
-	forcepunch_bar = "Machthieb",
-	heal_trigger = "Zealot Lor\'Khan beginnt Gro\195\159e Heilung\.",
-	enrage_trigger = "High Priest Thekal bekommt \'Wutanfall\'\.",
-	enrage_message = "Boss ist W\195\188tend! Verwendet gro\195\159e Heilung!",
-	tigers_message = "Tiger kommen!",
-	heal_message = "Zealot Lor'Khan heilt! Unterbrecht es!",
-	heal_bar = "Gro\195\159e Heilung",
-	disarmself_trigger = "Ihr seid von Entwaffnen betroffen\.",
-	disarmother_trigger = "(.+) ist von Entwaffnen betroffen\.",
-	mortalcleaveself_trigger = "Ihr seid von T\195\182dliches Spalten betroffen\.",
-	mortalcleaveother_trigger = "(.+) ist von T\195\182dliches Spalten betroffen\.",
-	silenceself_trigger = "Ihr seid von Stille betroffen\.",
-	silenceother_trigger = "(.+) ist von Stille betroffen\.",
-	silenceselfend_trigger = "\'Stille\' schwindet von Euch\.",
-	silenceotherend_trigger = "Stille schwindet von (.+)\.",
-	silence_announce = "Stille auf %s! Entfernt es!",
-	mortalcleave_bar = "T\195\182dliches Spalten: %s",
-	silence_bar = "Stille: %s",
-	disarm_bar = "Entwaffnen: %s",
-	bloodlustgain = "(.+) bekommt \'Kampfrausch\'\.",
-	bloodlustend = "Kampfrausch schwindet von (.+)\.",
-	bloodlust_bar = "Kampfrausch: %s",
-	bloodlustannounce = "Entfernt Kampfrausch von %s\!",
-	frenzybegin_trigger = "High Priest Thekal bekommt \'Raserei\'\.",
-	frenzyend_trigger = "Raserei schwindet von High Priest Thekal\.",
-	frenzyann = "Raserei! Tranq jetzt!",
-	frenzy_bar = "Raserei",
-	death_trigger = "dies\.",
-	zath_trigger = "Zealot Zath",
-	lorkhan_trigger = "Zealot Lor\'Khan",
-	thekal_trigger = "High Priest Thekal",
-	thekalrescast_trigger = "High Priest Thekal beginnt Auferstehung zu wirken\.",
-	zathrescast_trigger = "Zealot Zath beginnt Auferstehung zu wirken\.",
-	lorkhanrescast_trigger = "Zealot Lor\'Khan beginnt Auferstehung zu wirken\.",
-
-	heal_cmd = "heal",
-	heal_name = "Heilungs Warnung",
-	heal_desc = "Warnt vor Lor'Khan's Gro\195\159e Heilung.",
-
-	bloodlust_cmd = "bloodlust",
-	bloodlust_name = "Kampfrausch",
-	bloodlust_desc = "K\195\188ndigt an, wenn der Boss Kampfrausch hat, zum einfachen entfernen.",
-
-	silence_cmd = "silence",
-	silence_name = "Stille",
-	silence_desc = "Zeigt an wer Stille hat.",
-
-	disarm_cmd = "disarm",
-	disarm_name = "Entwaffnen",
-	disarm_desc = "Warnt vor Zealot Lor'Khan's entwaffnen.",
-
-	cleave_cmd = "cleave",
-	cleave_name = "Benachrichtigung f\195\188r T\195\182dliches Spalten",
-	cleave_desc = "Zeigt wer den T\195\182dlichen Schlag Effekt auf sich hat.",
-
-	punch_cmd = "punch",
-	punch_name = "Machthieb Warnung",
-	punch_desc = "SPRING!",
-
-	tigers_cmd = "tigers",
-	tigers_name = "Tiger spawns",
-	tigers_desc = "Warnt vor ankommenden Tigern.",
-
-	frenzy_cmd = "frenzy",
-	frenzy_name = "Alarm f\195\188r Raserei",
-	frenzy_desc = "Warnung, wenn High Priest Thekal in Raserei ger\195\164t.",
-
-	enraged_cmd = "enraged",
-	enraged_name = "Verk\195\188ndet Boss' Raserei",
-	enraged_desc = "L\195\164sst dich wissen, wenn Boss h\195\164rter zuschl\195\164gt.",
-
-	phase_cmd = "phase",
-	phase_name = "Phasen-Benachrichtigung",
-	phase_desc = "Verk\195\188ndet den Phasenwechsel des Bosses.",
-	["You have slain %s!"] = "Ihr habt %s getötet!",
-	["Knockback"] = "Rückschlag",
-	["New Adds"] = "Neue Tiger",
-	["Next Bloodlust"] = "Nächster Blutrausch",
-} end )
-
-
----------------------------------
---      	Variables 		   --
----------------------------------
-
--- module variables
-module.revision = 20007 -- To be overridden by the module!
-module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
-module.wipemobs = {L["roguename"], L["shamanname"]} -- adds which will be considered in CheckForEngage
-module.toggleoptions = {"bloodlust", "silence", "cleave", "heal", "disarm", -1, "phase", "punch", "tigers", "frenzy", "enraged", "bosskill"}
-
-
--- locals
 local timer = {
 	forcePunch = 1,
 	phase2 = 9,
@@ -332,14 +142,6 @@ local syncName = {
 	enrage = "ThekalEnrage"..module.revision,
 }
 
-local berserkannounced = nil
-
-
-------------------------------
---      Initialization      --
-------------------------------
-
--- called after module is enabled
 function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL") -- phase transition
 	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")
@@ -367,27 +169,77 @@ function module:OnEnable()
 	self:ThrottleSync(5, syncName.enrage)
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
 	zathdead = nil
 	lorkhandead = nil
 	thekaldead = nil
+	
+	self.zathHP = 100
+	self.lorkhanHP = 100
+	self.thekalHP = 100
 end
 
--- called after boss is engaged
 function module:OnEngage()
 	self.phase = 1
 	self:ScheduleRepeatingEvent("checkphasechange", self.PhaseChangeCheck, 0.5, self)
+	
+	zathdead = nil
+	lorkhandead = nil
+	thekaldead = nil
+	
+	self.zathHP = 100
+	self.lorkhanHP = 100
+	self.thekalHP = 100
+	
+	self:TriggerEvent("BigWigs_StartHPBar", self, "Zealot Zath", 100)
+	self:TriggerEvent("BigWigs_SetHPBar", self, "Zealot Zath", 0)
+	self:TriggerEvent("BigWigs_StartHPBar", self, "Zealot Lor'Khan", 100)
+	self:TriggerEvent("BigWigs_SetHPBar", self, "Zealot Lor'Khan", 0)
+	self:TriggerEvent("BigWigs_StartHPBar", self, "High Priest Thekal", 100)
+	self:TriggerEvent("BigWigs_SetHPBar", self, "High Priest Thekal", 0)
+	self:ScheduleRepeatingEvent("thekalHpCheck", self.CheckHP, 0.5, self)
 end
 
--- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
 end
 
-
-------------------------------
---      Event Handlers	    --
-------------------------------
+function module:CheckHP()
+	local zathHealth
+	local lorkhanHealth
+	local thekalHealth
+	
+	if UnitName("playertarget") == "Zealot Zath" then
+		zathHealth = math.ceil((UnitHealth("playertarget") / UnitHealthMax("playertarget")) * 100)
+	elseif UnitName("playertarget") == "Zealot Lor'Khan" then
+		lorkhanHealth = math.ceil((UnitHealth("playertarget") / UnitHealthMax("playertarget")) * 100)
+	elseif UnitName("playertarget") == "High Priest Thekal" then
+		thekalHealth = math.ceil((UnitHealth("playertarget") / UnitHealthMax("playertarget")) * 100)
+	end
+	
+	for i = 1, GetNumRaidMembers(), 1 do
+		if UnitName("Raid"..i.."target") == "Zealot Zath" then
+			zathHealth = math.ceil((UnitHealth("Raid"..i.."target") / UnitHealthMax("Raid"..i.."target")) * 100)
+		elseif UnitName("Raid"..i.."target") == "Zealot Lor'Khan" then
+			lorkhanHealth = math.ceil((UnitHealth("Raid"..i.."target") / UnitHealthMax("Raid"..i.."target")) * 100)
+		elseif UnitName("Raid"..i.."target") == "High Priest Thekal" then
+			thekalHealth = math.ceil((UnitHealth("Raid"..i.."target") / UnitHealthMax("Raid"..i.."target")) * 100)
+		end
+		if zathHealth and lorkhanHealth and thekalHealth then break; end
+	end
+	
+	if zathHealth then
+		self.zathHP = zathHealth
+		self:TriggerEvent("BigWigs_SetHPBar", self, "Zealot Zath", 100-self.zathHP)
+	end
+	if lorkhanHealth then
+		self.lorkhanHP = lorkhanHealth
+		self:TriggerEvent("BigWigs_SetHPBar", self, "Zealot Lor'Khan", 100-self.lorkhanHP)
+	end
+	if thekalHealth then
+		self.thekalHP = thekalHealth
+		self:TriggerEvent("BigWigs_SetHPBar", self, "High Priest Thekal", 100-self.thekalHP)
+	end
+end
 
 -- override: only check for boss death in phase 2
 function module:CheckForBossDeath(msg)
@@ -398,6 +250,7 @@ function module:CheckForBossDeath(msg)
 		BigWigs:CheckForBossDeath(msg, self)
 	end
 end
+
 function module:CHAT_MSG_MONSTER_YELL(msg)
 	if string.find(msg, L["phase2_trigger"]) then
 		self:Sync(syncName.phase2)
@@ -413,9 +266,9 @@ function module:PhaseChangeCheck()
 		for i = 1, GetNumRaidMembers(), 1 do
 			if UnitName("Raid"..i.."target") == self.translatedName and not UnitIsDead("Raid"..i.."target") then
 				thekaldead = nil
-			elseif UnitName("Raid"..i.."target") == L["roguename"] and not UnitIsDead("Raid"..i.."target") then
+			elseif UnitName("Raid"..i.."target") == "Zealot Zath" and not UnitIsDead("Raid"..i.."target") then
 				zathdead = nil
-			elseif UnitName("Raid"..i.."target") == L["shamanname"] and not UnitIsDead("Raid"..i.."target") then
+			elseif UnitName("Raid"..i.."target") == "Zealot Lor'Khan" and not UnitIsDead("Raid"..i.."target") then
 				lorkhandead = nil
 			end
 		end
@@ -472,7 +325,7 @@ end
 
 function module:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE(msg)
 	if msg == L["forcepunch_trigger"] then
-		self:Bar(L["forcepunch_bar"], timer.forcePunch, icon.forcePunch)
+		self:Bar(L["forcepunch_bar"], timer.forcePunch, icon.forcePunch, true, "red")
 	end
 end
 
@@ -501,11 +354,6 @@ function module:Fades(msg)
 	end
 end
 
-
-------------------------------
---      Synchronization	    --
-------------------------------
-
 function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.phase2 and self.phase < 2 then
 		self.phase = 2
@@ -514,18 +362,18 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 	elseif sync == syncName.phasechange then
 		self:CancelScheduledEvent("checkphasechange")
 		self.phase = 1.5
-		self:Bar(L["phasetwo_bar"], timer.phase2, icon.phase2)
+		self:Bar(L["phasetwo_bar"], timer.phase2, icon.phase2, true, "White")
 	elseif sync == syncName.heal and self.db.profile.heal then
 		self:Message(L["heal_message"], "Attention", "Alarm")
-		self:Bar(L["heal_bar"], 4, icon.heal, true, "Black")
+		self:Bar(L["heal_bar"], 4, icon.heal, true, "Blue")
 	elseif sync == syncName.frenzy and self.db.profile.frenzy then
 		self:Message(L["frenzyann"], "Important", true, "Alarm")
-		self:Bar(L["frenzy_bar"], 8, icon.frenzy, true, "Black")
+		self:Bar(L["frenzy_bar"], 8, icon.frenzy, true, "cyan")
 	elseif sync == syncName.frenzyOver and self.db.profile.frenzy then
 		self:RemoveBar(L["frenzy_bar"])
 	elseif sync == syncName.bloodlust and self.db.profile.bloodlust then
 		self:Message(string.format(L["bloodlustannounce"], rest), "Important")
-		self:Bar(string.format(L["bloodlust_bar"], rest), 30, icon.bloodlust)
+		self:Bar(string.format(L["bloodlust_bar"], rest), 30, icon.bloodlust, true, "cyan")
 	elseif sync == syncName.bloodlustOver and self.db.profile.bloodlust then
 		self:RemoveBar(string.format(L["bloodlust_bar"], rest))
 	elseif sync == syncName.silence and self.db.profile.silence then
@@ -534,7 +382,7 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 	elseif sync == syncName.silenceOver and self.db.profile.silence then
 		self:RemoveBar(string.format(L["silence_bar"], rest))
 	elseif sync == syncName.mortalcleave and self.db.profile.cleave then
-		self:Bar(string.format(L["mortalcleave_bar"], rest), 5, icon.mortalCleave)
+		self:Bar(string.format(L["mortalcleave_bar"], rest), 5, icon.mortalCleave, true, "black")
 	elseif sync == syncName.disarm and self.db.profile.disarm then
 		self:Bar(string.format(L["disarm_bar"], rest), 5, icon.disarm, true, "Yellow")
 	elseif sync == syncName.enrage and self.db.profile.enraged then
@@ -543,15 +391,20 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 end
 
 function module:TigerPhase()
+	self:TriggerEvent("BigWigs_StopHPBar", self, "Zealot Zath")
+	self:TriggerEvent("BigWigs_StopHPBar", self, "Zealot Lor'Khan")
+	self:TriggerEvent("BigWigs_StopHPBar", self, "High Priest Thekal")
+	self:CancelScheduledEvent("thekalHpCheck")
+	
 	if self.db.profile.heal then
 		self:RemoveBar(L["heal_bar"])
 	end
 	if self.db.profile.bloodlust then
-		self:Bar(L["Next Bloodlust"], timer.bloodlust, icon.bloodlust)
+		self:Bar(L["Next Bloodlust"], timer.bloodlust, icon.bloodlust, true, "cyan")
 	end
 	if self.db.profile.phase then
 		self:Message(L["phasetwo_message"], "Attention")
 	end
-	self:Bar(L["New Adds"], timer.adds, icon.adds)
-	self:Bar(L["Knockback"], timer.knockback, icon.knockback)
+	self:Bar(L["New Adds"], timer.adds, icon.adds, true, "blue")
+	self:Bar(L["Knockback"], timer.knockback, icon.knockback, true, "red")
 end

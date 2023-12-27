@@ -8,7 +8,10 @@ local module, L = BigWigs:ModuleDeclaration("King Gordok", "Dire Maul")
 module.revision = 20002
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"stomp", "ms", "charge", "bosskill"}
-
+module.zonename = {
+	AceLibrary("AceLocale-2.2"):new("BigWigs")["Dire Maul"],
+	AceLibrary("Babble-Zone-2.2")["Dire Maul"],
+}
 ------------------------------
 --      Locals 			    --
 ------------------------------

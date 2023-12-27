@@ -241,11 +241,11 @@ end
 function module:OnEngage()
 	if self.db.profile.curse then
 		self:DelayedMessage(timer.curse - 5, L["curse_warn_soon"], "Attention", nil, nil, true)
-		self:Bar(L["curse_bar"], timer.curse, icon.curse)
+		self:Bar(L["curse_bar"], timer.curse, icon.curse, true, "Blue")
 	end
 	if self.db.profile.doom then
 		self:DelayedMessage(timer.firstDoom - 5, L["doom_warn_soon"], "Attention", nil, nil, true)
-		self:Bar(L["doom_bar"], timer.firstDoom, icon.doom)
+		self:Bar(L["doom_bar"], timer.firstDoom, icon.doom, true, "Black")
 	end
 	self:Sync("LucifronShock")
 end
@@ -304,10 +304,10 @@ end
 function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.curse and self.db.profile.curse then
 		self:DelayedMessage(timer.curse - 5, L["curse_warn_soon"], "Attention", nil, nil, true)
-		self:Bar(L["curse_bar"], timer.curse, icon.curse)
+		self:Bar(L["curse_bar"], timer.curse, icon.curse, true, "Blue")
 	elseif sync == syncName.doom and self.db.profile.doom then
 		self:DelayedMessage(timer.doom - 5, L["doom_warn_soon"], "Attention", nil, nil, true)
-		self:Bar(L["doom_bar"], timer.doom, icon.doom)
+		self:Bar(L["doom_bar"], timer.doom, icon.doom, true, "Black")
 	elseif sync == syncName.shock and self.db.profile.shock then
 	--self:Bar(L["shock_bar"], 6, "Spell_Shadow_Shadowbolt")
 	elseif string.find(sync, syncName.mc) then
@@ -315,10 +315,10 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 			chosenone = string.sub(sync,17)
 			if chosenone == UnitName("player") then
 				self:Message(L["mindcontrol_message_you"], "Attention")
-				self:Bar(string.format(L["mindcontrol_bar"], UnitName("player")), timer.mc, icon.mc)
+				self:Bar(string.format(L["mindcontrol_bar"], UnitName("player")), timer.mc, icon.mc, true, "Red")
 			else
 				self:Message(string.format(L["mindcontrol_message"], chosenone), "Urgent")
-				self:Bar(string.format(L["mindcontrol_bar"], chosenone), timer.mc, icon.mc)
+				self:Bar(string.format(L["mindcontrol_bar"], chosenone), timer.mc, icon.mc, true, "Red")
 			end
 		end
 	elseif string.find(sync, syncName.mcEnd) then

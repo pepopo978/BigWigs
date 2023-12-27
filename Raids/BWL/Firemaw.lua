@@ -173,10 +173,10 @@ end
 function module:OnEngage()
 	if self.db.profile.wingbuffet then
 		self:DelayedMessage(timer.firstWingbuffet - 5, L["wingbuffet_warning"], "Attention", nil, nil, true)
-		self:Bar(L["wingbuffet1_bar"], timer.firstWingbuffet, icon.wingbuffet)
+		self:Bar(L["wingbuffet1_bar"], timer.firstWingbuffet, icon.wingbuffet, true, "yellow")
 	end
 	if self.db.profile.shadowflame then
-		self:Bar(L["shadowflame_Nextbar"], timer.shadowflame, icon.shadowflame)
+		self:Bar(L["shadowflame_Nextbar"], timer.shadowflame, icon.shadowflame, true, "blue")
 	end
 	if self.db.profile.flamebuffet then
 		self:Bar(L["flamebuffet_bar"], timer.firstFlameBuffet, icon.flameBuffet, true, "White")
@@ -212,12 +212,12 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		self:Message(L["wingbuffet_message"], "Important")
 		self:RemoveBar(L["wingbuffet_bar"]) -- remove timer bar
 		self:Bar(L["wingbuffetcast_bar"], timer.wingbuffetCast, icon.wingbuffet, true, "Black") -- show cast bar
-		self:DelayedBar(timer.wingbuffetCast, L["wingbuffet_bar"], timer.wingbuffet, icon.wingbuffet) -- delayed timer bar
+		self:DelayedBar(timer.wingbuffetCast, L["wingbuffet_bar"], timer.wingbuffet, icon.wingbuffet, true, "yellow") -- delayed timer bar
 		self:DelayedMessage(timer.wingbuffet - 5, L["wingbuffet_warning"], "Attention", nil, nil, true)
 	elseif sync == syncName.shadowflame and self.db.profile.shadowflame then
 		self:Message(L["shadowflame_warning"], "Important", true, "Alarm")
 		self:RemoveBar(L["shadowflame_Nextbar"]) -- remove timer bar
-		self:Bar(L["shadowflame_bar"], timer.shadowflameCast, icon.shadowflame) -- show cast bar
-		self:DelayedBar(timer.shadowflameCast, L["shadowflame_Nextbar"], timer.shadowflame-timer.shadowflameCast, icon.shadowflame) -- delayed timer bar
+		self:Bar(L["shadowflame_bar"], timer.shadowflameCast, icon.shadowflame, true, "red") -- show cast bar
+		self:DelayedBar(timer.shadowflameCast, L["shadowflame_Nextbar"], timer.shadowflame-timer.shadowflameCast, icon.shadowflame, true, "blue") -- delayed timer bar
 	end
 end

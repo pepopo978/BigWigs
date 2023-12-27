@@ -1,14 +1,9 @@
 
-----------------------------------
---      Module Declaration      --
-----------------------------------
-
 local module, L = BigWigs:ModuleDeclaration("Kel'Thuzad", "Naxxramas")
 
-
-----------------------------
---      Localization      --
-----------------------------
+module.revision = 20004
+module.enabletrigger = module.translatedName
+module.toggleoptions = {"frostbolt", "frostboltbar", -1, "frostblast", "proximity", "fissure", "mc", -1, "fbvolley", -1, "detonate", "detonateicon", -1 ,"guardians", -1, "addcount", "phase", "bosskill"}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Kelthuzad",
@@ -63,15 +58,21 @@ L:RegisterTranslations("enUS", function() return {
 	mc_trigger2 = "There will be no escape!",
 	mc_warning = "Mind Control!",
 	mc_bar = "Possible Mind Control!",
-
+	
+	proximity_cmd = "proximity",
+	proximity_name = "Proximity Warning",
+	proximity_desc = "Show Proximity Warning Frame",
+	
 	start_trigger = "Minions, servants, soldiers of the cold dark, obey the call of Kel'Thuzad!",
 	start_trigger1 = "Minions, servants, soldiers of the cold dark! Obey the call of Kel'Thuzad!",
 	start_warning = "Kel'Thuzad encounter started! ~5min till he is active!",
 	start_bar = "Phase 1 Timer",
+	
 	attack_trigger1 = "Kel'Thuzad attacks",
 	attack_trigger2 = "Kel'Thuzad misses",
 	attack_trigger3 = "Kel'Thuzad hits",
 	attack_trigger4 = "Kel'Thuzad crits",
+	
 	kick_trigger1 = "Kick hits Kel'Thuzad",
 	kick_trigger2 = "Kick crits Kel'Thuzad",
 	kick_trigger3 = "Kick was blocked by Kel'Thuzad",
@@ -105,7 +106,6 @@ L:RegisterTranslations("enUS", function() return {
 	frostbolt_warning = "Frostbolt! Interrupt!",
 	frostbolt_bar = "Frostbolt",
 
-
 	frostbolt_volley = "Possible volley",
 	frostbolt_volley_trigger = "afflicted by Frostbolt",
 
@@ -129,10 +129,6 @@ L:RegisterTranslations("enUS", function() return {
 
 	you = "You",
 	are = "are",
-
-	proximity_cmd = "proximity",
-	proximity_name = "Proximity Warning",
-	proximity_desc = "Show Proximity Warning Frame",
 } end )
 
 L:RegisterTranslations("esES", function() return {
@@ -259,22 +255,10 @@ L:RegisterTranslations("esES", function() return {
 	proximity_name = "Alerta de Proximidad",
 	proximity_desc = "Muestra marco de alerta de proximidad",
 } end )
----------------------------------
---      	Variables 		   --
----------------------------------
 
--- module variables
-module.revision = 20004 -- To be overridden by the module!
-module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
---module.wipemobs = { L["add_name"] } -- adds which will be considered in CheckForEngage
-module.toggleoptions = {"frostbolt", "frostboltbar", -1, "frostblast", "proximity", "fissure", "mc", -1, "fbvolley", -1, "detonate", "detonateicon", -1 ,"guardians", -1, "addcount", "phase", "bosskill"}
-
--- Proximity Plugin
 module.proximityCheck = function(unit) return CheckInteractDistance(unit, 2) end
 module.proximitySilent = true
 
-
--- locals
 local timer = {
 	phase1 = 320,
 	firstFrostboltVolley = 30,
@@ -322,20 +306,13 @@ local numAbominations = 0	-- counter for Unstoppable Abomination's
 local numWeavers = 0 	-- counter for Soul Weaver's
 local timePhase1Start = 0    -- time of p1 start, used for tracking add count
 
-
-------------------------------
---      Initialization      --
-------------------------------
-
 module:RegisterYellEngage(L["start_trigger"])
 module:RegisterYellEngage(L["start_trigger1"])
 
--- Big evul hack to enable the module when entering Kel'Thuzads chamber.
 function module:OnRegister()
 	self:RegisterEvent("MINIMAP_ZONE_CHANGED")
 end
 
--- called after module is enabled
 function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE")
@@ -366,7 +343,6 @@ function module:OnEnable()
 	self:ThrottleSync(5, syncName.phase3)
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
 	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
 
@@ -375,7 +351,6 @@ function module:OnSetup()
 	self.lastFrostBlast=0
 end
 
--- called after boss is engaged
 function module:OnEngage()
 	self.lastFrostBlast=0
 	self:Message(L["start_warning"], "Attention")
@@ -392,16 +367,10 @@ function module:OnEngage()
 
 end
 
--- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
 	self:RemoveProximity()
 	BigWigsFrostBlast:FBClose()
 end
-
-
-------------------------------
---      Event Handlers      --
-------------------------------
 
 function module:MINIMAP_ZONE_CHANGED(msg)
 	if GetMinimapZoneText() ~= L["KELTHUZADCHAMBERLOCALIZEDLOLHAX"] or self.core:IsModuleActive(module.translatedName) then
@@ -461,6 +430,7 @@ end
 --[[function module:Volley()
 self:Bar(L["frostbolt_volley"], 15, icon.frostboltVolley)
 end]]
+
 function module:Affliction(msg)
 	local _, _, sPlayer, sType = string.find(msg, L["frostblast_trigger2"])
 	if ( sPlayer and sType ) then
@@ -537,11 +507,6 @@ function module:Event(msg)
 	end
 end
 
-
-------------------------------
---      Synchronization	    --
-------------------------------
-
 function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.phase2 then
 		self:Phase2()
@@ -565,11 +530,6 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		self:WeaverDies(rest)
 	end
 end
-
-
-------------------------------
---      Sync Handlers	    --
-------------------------------
 
 function module:Phase2()
 	self:Bar(L["phase2_bar"], timer.phase2, icon.phase2)

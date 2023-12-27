@@ -1,14 +1,9 @@
 
-----------------------------------
---      Module Declaration      --
-----------------------------------
-
 local module, L = BigWigs:ModuleDeclaration("Bloodlord Mandokir", "Zul'Gurub")
 
-
-----------------------------
---      Localization      --
-----------------------------
+module.revision = 30012
+module.enabletrigger = module.translatedName
+module.toggleoptions = {"sounds", "bigicon", "sunder", "charge", "gaze", "announce", "puticon", "whirlwind", "enraged", "bosskill"}
 
 L:RegisterTranslations("enUS", function() return {
 	ohgan = "Ohgan",
@@ -32,20 +27,39 @@ L:RegisterTranslations("enUS", function() return {
 	deathyou = "You die.",
 	deathother = "(.+) dies.",
 	you = "you",
-
+	gaze_warn = "Gaze on ",
+	
+	sunder_trigger = "Sunder Armor %(5%)",
+	sunder_warn = "Too many Sunder stacks, seek help!",
+	
 	watched_warning = "You are being watched! Stop everything!",
 	watched_warning_tell = "You are being watched! Stop everything!",
 	watched_warning_other = "%s is being watched!",
 	enraged_message = "Ohgan down! Mandokir enraged!",
-
+	
+	charge_trigger = "Bloodlord Mandokir's Charge",
+	chargecd_bar = "Charge CD",
+	
 	announce_cmd = "whispers",
 	announce_name = "Whisper watched players",
 	announce_desc = "Warn when boss uses Threatening Gaze.\n\n(Requires assistant or higher)",
-
+	
+	bigicon_cmd = "bigicon",
+	bigicon_name = "WW and Gaze big icon alert",
+	bigicon_desc = "Shows a big icon when whirlwind is happening and Gaze is on you",
+	
+	sounds_cmd = "sounds",
+	sounds_name = "Gaze, 5Sunders and WW sound alert",
+	sounds_desc = "Sound alert Gaze is on you, when you have 5 stacks of sunder on you, when whirlwind is happening.",
+	
 	puticon_cmd = "puticon",
 	puticon_name = "Raid icon on watched players",
 	puticon_desc = "Place a raid icon on the watched person.\n\n(Requires assistant or higher)",
-
+	
+	charge_cmd = "charge",
+	charge_name = "Charge Alert",
+	charge_desc = "Shows Charge bars",
+	
 	gaze_cmd = "gaze",
 	gaze_name = "Threatening Gaze alert",
 	gaze_desc = "Shows bars for Threatening Gaze",
@@ -53,7 +67,11 @@ L:RegisterTranslations("enUS", function() return {
 	whirlwind_cmd = "whirlwind",
 	whirlwind_name = "Whirlwind Alert",
 	whirlwind_desc = "Shows Whirlwind bars",
-
+	
+	sunder_cmd = "sunder",
+	sunder_name = "5 sunder stacks on you alert",
+	sunder_desc = "Alerts Ohgan's tank to get help if he has 5 stacks of Sunder Armor on him.",
+	
 	enraged_cmd = "enraged",
 	enraged_name = "Enrage alert",
 	enraged_desc = "Announces the boss' Enrage",
@@ -168,20 +186,12 @@ L:RegisterTranslations("esES", function() return {
 	["Charge"] = "Embestir",
 	["Next Whirlwind"] = "Próximo Torbellino",
 } end )
----------------------------------
---      	Variables 		   --
----------------------------------
 
--- module variables
-module.revision = 20005 -- To be overridden by the module!
-module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
-module.wipemobs = { L["ohgan"] } -- adds which will be considered in CheckForEngage
-module.toggleoptions = {"gaze", "announce", "puticon", "whirlwind", "enraged", "bosskill"}
+module.wipemobs = { L["ohgan"] }
 
-
--- locals
 local timer = {
 	firstCharge = 15,
+	charge = 34,
 	firstWhirlwind = 20,
 	firstGaze = 33,
 
@@ -200,30 +210,11 @@ local syncName = {
 	gazeCast = "MandokirGazeCast"..module.revision,
 	gazeAfflicted = "MandokirGazeAfflict"..module.revision,
 	gazeOver = "MandokirGazeEnd"..module.revision,
+	charge = "MandokirCharge"..module.revision,
 }
-
---[[
-9/16 22:28:16.440  Dorg's Shield Slam hits Bloodlord Mandokir for 264. -- engage
-
-Line 19212: 9/16 22:28:32.884  Bloodlord Mandokir gains Whirlwind.	16.4
-Line 20100: 9/16 22:28:56.912  Bloodlord Mandokir gains Whirlwind.	24.1
-Line 21416: 9/16 22:29:38.798  Bloodlord Mandokir gains Whirlwind.	41.9
-Line 22221: 9/16 22:30:02.966  Bloodlord Mandokir gains Whirlwind.	24.1
-
-Line 19709: 9/16 22:28:45.869  Bloodlord Mandokir begins to cast Threatening Gaze. 	29.5
-Line 20694: 9/16 22:29:13.993  Bloodlord Mandokir begins to cast Threatening Gaze.	28.1
-Line 21512: 9/16 22:29:42.084  Bloodlord Mandokir begins to cast Threatening Gaze.	28.1
-Line 22455: 9/16 22:30:10.189  Bloodlord Mandokir begins to cast Threatening Gaze.	28.1
-]]
-
-
-------------------------------
---      Initialization      --
-------------------------------
 
 module:RegisterYellEngage(L["engage_trigger"])
 
--- called after module is enabled
 function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event")
@@ -234,7 +225,9 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event")
-
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event")
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event")
+	
 	self:ThrottleSync(5, syncName.whirlwind)
 	self:ThrottleSync(5, syncName.whirlwindOver)
 	self:ThrottleSync(5, syncName.enrage)
@@ -242,28 +235,21 @@ function module:OnEnable()
 	self:ThrottleSync(5, syncName.gazeCast)
 	self:ThrottleSync(5, syncName.gazeAfflicted)
 	self:ThrottleSync(5, syncName.gazeOver)
+	self:ThrottleSync(5, syncName.charge)
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
 end
 
--- called after boss is engaged
 function module:OnEngage()
-	self:Bar(L["Charge"], timer.firstCharge, icon.charge)
+	self:Bar(L["chargecd_bar"], timer.firstCharge, icon.charge, true, "yellow")
 	-- todo check combat log regarding CHARGE to trigger the ones following the first
-	self:Bar(L["Next Whirlwind"], timer.firstWhirlwind, icon.whirlwind)
-	self:Bar(L["Possible Gaze"], timer.firstGaze, icon.gaze)
+	self:Bar(L["Next Whirlwind"], timer.firstWhirlwind, icon.whirlwind, true, "blue")
+	self:Bar(L["Possible Gaze"], timer.firstGaze, icon.gaze, true, "red")
 end
 
--- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
 end
-
-
-------------------------------
---      Event Handlers	    --
-------------------------------
 
 function module:CHAT_MSG_MONSTER_YELL(msg)
 	local gazetime
@@ -271,7 +257,7 @@ function module:CHAT_MSG_MONSTER_YELL(msg)
 	if watchedplayer then
 		if self.db.profile.announce then
 			if watchedplayer == UnitName("player") then
-				self:Message(L["watched_warning"], "Personal", true, "Alarm")
+				self:Message(L["watched_warning"], "Personal", true, "Alarm", nil, "Beware")
 			else
 				self:Message(string.format(L["watched_warning_other"], watchedplayer), "Attention")
 				self:TriggerEvent("BigWigs_SendTell", watchedplayer, L["watched_warning_tell"])
@@ -294,6 +280,10 @@ function module:Event(msg)
 		self:Sync(syncName.whirlwind)
 	elseif msg == L["wwloss"] then
 		self:Sync(syncName.whirlwindOver)
+	elseif string.find(msg, L["sunder_trigger"]) and self.db.profile.sunder then
+		self:Sunder()
+	elseif string.find(msg, L["charge_trigger"]) then
+		self:Sync(syncName.charge)
 	elseif msg == L["enragegain"] then
 		self:Sync(syncName.enrage)
 	elseif msg == L["enragefade"] then
@@ -301,6 +291,13 @@ function module:Event(msg)
 	elseif msg == L["gaze_trigger"] then
 		self:Sync(syncName.gazeCast)
 	elseif msg == L["gazeafflictyou"] then
+		self:Message(L["gaze_warn"].."you! STOP ALL ACTION!", "Urgent")
+		if self.db.profile.sounds then
+			self:Sound("Beware")
+		end
+		if self.db.profile.bigicon then
+			self:WarningSign(icon.gaze, 7)
+		end
 		gazetime = GetTime()
 		self:Sync(syncName.gazeAfflicted .. " " .. UnitName("player"))
 	elseif gazedplayer then
@@ -317,28 +314,32 @@ function module:Event(msg)
 	end
 end
 
-
-------------------------------
---      Synchronization	    --
-------------------------------
+function module:Sunder()
+	self:Message(L["sunder_warn"], "Attention")
+	if self.db.profile.sounds then
+		self:Sound("stacks")
+	end
+end
 
 function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.whirlwind and self.db.profile.whirlwind then
-		self:Bar(L["ww"], 2, icon.whirlwind)
+		self:Bar(L["ww"], 2, icon.whirlwind, true, "blue")
 		--self:ScheduleEvent("BigWigs_StartBar", 2, self, "Next Whirlwind", 18, icon.whirlwind)
 	elseif sync == syncName.whirlwindOver and self.db.profile.whirlwind then
 		self:RemoveBar(L["ww"])
-		self:Bar(L["Next Whirlwind"], 18, icon.whirlwind)
+		self:Bar(L["Next Whirlwind"], 18, icon.whirlwind, true, "blue")
 	elseif sync == syncName.enrage and self.db.profile.enraged then
 		self:Message(L["enraged_message"], "Urgent")
-		self:Bar(L["enragebar"], 90, "Spell_Shadow_UnholyFrenzy")
+		self:Bar(L["enragebar"], 90, "Spell_Shadow_UnholyFrenzy", true, "white")
 	elseif sync == syncName.enrageOver and self.db.profile.enraged then
 		self:RemoveBar(L["enragebar"])
+	elseif sync == syncName.charge and self.db.profile.charge then
+		self:Charge()
 	elseif sync == syncName.gazeCast and self.db.profile.gaze then
-		self:Bar(L["gazecast"], 2, icon.gaze)
+		self:Bar(L["gazecast"], 2, icon.gaze, true, "red")
 		self:RemoveBar(L["Possible Gaze"])
 	elseif sync == syncName.gazeAfflicted and self.db.profile.gaze then
-		self:Bar(string.format(L["gazewatchedbar"], rest), 6, icon.gaze, true, "Black")
+		self:Bar(string.format(L["gazewatchedbar"], rest), 6, icon.gaze, true, "red")
 	elseif sync == syncName.gazeOver then
 		if self.db.profile.gaze then
 			self:RemoveBar(string.format(L["gazewatchedbar"], rest))
@@ -346,6 +347,11 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		if self.db.profile.puticon then
 			self:RemoveIcon(rest)
 		end
-		self:Bar(L["Possible Gaze"], timer.gaze-8, icon.gaze)
+		self:Bar(L["Possible Gaze"], timer.gaze-8, icon.gaze, true, "red")
 	end
+end
+
+function module:Charge()
+	self:RemoveBar(L["chargecd_bar"])
+	self:Bar(L["chargecd_bar"], timer.charge, icon.charge, true, "yellow")
 end

@@ -7,7 +7,7 @@ local module, L = BigWigs:ModuleDeclaration("Shazzrah", "Molten Core")
 
 module.revision = 20004 -- To be overridden by the module!
 module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
-module.toggleoptions = {"curse", "deaden", "blink", "counterspell", "bosskill"}
+module.toggleoptions = {"sounds", "curse", "deaden", "blink", "counterspell", "bosskill"}
 
 -- Proximity Plugin
 -- module.proximityCheck = function(unit) return CheckInteractDistance(unit, 2) end
@@ -71,7 +71,10 @@ L:RegisterTranslations("enUS", function() return {
 	cs_bar = "Possible Counterspell",
 
 	cmd = "Shazzrah",
-
+	
+	sounds_cmd = "sounds",
+	sounds_name = "Counterspell sound alert",
+	sounds_desc = "Sound effect about counterspell",
 
 	-- counterspell after blink 2s later
 	counterspell_cmd = "counterspell",
@@ -209,20 +212,20 @@ end
 -- called after boss is engaged
 function module:OnEngage()
 	if self.db.profile.counterspell then
-		self:Bar(L["cs_bar"], timer.firstCS, icon.cs)
+		self:Bar(L["cs_bar"], timer.firstCS, icon.cs, true, "red")
 	end
 	self:DelayedSync(timer.firstCS, syncName.cs)
 
 	if self.db.profile.blink then
-		self:Bar(L["blink_bar"], timer.firstBlink, icon.blink)
+		self:Bar(L["blink_bar"], timer.firstBlink, icon.blink, true, "white")
 	end
 	self:DelayedSync(timer.firstBlink, syncName.blink)
 
 	if self.db.profile.curse then
-		self:Bar(L["curse_bar"], timer.firstCurse, icon.curse) -- seems to be completly random
+		self:Bar(L["curse_bar"], timer.firstCurse, icon.curse, true, "blue") -- seems to be completly random
 	end
 	if self.db.profile.deaden then
-		self:Bar(L["deaden_bar"], timer.firstDeaden, icon.deaden)
+		self:Bar(L["deaden_bar"], timer.firstDeaden, icon.deaden, true, "black")
 	end
 end
 
@@ -272,14 +275,22 @@ end
 
 function module:Counterspell()
 	if self.db.profile.counterspell then
-		self:Bar(L["cs_bar"], timer.cs, icon.cs)
+		self:Bar(L["cs_bar"], timer.cs, icon.cs, true, "red")
+		self:Message("Go!", nil, false, nil, false)
+		if playerClass ~= "WARRIOR" and playerClass ~= "ROGUE" and playerClass ~= "HUNTER" then
+			self:WarningSign(icon.cs, 0.7)
+		end
+		if self.db.profile.sound then
+			self:Sound("gogogo")
+			self:DelayedSound(timer.cs - 2, "stopcasting")
+		end
 	end
 	self:DelayedSync(timer.cs, syncName.cs)
 end
 
 function module:Curse()
 	self:Message(L["curse_warn"], "Attention", "Alarm")
-	self:Bar(L["curse_bar"], timer.curse, icon.curse) -- seems to be completly random
+	self:Bar(L["curse_bar"], timer.curse, icon.curse, true, "blue") -- seems to be completly random
 end
 
 function module:Blink()
@@ -287,7 +298,7 @@ function module:Blink()
 
 	if self.db.profile.blink then
 		self:Message(L["blink_warn"], "Important")
-		self:Bar(L["blink_bar"], timer.blink, icon.blink)
+		self:Bar(L["blink_bar"], timer.blink, icon.blink, true, "white")
 
 		self:DelayedMessage(timer.blink - 5, L["blink_soon_warn"], "Attention", "Alarm", nil, nil, true)
 	end
@@ -299,7 +310,7 @@ function module:DeadenMagic()
 	if self.db.profile.deaden then
 		self:RemoveBar(L["deaden_bar"])
 		self:Message(L["deaden_warn"], "Important")
-		self:IntervalBar(L["deaden_bar"], timer.earliestDeaden, timer.latestDeaden, icon.deaden)
+		self:IntervalBar(L["deaden_bar"], timer.earliestDeaden, timer.latestDeaden, icon.deaden, true, "black")
 		if playerClass == "SHAMAN" or playerClass == "PRIEST" then
 			self:WarningSign(icon.deaden, timer.earliestDeaden)
 		end

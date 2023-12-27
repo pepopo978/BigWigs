@@ -1,6 +1,3 @@
-----------------------------------
---      Module Declaration      --
-----------------------------------
 
 local module, L = BigWigs:ModuleDeclaration("The Four Horsemen", "Naxxramas")
 local thane = AceLibrary("Babble-Boss-2.2")["Thane Korth'azz"]
@@ -8,10 +5,9 @@ local mograine = AceLibrary("Babble-Boss-2.2")["Highlord Mograine"]
 local zeliek = AceLibrary("Babble-Boss-2.2")["Sir Zeliek"]
 local blaumeux = AceLibrary("Babble-Boss-2.2")["Lady Blaumeux"]
 
-
-----------------------------
---      Localization      --
-----------------------------
+module.revision = 20005
+module.enabletrigger = { thane, mograine, zeliek, blaumeux }
+module.toggleoptions = { "mark", "shieldwall", -1, "meteor", "void", "wrath", "bosskill" }
 
 L:RegisterTranslations("enUS", function()
     return {
@@ -122,17 +118,7 @@ L:RegisterTranslations("esES", function()
         shieldwall_warn_over = "¡%s - Muro de escudo DESAPARECE!",
     }
 end)
----------------------------------
---      	Variables 		   --
----------------------------------
 
--- module variables
-module.revision = 20005 -- To be overridden by the module!
-module.enabletrigger = { thane, mograine, zeliek, blaumeux } -- string or table {boss, add1, add2}
-module.toggleoptions = { "mark", "shieldwall", -1, "meteor", "void", "wrath", "bosskill" }
-
-
--- locals
 local timer = {
     firstMark = 20,
     mark = 12,
@@ -169,11 +155,6 @@ local MOVE_SAFE_SPOT = "MOVE TO |cf75DE52fSAFE SPOT"
 local MOVE_THANE = "MOVE TO |cff7b9a2fTHANE|r - STACK ON TANK"
 local MOVE_MOGRAINE = "MOVE TO |cffb2422eMOGRAINE"
 
-------------------------------
---      Initialization      --
-------------------------------
-
--- called after module is enabled
 function module:OnEnable()
     self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS")
     self:RegisterEvent("CHAT_MSG_MONSTER_SAY")
@@ -188,7 +169,6 @@ function module:OnEnable()
     self:ThrottleSync(5, syncName.meteor)
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
     self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
 
@@ -242,7 +222,6 @@ fhAlert:SetScript("OnEvent", function()
     end
 end)
 
--- called after boss is engaged
 function module:OnEngage()
     self.marks = 0
 
@@ -250,17 +229,17 @@ function module:OnEngage()
 
     if self.db.profile.mark then
         self:Message(L["startwarn"], "Attention")
-        self:Bar(string.format(L["markbar"], self.marks + 1), timer.firstMark, icon.mark)
+        self:Bar(string.format(L["markbar"], self.marks + 1), timer.firstMark, icon.mark, true, "White")
         self:DelayedMessage(timer.firstMark - 5, string.format(L["mark_warn_5"], self.marks + 1), "Urgent")
     end
     if self.db.profile.meteor then
-        self:Bar(L["meteorbar"], timer.firstMeteor, icon.meteor)
+        self:Bar(L["meteorbar"], timer.firstMeteor, icon.meteor, true, "Red")
     end
     if self.db.profile.wrath then
-        self:Bar(L["wrathbar"], timer.firstWrath, icon.wrath)
+        self:Bar(L["wrathbar"], timer.firstWrath, icon.wrath, true, "Yellow")
     end
     if self.db.profile.void then
-        self:Bar(L["voidbar"], timer.firstVoid, icon.void)
+        self:Bar(L["voidbar"], timer.firstVoid, icon.void, true, "Black")
     end
 
     for i = 0, GetNumRaidMembers() do
@@ -305,15 +284,8 @@ fh_alert:SetScript("OnUpdate", function()
     end
 end)
 
-
--- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
 end
-
-
-------------------------------
---      Event Handlers	    --
-------------------------------
 
 function module:MarkEvent(msg)
     if string.find(msg, L["marktrigger1"]) or string.find(msg, L["marktrigger2"]) or string.find(msg, L["marktrigger3"]) or string.find(msg, L["marktrigger4"]) then
@@ -330,7 +302,7 @@ end
 function module:VoidZoneEvent()
     self:ScheduleEvent("DelayedVoidZoneEvent", self.DelayedVoidZoneEvent, 0.2, self)
     self:WarningSign(icon.void, 3)
-    self:IntervalBar(L["voidbar"], timer.void[1], timer.void[2], icon.void)
+    self:IntervalBar(L["voidbar"], timer.void[1], timer.void[2], icon.void, true, "Black")
 end
 
 function module:DelayedVoidZoneEvent()
@@ -392,12 +364,7 @@ function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
     end
 end
 
-------------------------------
---      Synchronization	    --
-------------------------------
-
 function module:BigWigs_RecvSync(sync, rest, nick)
-    --Print("sync= "..sync.." rest= "..rest.." nick= "..nick)
     if sync == syncName.mark then
         self:Mark()
     elseif sync == syncName.meteor then
@@ -425,12 +392,6 @@ function horsemenIsRL()
     end
     return false
 end
-
-
-
-------------------------------
---      Sync Handlers	    --
-------------------------------
 
 function module:Mark()
     self:RemoveBar(string.format(L["markbar"], self.marks))
@@ -518,7 +479,7 @@ function module:Mark()
 
     if self.db.profile.mark then
         self:Message(string.format(L["mark_warn"], self.marks), "Important")
-        self:Bar(string.format(L["markbar"], self.marks + 1), timer.mark, icon.mark)
+        self:Bar(string.format(L["markbar"], self.marks + 1), timer.mark, icon.mark, true, "White")
         self:DelayedMessage(timer.mark - 5, string.format(L["mark_warn_5"], self.marks + 1), "Urgent")
     end
 end
@@ -526,21 +487,21 @@ end
 function module:Meteor()
     if self.db.profile.meteor then
         self:Message(L["meteorwarn"], "Important")
-        self:IntervalBar(L["meteorbar"], timer.meteor[1], timer.meteor[2], icon.meteor)
+        self:IntervalBar(L["meteorbar"], timer.meteor[1], timer.meteor[2], icon.meteor, true, "Red")
     end
 end
 
 function module:Wrath()
     if self.db.profile.wrath then
         self:Message(L["wrathwarn"], "Important")
-        self:IntervalBar(L["wrathbar"], timer.wrath[1], timer.wrath[2], icon.wrath)
+        self:IntervalBar(L["wrathbar"], timer.wrath[1], timer.wrath[2], icon.wrath, true, "Yellow")
     end
 end
 
 function module:Shieldwall(mob)
     if mob and self.db.profile.shieldwall then
         self:Message(string.format(L["shieldwall_warn"], mob), "Attention")
-        self:Bar(string.format(L["shieldwallbar"], mob), timer.shieldwall, icon.shieldwall)
+        self:Bar(string.format(L["shieldwallbar"], mob), timer.shieldwall, icon.shieldwall, true, "Blue")
         self:DelayedMessage(timer.shieldwall, string.format(L["shieldwall_warn_over"], mob), "Positive")
     end
 end
@@ -556,106 +517,4 @@ function string:split(delimiter)
     end
     table.insert(result, string.sub(self, from))
     return result
-end
-
-
--- tests
--- /run local m=BigWigs:GetModule("The Four Horsemen");m:Test()
-function module:Test()
-
-    local function mark()
-        BigWigs:Print("module Test mark()")
-        self:Sync(syncName.mark)
-    end
-
-    local function deactivate()
-        BigWigs:Print("deactivate")
-        self:Disable()
-    end
-
-    local time = 0
-    -- immitate CheckForEngage + mark1
-    self:SendEngageSync()
-    BigWigs:Print("module Test started")
-
-    --mark2
-    time = time + timer.firstMark -- 20
-    self:ScheduleEvent(self:ToString() .. "Test_mark2", mark, time, self)
-    BigWigs:Print("module Test schedule mark(2) @ " .. time)
-
-    --mark3
-    time = time + timer.mark -- 32
-    self:ScheduleEvent(self:ToString() .. "Test_mark3", mark, time, self)
-    BigWigs:Print("module Test schedule mark(3) @ " .. time)
-
-    --mark4
-    time = time + timer.mark -- 44
-    self:ScheduleEvent(self:ToString() .. "Test_mark4", mark, time, self)
-    BigWigs:Print("module Test schedule mark(4) @ " .. time)
-
-    --mark5
-    time = time + timer.mark --56
-    self:ScheduleEvent(self:ToString() .. "Test_mark5", mark, time, self)
-    BigWigs:Print("module Test schedule mark(5) @ " .. time)
-
-    --mark6
-    time = time + timer.mark -- 68
-    self:ScheduleEvent(self:ToString() .. "Test_mark6", mark, time, self)
-    BigWigs:Print("module Test schedule mark(6) @ " .. time)
-
-    --mark7
-    time = time + timer.mark -- 80
-    self:ScheduleEvent(self:ToString() .. "Test_mark7", mark, time, self)
-    BigWigs:Print("module Test schedule mark(7) @ " .. time)
-
-    --mark8
-    time = time + timer.mark -- 92
-    self:ScheduleEvent(self:ToString() .. "Test_mark8", mark, time, self)
-    BigWigs:Print("module Test schedule mark(8) @ " .. time)
-
-    --mark9
-    time = time + timer.mark -- 104
-    self:ScheduleEvent(self:ToString() .. "Test_mark9", mark, time, self)
-    BigWigs:Print("module Test schedule mark(9) @ " .. time)
-
-    --mark10
-    time = time + timer.mark -- 116
-    self:ScheduleEvent(self:ToString() .. "Test_mark10", mark, time, self)
-    BigWigs:Print("module Test schedule mark(10) @ " .. time)
-
-    --mark11
-    time = time + timer.mark -- 128
-    self:ScheduleEvent(self:ToString() .. "Test_mark11", mark, time, self)
-    BigWigs:Print("module Test schedule mark(11) @ " .. time)
-
-    --mark12
-    time = time + timer.mark -- 140
-    self:ScheduleEvent(self:ToString() .. "Test_mark12", mark, time, self)
-    BigWigs:Print("module Test schedule mark(12) @ " .. time)
-
-    --mark13
-    time = time + timer.mark -- 152
-    self:ScheduleEvent(self:ToString() .. "Test_mark13", mark, time, self)
-    BigWigs:Print("module Test schedule mark(13) @ " .. time)
-
-    --mark14
-    time = time + timer.mark -- 164
-    self:ScheduleEvent(self:ToString() .. "Test_mark14", mark, time, self)
-    BigWigs:Print("module Test schedule mark(14) @ " .. time)
-
-    --mark15
-    time = time + timer.mark -- 176
-    self:ScheduleEvent(self:ToString() .. "Test_mark15", mark, time, self)
-    BigWigs:Print("module Test schedule mark(15) @ " .. time)
-
-    --mark16
-    time = time + timer.mark -- 188
-    self:ScheduleEvent(self:ToString() .. "Test_mark16", mark, time, self)
-    BigWigs:Print("module Test schedule mark(16) @ " .. time)
-
-
-    -- reset after 4m
-    time = 240
-    BigWigs:Print(" deactivate after " .. time)
-    self:ScheduleEvent(self:ToString() .. "Test_deactivate", deactivate, time, self)
 end

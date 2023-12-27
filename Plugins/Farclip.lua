@@ -46,7 +46,7 @@ L:RegisterTranslations("esES", function() return {
 BigWigsFarclip = BigWigs:NewModule(L["Farclip"])
 BigWigsFarclip.revision = 20011
 BigWigsFarclip.defaultDB = {
-	active = true,
+	active = false,
 	defaultFarclip = 777,
 }
 BigWigsFarclip.consoleCmd = L["farclip"]
@@ -96,7 +96,7 @@ function BigWigsFarclip:ZONE_CHANGED_NEW_AREA()
 		self:DebugMessage(2)
 		if AceLibrary("Babble-Zone-2.2")["Naxxramas"] == GetRealZoneText() then
 			--self.db.profile.defaultFarclip = GetCVar("farclip")
-			SetCVar("farclip", minFarclip) -- http://wowwiki.wikia.com/wiki/CVar_farclip
+			--SetCVar("farclip", minFarclip) -- http://wowwiki.wikia.com/wiki/CVar_farclip
 		else
 			self:DebugMessage(3)
 			if tonumber(GetCVar("farclip")) == minFarclip then

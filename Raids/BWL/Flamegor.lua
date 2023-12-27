@@ -180,10 +180,10 @@ end
 function module:OnEngage()
 	if self.db.profile.wingbuffet then
 		self:DelayedMessage(timer.firstWingbuffet - 5, L["wingbuffet_warning"], "Attention", nil, nil, true)
-		self:Bar(L["wingbuffet1_bar"], timer.firstWingbuffet, icon.wingbuffet)
+		self:Bar(L["wingbuffet1_bar"], timer.firstWingbuffet, icon.wingbuffet, true, "yellow")
 	end
 	if self.db.profile.shadowflame then
-		self:Bar(L["shadowflame_Nextbar"], timer.firstShadowflame, icon.shadowflame)
+		self:Bar(L["shadowflame_Nextbar"], timer.firstShadowflame, icon.shadowflame, true, "blue")
 	end
 	if self.db.profile.frenzy then
 		self:Bar(L["frenzy_Nextbar"], timer.firstFrenzy, icon.frenzy, true, "white")
@@ -226,12 +226,12 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		self:RemoveBar(L["wingbuffet_bar"]) -- remove timer bar
 		self:DelayedMessage(timer.wingbuffet - 5, L["wingbuffet_warning"], "Attention", nil, nil, true)
 		self:Bar(L["wingbuffetcast_bar"], timer.wingbuffetCast, icon.wingbuffet, true, "black") -- show cast bar
-		self:DelayedBar(timer.wingbuffetCast, L["wingbuffet_bar"], timer.wingbuffet, icon.wingbuffet) -- delayed timer bar
+		self:DelayedBar(timer.wingbuffetCast, L["wingbuffet_bar"], timer.wingbuffet, icon.wingbuffet, true, "yellow") -- delayed timer bar
 	elseif sync == syncName.shadowflame and self.db.profile.shadowflame then
 		self:Message(L["shadowflame_warning"], "Important", true, "Alarm")
 		self:RemoveBar(L["shadowflame_Nextbar"]) -- remove timer bar
 		self:Bar(L["shadowflame_bar"], timer.shadowflameCast, icon.shadowflame, true, "red") -- show cast bar
-		self:DelayedBar(timer.shadowflameCast, L["shadowflame_Nextbar"], timer.shadowflame-timer.shadowflameCast, icon.shadowflame) -- delayed timer bar
+		self:DelayedBar(timer.shadowflameCast, L["shadowflame_Nextbar"], timer.shadowflame-timer.shadowflameCast, icon.shadowflame, true, "blue") -- delayed timer bar
 	elseif sync == syncName.frenzy and self.db.profile.frenzy then
 		self:Message(L["frenzy_message"], "Important", nil, true, "Alert")
 		self:Bar(L["frenzy_bar"], timer.frenzy, icon.frenzy, true, "red")

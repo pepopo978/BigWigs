@@ -2,7 +2,6 @@
 ------------------------------
 --      Are you local?      --
 ------------------------------
-
 local LC = AceLibrary("AceLocale-2.2"):new("BigWigs")
 local BZ = AceLibrary("Babble-Zone-2.2")
 
@@ -82,6 +81,10 @@ end
 
 function BigWigsLoD:ZONE_CHANGED_NEW_AREA()
 	self:LoadZone( GetRealZoneText() )
+	
+	if GetZoneText() == "The Black Morass" or GetZoneText() == "Dire Maul" then
+		BigWigs:ToggleActive(true)
+	end
 end
 
 function BigWigsLoD:CHAT_MSG_SYSTEM( msg )

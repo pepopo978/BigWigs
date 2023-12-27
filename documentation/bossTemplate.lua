@@ -1,184 +1,147 @@
 
-----------------------------------
---      Module Declaration      --
-----------------------------------
+local module, L = BigWigs:ModuleDeclaration("BOSS EXACT NAME", "Emerald Sanctum")
 
-local module, L = BigWigs:ModuleDeclaration("Bossname", "Naxxramas")
-
-
-----------------------------
---      Localization      --
-----------------------------
+module.revision = 30020
+module.enabletrigger = module.translatedName
+module.toggleoptions = {"ability1", "ability2", "ability3", "bosskill"}
 
 L:RegisterTranslations("enUS", function() return {
-	cmd = "Testboss",
+	cmd = "Bossname",
 
-	start_trigger = "Let the games begin.",
+	ability1_cmd = "ability1",
+	ability1_name = "ability1 Alert",
+	ability1_desc = "Warn for ability1",
 
-	berserk_cmd = "berserk",
-	berserk_name = "Berserk",
-	berserk_desc = "Warn for when Testboss goes berserk",
-
-	berserktrigger = "%s goes into a berserker rage!",
-	berserkannounce = "Berserk - Berserk!",
-	berserksoonwarn = "Berserk Soon - Get Ready!",
-
-	add_name = "Dragon",
+	ability2_cmd = "ability2",
+	ability2_name = "ability2 Alert",
+	ability2_desc = "Warn for ability2",
+	
+	ability3_cmd = "ability3",
+	ability3_name = "ability3 Alert",
+	ability3_desc = "Warns for ability3",
+	
+	
+	
+	
+	trigger_ability1 = "trigger_ability1",--CHAT_MSG...
+	bar_ability1 = "bar_ability1",
+	msg_ability1 = "msg_ability1",
+	
+	trigger_ability2 = "trigger_ability2",--CHAT_MSG...
+	bar_ability2 = "bar_ability1",
+	msg_ability2 = "msg_ability1",
+	
+	trigger_ability3 = "trigger_ability3",--CHAT_MSG_
+	bar_ability3 = "bar_ability1",
+	msg_ability3 = "msg_ability1",
+	
+	trigger_person1 = "(.+) is afflicted by Living Bomb.",--CHAT_MSG_
+	
+	trigger_engage = "I kill you!",--CHAT_MSG_MONSTER_YELL
 } end )
 
-L:RegisterTranslations("deDE", function() return {
-	start_trigger = "Lasst die Spiele beginnen.",
-
-	berserk_name = "Berserk",
-	berserk_desc = "Warn for when Testboss goes berserk",
-
-	berserktrigger = "%s bekommt Berserkerwut!",
-	berserkannounce = "Berserk - Berserk!",
-	berserksoonwarn = "Berserkerwut in Kürze - Bereit machen!",
-
-	add_name = "Drache",
-} end )
-
-
----------------------------------
---      	Variables 		   --
----------------------------------
-
--- module variables
-module.revision = 20004 -- To be overridden by the module!
-module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
---module.wipemobs = { L["add_name"] } -- adds which will be considered in CheckForEngage
-module.toggleoptions = {"berserk", "bosskill"}
-
--- Proximity Plugin
--- module.proximityCheck = function(unit) return CheckInteractDistance(unit, 2) end
--- module.proximitySilent = false
-
-
--- locals
 local timer = {
-	charge = 10,
-	teleport = 30,
+	ability1 = 10,
+	ability2 = {80,120},
+	ability3 = 20,
 }
 local icon = {
-	charge = "Spell_Frost_FrostShock",
-	teleport = "Spell_Arcane_Blink",
+	ability1 = "Spell_Nature_InsectSwarm",
+	ability2 = "ability_backstab",
+	ability3 = "ability_backstab",
+}
+local color = {
+	ability1 = "White",
+	ability2 = "Black",
+	ability3 = "Red",
 }
 local syncName = {
-	teleport = "TwinsTeleport",
-	berserk = "TestbossBerserk"
+	ability1 = "BossNameAbility1"..module.revision,
+	ability2 = "BossNameAbility2"..module.revision,
+	ability3 = "BossNameAbility3"..module.revision,
 }
 
-local berserkannounced = nil
+module:RegisterYellEngage(L["trigger_engage"])
 
-
-------------------------------
---      Initialization      --
-------------------------------
-
---module:RegisterYellEngage(L["start_trigger"])
-
--- called after module is enabled
 function module:OnEnable()
-	self:RegisterEvent("UNIT_HEALTH")
-	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")
-
-	self:ThrottleSync(10, syncName.berserk)
+	self:RegisterEvent("CHAT_MSG_", "Event")--trigger_ability1
+	self:RegisterEvent("CHAT_MSG_", "Event")--trigger_ability2
+	self:RegisterEvent("CHAT_MSG_", "Event")--trigger_ability3
+	
+	self:ThrottleSync(10, syncName.ability1)
+	self:ThrottleSync(10, syncName.ability2)
+	self:ThrottleSync(10, syncName.ability3)
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
-	self.started = false
-	berserkannounced = false
+	self.started = nil
 end
 
--- called after boss is engaged
 function module:OnEngage()
+	if self.db.profile.ability1 then
+		self:Ability1()
+	end
+	
+	if self.db.profile.ability2 then
+		self:IntervalBar(L["bar_ability2"], timer.ability2[1], timer.ability2[2], icon.ability2, true, color.ability2)
+	end
+	
+	if self.db.profile.ability3 then
+		self:Bar(L["bar_ability3"], timer.ability3, icon.ability3, true, color.ability3)
+		self:Message(L["msg_ability3"], "Urgent", false, nil, false)
+		self:Sound("Info")
+		self:WarningSign(icon.ability3, 0.7)
+		self:DelayedMessage(timer.ability1, L["msg_ability3"], "Urgent", nil, nil, true)
+	end
 end
 
--- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
 end
 
-------------------------------
---      Event Handlers	    --
-------------------------------
-
-function module:UNIT_HEALTH(msg)
-	if UnitName(msg) == boss then
-		local health = UnitHealth(msg)
-		if health > 20 and health <= 23 and not berserkannounced then
-			if self.db.profile.berserk then
-				self:Message(L["berserksoonwarn"], "Important")
-			end
-			berserkannounced = true
-		elseif health > 30 and berserkannounced then
-			berserkannounced = false
-		end
+function module:Event(msg)
+	if msg == L["trigger_ability1"] then
+		self:Sync(syncName.ability1)
+	
+	elseif string.find(msg, L["trigger_ability2"]) then
+		self:Sync(syncName.ability2)
+	
+	elseif string.find(msg, L["trigger_ability3"]) then
+		local _,_, ability3target, _ = string.find(msg, L["trigger_ability3"])
+		self:Sync(syncName.trigger_ability3 .. " " .. ability3target)
+		
 	end
 end
 
-function module:CHAT_MSG_MONSTER_EMOTE(msg)
-	if msg == L["berserktrigger"] then
-		self:Sync(syncName.berserk)
-	end
-end
-
-
-------------------------------
---      Synchronization	    --
-------------------------------
 
 function module:BigWigs_RecvSync(sync, rest, nick)
-	if sync == syncName.berserk then
-		self:Berserk()
+	if sync == syncName.ability1 and self.db.profile.ability1 then
+		self:Ability1()
+	elseif sync == syncName.ability2 and self.db.profile.ability2 then
+		self:Ability2()
+	elseif sync == syncName.ability3 and rest and self.db.profile.ability3 then
+		self:Ability3(rest)
 	end
 end
 
-------------------------------
---      Sync Handlers	    --
-------------------------------
 
-function module:Berserk()
-	if self.db.profile.berserk then
-		self:Message(L["berserkannounce"], "Important", true, "Beware")
-	end
+function module:Ability1(rest)
+	
 end
 
-------------------------------
---      Utility	Functions   --
-------------------------------
+function module:Ability2()
+	self:RemoveBar(L["bar_ability2"])
+	
+	self:DelayedSync(timer.ability1, syncName.ability3)
+end
 
-----------------------------------
---      Module Test Function    --
-----------------------------------
-
-function module:Test()
-	local function berserkSoon()
-		self:UNIT_HEALTH(boss)
+function module:Ability3(rest)
+	if IsRaidLeader() or IsRaidOfficer() then
+		TargetByName(rest,true)
+		SetRaidTarget("target",8)
+		TargetLastTarget()
 	end
-
-	local function berserk()
-		self:CHAT_MSG_MONSTER_EMOTE(L["berserktrigger"])
-	end
-	local function deactivate()
-		self.core:DisableModule(self:ToString())
-	end
-
-	BigWigs:Print("BigWigsTestboss Test started")
-	BigWigs:Print("  Berserk Soon Warning after 5s")
-	BigWigs:Print("  Berserk after 10s")
-
-	-- immitate CheckForEngage
-	self:SendEngageSync()
-
-	-- berserk soon warning after 5s
-	self:ScheduleEvent(self:ToString().."Test_berserkSoon", berserkSoon, 5, self)
-
-	-- berserk after 10s
-	self:ScheduleEvent(self:ToString().."Test_sandblast", berserk, 10, self)
-
-	-- reset after 15s
-	self:ScheduleEvent(self:ToString().."Test_deactivate", deactivate, 15, self)
-
+	
+	self:Bar(rest..L["bar_ability3"].. " >Click Me<", timer.ability3, icon.ability3, true, color.ability3)
+	self:SetCandyBarOnClick("BigWigsBar "..rest..L["bar_ability3"].. " >Click Me<", function(name, button, extra) TargetByName(extra, true) end, rest)
+	self:Message(rest..L["msg_ability3"], "Attention")
 end

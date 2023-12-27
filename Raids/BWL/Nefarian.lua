@@ -382,7 +382,7 @@ end
 function module:OnEngage()
 	self:Bar(L["Mob_Spawn"], timer.mobspawn, icon.mobspawn)
 
-	self:TriggerEvent("BigWigs_StartCounterBar", self, L["Drakonids dead"], nefCounterMax, "Interface\\Icons\\inv_egg_01")
+	self:TriggerEvent("BigWigs_StartCounterBar", self, L["Drakonids dead"], nefCounterMax, "Interface\\Icons\\inv_egg_01", true, "Cyan")
 	self:TriggerEvent("BigWigs_SetCounterBar", self, L["Drakonids dead"], (nefCounterMax - 0.1))
 end
 
@@ -509,15 +509,15 @@ end
 ------------------------------
 function module:Curse()
 	if self.db.profile.curse then
-		self:IntervalBar(L["curse_bar"], timer.earliestCurse, timer.latestCurse, icon.curse)
+		self:IntervalBar(L["curse_bar"], timer.earliestCurse, timer.latestCurse, icon.curse, true, "yellow")
 	end
 end
 
 function module:Shadowflame()
 	if self.db.profile.shadowflame then
-		self:Bar(L["shadowflame_bar"], timer.shadowflameCast, icon.shadowflame) -- show cast bar
+		self:Bar(L["shadowflame_bar"], timer.shadowflameCast, icon.shadowflame, true, "Red") -- show cast bar
 		self:Message(L["shadowflame_warning"], "Important", true, "Alarm")
-		self:DelayedBar(timer.shadowflameCast, L["shadowflame_bar"], timer.shadowflame-timer.shadowflameCast, icon.shadowflame) -- delayed timer bar
+		self:DelayedBar(timer.shadowflameCast, L["shadowflame_bar"], timer.shadowflame-timer.shadowflameCast, icon.shadowflame, true, "Blue") -- delayed timer bar
 	end
 end
 
@@ -525,8 +525,8 @@ function module:Fear()
 	if self.db.profile.fear then
 		self:RemoveBar(L["fear_bar"]) -- remove timer bar
 		self:Message(L["fear_warning"], "Important", true, "Alert")
-		self:Bar(L["fear_warn"], timer.fearCast, icon.fear) -- show cast bar
-		self:DelayedIntervalBar(timer.fearCast, L["fear_bar"], timer.earliestFear, timer.latestFear, icon.fear) -- delayed timer bar
+		self:Bar(L["fear_warn"], timer.fearCast, icon.fear, true, "Black") -- show cast bar
+		self:DelayedIntervalBar(timer.fearCast, L["fear_bar"], timer.earliestFear, timer.latestFear, icon.fear, true, "Black") -- delayed timer bar
 		--self:WarningSign(icon.fear, 5)
 	end
 end
@@ -537,13 +537,13 @@ function module:Landing()
 		self:RemoveBar(L["land"])
 		self:TriggerEvent("BigWigs_StopCounterBar", self, L["Drakonids dead"])
 
-		self:Bar(L["landing_warning"], timer.landing, icon.landing)
+		self:Bar(L["landing_warning"], timer.landing, icon.landing, true, "White")
 		self:Message(L["landing_warning"], "Important", nil, "Beware")
 
 		-- landing in 15s
-		self:DelayedIntervalBar(timer.landing, L["classcall_bar"], timer.earliestClasscall, timer.latestClasscall, icon.classcall)
-		self:DelayedIntervalBar(timer.landing, L["fear_bar"], timer.earliestFear, timer.latestFear, icon.fear)
-		self:DelayedBar(timer.landing, L["curse_bar"], timer.firstCurse, icon.curse)
+		self:DelayedIntervalBar(timer.landing, L["classcall_bar"], timer.earliestClasscall, timer.latestClasscall, icon.classcall, true, "White")
+		self:DelayedIntervalBar(timer.landing, L["fear_bar"], timer.earliestFear, timer.latestFear, icon.fear, true, "Black")
+		self:DelayedBar(timer.landing, L["curse_bar"], timer.firstCurse, icon.curse, true, "yellow")
 
 	end
 end
@@ -555,6 +555,6 @@ function module:NefCounter(n)
 		--[[if self.db.profile.adds then
 		self:Message(string.format(L["add_message"], nefCounter), "Positive")
 		end]]
-		self:TriggerEvent("BigWigs_SetCounterBar", self, L["Drakonids dead"], (nefCounterMax - nefCounter))
+		self:TriggerEvent("BigWigs_SetCounterBar", self, L["Drakonids dead"], (nefCounterMax - nefCounter), true, "cyan")
 	end
 end

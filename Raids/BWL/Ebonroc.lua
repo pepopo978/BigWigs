@@ -169,14 +169,14 @@ end
 -- called after boss is engaged
 function module:OnEngage()
 	if self.db.profile.wingbuffet then
-		self:Bar(L["wingbuffet1_bar"], timer.wingbuffet, icon.wingbuffet)
+		self:Bar(L["wingbuffet1_bar"], timer.wingbuffet, icon.wingbuffet, true, "yellow")
 		self:DelayedMessage(timer.wingbuffet - 5, L["wingbuffet_warning"], "Attention", nil, nil, true)
 	end
 	if self.db.profile.curse then
 		self:Bar(L["shadowcurse_Firstbar"], timer.curse, icon.curse, true, "white")
 	end
 	if self.db.profile.shadowflame then
-		self:Bar(L["shadowflame_Nextbar"], timer.shadowflame, icon.shadowflame)
+		self:Bar(L["shadowflame_Nextbar"], timer.shadowflame, icon.shadowflame, true, "blue")
 	end
 end
 
@@ -237,7 +237,7 @@ function module:WingBuffet()
 		self:Message(L["wingbuffet_message"], "Important")
 		self:RemoveBar(L["wingbuffet_bar"]) -- remove timer bar
 		self:Bar(L["wingbuffetcast_bar"], timer.wingbuffetCast, icon.wingbuffet, true, "black") -- show cast bar
-		self:DelayedBar(timer.wingbuffetCast, L["wingbuffet_bar"], timer.wingbuffet, icon.wingbuffet) -- delayed timer bar
+		self:DelayedBar(timer.wingbuffetCast, L["wingbuffet_bar"], timer.wingbuffet, icon.wingbuffet, true, "yellow") -- delayed timer bar
 		self:DelayedMessage(timer.wingbuffet - 5, L["wingbuffet_warning"], "Attention", nil, nil, true)
 	end
 end
@@ -247,6 +247,6 @@ function module:ShadowFlame()
 		self:Message(L["shadowflame_warning"], "Important", true, "Alarm")
 		self:RemoveBar(L["shadowflame_Nextbar"]) -- remove timer bar
 		self:Bar(L["shadowflame_bar"], timer.shadowflameCast, icon.shadowflame, true, "red") -- show cast bar
-		self:DelayedBar(timer.shadowflameCast, L["shadowflame_Nextbar"], timer.shadowflame-timer.shadowflameCast, icon.shadowflame) -- delayed timer bar
+		self:DelayedBar(timer.shadowflameCast, L["shadowflame_Nextbar"], timer.shadowflame-timer.shadowflameCast, icon.shadowflame, true, "blue") -- delayed timer bar
 	end
 end

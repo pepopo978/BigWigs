@@ -1,31 +1,30 @@
 
-----------------------------------
---      Module Declaration      --
-----------------------------------
-
 local module, L = BigWigs:ModuleDeclaration("Fankriss the Unyielding", "Ahn'Qiraj")
 
-
-----------------------------
---      Localization      --
-----------------------------
+module.revision = 30020
+module.enabletrigger = module.translatedName
+module.toggleoptions = {"wound", "entangle", "bosskill"}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Fankriss",
-	worm_cmd = "worm",
-	worm_name = "Worm Alert",
-	worm_desc = "Warn for Incoming Worms",
-
-	wormtrigger = "Fankriss the Unyielding casts Summon Worm.",
-	wormwarn = "Incoming Worm! (%d)",
-	wormbar = "Sandworm Enrage (%d)",
-
+	
+	wound_cmd = "wound",
+	wound_name = "Wound 5 stacks alerts",
+	wound_desc = "Alert for 5 stacks of Wound",
+	
 	entangle_cmd = "entangle",
 	entangle_name = "Entangle Alert",
-	entangle_desc = "Warn for Entangle and incoming Bugs",
-	entangleplayer = "You are afflicted by Entangle.",
-	entangleplayerother = "(.*) is afflicted by Entangle.",
-	entanglewarn = "Entangle!",
+	entangle_desc = "Warn for Entangle",
+	
+	
+	trigger_entangleYou = "You are afflicted by Entangle.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_entangleOther = "(.+) is afflicted by Entangle.",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+	trigger_entangleFade = "Entangle fades from (.+).",--CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
+	bar_entangle = " Entangled",
+	
+	trigger_woundYou = "You are afflicted by Mortal Wound %((.+)%)",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_woundOther = "(.+) is afflicted by Mortal Wound %((.+)%)",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+	bar_wound = " Wounds",
 } end )
 
 L:RegisterTranslations("esES", function() return {
@@ -61,96 +60,109 @@ L:RegisterTranslations("deDE", function() return {
 	entanglewarn = "Umschlingen!",
 } end )
 
----------------------------------
---      	Variables 		   --
----------------------------------
-
--- module variables
-module.revision = 20004 -- To be overridden by the module!
-module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
---module.wipemobs = { L["add_name"] } -- adds which will be considered in CheckForEngage
-module.toggleoptions = {--[["worm",]] "entangle", "bosskill"}
-
-
--- locals
 local timer = {
-	--worm = 20,
-	}
+	entangle = 8,
+	wound = 15,
+}
 local icon = {
-	--worm = "Spell_Shadow_UnholyFrenzy",
 	entangle = "Spell_Nature_Web",
+	wound = "ability_criticalstrike",
+}
+local color = {
+	entangle = "White",
+	wound = "Black",
 }
 local syncName = {
-	--worm = "FankrissWormSpawn"..module.revision,
 	entangle = "FankrissEntangle"..module.revision,
+	entangleFade = "FankrissEntangleFade"..module.revision,
+	wound = "FankrissWound"..module.revision,
 }
 
---local worms
+local _, playerClass = UnitClass("player")
 
-
-------------------------------
---      Initialization      --
-------------------------------
-
--- called after module is enabled
 function module:OnEnable()
-	--self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")
-
-	--self:ThrottleSync(.1, syncName.worm)
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")--trigger_entangleYou, trigger_woundYou
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")--trigger_entangleOther, trigger_woundOther
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")--trigger_entangleOther, trigger_woundOther
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event")--trigger_entangleFade
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event")--trigger_entangleFade
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event")--trigger_entangleFade
+	
+	self:ThrottleSync(0.1, syncName.entangle)
+	self:ThrottleSync(0.1, syncName.entangleFade)
+	self:ThrottleSync(3, syncName.wound)
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
---worms = 0
 end
 
--- called after boss is engaged
 function module:OnEngage()
-
 end
 
--- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
 end
 
-
-------------------------------
---      Event Handlers      --
-------------------------------
-
 function module:Event(msg)
-	if string.find(msg, L["entangleplayer"]) or string.find(msg, L["entangleplayerother"]) then
-		self:Sync(syncName.entangle)
+	if msg == L["trigger_entangleYou"] then
+		self:Sync(syncName.entangle .. " " .. UnitName("Player"))
+		
+	elseif string.find(msg, L["trigger_entangleOther"]) then
+		local _,_,entangledPerson = string.find(msg, L["trigger_entangleOther"])
+		self:Sync(syncName.entangle .. " " .. entangledPerson)
+		
+	elseif string.find(msg, L["trigger_entangleFade"]) then
+		local _,_,entangledFadePerson = string.find(msg, L["trigger_entangleFade"])
+		self:Sync(syncName.entangleFade .. " " .. entangledFadePerson)
+		
+		
+	elseif string.find(msg, L["trigger_woundYou"]) then
+		local _,_,woundQty,_ = string.find(msg, L["trigger_woundYou"])
+		local woundPlayer = UnitName("Player")
+		local woundPlayerAndWoundQty = woundPlayer .. " " .. woundQty
+		self:Sync(syncName.wound.." "..woundPlayerAndWoundQty)
+		
+	elseif string.find(msg, L["trigger_woundOther"]) then
+		local _,_,woundPlayer,woundQty = string.find(msg, L["trigger_woundOther"])
+		local woundPlayerAndWoundQty = woundPlayer .. " " .. woundQty
+		self:Sync(syncName.wound.." "..woundPlayerAndWoundQty)
+
 	end
 end
---[[
-function module:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF(msg)
-if msg == L["wormtrigger"] then
-self:Sync(syncName.worm .. " " .. tostring(worms + 1) )
-end
-end
-]]
+
 function module:BigWigs_RecvSync(sync, rest, nick)
-	if sync == syncName.entangle then
-		if self.db.profile.entangle then
-			self:Message(L["entanglewarn"], "Urgent", true, "Alarm")
-			self:WarningSign(icon.entangle, 2)
-		end
-		--[[elseif sync == syncName.worm then
-		if not rest then return end
-		rest = tonumber(rest)
-		if rest == (worms + 1) then
-		-- we accept this worm
-		-- Yes, this could go completely wrong when you don't reset your module and the whole raid does after a wipe
-		-- or you reset your module and the rest doesn't. Anyway. it'll work a lot better than anything else.
-		worms = worms + 1
-		if self.db.profile.worm then
-		self:Message(string.format(L["wormwarn"], worms), "Urgent")
-		self:Bar(string.format(L["wormbar"], worms), timer.worm, icon.worm)
-		end
-		end]]
+	if sync == syncName.entangle and rest and self.db.profile.entangle then
+		self:Entangle(rest)
+	elseif sync == syncName.entangleFade and rest and self.db.profile.entangle then
+		self:EntangleFade(rest)
+	elseif sync == syncName.wound and rest and self.db.profile.wound then
+		self:Wound(rest)
 	end
+end
+
+function module:Entangle(rest)
+	self:Bar(rest..L["bar_entangle"], timer.entangle, icon.entangle, true, color.entangle)
+end
+
+function module:EntangleFade(rest)
+	self:RemoveBar(rest..L["bar_entangle"])
+end
+
+function module:Wound(rest)
+	local woundPlayer = strsub(rest,0,strfind(rest," ") - 1)
+	local woundQty = tonumber(strsub(rest,strfind(rest," "),strlen(rest)))
+	
+	self:RemoveBar(woundPlayer.." ".."1"..L["bar_wound"])
+	self:RemoveBar(woundPlayer.." ".."2"..L["bar_wound"])
+	self:RemoveBar(woundPlayer.." ".."3"..L["bar_wound"])
+	self:RemoveBar(woundPlayer.." ".."4"..L["bar_wound"])
+	self:RemoveBar(woundPlayer.." ".."5"..L["bar_wound"])
+	self:RemoveBar(woundPlayer.." ".."6"..L["bar_wound"])
+	self:RemoveBar(woundPlayer.." ".."7"..L["bar_wound"])
+	self:RemoveBar(woundPlayer.." ".."8"..L["bar_wound"])
+	self:RemoveBar(woundPlayer.." ".."9"..L["bar_wound"])
+	self:RemoveBar(woundPlayer.." ".."10"..L["bar_wound"])
+
+	self:Bar(woundPlayer.." "..woundQty..L["bar_wound"], timer.wound, icon.wound, true, color.wound)
 end

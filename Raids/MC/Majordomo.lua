@@ -189,7 +189,7 @@ end
 -- called after boss is engaged
 function module:OnEngage()
 	if self.db.profile.magic or self.db.profile.dmg then
-		self:Bar(L["shield_bar"], timer.firstShield, icon.shield)
+		self:Bar(L["shield_bar"], timer.firstShield, icon.shield, true, "black")
 		self:DelayedMessage(timer.firstShield - 5, L["shield_warn_soon"], "Urgent", nil, nil, true)
 	end
 	--self:TriggerEvent("BigWigs_StartCounterBar", self, "Priests dead", 4, "Interface\\Icons\\Spell_Holy_BlessedRecovery")
@@ -270,10 +270,10 @@ function module:MagicShield()
 	if self.db.profile.magic then
 		self:RemoveBar(L["shield_bar"])
 		self:Message(L["magic_warn"], "Attention")
-		self:Bar(L["magic_bar"], timer.shieldDuration, icon.magic)
+		self:Bar(L["magic_bar"], timer.shieldDuration, icon.magic, true, "blue")
 	end
 	if self.db.profile.magic or self.db.profile.dmg then
-		self:DelayedBar(timer.shieldDuration, L["shield_bar"], timer.shieldInterval - timer.shieldDuration, icon.shield)
+		self:DelayedBar(timer.shieldDuration, L["shield_bar"], timer.shieldInterval - timer.shieldDuration, icon.shield, true, "black")
 		self:DelayedMessage(timer.shieldInterval - 5, L["shield_warn_soon"], "Urgent", nil, nil, true)
 	end
 end
@@ -282,10 +282,10 @@ function module:DamageShield()
 	if self.db.profile.dmg then
 		self:RemoveBar(L["shield_bar"])
 		self:Message(L["dmg_warn"], "Attention")
-		self:Bar(L["dmg_bar"], timer.shieldDuration, icon.dmg)
+		self:Bar(L["dmg_bar"], timer.shieldDuration, icon.dmg, true, "red")
 	end
 	if self.db.profile.magic or self.db.profile.dmg then
-		self:DelayedBar(timer.shieldDuration, L["shield_bar"], timer.shieldInterval - timer.shieldDuration, icon.shield)
+		self:DelayedBar(timer.shieldDuration, L["shield_bar"], timer.shieldInterval - timer.shieldDuration, icon.shield, true, "black")
 		self:DelayedMessage(timer.shieldInterval - 5, L["shield_warn_soon"], "Urgent", nil, nil, true)
 	end
 end

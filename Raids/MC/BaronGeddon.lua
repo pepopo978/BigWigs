@@ -283,8 +283,9 @@ function module:Event(msg)
 	--local _,_, bombotherdeath,mctype = string.find(msg, L["deathother_trigger"])
 	if string.find(msg, L["bombyou_trigger"]) then
 		self:Sync(syncName.bomb)
+		SendChatMessage("Bomb on "..UnitName("player").."!","SAY")
 		if self.db.profile.bomb then
-			self:Bar(string.format(L["bomb_bar1"], UnitName("player")), timer.bomb, icon.bomb)
+			self:Bar(string.format(L["bomb_bar1"], UnitName("player")), timer.bomb, icon.bomb, true, "red")
 			self:Message(L["bomb_message_youscreen"], "Attention", "RunAway")
 			self:WarningSign("Spell_Shadow_MindBomb", timer.bomb)
 		end
@@ -300,7 +301,7 @@ function module:Event(msg)
 		bombt = bombother
 		self:Sync(syncName.bomb)
 		if self.db.profile.bomb then
-			self:Bar(string.format(L["bomb_bar"], bombother), timer.bomb, icon.bomb)
+			self:Bar(string.format(L["bomb_bar"], bombother), timer.bomb, icon.bomb, true, "red")
 			self:Message(string.format(L["bomb_message_other"], bombother), "Attention")
 		end
 		if self.db.profile.icon then
@@ -345,7 +346,7 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 	elseif sync == syncName.bombStop and self.db.profile.bomb then
 		self:RemoveBar(string.format(L["bomb_bar"], bombt))
 	elseif sync == syncName.service and self.db.profile.service then
-		self:Bar(L["service_bar"], timer.service, icon.service)
+		self:Bar(L["service_bar"], timer.service, icon.service, true, "white")
 		self:Message(L["service_message"], "Important")
 	end
 end
@@ -360,12 +361,12 @@ function module:Inferno()
 	if self.db.profile.inferno then
 		self:RemoveBar(L["inferno_bar"])
 		if firstinferno then
-			self:IntervalBar(L["inferno_bar"], timer.earliestNextInferno, timer.latestNextInferno, icon.inferno)
+			self:IntervalBar(L["inferno_bar"], timer.earliestNextInferno, timer.latestNextInferno, icon.inferno, true, "blue")
 			firstinferno = false
 		else
 			self:Message(L["inferno_message"], "Important")
-			self:Bar(L["inferno_channel"], timer.inferno, icon.inferno)
-			self:DelayedIntervalBar(timer.inferno, L["inferno_bar"], timer.earliestNextInferno - timer.inferno, timer.latestNextInferno - timer.inferno, icon.inferno)
+			self:Bar(L["inferno_channel"], timer.inferno, icon.inferno, true, "cyan")
+			self:DelayedIntervalBar(timer.inferno, L["inferno_bar"], timer.earliestNextInferno - timer.inferno, timer.latestNextInferno - timer.inferno, icon.inferno, true, "blue")
 		end
 
 		self:DelayedMessage(timer.earliestNextInferno - 5, L["nextinferno_message"], "Urgent", nil, nil, true)
@@ -378,10 +379,13 @@ function module:ManaIgnite()
 	if self.db.profile.mana then
 		if not firstignite then
 			self:Message(L["ignite_message"], "Important")
-			self:IntervalBar(L["ignite_bar"], timer.earliestIgnite, timer.latestIgnite, icon.ignite)
+			self:IntervalBar(L["ignite_bar"], timer.earliestIgnite, timer.latestIgnite, icon.ignite, true, "black")
 		else
-			self:IntervalBar(L["ignite_bar"], timer.earliestFirstIgnite, timer.latestFirstIgnite, icon.ignite)
+			self:IntervalBar(L["ignite_bar"], timer.earliestFirstIgnite, timer.latestFirstIgnite, icon.ignite, true, "black")
 		end
 		firstignite = false
+		if playerClass == "PALADIN" or playerClass == "PRIEST" then
+			self:WarningSign(icon.ignite, 0.7)
+		end
 	end
 end

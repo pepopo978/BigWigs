@@ -336,10 +336,10 @@ function module:OnEngage()
 		self:Message(L["start_message"], "Attention")
 	end
 	if self.db.profile.mobs then
-		self:Bar(L["mobs_bar"], timer.mobspawn, icon.mobspawn)
+		self:Bar(L["mobs_bar"], timer.mobspawn, icon.mobspawn, true, "Black")
 		self:Message(timer.mobspawn - 5, L["mobs_soon"], "Important")
 	end
-	self:TriggerEvent("BigWigs_StartCounterBar", self, L["Eggs destroyed"], 30, "Interface\\Icons\\inv_egg_01")
+	self:TriggerEvent("BigWigs_StartCounterBar", self, L["Eggs destroyed"], 30, "Interface\\Icons\\inv_egg_01", true, "Cyan")
 	self:TriggerEvent("BigWigs_SetCounterBar", self, L["Eggs destroyed"], (30 - 0.1))
 end
 
@@ -487,7 +487,7 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 			if self.db.profile.eggs then
 				self:Message(string.format(L["egg_message"], self.eggs), "Positive")
 			end
-			self:TriggerEvent("BigWigs_SetCounterBar", self, L["Eggs destroyed"], (30 - self.eggs))
+			self:TriggerEvent("BigWigs_SetCounterBar", self, L["Eggs destroyed"], (30 - self.eggs), true, "cyan")
 		elseif rest == (self.eggs + 1) and rest == 30 and self.phase ~= 2 then
 			self:Sync(syncName.phase2)
 		end

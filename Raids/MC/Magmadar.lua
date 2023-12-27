@@ -202,7 +202,7 @@ function module:Panic(delay)
 		end
 
 		self:DelayedMessage(timer.earliestPanic - 5 + delay, L["fearsoon"], "Urgent", nil, nil, true)
-		self:IntervalBar(L["fearbar"], timer.earliestPanic + delay, timer.latestPanic + delay, icon.panic)
+		self:IntervalBar(L["fearbar"], timer.earliestPanic + delay, timer.latestPanic + delay, icon.panic, true, "Blue")
 
 		if playerClass == "WARRIOR" then
 			self:DelayedSound(timer.earliestPanic - 10 + delay, "Ten")
@@ -222,6 +222,7 @@ function module:Frenzy()
 		end
 	end
 end
+
 function module:FrenzyOver()
 	self:RemoveBar(L["frenzy_bar"])
 	self:RemoveWarningSign(icon.tranquil, true)

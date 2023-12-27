@@ -1,15 +1,9 @@
--- debug breath trigger: /run local m=BigWigs:GetModule("Chromaggus"); m:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE("Chromaggus begins to cast Time Lapse.")
-
-----------------------------------
---      Module Declaration      --
-----------------------------------
 
 local module, L = BigWigs:ModuleDeclaration("Chromaggus", "Blackwing Lair")
 
-
-----------------------------
---      Localization      --
-----------------------------
+module.revision = 30037
+module.enabletrigger = module.translatedName
+module.toggleoptions = {"bigicon", "enrage", "frenzy", "breath", "breathcd", "vulnerability", "bosskill"}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Chromaggus",
@@ -33,7 +27,11 @@ L:RegisterTranslations("enUS", function() return {
 	vulnerability_cmd = "vulnerability",
 	vulnerability_name = "Vulnerability",
 	vulnerability_desc = "Warn for Vulnerability changes.",
-
+	
+	bigicon_cmd = "bigicon",
+	bigicon_name = "Bronze big icon alert",
+	bigicon_desc = "Shows a big icon when you have bronze",
+	
 	breath_trigger = "Chromaggus begins to cast (.+)\.",
 	vulnerability_direct_test = "^[%w]+[%s's]* ([%w%s:]+) ([%w]+) Chromaggus for ([%d]+) ([%w]+) damage%.[%s%(]*([%d]*)", -- [Fashu's] [Firebolt] [hits] Battleguard Sartura for [44] [Fire] damage. ([14] resisted)
 	vulnerability_dots_test = "^Chromaggus suffers ([%d]+) ([%w]+) damage from [%w]+[%s's]* ([%w%s:]+)%.[%s%(]*([%d]*)",
@@ -87,6 +85,8 @@ L:RegisterTranslations("enUS", function() return {
 	ignite = "Ignite",
 	starfire = "Starfire",
 	thunderfury = "Thunderfury",
+	
+	bronze = "You are afflicted by Brood Affliction: Bronze.",	
 } end )
 
 L:RegisterTranslations("esES", function() return {
@@ -235,19 +235,6 @@ L:RegisterTranslations("deDE", function() return {
 	thunderfury = "Zorn der Winde",
 } end )
 
-
----------------------------------
---      	Variables 		   --
----------------------------------
-
--- module variables
-module.revision = 20007 -- To be overridden by the module!
-module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
---module.wipemobs = { L["add_name"] } -- adds which will be considered in CheckForEngage
-module.toggleoptions = {"enrage", "frenzy", "breath", "breathcd", "vulnerability", "bosskill"}
-
-
--- locals
 local timer = {
 	firstBreath = 30,
 	secondBreath = 60,
@@ -255,7 +242,7 @@ local timer = {
 	breathCast = 2,
 	frenzy = 8,
 	nextFrenzy = 15,
-	vulnerability = 45,
+	vulnerability = 20,--was 45, changed to 20 in early dec 2023 patch
 }
 local icon = {
 	unknown = "INV_Misc_QuestionMark",
@@ -267,6 +254,7 @@ local icon = {
 	frenzy = "Ability_Druid_ChallangingRoar",
 	tranquil = "Spell_Nature_Drowsy",
 	vulnerability = "Spell_Shadow_BlackPlague",
+	bronze =  "inv_misc_head_dragon_bronze",
 }
 local syncName = {
 	breath = "ChromaggusBreath"..module.revision,
@@ -276,20 +264,13 @@ local syncName = {
 
 local lastFrenzy = 0
 local _, playerClass = UnitClass("player")
-local breathCache = {}  -- in case your raid wipes
+local breathCache = {}
 
 local vulnerability = nil
 local twenty = nil
 local frenzied = nil
 local lastVuln = 0
 
-------------------------------
---      Initialization      --
-------------------------------
-
---module:RegisterYellEngage(L["start_trigger"])
-
--- called after module is enabled
 function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE")
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER")
@@ -300,14 +281,14 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_PARTY_DAMAGE", "PlayerDamageEvents")
 	self:RegisterEvent("CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE", "PlayerDamageEvents")
 	self:RegisterEvent("UNIT_HEALTH")
-
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")
+	
 	self:ThrottleSync(10, "ChromaggusEngage")
 	self:ThrottleSync(25, syncName.breath)
 	self:ThrottleSync(5, syncName.frenzy)
 	self:ThrottleSync(5, syncName.frenzyOver)
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
 	vulnerability = nil
 	twenty = nil
@@ -316,7 +297,6 @@ function module:OnSetup()
 	lastVuln = 0
 end
 
--- called after boss is engaged
 function module:OnEngage()
 	if self.db.profile.breath then
 		local firstBarName  = L["first_bar"]
@@ -358,14 +338,8 @@ function module:OnEngage()
 	lastVuln = GetTime()
 end
 
--- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
 end
-
-
-------------------------------
---      Initialization      --
-------------------------------
 
 function module:UNIT_HEALTH( msg )
 	if self.db.profile.enrage and UnitName(msg) == module.translatedName then
@@ -576,10 +550,11 @@ function module:PlayerDamageEvents(msg)
 	end
 end
 
-
-------------------------------
---      Synchronization	    --
-------------------------------
+function module:Event(msg)
+	if string.find(msg, L["bronze"]) and self.db.profile.bigicon then
+		self:WarningSign(icon.bronze, 3)
+	end
+end
 
 function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.breath and self.db.profile.breath then
@@ -626,11 +601,6 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		frenzied = nil
 	end
 end
-
-
-------------------------------
---      Utility	Functions   --
-------------------------------
 
 function module:IdentifyVulnerability(school)
 	if not self.db.profile.vulnerability or not type(school) == "string" then return end

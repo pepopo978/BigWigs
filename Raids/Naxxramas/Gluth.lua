@@ -1,14 +1,9 @@
 
-----------------------------------
---      Module Declaration      --
-----------------------------------
-
 local module, L = BigWigs:ModuleDeclaration("Gluth", "Naxxramas")
 
-
-----------------------------
---      Localization      --
-----------------------------
+module.revision = 30030
+module.enabletrigger = module.translatedName
+module.toggleoptions = {"frenzy", "fear", "decimate", "enrage", "zombies", -1, "bosskill"}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Gluth",
@@ -28,41 +23,33 @@ L:RegisterTranslations("enUS", function() return {
 	decimate_cmd = "decimate",
 	decimate_name = "Decimate Alert",
 	decimate_desc = "Warn for Decimate",
-
-	frenzy_trigger = "%s goes into a frenzy!",
-	berserk_trigger = "gains Berserk",
-	fear_trigger = "by Terrifying Roar.",
-	starttrigger = "devours all nearby zombies!",
-
-	frenzy_warn = "Frenzy Alert!",
-	fear_warn_5 = "5 second until AoE Fear!",
-	fear_warn = "AoE Fear alert - 20 seconds till next!",
-
-	enragewarn = "ENRAGE!",
-	enragebartext = "Enrage",
-	enrage_warn_90 = "Enrage in 90 seconds",
-	enrage_warn_30 = "Enrage in 30 seconds",
-	enrage_warn_10 = "Enrage in 10 seconds",
-
-	startwarn = "Gluth Engaged! ~1:45 till Decimate!",
-	decimatesoonwarn = "Decimate Soon!",
-	decimatebar = "Decimate Zombies",
-
+	
 	zombies_cmd = "zombies",
 	zombies_name = "Zombie Spawn",
 	zombies_desc = "Shows timer for zombies",
-	zombiebar = "Next Zombie - %d",
-
-	bar1text = "AoE Fear",
-
-	testtrigger = "testtrigger";
-
-	frenzygain_trigger = "Gluth gains Frenzy.",
-	frenzygain_trigger2 = "Gluth goes into a frenzy!",
-	frenzyend_trigger = "Frenzy fades from Gluth.",
-	frenzy_message = "Frenzy! Tranq now!",
-	frenzy_bar = "Frenzy",
-	frenzy_Nextbar = "Next Frenzy",
+	
+	trigger_frenzyGain = "%s goes into a frenzy!",--CHAT_MSG_MONSTER_EMOTE
+	trigger_frenzyFade = "Frenzy fades from Gluth.",--CHAT_MSG_SPELL_AURA_GONE_OTHER
+	msg_frenzy = "Frenzy - Tranq!",
+	bar_frenzyGain = "Frenzy - Tranq!",
+	bar_frenzyCD = "FrenzyCD",
+	
+	trigger_enrage = "Gluth gains Berserk.",--to be confirmed
+	msg_enrage60 = "Enrage in 60 seconds",
+	msg_enrage10 = "Enrage in 10 seconds",
+	msg_enrage = "Enrage!",
+	bar_enrage = "Enrage",
+		
+	trigger_decimate = "Decimate hits",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+	msg_decimate = "Decimate!",
+	msg_decimate5 = "Decimate in 5",
+	bar_decimate = "Decimate",
+	
+	bar_zombies = "Next Zombie - %d",
+		
+	trigger_fear = "Terrifying Roar",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_fearCD = "Fear CD",
+	msg_fear = "Fear!",
 } end )
 
 L:RegisterTranslations("esES", function() return {
@@ -108,7 +95,7 @@ L:RegisterTranslations("esES", function() return {
 	zombies_desc = "Muestra temporizador para zombis",
 	zombiebar = "Próximo Zombi - %d",
 
-	bar1text = "Miedo",
+	fear_bar = "Miedo",
 
 	testtrigger = "testtrigger";
 
@@ -119,25 +106,14 @@ L:RegisterTranslations("esES", function() return {
 	frenzy_bar = "Frenesí",
 	frenzy_Nextbar = "Próximo Frenesí",
 } end )
----------------------------------
---      	Variables 		   --
----------------------------------
 
--- module variables
-module.revision = 20007 -- To be overridden by the module!
-module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
---module.wipemobs = { L["add_name"] } -- adds which will be considered in CheckForEngage
-module.toggleoptions = {"frenzy", "fear", "decimate", "enrage", "bosskill", "zombies"}
-
-
--- locals
 local timer = {
-	decimateInterval = 105,
+	decimate = 105,
 	zombie = 6,
 	enrage = 330,
-	fear = 20,
+	firstfear = 20,
+	fear = 15,
 	frenzy = 10,
-	firstFrenzy = 10,
 }
 local icon = {
 	zombie = "Ability_Seal",
@@ -150,33 +126,32 @@ local icon = {
 local syncName = {
 	frenzy = "GluthFrenzyStart"..module.revision,
 	frenzyOver = "GluthFrenzyEnd"..module.revision,
+	
+	enrage = "GluthEnrage"..module.revision,
+	decimate = "GluthDecimate"..module.revision,
+	fear = "GluthFear"..module.revision,
 }
 
 local lastFrenzy = 0
 local _, playerClass = UnitClass("player")
 
-------------------------------
---      Initialization      --
-------------------------------
-
-module:RegisterYellEngage(L["starttrigger"])
-
--- called after module is enabled
 function module:OnEnable()
-	self:RegisterEvent("BigWigs_Message")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Frenzy")
-	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Frenzy")
-	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE", "Frenzy")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Enrage")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Fear")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Fear")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Fear")
-
-	--self:ThrottleSync(10, syncName.berserk)
+	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE", "Event")--frenzyGain, maybe enrage too
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event")--frenzyFade
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event")--Decimate, Fear
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event")--Decimate
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event")--Decimate
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")--Fear
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")--Fear
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")--Fear
+	
 	self:ThrottleSync(5, syncName.frenzy)
+	self:ThrottleSync(1, syncName.frenzyOver)
+	self:ThrottleSync(5, syncName.enrage)
+	self:ThrottleSync(5, syncName.decimate)
+	self:ThrottleSync(5, syncName.fear)
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
 	self.started = nil
 	self.prior = nil
@@ -184,123 +159,132 @@ function module:OnSetup()
 	lastFrenzy = 0
 end
 
--- called after boss is engaged
 function module:OnEngage()
-	if self.db.profile.decimate then
-		self:Message(L["startwarn"], "Attention")
-		self:Decimate()
-		self:ScheduleRepeatingEvent( "bwgluthdecimate", self.Decimate, timer.decimateInterval, self )
+	if self.db.profile.frenzy then
+		self:Bar(L["bar_frenzyCD"], timer.frenzy, icon.frenzy, true, "white")
 	end
+	if self.db.profile.enrage then
+		self:Bar(L["bar_enrage"], timer.enrage, icon.enrage, true, "Cyan")
+		self:DelayedMessage(timer.enrage - 60, L["msg_enrage60"], "Attention")
+		self:DelayedMessage(timer.enrage - 10, L["msg_enrage10"], "Attention")
+	end
+	if self.db.profile.decimate then
+		self:Bar(L["bar_decimate"], timer.decimate, icon.decimate, true, "Black")
+		self:DelayedMessage(timer.decimate - 5, L["msg_decimate5"], "Urgent")
+	end
+	if self.db.profile.fear then
+		self:Bar(L["bar_fearCD"], timer.firstfear, icon.fear, true, "Blue")
+	end
+	
+	
+	
+	
 	if self.db.profile.zombies then
 		self.zomnum = 1
-		self:Bar(string.format(L["zombiebar"],self.zomnum), timer.zombie, icon.zombie)
+		self:Bar(string.format(L["bar_zombies"],self.zomnum), timer.zombie, icon.zombie, true, "Green")
 		self.zomnum = self.zomnum + 1
 		self:Zombie()
 	end
-	if self.db.profile.enrage then
-		self:Bar(L["enragebartext"], timer.enrage, icon.enrage)
-		self:DelayedMessage(timer.enrage - 90, L["enrage_warn_90"], "Attention")
-		self:DelayedMessage(timer.enrage - 30, L["enrage_warn_30"], "Attention")
-		self:DelayedMessage(timer.enrage - 10, L["enrage_warn_10"], "Urgent")
-	end
-	if self.db.profile.frenzy then
-		self:Bar(L["frenzy_Nextbar"], timer.firstFrenzy, icon.frenzy, true, "white")
-	end
-	if self.db.profile.fear then
-		self:Bar(L["bar1text"], timer.fear, icon.fear)
-	end
 end
 
--- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
 end
 
+function module:Event(msg)
+	if msg == L["trigger_frenzyGain"] then
+		self:Sync(syncName.frenzy)
+	elseif msg == L["trigger_frenzyFade"] then
+		self:Sync(syncName.frenzyOver)
+	elseif msg == L["trigger_enrage"] then
+		self:Sync(syncName.enrage)
+	elseif string.find(msg, L["trigger_decimate"]) then
+		self:Sync(syncName.decimate)
+	elseif string.find(msg, L["trigger_fear"]) then
+		self:Sync(syncName.fear)
+	end
+end
 
-------------------------------
---      Initialization      --
-------------------------------
+
+
+function module:BigWigs_RecvSync(sync, rest, nick)
+	if sync == syncName.frenzy and self.db.profile.frenzy then
+		self:Frenzy()
+	elseif sync == syncName.frenzyOver and self.db.profile.frenzy then
+		self:FrenzyOver()
+	elseif sync == syncName.enrage and self.db.profile.enrage then
+		self:Enrage()
+	elseif sync == syncName.decimate then
+		self:Decimate()
+	elseif sync == syncName.fear and self.db.profile.fear then
+		self:Fear()
+	end
+end
+
+
+
+
+function module:Frenzy()
+	self:Message(L["msg_frenzy"], "Important", nil, true, "Alert")
+	self:Bar(L["bar_frenzyGain"], timer.frenzy, icon.frenzy, true, "red")
+	lastFrenzy = GetTime()
+	
+	if playerClass == "HUNTER" then
+		self:WarningSign(icon.tranquil, timer.frenzy, true)
+	end
+end
+
+function module:FrenzyOver()
+	self:RemoveBar(L["bar_frenzyGain"])
+	self:RemoveWarningSign(icon.tranquil, true)
+	
+	if lastFrenzy ~= 0 then
+		local NextTime = (lastFrenzy + timer.frenzy) - GetTime()
+		self:Bar(L["bar_frenzyCD"], NextTime, icon.frenzy, true, "white")
+	end
+end
+
+function module:Enrage()
+	self:RemoveBar(L["bar_enrage"])
+	self:CancelDelayedMessage(L["msg_enrage60"])
+	self:CancelDelayedMessage(L["msg_enrage10"])
+	
+	self:Message(L["msg_enrage"], "Important", nil, "Beware")
+	self:WarningSign(icon.enrage, 0.7)
+	self:Sound("Info")
+end
+
+function module:Decimate()
+	if self.db.profile.decimate then
+		self:RemoveBar(L["bar_decimate"])
+		self:Bar(L["bar_decimate"], timer.decimate, icon.decimate, true, "Black")
+		self:DelayedMessage(timer.decimate - 5, L["msg_decimate5"], "Urgent")
+		self:Sound("Beware")
+	end
+	
+	if self.db.profile.zombies then
+		self.zomnum = 1
+		self:Bar(string.format(L["bar_zombies"],self.zomnum), timer.zombie, icon.zombie, true, "Green")
+		self.zomnum = self.zomnum + 1
+		self:Zombie()
+	end
+end
+
+function module:Fear()
+	self:Bar(L["bar_fearCD"], timer.fear, icon.fear, true, "Blue")
+end
 
 function module:Zombies()
-	self:Bar(string.format(L["zombiebar"],self.zomnum), timer.zombie, icon.zombie)
+	self:Bar(string.format(L["bar_zombies"],self.zomnum), timer.zombie, icon.zombie, true, "Green")
 
 	if self.zomnum <= 10 then
 		self.zomnum = self.zomnum + 1
 	elseif self.zomnum > 10 then
 		self:CancelScheduledEvent("bwgluthzbrepop")
-		self:RemoveBar(string.format(L["zombiebar"], self.zomnum ))
+		self:RemoveBar(string.format(L["bar_zombies"], self.zomnum ))
 		self.zomnum = 1
 	end
 end
+
 function module:Zombie()
 	self:ScheduleRepeatingEvent("bwgluthzbrepop", self.Zombies, timer.zombie, self)
-end
-
-function module:Frenzy( msg )
-	if msg == L["frenzygain_trigger"] or msg == L["frenzygain_trigger2"] then
-		self:Sync(syncName.frenzy)
-	elseif msg == L["frenzyend_trigger"] then
-		self:Sync(syncName.frenzyOver)
-	end
-end
-
-function module:Fear( msg )
-	if self.db.profile.fear and not self.prior and string.find(msg, L["fear_trigger"]) then
-		self:Message(L["fear_warn"], "Important")
-		self:Bar(L["bar1text"], timer.fear, icon.fear)
-		self:DelayedMessage(timer.fear - 5, L["fear_warn_5"], "Urgent")
-		self.prior = true
-	end
-end
-
-function module:Decimate()
-	if self.db.profile.decimate then
-		self:Bar(L["decimatebar"], timer.decimateInterval, icon.decimate)
-		self:DelayedMessage(timer.decimateInterval - 5, L["decimatesoonwarn"], "Urgent")
-	end
-	if self.db.profile.zombies then
-		self.zomnum = 1
-		self:Bar(string.format(L["zombiebar"],self.zomnum), timer.zombie, icon.zombie)
-		self.zomnum = self.zomnum + 1
-		self:Zombie()
-	end
-end
-
-function module:Enrage( msg )
-	if string.find(msg, L["berserk_trigger"]) then
-		if self.db.profile.enrage then
-			self:Message(L["enragewarn"], "Important")
-		end
-		--[[self:CancelScheduledEvent("bwgluthdecimate")
-		self:CancelScheduledEvent("bwgluthdecimatewarn")
-		self:CancelScheduledEvent("bwgluthfrenzy_warn")
-		self:CancelScheduledEvent("bwgluthfear_warn_5")
-		self:CancelScheduledEvent("bwgluthfear_warn")]]
-	end
-end
-
-function module:BigWigs_Message(text)
-	if text == L["fear_warn_5"] then self.prior = nil end
-end
-
-
-------------------------------
---      Synchronization	    --
-------------------------------
-
-function module:BigWigs_RecvSync(sync, rest, nick)
-	if sync == syncName.frenzy and self.db.profile.frenzy then
-		self:Message(L["frenzy_message"], "Important", nil, true, "Alert")
-		self:Bar(L["frenzy_bar"], timer.frenzy, icon.frenzy, true, "red")
-		if playerClass == "HUNTER" then
-			self:WarningSign(icon.tranquil, timer.frenzy, true)
-		end
-		lastFrenzy = GetTime()
-	elseif sync == syncName.frenzyOver and self.db.profile.frenzy then
-		self:RemoveBar(L["frenzy_bar"])
-		self:RemoveWarningSign(icon.tranquil, true)
-		if lastFrenzy ~= 0 then
-			local NextTime = (lastFrenzy + timer.frenzy) - GetTime()
-			self:Bar(L["frenzy_Nextbar"], NextTime, icon.frenzy, true, "white")
-		end
-	end
 end

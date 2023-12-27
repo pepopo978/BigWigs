@@ -3,16 +3,11 @@ local __find = string.find
 local __substr = string.sub
 local __tinsert = table.insert
 
-----------------------------------
---      Module Declaration      --
-----------------------------------
-
 local module, L = BigWigs:ModuleDeclaration("Gothik the Harvester", "Naxxramas")
 
-
-----------------------------
---      Localization      --
-----------------------------
+module.revision = 20003
+module.enabletrigger = module.translatedName
+module.toggleoptions = {"room", -1, "add", "adddeath", "bosskill"}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Gothik",
@@ -35,16 +30,23 @@ L:RegisterTranslations("enUS", function() return {
 	starttrigger2 = "Teamanare shi rikk mannor rikk lok karkun",
 	startwarn = "Gothik the Harvester engaged! 4:35 till he's in the room.",
 
-	rider_name = "Unrelenting Rider",
-	spectral_rider_name = "Spectral Rider",
-	deathknight_name = "Unrelenting Deathknight",
-	spectral_deathknight_name = "Spectral Deathknight",
 	trainee_name = "Unrelenting Trainee",
 	spectral_trainee_name = "Spectral Trainee",
-
-	riderdiewarn = "Rider dead!",
+	trawarn = "Trainees in 3 seconds",
+	trabar = "Trainee - %d",
+	
+	deathknight_name = "Unrelenting Deathknight",
+	spectral_deathknight_name = "Spectral Deathknight",
 	dkdiewarn = "Death Knight dead!",
-
+	dkwarn = "Deathknight in 3 seconds",
+	dkbar = "Deathknight - %d",
+	
+	rider_name = "Unrelenting Rider",
+	spectral_rider_name = "Spectral Rider",
+	riderdiewarn = "Rider dead!",
+	riderwarn = "Rider in 3 seconds",
+	riderbar = "Rider - %d",
+	
 	warn_inroom_3m = "In room in 3 minutes",
 	warn_inroom_90 = "In room in 90 seconds",
 	warn_inroom_60 = "In room in 60 seconds",
@@ -53,17 +55,8 @@ L:RegisterTranslations("enUS", function() return {
 
 	wave = "%d/22: ", -- its only 22 waves not 26
 
-	trawarn = "Trainees in 3 seconds",
-	dkwarn = "Deathknight in 3 seconds",
-	riderwarn = "Rider in 3 seconds",
-
-	trabar = "Trainee - %d",
-	dkbar = "Deathknight - %d",
-	riderbar = "Rider - %d",
-
 	inroomtrigger = "I have waited long enough! Now, you face the harvester of souls.",
 	inroomwarn = "He's in the room!",
-
 	inroombartext = "In Room",
 } end )
 
@@ -119,19 +112,10 @@ L:RegisterTranslations("esES", function() return {
 
 	inroombartext = "En Habitación",
 } end )
----------------------------------
---      	Variables 		   --
----------------------------------
 
--- module variables
-module.revision = 20003 -- To be overridden by the module!
-module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
 module.wipemobs = { L["rider_name"], L["deathknight_name"], L["trainee_name"],
-	L["spectral_rider_name"], L["spectral_deathknight_name"], L["spectral_trainee_name"] } -- adds which will be considered in CheckForEngage
-module.toggleoptions = {"room", -1, "add", "adddeath", "bosskill"}
+	L["spectral_rider_name"], L["spectral_deathknight_name"], L["spectral_trainee_name"] }
 
-
--- locals
 local timer = {
 	inroom = 274,
 	firstTrainee = 24,
@@ -153,19 +137,13 @@ local numTrainees = 0
 local numDeathknights = 0
 local numRiders = 0
 
-------------------------------
---      Initialization      --
-------------------------------
-
 module:RegisterYellEngage(L["starttrigger1"])
 module:RegisterYellEngage(L["starttrigger2"])
 
--- called after module is enabled
 function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
 	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
 
@@ -176,11 +154,10 @@ function module:OnSetup()
 	numRiders = 0
 end
 
--- called after boss is engaged
 function module:OnEngage()
 	if self.db.profile.room then
 		self:Message(L["startwarn"], "Important")
-		self:Bar(L["inroombartext"], timer.inroom, icon.inroom)
+		self:Bar(L["inroombartext"], timer.inroom, icon.inroom, true, "White")
 		self:DelayedMessage(timer.inroom - 3 * 60, L["warn_inroom_3m"], "Attention")
 		self:DelayedMessage(timer.inroom - 90, L["warn_inroom_90"], "Attention")
 		self:DelayedMessage(timer.inroom - 60, L["warn_inroom_60"], "Urgent")
@@ -195,14 +172,8 @@ function module:OnEngage()
 	end
 end
 
--- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
 end
-
-
-------------------------------
---      Event Handlers	    --
-------------------------------
 
 function module:CHAT_MSG_MONSTER_YELL( msg )
 	if msg == L["inroomtrigger"] then
@@ -239,11 +210,6 @@ function module:StopRoom()
 	numRiders = 0
 end
 
-
-------------------------------
---      Utility	Functions   --
-------------------------------
-
 function module:WaveWarn(message, L, color)
 	wave = wave + 1
 	if self.db.profile.add then
@@ -259,11 +225,10 @@ function module:Trainee()
 	end
 
 	if self.db.profile.add then
-		self:Bar(string.format(L["trabar"], numTrainees), traineeTime, icon.trainee)
+		self:Bar(string.format(L["trabar"], numTrainees), traineeTime, icon.trainee, true, "Green")
 	end
 	self:ScheduleEvent("bwgothiktrawarn", self.WaveWarn, traineeTime - 3, self, L["trawarn"], L, "Attention")
 	self:ScheduleRepeatingEvent("bwgothiktrarepop", self.Trainee, traineeTime, self)
-
 
 	if numTrainees >= 12 then  -- cancels bar after wave 11
 		self:RemoveBar(string.format(L["trabar"], numTrainees - 1))
@@ -311,11 +276,10 @@ function module:DeathKnight()
 	end
 
 	if self.db.profile.add then
-		self:Bar(string.format(L["dkbar"], numDeathknights) .. " " .. shackles[numDeathknights], deathknightTime, icon.deathknight)
+		self:Bar(string.format(L["dkbar"], numDeathknights) .. " " .. shackles[numDeathknights], deathknightTime, icon.deathknight, true, "Yellow")
 	end
 	self:ScheduleEvent("bwgothikdkwarn", self.WaveWarn, deathknightTime - 3, self, L["dkwarn"], L, "Urgent")
 	self:ScheduleRepeatingEvent("bwgothikdkrepop", self.DeathKnight, deathknightTime, self)
-
 
 	if numDeathknights >= 8 then  -- cancels bar after wave 7
 		self:RemoveBar(string.format(L["dkbar"], numDeathknights - 1))
@@ -333,7 +297,7 @@ function module:Rider()
 	end
 
 	if self.db.profile.add then
-		self:Bar(string.format(L["riderbar"], numRiders), riderTime, icon.rider)
+		self:Bar(string.format(L["riderbar"], numRiders), riderTime, icon.rider, true, "Red")
 	end
 	self:ScheduleEvent("bwgothikriderwarn", self.WaveWarn, riderTime - 3, self, L["riderwarn"], L, "Important")
 	self:ScheduleRepeatingEvent("bwgothikriderrepop", self.Rider, riderTime, self)
@@ -345,7 +309,6 @@ function module:Rider()
 		numRiders = 0
 	end
 end
-
 
 function __explode(str, delimiter)
 	local result = {}

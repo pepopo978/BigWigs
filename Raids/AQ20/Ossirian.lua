@@ -1,309 +1,281 @@
 
-----------------------------------
---      Module Declaration      --
-----------------------------------
-
 local module, L = BigWigs:ModuleDeclaration("Ossirian the Unscarred", "Ruins of Ahn'Qiraj")
 
-
-----------------------------
---      Localization      --
-----------------------------
+module.revision = 30012
+module.enabletrigger = module.translatedName
+module.toggleoptions = {"bigicon", "warstomp", "cyclone", "sandstorm", "supreme", "weakness", "clickit", "bosskill"}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Ossirian",
-
+	
+	bigicon_cmd = "bigicon",
+	bigicon_name = "Big icon warnings signs",
+	bigicon_desc = "Big warning signs for Sandstorm, Weakness and Shaman's grounding totem",
+	
+	warstomp_cmd = "warstomp",
+	warstomp_name = "Warstomp bars",
+	warstomp_desc = "Timers for Ossirian's Warstomp ability",
+	
+	cyclone_cmd = "cyclone",
+	cyclone_name = "Cyclone bars",
+	cyclone_desc = "Timers for Ossirian's Cyclone ability",
+	
+	sandstorm_cmd = "sandstorm",
+	sandstorm_name = "Sand tornado damage warning",
+	sandstorm_desc = "Warn if you are taking damage from a Sand tornado",
+	
 	supreme_cmd = "supreme",
 	supreme_name = "Supreme Alert",
 	supreme_desc = "Warn for Supreme Mode",
+	
+	weakness_cmd = "weakness",
+	weakness_name = "Ossirian's weakness alert",
+	weakness_desc = "Warns what Ossirian's new weakness is",
+	
+	clickit_cmd = "clickit",
+	clickit_name = "Click a crystal now",
+	clickit_desc = "Timers for if you click after this timer, he will go supreme",
 
-	debuff_cmd = "debuff",
-	debuff_name = "Debuff Alert",
-	debuff_desc = "Warn for Defuff",
-
-	supremetrigger = "Ossirian the Unscarred gains Strength of Ossirian.",
+	supreme_trigger = "Ossirian the Unscarred gains Strength of Ossirian.",
+	supreme_trigger2 = "Ossirian the Unscarred is afflicted by Strength of Ossirian.",
+	supreme_bar = "Supreme",
 	supremewarn = "Ossirian Supreme Mode!",
 	supremedelaywarn = "Supreme in %d seconds!",
-	debufftrigger = "Ossirian the Unscarred is afflicted by (.+) Weakness.",
-	crystaltrigger = "Ossirian Crystal Trigger dies.",
-	debuffwarn = "Ossirian now weak to %s!",
-	supreme_bar = "Supreme",
+
+	debuff_trigger = "Ossirian the Unscarred is afflicted by (.+) Weakness.",
+	debuff_trigger2 = "Ossirian the Unscarred gains (.+) Weakness.",
+	debuffwarn = "Ossirian now weak to ",
+
+	ossiLostSupreme = "Strength of Ossirian fades from Ossirian the Unscarred.",-- CHAT_MSG_SPELL_AURA_GONE_OTHER",
+
 	expose = "Expose",
-
-	["cyclone_trigger"] = "Enveloping Winds",
-	["stomp_trigger"] = "War Stomp",
-
-	["WarStomp"] = "War Stomp",
-	["Cyclone"] = "Cyclone",
-
-	["Shadow"] = true,
-	["Fire"] = true,
-	["Frost"] = true,
-	["Nature"] = true,
-	["Arcane"] = true,
-
-	["ShadowIcon"] = "Spell_Shadow_ChillTouch",
-	["FireIcon"] = "Spell_Fire_Fire",
-	["FrostIcon"] = "Spell_Frost_ChillingBlast",
-	["NatureIcon"] = "Spell_Nature_Acid_01",
-	["ArcaneIcon"] = "Spell_Arcane_PortalOrgrimmar",
+	
+	cyclone_trigger = "Enveloping Winds",
+	cyclone_bar = "Cyclone",
+	warstomp_trigger = "War Stomp",
+	warstomp_bar = "War Stomp",
+	
+	sandstorm_trigger = "Sand Vortex's Harsh Winds hits you for",
+	
+	clickit_bar = "Crystal or die",
+	
+	firstcrystal_bar = "Click 1st crystal at 0",
+	firstcrystal_warn = "CLICK IT NOW!!!",
 } end )
 
-L:RegisterTranslations("esES", function() return {
-	--cmd = "Ossirian",
-
-	--supreme_cmd = "supreme",
-	supreme_name = "Alerta de Supremo",
-	supreme_desc = "Avisa para Modo Supremo",
-
-	--debuff_cmd = "debuff",
-	debuff_name = "Alerta de Debuff",
-	debuff_desc = "Avisa para Defuff",
-
-	supremetrigger = "Osirio el Sinmarcas gana Fuerza de Osirio.",
-	supremewarn = "¡Osirio Modo Supremo!",
-	supremedelaywarn = "¡Supremo en %d segundos!",
-	debufftrigger = "Osirio el Sinmarcas sufre de Debilidad de (.+).",
-	crystaltrigger = "Activador de cristal de Osirio muere.",
-	debuffwarn = "¡Osirio está debilidado a %s!",
-	supreme_bar = "Supremo",
-	expose = "Exponer",
-
-	["cyclone_trigger"] = "Vientos envolventes",
-	["stomp_trigger"] = "Pisotón de guerra",
-
-	["WarStomp"] = "Pisotón de guerra",
-	["Cyclone"] = "Ciclón",
-
-	["Shadow"] = "Sombras",
-	["Fire"] = "Fuego",
-	["Frost"] = "Escharcha",
-	["Nature"] = "Naturaleza",
-	["Arcane"] = "Arcano",
-
-	["ShadowIcon"] = "Spell_Shadow_ChillTouch",
-	["FireIcon"] = "Spell_Fire_Fire",
-	["FrostIcon"] = "Spell_Frost_ChillingBlast",
-	["NatureIcon"] = "Spell_Nature_Acid_01",
-	["ArcaneIcon"] = "Spell_Arcane_PortalOrgrimmar",
-} end )
-
-L:RegisterTranslations("deDE", function() return {
-	supreme_name = "Stärke des Ossirian",
-	supreme_desc = "Warnung vor Stärke des Ossirian.",
-
-	debuff_name = "Debuff",
-	debuff_desc = "Warnung vor Debuff.",
-
-	supremetrigger = "Ossirian der Narbenlose bekommt 'Stärke des Ossirian'.",
-	supremewarn = "Stärke des Ossirian!",
-	supremedelaywarn = "Stärke des Ossirian in %d Sekunden!",
-	debufftrigger = "Ossirian der Narbenlose ist von (.*)schwäche betroffen.",
-	crystaltrigger = "Ossirian Crystal Trigger dies.", -- translation missing
-	debuffwarn = "Ossirian für 45 Sekunden anfällig gegen: %s",
-	supreme_bar = "Stärke des Ossirian",
-	expose = "Schwäche",
-
-	["cyclone_trigger"] = "Enveloping Winds",
-	["stomp_trigger"] = "War Stomp",
-
-	["WarStomp"] = "War Stomp",
-	["Cyclone"] = "Cyclone",
-
-	["Shadow"] = "Schatten",
-	["Fire"] = "Feuer",
-	["Frost"] = "Frost",
-	["Nature"] = "Natur",
-	["Arcane"] = "Arkan",
-
-	["ShadowIcon"] = "Spell_Shadow_ChillTouch",
-	["FireIcon"] = "Spell_Fire_Fire",
-	["FrostIcon"] = "Spell_Frost_ChillingBlast",
-	["NatureIcon"] = "Spell_Nature_Acid_01",
-	["ArcaneIcon"] = "Spell_Arcane_PortalOrgrimmar",
-} end )
-
-
----------------------------------
---      	Variables 		   --
----------------------------------
-
--- module variables
-module.revision = 20006 -- To be overridden by the module!
-module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
---module.wipemobs = { L["add_name"] } -- adds which will be considered in CheckForEngage
-module.toggleoptions = {"supreme", "debuff", "bosskill"}
-
--- locals
 local timer = {
 	weakness = 45,
 	supreme = 45,
-	firstCyclone = 20,
-	cyclone = 15,
-	earliestWarstomp = 25,
-	latestWarstomp = 35,
+	warstomp = 30,
+	cyclone = 20,
+	clickit = 10,
+	firstcrystal = 10,
+	firstWarstomp = 25,
 }
+
 local icon = {
-	supreme = "Spell_Shadow_CurseOfTounges",
-	warstomp = "Ability_BullRush",
+	supreme = "Ability_warrior_innerrage",
+	warstomp = "Ability_warstomp",
 	cyclone = "Spell_Nature_Cyclone",
+	grounding = "spell_nature_groundingtotem",
+	sandstorm = "spell_nature_earthbind",
+	
+	shadow = "spell_shadow_shadowbolt",
+	fire = "Spell_Fire_Fire",
+	frost = "Spell_Frost_ChillingBlast",
+	nature = "spell_nature_healingtouch",
+	arcane = "spell_nature_starfall",
+	
+	clickit = "inv_misc_pocketwatch_01",
 }
+
 local syncName = {
 	weakness = "OssirianWeakness"..module.revision,
-	crystal = "OssirianCrystal"..module.revision,
 	supreme = "OssirianSupreme"..module.revision,
 	warstomp = "OssirianWarstomp"..module.revision,
 	cyclone = "OssirianCyclone"..module.revision,
 }
 
-local currentWeakness = nil
-local timeLastWeaken = nil
+local _, playerClass = UnitClass("player")
+bwOssiWeaknessTime = GetTime()
 
-
-------------------------------
---      Initialization      --
-------------------------------
-
---module:RegisterYellEngage(L["start_trigger"])
-
--- called after module is enabled
 function module:OnEnable()
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE")
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event")
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE", "Event")
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event")
 
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Debuff")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Debuff")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Debuff")
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Debuff")
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Debuff")
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Debuff")
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event")
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event")
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event")
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF", "Event")
 
+	
 	self:ThrottleSync(3, syncName.weakness)
-	self:ThrottleSync(3, syncName.crystal)
 	self:ThrottleSync(3, syncName.supreme)
 	self:ThrottleSync(3, syncName.cyclone)
 	self:ThrottleSync(3, syncName.warstomp)
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
-	timeLastWeaken = GetTime()
-	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
 end
 
--- called after boss is engaged
 function module:OnEngage()
-	self:Bar(L["Cyclone"], timer.firstCyclone, icon.cyclone)
-	self:Bar(L["WarStomp"], timer.earliestWarstomp, icon.warstomp)
+	bwOssiSupreme = true
+	bwOssiFirstWarstop = true
+	bwOssiWeaknessTime = GetTime()
+	
+	self:Sync(syncName.warstomp)
+	self:Sync(syncName.cyclone)
+	self:Sync(syncName.supreme)
+	
+	if self.db.profile.clickit then
+		self:Bar(L["firstcrystal_bar"], timer.firstcrystal, icon.clickit, true, "blue")
+		self:DelayedMessage(timer.firstcrystal, L["firstcrystal_warn"], "Urgent")
+	end
 end
 
--- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
 end
 
-
-------------------------------
---      Event Handlers	    --
-------------------------------
-
-function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
-	BigWigs:CheckForBossDeath(msg, self)
-
-	-- if the same weakness triggers back to back, the normal combat log entry is missing for the weakness
-	-- this event is triggered 2s later
-	if string.find(msg, L["crystaltrigger"]) then
-		self:Sync(syncName.crystal)
+function module:Event(msg)
+	if msg == L["ossiLostSupreme"] then
+		bwOssiSupreme = false
 	end
-end
-
-function module:CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE( msg )
-	local _, _, debuffName = string.find(msg, L["debufftrigger"])
-	if debuffName and debuffName ~= L["expose"] and L:HasReverseTranslation(debuffName) then
-		self:Sync(syncName.weakness .. " " .. L:GetReverseTranslation(debuffName))
+	
+	if ((bwOssiWeaknessTime + 46) < GetTime()) and bwOssiSupreme == false then
+		self:Bar("UNKNOWN Supreme timer", 30, icon.supreme, true, "red")
+		self:Message("WARNING! Supreme timer unknown!", "Attention", nil, "Beware")
+		bwOssiSupreme = nil
 	end
-end
-
-function module:CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS( msg )
-	if string.find(msg, L["supremetrigger"]) then
+	
+	local _, _, debuffName = string.find(msg, L["debuff_trigger"])
+	if string.find(msg, L["debuff_trigger"]) and debuffName ~= L["expose"] then
+		self:Sync(syncName.weakness .. " " .. debuffName)
+	end
+	
+	local _, _, debuffName = string.find(msg, L["debuff_trigger2"])
+	if string.find(msg, L["debuff_trigger2"]) and debuffName ~= L["expose"] then
+		self:Sync(syncName.weakness .. " " .. debuffName)
+	end
+	
+	if string.find(msg, L["cyclone_trigger"]) then
+		self:Sync(syncName.cyclone)
+	end
+	if string.find(msg, L["warstomp_trigger"]) then
+		self:Sync(syncName.warstomp)
+	end
+	if string.find(msg, L["supreme_trigger"]) or string.find(msg, L["supreme_trigger2"]) then
 		self:Sync(syncName.supreme)
 	end
+	if string.find(msg, L["sandstorm_trigger"]) and self.db.profile.sandstorm then
+		if self.db.profile.bigicon then
+			self:WarningSign(icon.sandstorm, 1)
+		end
+		self:Sound("RunAway")
+	end
 end
-
-
-------------------------------
---      Synchronization	    --
-------------------------------
 
 function module:BigWigs_RecvSync(sync, rest, nick)
-	if sync == syncName.weakness and rest then
+	if sync == syncName.weakness and rest and self.db.profile.weakness then
 		self:Weakness(rest)
-	elseif sync == syncName.crystal then
-		self:Crystal()
-	elseif sync == syncName.supreme then
+	elseif sync == syncName.supreme and self.db.profile.supreme then
 		self:Supreme()
-	elseif sync == syncName.cyclone then
+	elseif sync == syncName.cyclone and self.db.profile.cyclone then
 		self:Cyclone()
-	elseif sync == syncName.warstomp then
-		self:IntervalBar(L["WarStomp"], timer.earliestWarstomp, timer.latestWarstomp, icon.warstomp)
+	elseif sync == syncName.warstomp and self.db.profile.warstomp then
+		self:WarStomp()
 	end
 end
 
-------------------------------
---      Sync Handlers	    --
-------------------------------
-
-function module:Cyclone()
-	self:CancelScheduledEvent("bw_ossirian_cyclone")
-	self:Bar(L["Cyclone"], timer.cyclone, icon.cyclone)
-	self:ScheduleEvent("bw_ossirian_cyclone", self.Cyclone, timer.cyclone, self)
-end
-
-function module:Weakness(weakness, delay)
-	if not weakness then
-		return
+function module:Weakness(rest)
+	if self.db.profile.clickit then
+		self:ClickIt()
 	end
-	if not delay then
-		delay = 0
+	
+	self:RemoveBar("UNKNOWN Supreme timer")
+	bwOssiWeaknessTime = GetTime()
+	bwOssiSupreme = false
+	element = tostring(rest)
+	
+	if element == "Shadow" and self.db.profile.weakness then
+		self:RemoveBar("Shadow weakness!")
+		self:Message(string.format(L["debuffwarn"].."Shadow!"), "Important")
+		self:Bar("Shadow weakness!", timer.weakness, icon.shadow, true, "green")
+		if self.db.profile.bigicon then
+			self:WarningSign(icon.shadow, 0.7)
+		end
 	end
-
-	timeLastWeaken = GetTime()
-	currentWeakness = weakness
-
-	if self.db.profile.debuff then
-		self:Message(string.format(L["debuffwarn"], L[tostring(weakness)]), "Important")
-		self:Bar(L[weakness], timer.weakness - delay, L[weakness .. "Icon"])
+	if element == "Fire" and self.db.profile.weakness then
+		self:RemoveBar("Fire weakness!")
+		self:Message(string.format(L["debuffwarn"].."Fire!"), "Important")
+		self:Bar("Fire weakness!", timer.weakness, icon.fire, true, "green")
+		if self.db.profile.bigicon then
+			self:WarningSign(icon.fire, 0.7)
+		end
 	end
-
-	self:RemoveBar(L["supreme_bar"])
-	self:CancelDelayedMessage(string.format(L["supremedelaywarn"], 15))
-	self:CancelDelayedMessage(string.format(L["supremedelaywarn"], 10))
-	self:CancelDelayedMessage(string.format(L["supremedelaywarn"], 5))
-
+	if element == "Frost" and self.db.profile.weakness then
+		self:RemoveBar("Frost weakness!")
+		self:Message(string.format(L["debuffwarn"].."Frost!"), "Important")
+		self:Bar("Frost weakness!", timer.weakness, icon.frost, true, "green")
+		if self.db.profile.bigicon then
+			self:WarningSign(icon.frost, 0.7)
+		end
+	end
+	if element == "Nature" and self.db.profile.weakness then
+		self:RemoveBar("Nature weakness!")
+		self:Message(string.format(L["debuffwarn"].."Nature!"), "Important")
+		self:Bar("Nature weakness!", timer.weakness, icon.nature, true, "green")
+		if self.db.profile.bigicon then
+			self:WarningSign(icon.nature, 0.7)
+		end
+	end
+	if element == "Arcane" and self.db.profile.weakness then
+		self:RemoveBar("Arcane weakness!")
+		self:Message(string.format(L["debuffwarn"].."Arcane!"), "Important")
+		self:Bar("Arcane weakness!", timer.weakness, icon.arcane, true, "green")
+		if self.db.profile.bigicon then
+			self:WarningSign(icon.arcane, 0.7)
+		end
+	end	
 	if self.db.profile.supreme then
-		self:DelayedMessage(timer.supreme - delay, string.format(L["supremedelaywarn"], 15), "Attention", nil, nil, true)
-		self:DelayedMessage(timer.supreme - delay, string.format(L["supremedelaywarn"], 10), "Urgent", nil, nil, true)
-		self:DelayedMessage(timer.supreme - delay, string.format(L["supremedelaywarn"], 5), "Important", nil, nil, true)
-		self:Bar(L["supreme_bar"], timer.supreme - delay, icon.supreme)
-	end
-end
-
-function module:Crystal()
-	if timeLastWeaken + 3 < GetTime() then -- crystal trigger occurs 2s after weaken trigger
-		self:Weakness(currentWeakness, 2)
+		self:CancelDelayedMessage(string.format(L["supremedelaywarn"], 5))
+		self:RemoveBar(L["supreme_bar"])
+		self:DelayedMessage(timer.supreme-5, string.format(L["supremedelaywarn"], 5), "Important")
+		self:Bar(L["supreme_bar"], timer.supreme, icon.supreme, true, "red")
 	end
 end
 
 function module:Supreme()
-	if self.db.profile.supreme then
-		self:Message(L["supremewarn"], "Attention", nil, "Beware")
+	bwOssiSupreme = true
+	self:Message(L["supremewarn"], "Attention", nil, "Beware")
+	self:RemoveBar("UNKNOWN Supreme timer")
+end
+
+function module:Cyclone()
+	self:RemoveBar(L["cyclone_bar"])
+	self:Bar(L["cyclone_bar"], timer.cyclone, icon.cyclone, true, "white")
+	
+	if playerClass == "SHAMAN" and self.db.profile.bigicon then
+		self:DelayedWarningSign(timer.cyclone - 5, icon.grounding, 1)
 	end
 end
 
-function module:Debuff(msg)
-	if string.find(msg, L["cyclone_trigger"])then
-		self:Sync(syncName.cyclone)
+function module:WarStomp()
+	if bwOssiFirstWarstop == false then
+		self:RemoveBar(L["warstomp_bar"])
+	
+		self:Bar(L["warstomp_bar"], timer.warstomp, icon.warstomp, true, "yellow")
+		self:DelayedWarningSign(timer.warstomp - 5, icon.warstomp, 1)
+	else
+		self:Bar(L["warstomp_bar"], timer.firstWarstomp, icon.warstomp, true, "yellow")
+		bwOssiFirstWarstop = false
 	end
-	if string.find(msg, L["stomp_trigger"])then
-		self:Sync(syncName.warstomp)
-	end
+end
+
+function module:ClickIt()
+	self:RemoveBar(L["clickit_bar"])
+	self:DelayedBar(timer.weakness-16.2, L["clickit_bar"], timer.clickit, icon.clickit, true, "blue")
 end

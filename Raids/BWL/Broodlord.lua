@@ -168,7 +168,7 @@ function module:OnEngage()
 		self:Bar(L["First Mortal Strike"], timer.firstMortal, icon.mortalStrike, true, "Black")
 	end
 	if self.db.profile.knock then
-		self:Bar(L["knock_bar"], timer.knockAway, icon.knockAway)
+		self:Bar(L["knock_bar"], timer.knockAway, icon.knockAway, true, "White")
 	end
 end
 

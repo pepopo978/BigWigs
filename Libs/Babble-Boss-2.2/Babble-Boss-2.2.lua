@@ -28,6 +28,40 @@ local BabbleBoss = AceLibrary("AceLocale-2.2"):new(MAJOR_VERSION)
 
 BabbleBoss:RegisterTranslations("enUS", function()
 	return {
+		["Rotmaw"] = true,
+		["Antnormi"] = true,
+		["Mossheart"] = true,
+		["Time-Lord Epochronos"] = true,
+		["Drifting Avatar of Sand"] = true,
+		["Epidamu"] = true,
+		["Chronar"] = true,
+		["Rookery Hatcher"] = true,
+		["Rookery Guardian"] = true,
+		["Sanctum Dragonkin"] = true,
+		["Sanctum Dreamer"] = true,
+		["Sanctum Supressor"] = true,
+		["Sanctum Wyrmkin"] = true,
+		["Sanctum Wyrm"] = true,
+		["Solnius"] = true,
+		["Erennius"] = true,
+		["Dark Rider Champion"] = true,
+		["Lord Blackwald II"] = true,
+		["Phantom Servant"] = true,
+		["Brood Queen Araxxna"] = true,
+		["Grizikil"] = true,
+		["Clawlord Howlfang"] = true,
+		["Moroes"] = true,
+		["Blackhand Incarcerator"] = true,
+		["Venom Stalker"] = true,
+		["Living Monstrosity"] = true,
+		["Deathknight Captain"] = true,
+		["Death Talon Wyrmguard"] = true,
+		["Anubisath Sentinel"] = true,
+		["Qiraji Brainwasher"] = true,
+		["Qiraji Mindslayer"] = true,
+		["Qiraji Champion"] = true,
+		["Flesh Hunter"] = true,
+		["Deathknight Captain"] = true,
 		["Nerubian Overseer"] = true,
 		["Avalanchion"] = true,
 		["The Windreaver"] = true,
@@ -368,6 +402,7 @@ BabbleBoss:RegisterTranslations("enUS", function()
 		["Stratholme Courier"] = true;
 		["Ancient Core Hound"] = true;
 		["Gurubashi Berserker"] = true;
+		["Gurubashi Bat Rider"] = true;
 		["Elder Mottled Boar"] = true,
 		["Gargoyle"] = true,
 		["Alterac Valley"] = true,
@@ -1067,7 +1102,6 @@ BabbleBoss:RegisterTranslations("ruRU", function()
 		["Gargoyle"] = true,
 	}
 end)
-
 
 BabbleBoss:RegisterTranslations("deDE", function()
 	return {

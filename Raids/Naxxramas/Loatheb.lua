@@ -1,16 +1,9 @@
 
--- trigger for spore spawn missing
-
-----------------------------------
---      Module Declaration      --
-----------------------------------
-
 local module, L = BigWigs:ModuleDeclaration("Loatheb", "Naxxramas")
 
-
-----------------------------
---      Localization      --
-----------------------------
+module.revision = 30028
+module.enabletrigger = module.translatedName
+module.toggleoptions = {"doom", "curse", "spore", "groups", "debuff", "corruptedmind", -1, "consumable", "graphic", "sound", "bosskill"}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Loatheb",
@@ -34,7 +27,12 @@ L:RegisterTranslations("enUS", function() return {
 	groups_cmd = "groups",
 	groups_name = "Spore groups",
 	groups_desc = "Disable to show group numbers on spore timer (7 Group tactic)",
-
+	
+	corruptedmind_cmd = "corruptedmind",
+	corruptedmind_name = "Your own Corrupted Mind Timer",
+	corruptedmind_desc = "Timer for your own Corrupted Mind debuff",
+	
+	
 	doombar = "Inevitable Doom %d",
 	doomwarn = "Inevitable Doom %d! %d sec to next!",
 	doomwarn5sec = "Inevitable Doom %d in 5 sec!",
@@ -44,7 +42,6 @@ L:RegisterTranslations("enUS", function() return {
 	cursebar = "Remove Curse",
 	cursetrigger  = "Loatheb's Curse (.+) is removed.",
 
-
 	doomtimerbar = "Doom every 15sec",
 	doomtimerwarn = "Doom timerchange in %s seconds!",
 	doomtimerwarnnow = "Inevitable Doom now happens every 15sec!",
@@ -53,7 +50,11 @@ L:RegisterTranslations("enUS", function() return {
 	cursetimerwarn = "Curses removed, next in %s seconds!",
 
 	startwarn = "Loatheb engaged, 2 min to Inevitable Doom!",
-
+	
+	trigger_corruptedMind = "You are afflicted by Corrupted Mind.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	bar_corruptedMind = "Your Corrupted Mind",
+	trigger_corruptedMindFade = "Corrupted Mind fades from you.",--CHAT_MSG_SPELL_AURA_GONE_SELF
+	
 	--sporewarn = "Spore spawned",
 	sporebar = "Next Spore %d",
 	sporebar_group = "Next Spore - Group %d",
@@ -167,18 +168,7 @@ local LoathebDebuff = CreateFrame( "GameTooltip", "LoathebDebuff", nil, "GameToo
 LoathebDebuff:Hide()
 LoathebDebuff:SetFrameStrata("TOOLTIP")
 LoathebDebuff:SetOwner(WorldFrame, "ANCHOR_NONE")
----------------------------------
---      	Variables 		   --
----------------------------------
 
--- module variables
-module.revision = 20004 -- To be overridden by the module!
-module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
---module.wipemobs = { L["add_name"] } -- adds which will be considered in CheckForEngage
-module.toggleoptions = {"doom", "curse", "spore", "groups", "debuff", -1, "consumable", "graphic", "sound", "bosskill"}
-
-
--- locals
 local timer = {
 	softEnrage = 300,
 	firstDoom = 120,
@@ -189,6 +179,7 @@ local timer = {
 	firstCurse = 5,
 	curse = 30,
 	getNextSpore = 20,
+	corruptedMind = 60,
 }
 local icon = {
 	softEnrage = "Spell_Shadow_UnholyFrenzy",
@@ -196,6 +187,10 @@ local icon = {
 	spore = "Ability_TheBlackArrow",
 	sieni = "Interface\\AddOns\\\BigWigs\\Textures\\sieni",
 	curse = "Spell_Holy_RemoveCurse",
+	corruptedMind = "spell_shadow_auraofdarkness",
+}
+local color = {
+	corruptedMind = "Cyan",
 }
 local syncName = {
 	doom = "LoathebDoom"..module.revision,
@@ -206,18 +201,13 @@ local consumableslist = {L["shadowpot"],L["noconsumable"],L["bandage"],L["wrtorh
 local numSpore = 0 -- how many spores have been spawned
 local numDoom = 0 -- how many dooms have been casted
 
-
-------------------------------
---      Initialization      --
-------------------------------
-
--- called after module is enabled
 function module:OnEnable()
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")--trigger_corruptedMind
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event")--trigger_corruptedMindFade
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_BREAK_AURA", "CurseEvent")
-
+	
 	-- 2: Doom and SporeSpawn versioned up because of the sync including the
 	-- doom/spore count now, so we don't hold back the counter.
 	self:ThrottleSync(10, syncName.doom)
@@ -256,7 +246,6 @@ function module:OnEnable()
 
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
 	self.consumableseq = 0
 	numSpore = 0 -- how many spores have been spawned
@@ -267,46 +256,44 @@ function module:OnSetup()
 	self.frameIcon2:Hide()
 end
 
--- called after boss is engaged
 function module:OnEngage()
 	if self.db.profile.doom then
-		self:Bar(L["doomtimerbar"], timer.softEnrage, icon.softEnrage)
+		self:Bar(L["doomtimerbar"], timer.softEnrage, icon.softEnrage, true, "White")
 		self:DelayedMessage(timer.softEnrage - 60, string.format(L["doomtimerwarn"], 60), "Attention")
 		self:DelayedMessage(timer.softEnrage - 30, string.format(L["doomtimerwarn"], 30), "Attention")
 		self:DelayedMessage(timer.softEnrage - 10, string.format(L["doomtimerwarn"], 10), "Urgent")
 		self:DelayedMessage(timer.softEnrage - 5, string.format(L["doomtimerwarn"], 5), "Important")
 		self:DelayedMessage(timer.softEnrage, L["doomtimerwarnnow"], "Important")
-		self:Bar("Corrupted Mind", 5, "spell_shadow_curseoftounges")
+		self:Bar("Corrupted Mind", 5, "spell_shadow_curseoftounges", true, "Black")
 
 		-- soft enrage after 5min: Doom every 15s instead of every 30s
 		--self:ScheduleEvent("bwloathebdoomtimerreduce", function() module.doomTime = 15 end, 300)
 		self:ScheduleEvent("bwloathebdoomtimerreduce", self.SoftEnrage, timer.softEnrage)
 		--self:Message(L["startwarn"], "Red")
-		self:Bar(string.format(L["doombar"], numDoom + 1), timer.doom, icon.doom)
+		self:Bar(string.format(L["doombar"], numDoom + 1), timer.doom, icon.doom, true, "Red")
 		self:DelayedMessage(timer.doom - 5, string.format(L["doomwarn5sec"], numDoom + 1), "Urgent")
 		timer.doom = timer.doomLong -- reduce doom timer from 120s to 30s
 	end
-	self:Bar(L["cursebar"], timer.firstCurse, icon.curse)
+	self:Bar(L["cursebar"], timer.firstCurse, icon.curse, true, "Blue")
 
 	self:Spore()
 	self:ScheduleRepeatingEvent("bwloathebspore", self.Spore, timer.spore, self)
 	self:ScheduleRepeatingEvent("bwLoathebCheckDebuff", self.CheckDebuff, 0.5, self)
 end
 
--- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
 	self.frameIcon:Hide()
 	self.frameIcon2:Hide()
 end
 
-
-------------------------------
---      Initialization      --
-------------------------------
-
 function module:Event( msg )
 	if string.find(msg, L["doomtrigger"]) then
 		self:Sync(syncName.doom .. " " .. tostring(numDoom + 1))
+	elseif msg == L["trigger_corruptedMind"] then
+		self:Bar(L["bar_corruptedMind"], timer.corruptedMind, icon.corruptedMind, true, color.corruptedMind)
+	elseif msg == L["trigger_corruptedMindFade"] then
+		self:RemoveBar(L["bar_corruptedMind"])
+		self:WarningSign(icon.corruptedMind, 0.7)
 	end
 end
 
@@ -315,11 +302,6 @@ function module:CurseEvent( msg )
 		self:Sync(syncName.curse)
 	end
 end
-
-
-------------------------------
---      Synchronization	    --
-------------------------------
 
 function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.doom and rest then
@@ -334,10 +316,6 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 	end
 end
 
-------------------------------
---      Sync Handlers	    --
-------------------------------
-
 function module:Doom(syncNumDoom)
 	syncNumDoom = tonumber(syncNumDoom)
 	if syncNumDoom then
@@ -347,26 +325,19 @@ function module:Doom(syncNumDoom)
 				self:Message(string.format(L["doomwarn"], numDoom, timer.doom), "Important")
 			end
 			if self.db.profile.doom then
-				self:Bar(string.format(L["doombar"], numDoom + 1), timer.doom, icon.doom)
+				self:Bar(string.format(L["doombar"], numDoom + 1), timer.doom, icon.doom, true, "Red")
 				self:DelayedMessage(timer.doom - 5, string.format(L["doomwarn5sec"], numDoom + 1), "Urgent")
 			end
 		end
 	end
 end
 
-
-
 function module:Curse()
 	if self.db.profile.curse then
 		self:Message(L["cursewarn"], "Important")
-		self:Bar(L["cursebar"], timer.curse, icon.curse)
+		self:Bar(L["cursebar"], timer.curse, icon.curse, true, "Blue")
 	end
 end
-
-
-------------------------------
---      Utility	Functions   --
-------------------------------
 
 function module:SoftEnrage()
 	timer.doom = timer.doomShort -- reduce doom timer from 30s to 15s
@@ -378,12 +349,12 @@ function module:Spore()
 	if self.db.profile.spore then
 		--self:Message(string.format(L["sporewarn"], numSpore), "Important")
 		if not self.db.profile.groups then
-			self:Bar(string.format(L["sporebar_group"], numSpore), timer.spore, icon.spore)
+			self:Bar(string.format(L["sporebar_group"], numSpore), timer.spore, icon.spore, true, "Green")
 			if numSpore == 7 then
 				numSpore = 0
 			end
 		else
-			self:Bar(string.format(L["sporebar"], numSpore), timer.spore, icon.spore)
+			self:Bar(string.format(L["sporebar"], numSpore), timer.spore, icon.spore, true, "Green")
 		end
 	end
 end

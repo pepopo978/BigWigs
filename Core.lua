@@ -70,6 +70,11 @@ L:RegisterTranslations("enUS", function() return {
 	["Ruins of Ahn'Qiraj"] = "AQ20",
 	["Onyxia's Lair"] = "Onyxia",
 	["Naxxramas"] = "Naxxramas",
+	["Emerald Sanctum"] = "EmeraldSanctum",
+	["Karazhan"] = "Karazhan",
+	["Dire Maul"] = "DireMaul",
+	["Blackrock Spire"] = "BlackrockSpire",
+	["The Black Morass"] = "BlackMorass",
 	["Silithus"] = true,
 	["Outdoor Raid Bosses"] = "Outdoor",
 	["Outdoor Raid Bosses Zone"] = "Outdoor Raid Bosses", -- DO NOT EVER TRANSLATE untill I find a more elegant option
@@ -81,6 +86,8 @@ L:RegisterTranslations("enUS", function() return {
 	--Name for exception bosses (neutrals that enable modules)
 	["Vaelastrasz the Corrupt"] = true,
 	["Lord Victor Nefarius"] = true,
+	["Solnius"] = true,
+	["Lieutenant General Andorov"] = true,
 
 	["You have slain %s!"] = true,
 } end)
@@ -135,6 +142,7 @@ L:RegisterTranslations("esES", function() return {
 	["Ruins of Ahn'Qiraj"] = "AQ20",
 	["Onyxia's Lair"] = "Onyxia",
 	["Naxxramas"] = "Naxxramas",
+	["Emerald Sanctum"] = "EmeraldSanctum",
 	["Silithus"] = "Silithus",
 	["Outdoor Raid Bosses"] = "Afuera",
 	-- ["Outdoor Raid Bosses Zone"] = "Outdoor Raid Bosses", -- DO NOT EVER TRANSLATE untill I find a more elegant option
@@ -190,6 +198,7 @@ L:RegisterTranslations("deDE", function() return {
 	["Ruins of Ahn'Qiraj"] = "AQ20",
 	["Onyxia's Lair"] = "Onyxia",
 	["Naxxramas"] = "Naxxramas",
+	["Emerald Sanctum"] = "EmeraldSanctum",
 	-- ["Silithus"] = true,
 	["Outdoor Raid Bosses"] = "Outdoor",
 	-- ["Outdoor Raid Bosses Zone"] = "Outdoor Raid Bosses", -- DO NOT EVER TRANSLATE untill I find a more elegant option
@@ -230,7 +239,7 @@ BigWigs.cmdtable = {type = "group", handler = BigWigs, args = {
 }}
 BigWigs:RegisterChatCommand({"/bw", "/BigWigs"}, BigWigs.cmdtable)
 BigWigs.debugFrame = ChatFrame1
-BigWigs.revision = 20032
+BigWigs.revision = 30038
 
 
 function BigWigs:DebugMessage(msg, module)
@@ -678,7 +687,7 @@ function BigWigs:OnEnable()
 end
 
 function BigWigs:AceEvent_FullyInitialized()
-	if GetNumRaidMembers() > 0 or not self.loading then
+	if GetNumRaidMembers() > 0 or not self.loading or (GetZoneText() == "The Black Morass") or (GetZoneText() == "Dire Maul") then
 		-- Enable all disabled modules that are not boss modules.
 		for name, module in self:IterateModules() do
 			if type(module.IsBossModule) ~= "function" or not module:IsBossModule() then
@@ -747,7 +756,7 @@ function BigWigs:ModuleDeclaration(bossName, zoneName)
 	--module.translatedName = AceLibrary("Babble-Boss-2.2")[bossName]
 
 	-- zone
-	local raidZones = {"Blackwing Lair", "Ruins of Ahn'Qiraj", "Ahn'Qiraj", "Molten Core", "Naxxramas", "Zul'Gurub"}
+	local raidZones = {"Blackwing Lair", "Ruins of Ahn'Qiraj", "Ahn'Qiraj", "Molten Core", "Naxxramas", "Emerald Sanctum", "Zul'Gurub"}
 	local isOutdoorraid = true
 	for i, value in ipairs(raidZones) do
 		if value == zoneName then

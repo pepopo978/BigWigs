@@ -115,9 +115,9 @@ end
 function module:OnEngage()
 	if self.db.profile.bars then
 		self:DelayedSync(timer.knockBack, syncName.knockBack)
-		self:Bar(L["ThunderClap"], timer.thunderClap, icon.thunderClap)
-		self:Bar(L["Fear"], timer.firstFear, icon.fear)
-		self:Bar(L["KnockBack"], timer.knockBack, icon.knockBack)
+		self:Bar(L["ThunderClap"], timer.thunderClap, icon.thunderClap, true, "Blue")
+		self:Bar(L["Fear"], timer.firstFear, icon.fear, true, "White")
+		self:Bar(L["KnockBack"], timer.knockBack, icon.knockBack, true, "Red")
 	end
 end
 
@@ -143,11 +143,11 @@ end
 function module:BigWigs_RecvSync( sync, rest, nick )
 	if sync == syncName.debuff then
 		if self.db.profile.bars then
-			self:Bar(L["Fear"], timer.fear, icon.fear)
+			self:Bar(L["Fear"], timer.fear, icon.fear, true, "White")
 		end
 	elseif sync == syncName.knockBack then
 		if self.db.profile.bars then
-			self:Bar(L["KnockBack"], timer.knockBack, icon.knockBack)
+			self:Bar(L["KnockBack"], timer.knockBack, icon.knockBack, true, "Red")
 		end
 		self:DelayedSync(timer.knockBack, syncName.knockBack)
 	end

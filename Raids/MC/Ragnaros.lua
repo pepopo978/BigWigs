@@ -265,13 +265,13 @@ function module:CHAT_MSG_MONSTER_YELL(msg)
 	elseif string.find(msg, L["engage_trigger"]) then
 		self:SendEngageSync()
 	elseif string.find(msg, L["engage_soon_trigger1"]) and self.db.profile.start then
-		self:Bar(L["Combat"], timer.emerge_soon1, icon.emerge_soon)
+		self:Bar(L["Combat"], timer.emerge_soon1, icon.emerge_soon, true, "white")
 		self.barstarted = true
 	elseif string.find(msg, L["engage_soon_trigger2"]) and self.db.profile.start and not self.barstarted then
-		self:Bar(L["Combat"], timer.emerge_soon2, icon.emerge_soon)
+		self:Bar(L["Combat"], timer.emerge_soon2, icon.emerge_soon, true, "white")
 		self.barstarted = true
 	elseif string.find(msg, L["engage_soon_trigger3"]) and self.db.profile.start and not self.barstarted then
-		self:Bar(L["Combat"], timer.emerge_soon3, icon.emerge_soon)
+		self:Bar(L["Combat"], timer.emerge_soon3, icon.emerge_soon, true, "white")
 	elseif string.find(msg ,L["hammer_trigger"]) then
 	--self:Bar("Hammer of Ragnaros", timer.hammer_of_ragnaros, icon.hammer_of_ragnaros) -- doesn't do anything on nefarian
 	end
@@ -319,7 +319,7 @@ function module:Submerge()
 		self:Message(L["submerge_message"], "Important")
 	end
 	if self.db.profile.emerge then
-		self:Bar(L["emerge_bar"], timer.emerge, icon.emerge)
+		self:Bar(L["emerge_bar"], timer.emerge, icon.emerge, true, "white")
 		self:DelayedMessage(timer.emerge - 15, L["emerge_soon_message"], "Urgent", nil, nil, true)
 	end
 	self:ScheduleRepeatingEvent("bwragnarosemergecheck", self.EmergeCheck, 1, self)
@@ -346,7 +346,7 @@ function module:Emerge()
 		local knocktimer = timer.earliestKnockback-lastKnockback
 		local latestKnocktimer = timer.latestKnockback-lastKnockback
 		if knocktimer > 0 then
-			self:IntervalBar(L["knockback_bar"], knocktimer, latestKnocktimer, icon.knockback)
+			self:IntervalBar(L["knockback_bar"], knocktimer, latestKnocktimer, icon.knockback, true, "red")
 		end
 		if knocktimer > 3 then
 			self:DelayedMessage(knocktimer - 3, L["knockback_soon_message"], "Urgent", true, "Alarm", nil, nil, true)
@@ -361,7 +361,7 @@ function module:Emerge()
 	end
 
 	if self.db.profile.submerge then
-		self:Bar(L["submerge_bar"], timer.submerge, icon.submerge)
+		self:Bar(L["submerge_bar"], timer.submerge, icon.submerge, true, "white")
 
 		self:DelayedMessage(timer.submerge - 60, L["submerge_60sec_message"], "Attention", nil, nil, true)
 		self:DelayedMessage(timer.submerge - 30, L["submerge_30sec_message"], "Attention", nil, nil, true)
@@ -383,7 +383,7 @@ function module:Knockback()
 		end
 		firstKnockback = false
 		self:RemoveWarningSign(icon.knockbackWarn, true)
-		self:IntervalBar(L["knockback_bar"], timer.earliestKnockback, timer.latestKnockback, icon.knockback)
+		self:IntervalBar(L["knockback_bar"], timer.earliestKnockback, timer.latestKnockback, icon.knockback, true, "red")
 		self:DelayedMessage(timer.earliestKnockback - 3, L["knockback_soon_message"], "Urgent", true, "Alarm", nil, nil, true)
 		self:DelayedWarningSign(timer.earliestKnockback - 3, icon.knockbackWarn, 8)
 	end

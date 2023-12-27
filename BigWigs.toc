@@ -1,14 +1,14 @@
 ## Interface: 11200
 
-## Title: Big Wigs |cffabd473Turtle-WoW|r
+## Title: |cFFFF8080Relar|r Big Wigs |cff7fff7f30038|r |cffabd473Turtle-WoW|r
 ## Title-zhCN: |cffabd473Turtle-WoW|r Big Wigs
 ## Notes: Boss Mods with Timer bars.
 ## Notes-esES: Módulos para Jefes con barras temporizadoras.
 ## Notes-zhCN: 团队首领战信息提示插件，带有计时条。
 ## Notes-zhTW: 團隊首領戰訊息提示插件，帶有計時條。
-## Author: Tekkub Stoutwrithe, Ammo, Shyva, Rabbit, LYQ, Dorann, Hosq & Others
+## Author: Relar, Bethy, Tekkub Stoutwrithe, Ammo, Shyva, Rabbit, LYQ, Dorann, Hosq & Others
 ## Version: 2.0.0
-## X-Website: https://github.com/CosminPOP/BigWigs
+## X-Website: https://github.com/madScripting
 ## X-Category: Raid
 ## X-RelSite-WoWI: 5086
 ## X-RelSite-Curse: 4356
@@ -97,6 +97,7 @@ Raids\ZG\Hazzarah.lua
 Raids\ZG\Wushoolay.lua
 Raids\ZG\Gahzranka.lua
 Raids\ZG\GurubashiBerserker.lua
+Raids\ZG\GurubashiBatRider.lua
 
 Raids\AQ20\Ayamiss.lua
 Raids\AQ20\Buru.lua
@@ -105,6 +106,7 @@ Raids\AQ20\Guardians.lua
 Raids\AQ20\Ossirian.lua
 Raids\AQ20\Moam.lua
 Raids\AQ20\Kurinaxx.lua
+Raids\AQ20\FleshHunter.lua
 
 Raids\AQ40\Skeram.lua
 Raids\AQ40\BugFamily.lua
@@ -117,6 +119,10 @@ Raids\AQ40\Twins.lua
 Raids\AQ40\Cthun.lua
 Raids\AQ40\Viscidus.lua
 Raids\AQ40\Warder.lua
+Raids\AQ40\Champion.lua
+Raids\AQ40\Mindslayer.lua
+Raids\AQ40\Sentinels.lua
+Raids\AQ40\Brainwasher.lua
 
 Raids\BWL\Chromaggus.lua
 Raids\BWL\Ebonroc.lua
@@ -126,6 +132,7 @@ Raids\BWL\Nefarian.lua
 Raids\BWL\Vaelastrasz.lua
 Raids\BWL\Broodlord.lua
 Raids\BWL\Razorgore.lua
+Raids\BWL\Wyrmguards.lua
 
 Raids\MC\Lucifron.lua
 Raids\MC\BaronGeddon.lua
@@ -139,13 +146,15 @@ Raids\MC\Sulfuron.lua
 Raids\MC\Golemagg.lua
 Raids\MC\CoreHound.lua
 
+Raids\DireMaul\CaptainKromcrush.lua
+Raids\DireMaul\Gordok.lua
+
 Raids\Other\Azuregos.lua
-Raids\Other\Kazzak.lua
 Raids\Other\Emeriss.lua
 Raids\Other\Lethon.lua
 Raids\Other\Taerar.lua
 Raids\Other\Ysondre.lua
-Raids\Other\Gordok.lua
+Raids\Other\Kazzak.lua
 Raids\Other\Nerubian.lua
 
 Raids\Onyxia\Onyxia.lua
@@ -166,6 +175,39 @@ Raids\Naxxramas\Loatheb.lua
 Raids\Naxxramas\Horsemen.lua
 Raids\Naxxramas\Sapphiron.lua
 Raids\Naxxramas\Kelthuzad.lua
+Raids\Naxxramas\DeathknightCaptain.lua
+Raids\Naxxramas\LivingMonstrosity.lua
+Raids\Naxxramas\SpiderTrash.lua
+
+Raids\UBRS\Beast.lua
+Raids\UBRS\Drakkisath.lua
+Raids\UBRS\Emberseer.lua
+Raids\UBRS\Rend.lua
+Raids\UBRS\Solakar.lua
+
+Raids\BlackMorass\Chronar.lua
+Raids\BlackMorass\Epidamu.lua
+Raids\BlackMorass\DriftingAvatarOfSand.lua
+Raids\BlackMorass\TimeLordEpochronos.lua
+Raids\BlackMorass\Mossheart.lua
+Raids\BlackMorass\Antnormi.lua
+Raids\BlackMorass\Rotmaw.lua
+
+Raids\EmeraldSanctum\Erennius.lua
+Raids\EmeraldSanctum\Solnius.lua
+Raids\EmeraldSanctum\SanctumDragonkin.lua
+Raids\EmeraldSanctum\SanctumDreamer.lua
+Raids\EmeraldSanctum\SanctumSupressor.lua
+Raids\EmeraldSanctum\SanctumWyrmkin.lua
+Raids\EmeraldSanctum\SanctumWyrm.lua
+
+Raids\Karazhan\LordBlackwaldII.lua
+Raids\Karazhan\BroodQueenAraxxna.lua
+Raids\Karazhan\Grizikil.lua
+Raids\Karazhan\ClawlordHowlfang.lua
+Raids\Karazhan\Moroes.lua
+Raids\Karazhan\PhantomServant.lua
+Raids\Karazhan\DarkRiderChampion.lua
 
 Battlegrounds\AlteracValley.lua
 Battlegrounds\ArathiBasin.lua

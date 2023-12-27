@@ -1,233 +1,407 @@
 
-----------------------------------
---      Module Declaration      --
-----------------------------------
-
 local module, L = BigWigs:ModuleDeclaration("Viscidus", "Ahn'Qiraj")
-
-
-----------------------------
---      Localization      --
-----------------------------
+module.revision = 30038
+module.enabletrigger = module.translatedName
+module.toggleoptions = {"volley", "toxin", "freezestages", "freezecount", "pokecount", "glob", "bosskill"}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Viscidus",
+	
 	volley_cmd = "volley",
 	volley_name = "Poison Volley Alert",
 	volley_desc = "Warn for Poison Volley",
 
-	toxinyou_cmd = "toxinyou",
-	toxinyou_name = "Toxin Cloud on You Alert",
-	toxinyou_desc = "Warn if you are standing in a toxin cloud",
+	toxin_cmd = "toxin",
+	toxin_name = "Standing in Toxin Cloud Alert",
+	toxin_desc = "Warn if you are standing in a toxin cloud",
 
-	toxinother_cmd = "toxinother",
-	toxinother_name = "Toxin Cloud on Others Alert",
-	toxinother_desc = "Warn if others are standing in a toxin cloud",
+	freezestages_cmd = "freezestages",
+	freezestages_name = "Freezing States Alert",
+	freezestages_desc = "Warn for the different frozen states",
+	
+	freezecount_cmd = "freezecount",
+	freezecount_name = "Count Frost Damage",
+	freezecount_desc = "Count the quantity of Frost hits to freeze Viscidus",
+	
+	pokecount_cmd = "pokecount",
+	pokecount_name = "Count Poke Damage",
+	pokecount_desc = "Count the quantity of physical hits to shatter Viscidus",
+	
+	glob_cmd = "glob",
+	glob_name = "Glob Death Counter",
+	glob_desc = "Counts the Globs as they die",
 
-	freeze_cmd = "freeze",
-	freeze_name = "Freezing States Alert",
-	freeze_desc = "Warn for the different frozen states",
 
-	slow_trigger 	= "begins to slow",
-	freeze_trigger 	= "is freezing up",
-	frozen_trigger 	= "is frozen solid",
-	crack_trigger 	= "begins to crack",
-	shatter_trigger 	= "looks ready to shatter",
-	volley_trigger	= "afflicted by Poison Bolt Volley",
-	toxin_trigger 	= "^([^%s]+) ([^%s]+) afflicted by Toxin%.$",
 
-	you 		= "You",
-	are 		= "are",
+	trigger_volley = "afflicted by Poison Bolt Volley.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	bar_volley = "Poison Bolt Volley",
+	
+	trigger_toxin = "You are afflicted by Toxin.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	msg_toxin = "Move from Toxin Cloud!",
+	trigger_toxinFade = "Toxin fades from you.",--CHAT_MSG_SPELL_AURA_GONE_OTHER",
 
-	freeze1_warn 		= "First freeze phase!",
-	freeze2_warn 		= "Second freeze phase!",
-	frozen_warn 		= "Viscidus is frozen!",
-	crack1_warn 		= "Cracking up - little more now!",
-	crack2_warn 		= "Cracking up - almost there!",
-	volley_warn		= "Poison Bolt Volley!",
-	volley_soon_warn		= "Poison Bolt Volley in ~3 sec!",
-	toxin_warn		= " is in a toxin cloud!",
-	toxin_self_warn		= "You are in the toxin cloud!",
-
-	volley_bar	= "Poison Bolt Volley",
+	trigger_frostDmg = "Frost damage",--CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE
+	trigger_chilledDmg = "gains Chilled",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	trigger_wintersChill = "gains Winter's Chill",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	bar_frostDmg = "Frost hits remaining",
+	
+	trigger_pokeYou = "hit Viscidus for",--CHAT_MSG_COMBAT_SELF_HITS
+	trigger_pokeOther = "hits Viscidus for",--CHAT_MSG_COMBAT_PARTY_HITS // CHAT_MSG_COMBAT_FRIENDLYPLAYER_HITS
+	trigger_pokeCritYou = "crit Viscidus for",--CHAT_MSG_COMBAT_SELF_HITS
+	trigger_pokeCritOther = "crits Viscidus for",--CHAT_MSG_COMBAT_PARTY_HITS // CHAT_MSG_COMBAT_FRIENDLYPLAYER_HITS
+	bar_poke = "Pokes remaining",
+	
+	trigger_slow = " begins to slow!",--CHAT_MSG_RAID_BOSS_EMOTE
+	trigger_freezing = " is freezing up!",--CHAT_MSG_RAID_BOSS_EMOTE
+	trigger_frozen = " is frozen solid!",--CHAT_MSG_RAID_BOSS_EMOTE
+	trigger_crack = " begins to crack!",--CHAT_MSG_RAID_BOSS_EMOTE
+	trigger_shatter = " looks ready to shatter!",--CHAT_MSG_RAID_BOSS_EMOTE
+	
+	msg_slow = "Freeze Count: 100 / 200",
+	msg_freezing = "Freeze Count: 150 / 200",
+	msg_frozen = "Freeze Count: 200 / 200 - Frozen, poke him!",
+	msg_crack = "Poke Count: 50 / 150",
+	msg_shatter = "Poke Count: 100 / 150",
+	
+	bar_glob = "Globs remaining",
 } end )
 
-L:RegisterTranslations("esES", function() return {
-	--cmd = "Viscidus",
-	--volley_cmd = "volley",
-	volley_name = "Alerta de Lluvia de descarga de veneno",
-	volley_desc = "Avisa para Lluvia de descarga de veneno",
-
-	--toxinyou_cmd = "toxinyou",
-	toxinyou_name = "Alerta personal de Nube de toxina",
-	toxinyou_desc = "Avisa si estás en un Nube de toxina",
-
-	--toxinother_cmd = "toxinother",
-	toxinother_name = "Alerta de Nube de toxina",
-	toxinother_desc = "Avisa si otros están en un Nube de toxina",
-
-	--freeze_cmd = "freeze",
-	freeze_name = "Alerta de estados congelados",
-	freeze_desc = "Avisa para estados congelados diferentes",
-
-	slow_trigger 	= "begins to slow",
-	freeze_trigger 	= "is freezing up",
-	frozen_trigger 	= "is frozen solid",
-	crack_trigger 	= "begins to crack",
-	shatter_trigger 	= "looks ready to shatter",
-	volley_trigger	= "sufre de Lluvia de descarga de veneno",
-	toxin_trigger 	= "^([^%s]+) ([^%s]+) sufre de Toxina%.$",
-
-	you 		= "Tu",
-	are 		= "estás",
-
-	freeze1_warn 		= "¡Primera fase congelada!",
-	freeze2_warn 		= "¡Segunda fase congelada!",
-	frozen_warn 		= "¡Viscidus está congelado!",
-	crack1_warn 		= "¡Rajadura - un poco más!",
-	crack2_warn 		= "¡Rajadura - casi!",
-	volley_warn		= "¡Lluvia de descarga de veneno!",
-	volley_soon_warn	= "¡Lluvia de descarga de veneno en ~3 segundos!",
-	toxin_warn		= " está en un Nube de toxina!",
-	toxin_self_warn		= "¡Estás en un Nube de toxina!",
-
-	volley_bar	= "Lluvia de descarga de veneno",
-} end )
-
-L:RegisterTranslations("deDE", function() return {
-	volley_name = "Giftblitzsalve Alarm", -- ?
-	volley_desc = "Warnt vor Giftblitzsalve", -- ?
-
-	toxinyou_name = "Toxin Wolke",
-	toxinyou_desc = "Warnung, wenn Du in einer Toxin Wolke stehst.",
-
-	toxinother_name = "Toxin Wolke auf Anderen",
-	toxinother_desc = "Warnung, wenn andere Spieler in einer Toxin Wolke stehen.",
-
-	freeze_name = "Freeze Phasen",
-	freeze_desc = "Zeigt die verschiedenen Freeze Phasen an.",
-
-	slow_trigger 	= "wird langsamer!",
-	freeze_trigger 	= "friert ein!",
-	frozen_trigger 	= "ist tiefgefroren!",
-	crack_trigger 	= "geht die Puste aus!", --CHECK
-	shatter_trigger 	= "ist kurz davor, zu zerspringen!",
-	volley_trigger	= "ist von Giftblitzsalve betroffen.",
-	toxin_trigger 	= "^([^%s]+) ([^%s]+) von Toxin betroffen.$",
-
-	you 		= "Ihr",
-	are 		= "seid",
-
-	freeze1_warn 		= "Erste Freeze Phase!",
-	freeze2_warn 		= "Zweite Freeze Phase!",
-	frozen_warn 		= "Dritte Freeze Phase!",
-	crack1_warn 		= "Zerspringen - etwas noch!",
-	crack2_warn 		= "Zerspringen - fast da!",
-	volley_warn		= "Giftblitzsalve!", -- ?
-	volley_soon_warn		= "Giftblitzsalve in ~3 Sekunden!", -- ?
-	toxin_warn		= " ist in einer Toxin Wolke!",
-	toxin_self_warn		= "Du bist in einer Toxin Wolke!",
-
-	volley_bar        = "Giftblitzsalve",
-} end )
-
----------------------------------
---      	Variables 		   --
----------------------------------
-
--- module variables
-module.revision = 20007 -- To be overridden by the module!
-module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
---module.wipemobs = { L["add_name"] } -- adds which will be considered in CheckForEngage
-module.toggleoptions = {"freeze", "volley", "toxinyou", "toxinother", "bosskill"}
-
-
--- locals
 local timer = {
-	earliestVolley = 10,
-	latestVolley = 15,
+	volley = {10,15},
+	toxin = 10,
 }
 local icon = {
 	volley = "Spell_Nature_CorrosiveBreath",
 	toxin = "Spell_Nature_AbolishMagic",
+	frostDmg = "spell_frost_frostbolt02",
+	poke = "inv_sword_04",
+	glob = "Ability_creature_poison_06",
 }
-local syncName = {}
+local color = {
+	volley = "Green",
+	frostDmg = "Cyan",
+	poke = "Red",
+	glob = "Black",
+}
+local syncName = {
+	volley = "ViscidusVolley"..module.revision,
+	slow = "ViscidusSlow"..module.revision,
+	freezing = "ViscidusFreezing"..module.revision,
+	frozen = "ViscidusFrozen"..module.revision,
+	crack = "ViscidusCrack"..module.revision,
+	shatter = "ViscidusShatter"..module.revision,
+	glob = "ViscidusGlob"..module.revision,
+	}
 
-local prior
+local frostDmgCount = 0
+local pokeCount = 0
+local globDeathCount = 0
+local checkPhysical = nil
+local checkFrost = nil
 
-------------------------------
---      Initialization      --
-------------------------------
+local maxFreezeCount = 200
+local maxPokeCount = 110
+local maxGlobDeathCount = 18
 
--- called after module is enabled
+--[[ Physical analysis
+-- vMangos shows --
+local crackCount = 50
+local shatterCount = 100
+local explodeCount = 150
+
+-- Log analysis shows --
+176	entries
+109	hit / crit
+132	hit / crit + abilities
+117	hit / crit + deep wounds proc
+140	hit / crit + abilities + deep wounds proc
+	
+109	hit / crit
+23	abilities
+8	deep wounds proc
+4	wands
+3	afflictions
+15	frostbolt
+3	lightning bolt
+3	electric discharge
+5	dream herald dot
+1	life steal
+1	dragonbreath chili
+1	arcane shot
+]]--
+
+--[[Frost analysis
+-- vMangos shows --
+local slowCount = 100
+local freezingCount = 150
+local frozenCount = 200
+
+-- Log analysis shows --
+5	"gains Winter's Chill",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+1	"gains Chilled",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+193 "Frost damage",--CHAT_MSG_SPELL_XXX_DAMAGE
+
+199 total, close enough, wonder what is the 1 missing...
+]]--
+
+--local globCount = 18 --supposed to be 20, but log and video confirms 18
+
 function module:OnEnable()
-	self:RegisterEvent("BigWigs_Message")
-	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE", "Emote")
-	self:RegisterEvent("CHAT_MSG_RAID_BOSS_EMOTE", "Emote")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "CheckVis")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "CheckVis")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "CheckVis")
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
+	
+	self:RegisterEvent("CHAT_MSG_RAID_BOSS_EMOTE")--trigger_slow...
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")--trigger_volley, trigger_toxin
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")--trigger_volley
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")--trigger_volley
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE", "Event")--trigger_frostDmg
+	self:RegisterEvent("CHAT_MSG_SPELL_PARTY_DAMAGE", "Event")--trigger_frostDmg
+	self:RegisterEvent("CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE", "Event")--trigger_frostDmg
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event")--trigger_chilledDmg, trigger_wintersChill
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event")--trigger_toxinFade
+	
+	self:RegisterEvent("CHAT_MSG_COMBAT_SELF_HITS", "CheckPhysical")--trigger_pokeYou trigger_pokeCritYou
+	self:RegisterEvent("CHAT_MSG_COMBAT_PARTY_HITS", "CheckPhysical")--trigger_pokeOther, trigger_pokeCritOther
+	self:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLYPLAYER_HITS", "CheckPhysical")--trigger_pokeOther, trigger_pokeCritOther
+	
+	self:ThrottleSync(8, syncName.volley)
+	self:ThrottleSync(5, syncName.slow)
+	self:ThrottleSync(5, syncName.freezing)
+	self:ThrottleSync(5, syncName.frozen)
+	self:ThrottleSync(5, syncName.crack)
+	self:ThrottleSync(5, syncName.shatter)
+	self:ThrottleSync(5, syncName.glob)
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
 	self.started = nil
-	prior = nil
+	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
 end
 
--- called after boss is engaged
 function module:OnEngage()
+	frostDmgCount = 0
+	pokeCount = 0
+	globDeathCount = 0
+	checkPhysical = nil
+	checkFrost = true
+	
+	self:TriggerEvent("BigWigs_StartCounterBar", self, L["bar_frostDmg"], maxFreezeCount, "Interface\\Icons\\"..icon.frostDmg, true, color.frostDmg)
+	self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_frostDmg"], frostDmgCount)
+	
 	if self.db.profile.volley then
-		self:IntervalBar(L["volley_bar"], timer.earliestVolley, timer.latestVolley, icon.volley)
+		self:Volley()
 	end
 end
 
--- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
 end
 
+function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
+	BigWigs:CheckForBossDeath(msg, self)
 
-------------------------------
---      Event Handlers      --
-------------------------------
+	if (msg == string.format(UNITDIESOTHER, "Glob of Viscidus")) then
+		self:Glob()
+	end
+end
 
-function module:CheckVis(arg1)
-	if not prior and self.db.profile.volley and string.find(arg1, L["volley_trigger"]) then
-		self:Message(L["volley_warn"], "Urgent")
-		self:DelayedMessage(timer.earliestVolley - 3, L["volley_soon_warn"], "Urgent", nil, nil, true)
-		self:IntervalBar(L["volley_bar"], timer.earliestVolley, timer.latestVolley, icon.volley)
-		prior = true
-	elseif string.find(arg1, L["toxin_trigger"]) then
-		local _,_, pl, ty = string.find(arg1, L["toxin_trigger"])
-		if (pl and ty) then
-			if self.db.profile.toxinyou and pl == L["you"] and ty == L["are"] then
-				self:Message(L["toxin_self_warn"], "Personal", true, "RunAway")
-				self:Message(UnitName("player") .. L["toxin_warn"], "Important", nil, nil, true)
-				self:WarningSign("Spell_Nature_AbolishMagic", 5)
-			elseif self.db.profile.toxinother then
-				self:Message(pl .. L["toxin_warn"], "Important")
-				--self:TriggerEvent("BigWigs_SendTell", pl, L["toxin_self_warn"]) -- can cause whisper bug on nefarian
+function module:CHAT_MSG_RAID_BOSS_EMOTE(msg, sender)
+	if string.find(msg, L["trigger_slow"]) then
+		self:Sync(syncName.slow)
+	elseif string.find(msg, L["trigger_freezing"]) then
+		self:Sync(syncName.freezing)
+	elseif string.find(msg, L["trigger_frozen"]) then
+		self:Sync(syncName.frozen)
+	elseif string.find(msg, L["trigger_crack"]) then
+		self:Sync(syncName.crack)
+	elseif string.find(msg, L["trigger_shatter"]) then
+		self:Sync(syncName.shatter)
+	end
+end
+
+function module:Event(msg)
+	if string.find(msg, L["trigger_volley"]) then
+		self:Sync(syncName.volley)
+		
+	elseif msg == L["trigger_toxin"] then
+		self:Toxin()
+	elseif msg == L["trigger_toxinFade"] then
+		self:ToxinFade()
+		
+	elseif string.find(msg, L["trigger_frostDmg"]) or string.find(msg, L["trigger_chilledDmg"]) or string.find(msg, L["trigger_wintersChill"]) then
+		if checkFrost == true then
+			self:FrostDmg()
+		end
+	end
+end
+
+function module:CheckPhysical(msg)
+	if checkPhysical == true then
+		if string.find(msg, L["trigger_pokeYou"]) or string.find(msg, L["trigger_pokeCritYou"]) or string.find(msg, L["trigger_pokeOther"]) or string.find(msg, L["trigger_pokeCritOther"]) then
+			pokeCount = pokeCount + 1
+			if self.db.profile.pokecount then
+				if UnitName("Player") == "Relar" or UnitName("Player") == "Dreadsome" then
+					self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_poke"], pokeCount)
+				end
+			end
+			if pokeCount >= maxPokeCount then
+				checkPhysical = false
+				self:StartGlobBar()
 			end
 		end
 	end
 end
 
-function module:Emote(arg1)
-	BigWigs:Debug("Emote: "..arg1)
-	if not self.db.profile.freeze then return end
-	if string.find(arg1, L["slow_trigger"]) then
-		self:Message(L["freeze1_warn"], "Atention")
-	elseif string.find(arg1, L["freeze_trigger"]) then
-		self:Message(L["freeze2_warn"], "Urgent")
-	elseif string.find(arg1, L["frozen_trigger"]) then
-		self:Message(L["frozen_warn"], "Important")
-	elseif string.find(arg1, L["crack_trigger"]) then
-		self:Message(L["crack1_warn"], "Urgent")
-	elseif string.find(arg1, L["shatter_trigger"]) then
-		self:Message(L["crack2_warn"], "Important")
+function module:BigWigs_RecvSync(sync, rest, nick)
+	if sync == syncName.volley and self.db.profile.volley then
+		self:Volley()
+	elseif sync == syncName.slow then
+		self:Slow()
+	elseif sync == syncName.freezing then
+		self:Freezing()
+	elseif sync == syncName.frozen then
+		self:Frozen()
+	elseif sync == syncName.crack then
+		self:Crack()
+	elseif sync == syncName.shatter then
+		self:Shatter()
+	elseif sync == syncName.glob then
+		self:Glob()
 	end
 end
 
-function module:BigWigs_Message(text)
-	if text == L["volley_soon_warn"] then prior = nil end
+function module:Volley()
+	self:IntervalBar(L["bar_volley"], timer.volley[1], timer.volley[2], icon.volley, true, color.volley)
+	
+	if UnitClass("Player") == "Shaman" or UnitClass("Player") == "Druid" or UnitClass("Player") == "Paladin" then
+		self:WarningSign(icon.volley, 0.7)
+	end
+end
+
+function module:Toxin()
+	self:Message(L["msg_toxin"], "Personal", false, nil, false)
+	self:Sound("Info")
+	self:WarningSign(icon.toxin, timer.toxin)
+end
+
+function module:ToxinFade()
+	self:RemoveWarningSign(icon.toxin)
+end
+
+function module:Slow()
+	pokeCount = 0
+	globDeathCount = 0
+	
+	if self.db.profile.freezestages then
+		self:Message(L["msg_slow"], "Atention", false, nil, false)
+	end
+end
+
+function module:Freezing()
+	if self.db.profile.freezestages then
+		self:Message(L["msg_freezing"], "Atention", false, nil, false)
+	end
+end
+
+function module:Frozen()
+	checkPhysical = true
+	checkFrost = false
+	
+	frostDmgCount = 0
+	
+	self:TriggerEvent("BigWigs_StopCounterBar", self, L["bar_frostDmg"])
+	
+	if self.db.profile.pokecount then
+		if UnitName("Player") == "Relar" or UnitName("Player") == "Dreadsome" then
+			self:TriggerEvent("BigWigs_StartCounterBar", self, L["bar_poke"], maxPokeCount, "Interface\\Icons\\"..icon.poke, true, color.poke)
+			self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_poke"], pokeCount)
+		end
+	end
+	
+	if self.db.profile.freezestages then
+		self:Message(L["msg_frozen"], "Atention", false, nil, false)
+		self:WarningSign(icon.poke, 0.7)
+	end
+end
+
+function module:Crack()
+	if self.db.profile.freezestages then
+		self:Message(L["msg_crack"], "Atention", false, nil, false)
+	end
+end
+
+function module:Shatter()
+	if self.db.profile.freezestages then
+		self:Message(L["msg_shatter"], "Atention", false, nil, false)
+	end
+end
+
+function module:StartGlobBar()
+	if self.db.profile.glob then
+		if UnitName("Player") == "Relar" or UnitName("Player") == "Dreadsome" then
+			self:TriggerEvent("BigWigs_StopCounterBar", self, L["bar_poke"])
+		end
+	
+		self:TriggerEvent("BigWigs_StartCounterBar", self, L["bar_glob"], maxGlobDeathCount, "Interface\\Icons\\"..icon.glob, true, color.glob)
+		self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_glob"], globDeathCount)
+	end
+	
+	self:ScheduleRepeatingEvent("bwviscFindGlob", self.FindGlob, 0.5, self)
+end
+
+function module:Glob()
+	globDeathCount = globDeathCount + 1
+	checkPhysical = false
+	
+	if self.db.profile.glob then
+		self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_glob"], globDeathCount)
+	end
+end
+
+function module:FrostDmg()
+	frostDmgCount = frostDmgCount + 1
+	
+	if self.db.profile.freezecount then
+		self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_frostDmg"], frostDmgCount)
+	end
+end
+
+function module:FindGlob()
+	if UnitName("target") == "Glob of Viscidus" then
+		self:CancelScheduledEvent("bwviscFindGlob")
+		self:ScheduleRepeatingEvent("bwviscFindViscidus", self.FindViscidus, 0.5, self)
+	else
+		for i = 1, GetNumRaidMembers(), 1 do
+			if UnitName("Raid"..i.."target") == "Glob of Viscidus" then
+				self:CancelScheduledEvent("bwviscFindGlob")
+				self:ScheduleRepeatingEvent("bwviscFindViscidus", self.FindViscidus, 0.5, self)
+				break
+			end
+		end
+	end
+end
+
+function module:FindViscidus()
+	if UnitName("target") == "Viscidus" then
+		self:StartFostDmgBar()
+	else
+		for i = 1, GetNumRaidMembers(), 1 do
+			if UnitName("Raid"..i.."target") == "Viscidus" then
+				self:StartFostDmgBar()
+				break
+			end
+		end
+	end
+end
+
+function module:StartFostDmgBar()
+	self:CancelScheduledEvent("bwviscFindViscidus")
+	
+	self:TriggerEvent("BigWigs_StopCounterBar", self, L["bar_glob"])
+	
+	if self.db.profile.freezecount then
+		self:TriggerEvent("BigWigs_StartCounterBar", self, L["bar_frostDmg"], maxFreezeCount, "Interface\\Icons\\"..icon.frostDmg, true, color.frostDmg)
+		self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_frostDmg"], frostDmgCount)
+	end
 end

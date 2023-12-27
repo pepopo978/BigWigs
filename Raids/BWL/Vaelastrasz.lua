@@ -158,7 +158,7 @@ L:RegisterTranslations("deDE", function() return {
 ---------------------------------
 
 -- module variables
-module.revision = 20008 -- To be overridden by the module!
+module.revision = 30019 -- To be overridden by the module!
 module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
 --module.wipemobs = { L["add_name"] } -- adds which will be considered in CheckForEngage
 module.toggleoptions = {"start", "flamebreath", "adrenaline", "whisper", "tankburn", "icon", "bosskill"}
@@ -245,6 +245,7 @@ function module:CheckForEngage()
 		BigWigs:CheckForEngage(self)
 	end
 end
+
 function module:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE(msg)
 	if msg == L["flamebreath_trigger"] then
 		self:Sync(syncName.flamebreath)
@@ -332,7 +333,6 @@ end
 function module:Flamebreath()
 	if self.db.profile.flamebreath then
 		self:Bar(L["breath_bar"], timer.flamebreath, icon.flamebreath, true, "Red")
-		self:Message(L["breath_message"], "Urgent")
 	end
 end
 
