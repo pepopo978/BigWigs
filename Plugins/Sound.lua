@@ -35,6 +35,15 @@ local sounds = {
 
 	BikeHorn = "Interface\\AddOns\\BigWigs\\Sounds\\BikeHorn.ogg",
 	AirHorn = "Interface\\AddOns\\BigWigs\\Sounds\\AirHorn.ogg",
+
+	ShackleBroke = "Interface\\AddOns\\BigWigs\\Sounds\\ShackleBroke.mp3",
+	ShackleOne = "Interface\\AddOns\\BigWigs\\Sounds\\ShackleOne.mp3",
+	ShackleTwo = "Interface\\AddOns\\BigWigs\\Sounds\\ShackleTwo.mp3",
+	ShackleThree = "Interface\\AddOns\\BigWigs\\Sounds\\ShackleThree.mp3",
+
+	MarkOne = "Interface\\AddOns\\BigWigs\\Sounds\\MarkOne.mp3",
+	MarkTwo = "Interface\\AddOns\\BigWigs\\Sounds\\MarkTwo.mp3",
+	MarkThree = "Interface\\AddOns\\BigWigs\\Sounds\\MarkThree.mp3",
 }
 
 
