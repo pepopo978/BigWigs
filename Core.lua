@@ -613,8 +613,8 @@ function BigWigs.modulePrototype:RemoveIcon()
 	self:TriggerEvent("BigWigs_RemoveRaidIcon")
 end
 
-function BigWigs.modulePrototype:WarningSign(icon, duration, force)
-	self:TriggerEvent("BigWigs_ShowWarningSign", "Interface\\Icons\\" .. icon, duration, force)
+function BigWigs.modulePrototype:WarningSign(icon, duration, force, text)
+	self:TriggerEvent("BigWigs_ShowWarningSign", "Interface\\Icons\\" .. icon, duration, force, text)
 end
 function BigWigs.modulePrototype:RemoveWarningSign(icon, forceHide)
 	self:TriggerEvent("BigWigs_HideWarningSign", "Interface\\Icons\\" .. icon, forceHide)

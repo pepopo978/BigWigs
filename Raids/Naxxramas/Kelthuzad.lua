@@ -51,6 +51,10 @@ L:RegisterTranslations("enUS", function() return {
 	guardians_name = "Guardian Spawns",
 	guardians_desc = "Warn for incoming Icecrown Guardians in phase 3.",
 
+	shackles_cmd = "shackles",
+	shackles_name = "Shackle announces",
+	shackles_desc = "Warn when shackles are applied or broke",
+
 	fbvolley_cmd = "fbvolley",
 	fbvolley_name = "Possible volley",
 	fbvolley_desc = "Timer for possible Frostbolt volley/multiple",
@@ -138,6 +142,10 @@ L:RegisterTranslations("enUS", function() return {
 	detonate_bar = "Detonate Mana - %s",
 	detonate_possible_bar = "Detonate Mana",
 	detonate_warning = "%s has Detonate Mana!",
+
+	shackle_trigger = "Guardian of Icecrown is afflicted by Shackle Undead",
+	shacklefade_trigger = "Shackle Undead fades from Guardian of Icecrown",
+	shackle_warning = "%s/3",
 
 	you = "You",
 	are = "are",
@@ -279,7 +287,7 @@ L:RegisterTranslations("esES", function() return {
 module.revision = 20004 -- To be overridden by the module!
 module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
 --module.wipemobs = { L["add_name"] } -- adds which will be considered in CheckForEngage
-module.toggleoptions = {"frostbolt", "frostboltbar", -1, "frostblast", "proximity", "fissure", "mc", -1, "fbvolley", -1, "detonate", "detonateicon", -1, "abomwarn", "weaverwarn","guardians", -1, "addcount", "phase", "bosskill"}
+module.toggleoptions = {"frostbolt", "frostboltbar", -1, "frostblast", "proximity", "fissure", "mc", -1, "fbvolley", -1, "detonate", "detonateicon", "shackles",-1, "abomwarn", "weaverwarn","guardians", -1, "addcount", "phase", "bosskill"}
 
 -- Proximity Plugin
 module.proximityCheck = function(unit) return CheckInteractDistance(unit, 2) end
@@ -314,6 +322,7 @@ local icon = {
 	frostblast = "Spell_Frost_FreezingBreath",
 	detonate = "Spell_Nature_WispSplode",
 	frostbolt = "Spell_Frost_FrostBolt02",
+	shackleundead = "Spell_Nature_Slow",
 }
 local syncName = {
 	detonate = "KelDetonate"..module.revision,
@@ -333,6 +342,7 @@ local numFrostboltVolleyHits = 0	-- counts the number of people hit by frostbolt
 local numAbominations = 0	-- counter for Unstoppable Abomination's
 local numWeavers = 0 	-- counter for Soul Weaver's
 local timePhase1Start = 0    -- time of p1 start, used for tracking add count
+local shacklecount = 0 -- Counter for shackles up
 
 
 ------------------------------
@@ -366,6 +376,9 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Affliction")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Affliction")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Affliction")
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE", "ShackleCheck")
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "ShackleCheck")
 
 	self:ThrottleSync(5, syncName.detonate)
 	self:ThrottleSync(0, syncName.frostblast)
@@ -555,6 +568,22 @@ function module:Affliction(msg)
 	end
 end
 
+function module:ShackleCheck(msg)
+	if string.find(msg, L["shackle_trigger"]) then
+		shacklecount = shacklecount + 1
+		self:WarningSign(icon.shackleundead, 120, true, string.format(L["shackle_warning"], shacklecount))
+		if shacklecount < 2 then self:Sound("ShackleOne") end
+		if shacklecount == 2 then self:Sound("ShackleTwo") end
+		if shacklecount > 2 then self:Sound("ShackleThree") end
+	end
+	if string.find(msg, L["shacklefade_trigger"]) then
+		shacklecount = shacklecount - 1
+		if shacklecount < 0 then shacklecount = 0 end
+		self:WarningSign(icon.shackleundead, 120, true, string.format(L["shackle_warning"], shacklecount))
+		self:Sound("ShackleBroke")
+	end
+end
+
 function module:Event(msg)
 	-- shadow fissure
 	if string.find(msg, L["fissure_trigger"]) then
@@ -618,6 +647,7 @@ end
 ------------------------------
 
 function module:Phase2()
+	shacklecount = 0
 	self:Bar(L["phase2_bar"], timer.phase2, icon.phase2)
 	self:DelayedMessage(timer.phase2, L["phase2_warning"], "Important")
 	if self.db.profile.mc then
@@ -655,6 +685,7 @@ function module:Phase2()
 end
 
 function module:Phase3()
+	shacklecount = 0
 	if self.db.profile.phase then
 		self:Message(L["phase3_warning"], "Attention", nil, "Beware")
 	end

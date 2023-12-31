@@ -531,6 +531,9 @@ function module:Mark()
         self:Message(string.format(L["mark_warn"], self.marks), "Important")
         self:Bar(string.format(L["markbar"], self.marks + 1), timer.mark, icon.mark)
         self:DelayedMessage(timer.mark - 5, string.format(L["mark_warn_5"], self.marks + 1), "Urgent")
+        if globalMarks == 1 then self:Sound("MarkOne") end
+        if globalMarks == 2 then self:Sound("MarkTwo") end
+        if globalMarks == 0 then self:Sound("MarkThree") end
     end
 end
 

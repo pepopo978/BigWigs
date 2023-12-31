@@ -210,7 +210,7 @@ end
 --      Event Handlers      --
 ------------------------------
 
-function BigWigsWarningSign:BigWigs_ShowWarningSign(texturePath, duration, force)
+function BigWigsWarningSign:BigWigs_ShowWarningSign(texturePath, duration, force, text)
 	if self.db.profile.disabled then
 		return
 	end
@@ -231,6 +231,8 @@ function BigWigsWarningSign:BigWigs_ShowWarningSign(texturePath, duration, force
 		c.force     = force;
 
 		self.texture:SetTexture(texturePath)
+		if type(text) =="string" then self.text:SetText(text) else self.text:SetText("") end
+
 		self.frames.sign:Show()
 		self.db.profile.isVisible = true
 
@@ -251,7 +253,6 @@ function BigWigsWarningSign:BigWigs_HideWarningSign(texturePath, forceHide)
 	-- forceHide is used upon BossDeath to hide no matter what is being displayed
 	if forceHide or c.texture == texturePath then
 		c.texture   = "";
-
 		if self.frames and self.frames.sign then
 			self.frames.sign:Hide()
 			self.db.profile.isVisible = false
@@ -261,8 +262,8 @@ function BigWigsWarningSign:BigWigs_HideWarningSign(texturePath, forceHide)
 end
 
 function BigWigsWarningSign:PLAYER_DEAD()
-	-- this should hide all Icons upon your own death
-	self:BigWigs_HideWarningSign("", true)
+	-- if enabled this will hide all Icons upon your own death.
+	-- self:BigWigs_HideWarningSign("", true)
 end
 
 function BigWigsWarningSign:ShowAnchor()
@@ -452,7 +453,11 @@ function BigWigsWarningSign:CreateWarningSignFrame()
 
 	self.texture = self.frames.sign:CreateTexture(nil, "BACKGROUND")
 	self.texture:SetAllPoints(self.frames.sign)
-	self.texture:SetTexCoord(0.08, 0.92, 0.08, 0.92) -- zoom in to hide border
+	--self.texture:SetTexCoord(0.08, 0.92, 0.08, 0.92) -- zoom in to hide border
+
+	self.text = self.frames.sign:CreateFontString(nil, "OVERLAY", "ZoneTextFont")
+	--self.text:SetAllPoints(self.frames.sign)
+	self.text:SetPoint("CENTER", self.frames.sign, "CENTER", 0, 0)
 
 	--[[local x = self.db.profile.posx
 	local y = self.db.profile.posy

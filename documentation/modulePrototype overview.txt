@@ -91,7 +91,7 @@ void BigWigs.modulePrototype:CancelDelayedSound(sound[, id])
 void BigWigs.modulePrototype:Icon(name[, iconnumber])
 void BigWigs.modulePrototype:RemoveIcon()
 
-void BigWigs.modulePrototype:WarningSign(texturePath, duration[, force])
+void BigWigs.modulePrototype:WarningSign(texturePath, duration[, force[, text]])
 void BigWigs.modulePrototype:RemoveWarningSign(texturePath[, forceHide])
 void BigWigs.modulePrototype:DelayedWarningSign(delay, icon, duration[, id])
 void BigWigs.modulePrototype:CancelDelayedWarningSign(icon[, id])
