@@ -352,7 +352,7 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_RAID_BOSS_EMOTE", "Emote")
 
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "CheckEyeBeam")
-
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF", "CheckEyeBeam")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "CheckDigestiveAcid")
 
 	self:ThrottleSync(20, syncName.p2Start)
@@ -437,7 +437,7 @@ function module:CheckEyeBeam(msg)
 		if not cthunstarted then
 			self:SendEngageSync()
 		end
-	elseif string.find(msg, L["giant_eye_birth_trigger]) then
+	elseif string.find(msg, L["giant_eye_birth_trigger"]) then
 		if self.db.profile.autotarget then
 			TargetByName("Giant Eye Tentacle", true);
 		end
