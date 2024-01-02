@@ -54,6 +54,9 @@ L:RegisterTranslations("enUS", function() return {
 	["Color Bars"] = true,
 	["Class colored bars."] = true,
 
+	["Healcomm"] = true,
+	["Enable Healcomm predictive heals on healthbars."] = true,
+
 	["Test"] = true,
 	["Perform a Frost Blast test."] = true,
 
@@ -81,6 +84,9 @@ L:RegisterTranslations("esES", function() return {
 	["Color Bars"] = "Barras de Color",
 	["Class colored bars."] = "Barras de clases coloreadas",
 
+	["Healcomm"] = "Healcomm",
+	["Enable Healcomm predictive heals on healthbars."] = "Enable Healcomm predictive heals on healthbars.",
+
 	["Test"] = "Probar",
 	["Perform a Frost Blast test."] = "Prueba de Explosión de Escarcha",
 
@@ -102,6 +108,7 @@ BigWigsFrostBlast.defaultDB = {
 	lock = false,
 	disabled = false,
 	names = false,
+	enablehealcomm = true,
 	bars = true,
 }
 BigWigsFrostBlast.external = true
@@ -148,6 +155,14 @@ BigWigsFrostBlast.consoleOptions = {
 					BigWigsFrostBlast:FBClose()
 				end
 			end,
+		},
+		enablehealcomm = {
+			type = "toggle",
+			name = L["Healcomm"],
+			desc = L["Enable Healcomm predictive heals on healthbars."],
+			order = 102,
+			get = function() return BigWigsFrostBlast.db.profile.enablehealcomm end,
+			set = function(v) BigWigsFrostBlast.db.profile.enablehealcomm = v end,
 		},
 		spacer = {
 			type = "header",
@@ -335,11 +350,14 @@ function BigWigsFrostBlast:OnUpdate()
 			percent = math.floor(percent + 0.5)
 			this:SetValue(percent)
 			thisbar.textVal:SetText(percent)
-			local healcommPoint = thisbar:GetWidth() * percent/100
-			local healvalue = this:GetWidth() * FrostBlastHealcomm:getHeal(UnitName(unit)) / UnitHealthMax(unit)
-			thisbar.healcomm:ClearAllPoints()
-			thisbar.healcomm:SetPoint("TOPLEFT", thisbar, "TOPLEFT", healcommPoint, 0)
-			thisbar.healcomm:SetWidth(healvalue)
+
+			if BigWigsFrostBlast.db.profile.enablehealcomm then
+				local healcommPoint = thisbar:GetWidth() * percent/100
+				local healvalue = this:GetWidth() * FrostBlastHealcomm:getHeal(UnitName(unit)) / UnitHealthMax(unit)
+				thisbar.healcomm:ClearAllPoints()
+				thisbar.healcomm:SetPoint("TOPLEFT", thisbar, "TOPLEFT", healcommPoint, 0)
+				thisbar.healcomm:SetWidth(healvalue)
+			end
 		end
 		if BigWigsFrostBlast.db.profile.names then
 			thisbar.text:SetText(tostring(coloredNames[unit]))
@@ -464,11 +482,11 @@ function BigWigsFrostBlast:SetupFrames()
 		bar.bg:SetFrameLevel(bar.bg:GetFrameLevel() - 1)
 		bar.bg:SetBackdropBorderColor(0.9, 0.9, 0.9, 0.6)
 		bar.bg:SetBackdropColor(0.3, 0.3, 0.3, 0.6)
-		
+
 		bar.healcomm = CreateFrame("Frame",nil, bar)
 		bar.healcomm:ClearAllPoints()
 		bar.healcomm:SetPoint("TOPLEFT", bar, "TOPRIGHT", 0, 0)
-		bar.healcomm:SetWidth(196)
+		bar.healcomm:SetWidth(0)
 		bar.healcomm:SetHeight(20)
 		bar.healcomm:SetAlpha(0.4)
 		bar.healcomm.texture = bar.healcomm:CreateTexture(nil, "BACKGROUND")
