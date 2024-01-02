@@ -358,7 +358,7 @@ function BigWigsFrostBlast:SetupFrames()
 	frame:Hide()
 
 	frame:SetWidth(200)
-	frame:SetHeight(50)
+	frame:SetHeight(32)
 
 	frame:SetBackdrop({
 		-- bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16,
