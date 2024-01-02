@@ -1,6 +1,8 @@
 
 assert( BigWigs, "BigWigs not found!")
 
+local FrostBlastHealcomm = AceLibrary("HealComm-1.0")
+
 -----------------------------------------------------------------------
 --      Are you local?
 -----------------------------------------------------------------------
@@ -320,23 +322,29 @@ end
 
 function BigWigsFrostBlast:OnUpdate()
 	local unit = this:GetParent().unit
+	local thisbar = this:GetParent()
 	if unit then
 		if not UnitIsConnected(unit) then
 			this:SetValue(0)
-			this:GetParent().textVal:SetText(L["Offline"])
+			thisbar.textVal:SetText(L["Offline"])
 		elseif UnitIsDeadOrGhost(unit) then
 			this:SetValue(0)
-			this:GetParent().textVal:SetText(L["Dead"])
+			thisbar.textVal:SetText(L["Dead"])
 		else
 			local percent = UnitHealth(unit) / UnitHealthMax(unit) * 100
 			percent = math.floor(percent + 0.5)
 			this:SetValue(percent)
-			this:GetParent().textVal:SetText(percent)
+			thisbar.textVal:SetText(percent)
+			local healcommPoint = thisbar:GetWidth() * percent/100
+			local healvalue = this:GetWidth() * FrostBlastHealcomm:getHeal(UnitName(unit)) / UnitHealthMax(unit)
+			thisbar.healcomm:ClearAllPoints()
+			thisbar.healcomm:SetPoint("TOPLEFT", thisbar, "TOPLEFT", healcommPoint, 0)
+			thisbar.healcomm:SetWidth(healvalue)
 		end
 		if BigWigsFrostBlast.db.profile.names then
-			this:GetParent().text:SetText(tostring(coloredNames[unit]))
+			thisbar.text:SetText(tostring(coloredNames[unit]))
 		else
-			this:GetParent().text:SetText(UnitName(unit))
+			thisbar.text:SetText(UnitName(unit))
 		end
 		local _,class = UnitClass(unit)
 		if BigWigsFrostBlast.db.profile.bars then
@@ -456,7 +464,16 @@ function BigWigsFrostBlast:SetupFrames()
 		bar.bg:SetFrameLevel(bar.bg:GetFrameLevel() - 1)
 		bar.bg:SetBackdropBorderColor(0.9, 0.9, 0.9, 0.6)
 		bar.bg:SetBackdropColor(0.3, 0.3, 0.3, 0.6)
-
+		
+		bar.healcomm = CreateFrame("Frame",nil, bar)
+		bar.healcomm:ClearAllPoints()
+		bar.healcomm:SetPoint("TOPLEFT", bar, "TOPRIGHT", 0, 0)
+		bar.healcomm:SetWidth(196)
+		bar.healcomm:SetHeight(20)
+		bar.healcomm:SetAlpha(0.4)
+		bar.healcomm.texture = bar.healcomm:CreateTexture(nil, "BACKGROUND")
+		bar.healcomm.texture:SetAllPoints(bar.healcomm)
+		bar.healcomm.texture:SetTexture("Interface\\AddOns\\BigWigs\\textures\\smoothhealcomm")
 
 		frame.bar[i] = bar
 		frame.bar[i]:Hide()

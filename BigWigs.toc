@@ -15,7 +15,7 @@
 ## X-AceForum: 1222
 ## X-FlySpray: 1
 
-## OptionalDeps: Ace2, FuBar, FuBarPlugin-2.0, Babble-2.2, CandyBar, CompostLib, DewdropLib, PaintChipsLib, TabletLib, SurfaceLib, Surfaces, MikScrollingBattleText, sct, SpellStatusLib, SpellCacheLib, GratuityLib, Deformat, SpecialEventsEmbed
+## OptionalDeps: Ace2, FuBar, FuBarPlugin-2.0, Babble-2.2, CandyBar, CompostLib, DewdropLib, PaintChipsLib, TabletLib, SurfaceLib, Surfaces, MikScrollingBattleText, sct, SpellStatusLib, SpellCacheLib, GratuityLib, Deformat, SpecialEventsEmbed, RosterLib, ItemBonusLib, HealComm
 ## X-Embeds: Ace2, FuBarPlugin-2.0, Babble-2.2, CandyBar, CompostLib, DewdropLib, PaintChipsLib, TabletLib, SurfaceLib
 
 ## SavedVariables: BigWigsDB, BigWigsFubarDB, BigWigsCommonAurasDB, BigWigsZombieFoodDB, BigWigsRespawnTimersDB, BigWigsContributeFlag
@@ -48,6 +48,13 @@ Libs\Gratuity-2.0\Gratuity-2.0.lua
 Libs\SpellCache-1.0\SpellCache-1.0.lua
 Libs\SpellStatus-1.0\SpellStatus-1.0.lua
 Libs\SpecialEvents-Aura-2.0\SpecialEvents-Aura-2.0.lua
+Libs\RosterLib-2.0\RosterLib-2.0.lua
+libs\ItemBonusLib-1.0\Locales\enUS.lua
+libs\ItemBonusLib-1.0\Locales\frFR.lua
+libs\ItemBonusLib-1.0\Locales\deDE.lua
+libs\ItemBonusLib-1.0\Locales\ruRU.lua
+Libs\ItemBonusLib-1.0\ItemBonusLib-1.0.lua
+Libs\HealComm-1.0\HealComm-1.0.lua
 
 LoadOnDemand.lua
 Core.lua
