@@ -101,7 +101,7 @@ L:RegisterTranslations("deDE", function() return {
 ----------------------------------
 
 BigWigsSound = BigWigs:NewModule(L["Sounds"])
-BigWigsSound.defaults = {
+BigWigsSound.defaultDB = {
 	defaultonly = false,
 	sound = true,
 }
