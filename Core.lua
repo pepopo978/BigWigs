@@ -360,7 +360,7 @@ end
 function BigWigs.modulePrototype:Victory()
 	if self.engaged then
 		if self.db.profile.bosskill then
-			self:Message(string.format(L["%s has been defeated"], self.translatedName), "Bosskill", nil, "Victory")
+			self:Message(string.format(L["%s has been defeated"], self.translatedName), "Bosskill", nil)
 			--Screenshot()
 		end
 
