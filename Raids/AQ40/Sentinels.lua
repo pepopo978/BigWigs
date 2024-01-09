@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Anubisath Sentinel", "Ahn'Qiraj")
 
-module.revision = 30027
+module.revision = 30039
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"abilities"}
 module.trashMod = true
@@ -49,8 +49,10 @@ L:RegisterTranslations("enUS", function() return {
 	--sharefbufficon = "Interface\\Icons\\Spell_Arcane_Blink",
 	mendbufficon = "Interface\\Icons\\Spell_Nature_ResistNature",
 	
-	["You have slain %s!"] = true,
+	trigger_selfReflect = "Your (.*) is reflected back by Anubisath Sentinel.",--CHAT_MSG_SPELL_SELF_DAMAGE
+	msg_selfReflect = "STOP KILLING YOURSELF!",
 	
+	["You have slain %s!"] = true,
 } end )
 
 module.defaultDB = {
@@ -193,7 +195,11 @@ function module:CheckForBossDeath(msg)
 end
 
 function module:Abilities(msg)
-
+	if string.find(msg, L["trigger_selfReflect"]) then
+		self:SelfReflect()
+	end
+	
+	
 	-- Mana Burn
 	if firstmanaburn == true then
 		if UnitBuff("target",1) == L["manaburnbufficon"] then
@@ -503,4 +509,9 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		end
 		
 	end
+end
+
+function module:SelfReflect()
+	self:Message(L["msg_selfReflect"], "Personal", false, nil, false)
+	self:Sound("Beware")
 end

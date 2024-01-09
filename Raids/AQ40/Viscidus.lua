@@ -1,6 +1,6 @@
 
 local module, L = BigWigs:ModuleDeclaration("Viscidus", "Ahn'Qiraj")
-module.revision = 30038
+module.revision = 30039
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"volley", "toxin", "freezestages", "freezecount", "pokecount", "glob", "bosskill"}
 
@@ -241,9 +241,7 @@ function module:CheckPhysical(msg)
 		if string.find(msg, L["trigger_pokeYou"]) or string.find(msg, L["trigger_pokeCritYou"]) or string.find(msg, L["trigger_pokeOther"]) or string.find(msg, L["trigger_pokeCritOther"]) then
 			pokeCount = pokeCount + 1
 			if self.db.profile.pokecount then
-				if UnitName("Player") == "Relar" or UnitName("Player") == "Dreadsome" then
-					self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_poke"], pokeCount)
-				end
+				self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_poke"], pokeCount)
 			end
 			if pokeCount >= maxPokeCount then
 				checkPhysical = false
@@ -313,10 +311,8 @@ function module:Frozen()
 	self:TriggerEvent("BigWigs_StopCounterBar", self, L["bar_frostDmg"])
 	
 	if self.db.profile.pokecount then
-		if UnitName("Player") == "Relar" or UnitName("Player") == "Dreadsome" then
-			self:TriggerEvent("BigWigs_StartCounterBar", self, L["bar_poke"], maxPokeCount, "Interface\\Icons\\"..icon.poke, true, color.poke)
-			self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_poke"], pokeCount)
-		end
+		self:TriggerEvent("BigWigs_StartCounterBar", self, L["bar_poke"], maxPokeCount, "Interface\\Icons\\"..icon.poke, true, color.poke)
+		self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_poke"], pokeCount)
 	end
 	
 	if self.db.profile.freezestages then
@@ -339,9 +335,7 @@ end
 
 function module:StartGlobBar()
 	if self.db.profile.glob then
-		if UnitName("Player") == "Relar" or UnitName("Player") == "Dreadsome" then
-			self:TriggerEvent("BigWigs_StopCounterBar", self, L["bar_poke"])
-		end
+		self:TriggerEvent("BigWigs_StopCounterBar", self, L["bar_poke"])
 	
 		self:TriggerEvent("BigWigs_StartCounterBar", self, L["bar_glob"], maxGlobDeathCount, "Interface\\Icons\\"..icon.glob, true, color.glob)
 		self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_glob"], globDeathCount)
@@ -389,6 +383,7 @@ function module:FindViscidus()
 		for i = 1, GetNumRaidMembers(), 1 do
 			if UnitName("Raid"..i.."target") == "Viscidus" then
 				self:StartFostDmgBar()
+				checkFrost = true
 				break
 			end
 		end

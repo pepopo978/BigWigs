@@ -1,12 +1,13 @@
-----------------------------------
---      Module Declaration      --
-----------------------------------
 
 local module, L = BigWigs:ModuleDeclaration("Alterac Valley", "Alterac Valley")
-
-----------------------------
---      Localization      --
-----------------------------
+module.revision = 20005
+module.enabletrigger = {
+  "Stormpike Herald",
+  "Stormpike Owl",
+  "Frostwolf Herald",
+}
+module.toggleoptions = {
+}
 
 L:RegisterTranslations("enUS", function()
     return {
@@ -63,24 +64,6 @@ L:RegisterTranslations("enUS", function()
     }
 end)
 
----------------------------------
---      	Variables 		   --
----------------------------------
-
--- module variables
-module.revision = 20005 -- To be overridden by the module!
-module.enabletrigger = {
-  "Stormpike Herald",
-  "Stormpike Owl",
-
-  "Frostwolf Herald",
-}
-module.toggleoptions = {
-    --"towers", "graveyards", -1, "bosskill"
-}
-
-
--- locals
 local timer = {
     towers = 60*5,
     graveyards = 60*5,
@@ -95,16 +78,9 @@ local syncName = {
 }
 
 local gy_trigger_under_attack = "(.+) is under attack! If left unchecked, the (.+) will capture it!"
-
 local tower_trigger_under_attack = "(.+) is under attack! If left unchecked, the (.+) will destroy it!"
-
 local defended_trigger = "(.+) was taken by the (.+)!"
 
-------------------------------
---      Initialization      --
-------------------------------
-
--- called after module is enabled
 function module:OnEnable()
     self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
 
@@ -112,23 +88,15 @@ function module:OnEnable()
     self:ThrottleSync(8, syncName.tow)
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
 end
 
--- called after boss is engaged
 function module:OnEngage()
 
 end
 
--- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
 end
-
-
-------------------------------
---      Event Handlers	    --
-------------------------------
 
 function module:CHAT_MSG_MONSTER_YELL(msg)
 

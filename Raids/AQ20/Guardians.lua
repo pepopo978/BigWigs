@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Anubisath Guardian", "Ruins of Ahn'Qiraj")
 
-module.revision = 30019
+module.revision = 30039
 module.enabletrigger = module.translatedName 
 module.toggleoptions = {"reflect", "plagueyou", "plagueother", "icon", "thunderclap", "shadowstorm", "meteor", -1, "explode", "enrage"}
 module.trashMod = true
@@ -83,6 +83,9 @@ L:RegisterTranslations("enUS", function() return {
 	plagueyou = "You",
 	plagueare = "are",
 	plague_onme = "Plague on ",
+	
+	trigger_selfReflect = "Your (.*) is reflected back by Anubisath Guardian.",--CHAT_MSG_SPELL_SELF_DAMAGE
+	msg_selfReflect = "STOP KILLING YOURSELF!",
 } end )
 
 module.defaultDB = {
@@ -202,6 +205,10 @@ function module:Event(msg)
 	if string.find(msg, L["trigger_shadowFrostReflect1"]) or string.find(msg, L["trigger_shadowFrostReflect2"]) or string.find(msg, L["trigger_shadowFrostReflect3"]) or string.find(msg, L["trigger_shadowFrostReflect4"]) or string.find(msg, L["trigger_shadowFrostReflect5"]) then
 		self:Sync(syncName.sharef)		
 	end
+	
+	if string.find(msg, L["trigger_selfReflect"]) then
+		self:SelfReflect()
+	end
 end
 
 function module:BigWigs_RecvSync(sync, rest, nick)
@@ -264,4 +271,9 @@ end
 function module:Meteor()
 	self:IntervalBar(L["meteorbar"], timer.meteor[1], timer.meteor[2], icon.meteor, true, "cyan")
 	self:Message(L["meteorwarn"], "Important")
+end
+
+function module:SelfReflect()
+	self:Message(L["msg_selfReflect"], "Personal", false, nil, false)
+	self:Sound("Beware")
 end

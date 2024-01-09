@@ -5,7 +5,7 @@ local kri = AceLibrary("Babble-Boss-2.2")["Lord Kri"]
 local yauj = AceLibrary("Babble-Boss-2.2")["Princess Yauj"]
 local vem = AceLibrary("Babble-Boss-2.2")["Vem"]
 
-module.revision = 30019
+module.revision = 30039
 module.enabletrigger = {kri, yauj, vem}
 module.toggleoptions = {"panic", "toxicvolley", "heal", "announce", "deathspecials", "enrage", "bosskill"}
 
@@ -233,6 +233,13 @@ function module:Heal()
 	
 	self:Bar(L["bar_heal"], timer.heal, icon.heal, true, "yellow")
 	self:Message(L["msg_heal"], "Attention", true, "Alert")
+	
+	if UnitClass("Player") == "Rogue" or UnitClass("Player") == "Warrior" or UnitClass("Player") == "Mage" then
+		if UnitName("Target") == "Princess Yauj" then
+			self:WarningSign(icon.heal, 1)
+			self:Sound("Beware")
+		end
+	end
 end
 
 function module:HealStop()

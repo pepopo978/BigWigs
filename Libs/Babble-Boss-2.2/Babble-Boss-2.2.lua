@@ -134,6 +134,7 @@ BabbleBoss:RegisterTranslations("enUS", function()
 		["General Rajaxx"] = true,
 		["Lieutenant General Andorov"] = true,
 		["Moam"] = true,
+		["Hive'Zara Soldier"] = true,
 		["Anubisath Guardian"] = true,
 		["Ossirian the Unscarred"] = true,
 		["Lord Kri"] = true,

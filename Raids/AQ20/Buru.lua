@@ -1,39 +1,36 @@
 
-----------------------------------
---      Module Declaration      --
-----------------------------------
-
 local module, L = BigWigs:ModuleDeclaration("Buru the Gorger", "Ruins of Ahn'Qiraj")
-
-
-----------------------------
---      Localization      --
-----------------------------
+module.revision = 30039
+module.enabletrigger = module.translatedName
+module.toggleoptions = {"watch", "dismember", "phase", "bosskill"}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Buru",
 
-	you_cmd = "you",
-	you_name = "You're being watched alert",
-	you_desc = "Warn when you're being watched",
-
-	other_cmd = "other",
-	other_name = "Others being watched alert",
-	other_desc = "Warn when others are being watched",
-
-	icon_cmd = "icon",
-	icon_name = "Place icon",
-	icon_desc = "Place raid icon on watched person (requires promoted or higher)",
-
-	watchtrigger = "sets eyes on (.+)!",
-	watchwarn = " is being watched!",
-	watchwarnyou = "You are being watched!",
-	you = "You",
+	watch_cmd = "watch",
+	watch_name = "Watched Alert",
+	watch_desc = "Warns for who is being watched",
 	
-	dismember1_trigger = "(.+) is afflicted by Dismember.",
-	dismember_trigger = "(.+) is afflicted by Dismember %((.+)%)",
-	dismember_bar = " Dismember",
-	p2 = "Phase2, DPS Buru!",
+	dismember_cmd = "dismember",
+	dismember_name = "Dismember Alert",
+	dismember_desc = "Warns for Dismember",
+	
+	phase_cmd = "phase",
+	phase_name = "Phase Alert",
+	phase_desc = "Warns for Phases",
+	
+	trigger_watch = "sets eyes on (.+)!",--CHAT_MSG_MONSTER_EMOTE
+	msg_watch = " is being watched!",
+	trigger_watchEnd = "Buru Egg's Explosion hits Buru the Gorger for",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	msg_watchEnd = "Buru stopped following you.",
+	
+	trigger_dismemberYouOne = "You are afflicted by Dismember.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_dismemberYouMore = "You are afflicted by Dismember %((.+)%).",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_dismemberOtherOne = "(.+) is afflicted by Dismember.",--CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+		trigger_dismemberOtherMore = "(.+) is afflicted by Dismember %((.+)%).",--CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	bar_dismember = " Dismember",
+	
+	msg_phase2 = "Phase2, DPS Buru!",
 } end )
 
 L:RegisterTranslations("deDE", function() return {
@@ -46,7 +43,7 @@ L:RegisterTranslations("deDE", function() return {
 	icon_name = "Symbol",
 	icon_desc = "Platziert ein Symbol \195\188ber dem Spieler, der beobachtet wird. (Ben\195\182tigt Anf\195\188hrer oder Bef\195\182rdert Status.)",
 
-	watchtrigger = "beh\195\164lt (.+) im Blickfeld!",
+	trigger_watch = "beh\195\164lt (.+) im Blickfeld!",
 	watchwarn = " wird beobachtet!",
 	watchwarnyou = "Du wirst beobachtet!",
 	you = "Euch",
@@ -67,81 +64,60 @@ L:RegisterTranslations("esES", function() return {
 	icon_name = "Marcar para Observar",
 	icon_desc = "Marca con un icono el jugador observado (require asistente o líder)",
 
-	watchtrigger = "sets eyes on (.+)!",
+	trigger_watch = "sets eyes on (.+)!",
 	watchwarn = " está siendo observado!",
 	watchwarnyou = "¡Estás siendo observado!",
 	you = "Tu",
 } end )
----------------------------------
---      	Variables 		   --
----------------------------------
 
--- module variables
-module.revision = 20004 -- To be overridden by the module!
-module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
-module.toggleoptions = {"you", "other", "icon", "bosskill"}
-
--- locals
 local timer = {
 	dismember = 10,
 }
 local icon = {
+	watch = "ability_cheapshot",
 	dismember = "ability_backstab",
-	follow = "spell_fire_incinerate",
+}
+local color = {
+	dismember = "Red",
 }
 local syncName = {
-	dismember = "BuruDismember",
-	p2 = "BuruP2",
+	watch = "BuruWatch"..module.revision,
+	watchEnd = "BuruWatchEnd"..module.revision,
+	dismember = "BuruDismember"..module.revision,
+	p2 = "BuruP2"..module.revision,
 }
 
+local phase2 = nil
+local watchedPlayer = nil
 
-------------------------------
---      Initialization      --
-------------------------------
-
--- called after module is enabled
 function module:OnEnable()
-	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
+	
+	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")--trigger_watch
+	self:RegisterEvent("UNIT_HEALTH")--p2
+	
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")
-	self:RegisterEvent("UNIT_HEALTH")
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event")--trigger_watchEnd
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
 end
 
--- called after boss is engaged
 function module:OnEngage()
-	p2 = false
+	phase2 = false
+	watchedPlayer = nil
 end
 
--- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
 end
 
-
-------------------------------
---      Event Handlers	    --
-------------------------------
-
-function module:CHAT_MSG_MONSTER_EMOTE( msg )
-	local _, _, player = string.find(msg, L["watchtrigger"])
-	if player then
-		if player == L["you"] and self.db.profile.you then
-			player = UnitName("player")
-			self:Message(L["watchwarnyou"], "Personal", true, "RunAway")
-			self:Message(UnitName("player") .. L["watchwarn"], "Attention", nil, nil, true)
-			self:WarningSign(icon.follow, 1)
-		elseif self.db.profile.other then
-			self:Message(player .. L["watchwarn"], "Attention")
-			self:TriggerEvent("BigWigs_SendTell", player, L["watchwarnyou"])
-		end
-
-		if self.db.profile.icon then
-			self:Icon(player)
-		end
+function module:CHAT_MSG_MONSTER_EMOTE(msg)
+	if string.find(msg, L["trigger_watch"]) then
+		local _, _, watchedPlayer = string.find(msg, L["trigger_watch"])
+		if watchedPlayer == "you" then watchedPlayer = UnitName("Player") end
+		self:Sync(syncName.watch.." "..watchedPlayer)
 	end
 end
 
@@ -149,34 +125,108 @@ function module:UNIT_HEALTH(arg1)
 	if UnitName(arg1) == module.translatedName then
 		local health = UnitHealth(arg1)
 		local maxHealth = UnitHealthMax(arg1)
-		if math.ceil(100*health/maxHealth) > 5 and math.ceil(100*health/maxHealth) <= 20 and not p2 then
+		if math.ceil(100*health/maxHealth) > 5 and math.ceil(100*health/maxHealth) <= 20 and not phase2 then
 			self:Sync(syncName.p2)
-			p2 = true
+			phase2 = true
 		end
 	end
 end
 
 function module:Event(msg)
-	local _,_,one = string.find(msg, L["dismember1_trigger"])
-	local _,_,name, amount = string.find(msg, L["dismember_trigger"])
-	if name and amount then
-		self:Sync(syncName.dismember .. " " .. name .. " " .. amount)
-	end
-	if one then
-		self:Sync(syncName.dismember .. " " .. one .. " 1")
+	if msg == L["trigger_dismemberYouOne"] then
+		local dismemberPlayerAndDismemberQty = UnitName("Player") .. " " .. "1"
+		self:Sync(syncName.dismember.." "..dismemberPlayerAndDismemberQty)
+	
+	elseif string.find(msg, L["trigger_dismemberYouMore"]) then
+		local _,_,dismemberQty,_ = string.find(msg, L["trigger_dismemberYouMore"])
+		local dismemberPlayerAndDismemberQty = UnitName("Player") .. " " .. dismemberQty
+		self:Sync(syncName.dismember.." "..dismemberPlayerAndDismemberQty)
+	
+	elseif string.find(msg, L["trigger_dismemberOtherMore"]) then
+		local _,_,dismemberPlayer,dismemberQty = string.find(msg, L["trigger_dismemberOtherMore"])
+		local dismemberPlayerAndDismemberQty = dismemberPlayer .. " " .. dismemberQty
+		self:Sync(syncName.dismember.." "..dismemberPlayerAndDismemberQty)
+	
+	elseif string.find(msg, L["trigger_dismemberOtherOne"]) then
+		local _,_,dismemberPlayer = string.find(msg, L["trigger_dismemberOtherOne"])
+		local dismemberPlayerAndDismemberQty = dismemberPlayer .. " " .. "1"
+		self:Sync(syncName.dismember .. " " .. dismemberPlayerAndDismemberQty)
+	
+	
+		
+	elseif string.find(msg, L["trigger_watchEnd"]) then
+		self:Sync(syncName.watchEnd)
 	end
 end
 
 function module:BigWigs_RecvSync(sync, rest, nick)
-	if sync == syncName.dismember then
-		if rest == UnitName("player") then
-			self:Bar(string.format(UnitName("player") .. L["dismember_bar"]), timer.dismember, icon.dismember)
-		else
-			self:Bar(string.format(rest .. L["dismember_bar"]), timer.dismember, icon.dismember)
+	if sync == syncName.watch and rest then
+		self:Watch(rest)
+	elseif sync == syncName.watchEnd then
+		self:WatchEnd()
+	elseif sync == syncName.dismember and rest and self.db.profile.dismember then
+		self:Dismember(rest)
+	elseif sync ==syncName.p2 then
+		self:Phase2()
+	end
+end
+
+function module:Watch(rest)
+	watchedPlayer = rest
+	if IsRaidLeader() or IsRaidOfficer() then
+		for i=1,GetNumRaidMembers() do
+			if UnitName("raid"..i) == rest then
+				SetRaidTarget("raid"..i, 8)
+			end
 		end
 	end
-	if sync ==syncName.p2 then
-		self:Message(L["p2"], "Attention")
-		self:Sound("gogogo")
+	
+	if self.db.profile.watch then
+		self:Message(rest..L["msg_watch"], "Attention", false, nil, false)
+		
+		if rest == UnitName("Player") then
+			SendChatMessage("Buru is chasing me!", "SAY")
+			self:WarningSign(icon.watch, 2)
+			self:Sound("RunAway")
+		end
 	end
+end
+
+function module:WatchEnd()
+	if IsRaidLeader() or IsRaidOfficer() then
+		for i=1,GetNumRaidMembers() do
+			if UnitName("raid"..i) == watchedPlayer then
+				SetRaidTarget("raid"..i, 0)
+			end
+		end
+	end
+	
+	if self.db.profile.watch then
+		if watchedPlayer == UnitName("Player") then
+			self:Message(L["msg_watchEnd"], "Positive", false, nil, false)
+			self:Sound("Alert")
+		end
+	end
+end
+
+function module:Dismember(rest)
+	local dismemberPlayer = strsub(rest,0,strfind(rest," ") - 1)
+	local dismemberQty = tonumber(strsub(rest,strfind(rest," "),strlen(rest)))
+	
+	self:RemoveBar(dismemberPlayer.." ".."1"..L["bar_dismember"])
+	self:RemoveBar(dismemberPlayer.." ".."2"..L["bar_dismember"])
+	self:RemoveBar(dismemberPlayer.." ".."3"..L["bar_dismember"])
+	self:RemoveBar(dismemberPlayer.." ".."4"..L["bar_dismember"])
+	self:RemoveBar(dismemberPlayer.." ".."5"..L["bar_dismember"])
+
+
+	self:Bar(dismemberPlayer.." "..dismemberQty..L["bar_dismember"], timer.dismember, icon.dismember, true, color.dismember)
+end
+
+function module:Phase2()
+	if self.db.profile.phase then
+		self:Message(L["msg_phase2"], "Attention", false, nil, false)
+		self:Sound("Long")
+	end
+	self:WatchEnd()
 end

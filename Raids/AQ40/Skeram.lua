@@ -138,5 +138,5 @@ function module:MC(rest)
 	
 	self:Bar(rest..L["bar_mc"].. " >Click Me<", timer.mc, icon.mc, true, "White")
 	self:SetCandyBarOnClick("BigWigsBar "..rest..L["bar_mc"].. " >Click Me<", function(name, button, extra) TargetByName(extra, true) end, rest)
-	self:Message(rest..L["msg_mc"], "Attention")
+	self:Message(rest..L["msg_mc"], "Attention", false, nil, false)
 end

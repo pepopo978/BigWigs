@@ -1,6 +1,6 @@
 ## Interface: 11200
 
-## Title: |cFFFF8080Relar|r Big Wigs |cff7fff7f30038|r |cffabd473Turtle-WoW|r
+## Title: |cFFFF8080Relar|r Big Wigs |cff7fff7f30039|r |cffabd473Turtle-WoW|r
 ## Title-zhCN: |cffabd473Turtle-WoW|r Big Wigs
 ## Notes: Boss Mods with Timer bars.
 ## Notes-esES: Módulos para Jefes con barras temporizadoras.
@@ -107,6 +107,7 @@ Raids\AQ20\Ossirian.lua
 Raids\AQ20\Moam.lua
 Raids\AQ20\Kurinaxx.lua
 Raids\AQ20\FleshHunter.lua
+Raids\AQ20\HiveZaraSoldier.lua
 
 Raids\AQ40\Skeram.lua
 Raids\AQ40\BugFamily.lua

@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Jin'do the Hexxer", "Zul'Gurub")
 
-module.revision = 30034
+module.revision = 30039
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"curse", "hex", "brainwash", "healingward", "puticon", "autotarget", "bosskill"}
 
@@ -207,6 +207,11 @@ function module:HexFade(rest)
 end
 
 function module:BrainWash()
+	self:WarningSign(icon.brainWash, 0.7)
+	self:Message(L["msg_brainWash"], "Attention", true, "Alarm")
+	
+	if UnitName("Target") == "Jin'do the Hexxer" and UnitName("TargetTarget") == UnitName("Player") then return end
+	
 	if UnitClass("Player") == "Warrior" and self.db.profile.autotarget then
 		TargetByName("Brain Wash Totem", true)
 	elseif UnitClass("Player") == "Rogue" and self.db.profile.autotarget then
@@ -220,12 +225,15 @@ function module:BrainWash()
 	elseif UnitClass("Player") == "Warrior" and self.db.profile.autotarget then
 		TargetByName("Brain Wash Totem", true)
 	end
-	
-	self:WarningSign(icon.brainWash, 0.7)
-	self:Message(L["msg_brainWash"], "Attention", true, "Alarm")
 end
 
 function module:HealingWard()
+	self:WarningSign(icon.healingWard, 0.7)
+	self:Message(L["msg_healingWard"], "Attention", true, "Alarm")
+	
+	if UnitName("Target") == "Brain Wash Totem" then return end
+	if UnitName("Target") == "Jin'do the Hexxer" and UnitName("TargetTarget") == UnitName("Player") then return end
+	
 	if UnitClass("Player") == "Warrior" and self.db.profile.autotarget then
 		TargetByName("Powerful Healing Ward", true)
 	elseif UnitClass("Player") == "Rogue" and self.db.profile.autotarget then
@@ -239,7 +247,4 @@ function module:HealingWard()
 	elseif UnitClass("Player") == "Warrior" and self.db.profile.autotarget then
 		TargetByName("Powerful Healing Ward", true)
 	end
-	
-	self:WarningSign(icon.healingWard, 0.7)
-	self:Message(L["msg_healingWard"], "Attention", true, "Alarm")
 end

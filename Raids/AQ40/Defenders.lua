@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Anubisath Defender", "Ahn'Qiraj")
 
-module.revision = 30024
+module.revision = 30039
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"reflect", "plagueyou", "plagueother", "icon", "thunderclap", "shadowstorm", "meteor", -1, "explode", "enrage"}
 module.trashMod = true
@@ -83,6 +83,9 @@ L:RegisterTranslations("enUS", function() return {
 	plagueyou = "You",
 	plagueare = "are",
 	plague_onme = "Plague on ",
+	
+	trigger_selfReflect = "Your (.*) is reflected back by Anubisath Defender.",--CHAT_MSG_SPELL_SELF_DAMAGE
+	msg_selfReflect = "STOP KILLING YOURSELF!",
 } end )
 
 module.defaultDB = {
@@ -175,32 +178,25 @@ function module:Event(msg)
 				self:TriggerEvent("BigWigs_SetRaidIcon", pplayer)
 			end
 		end
-	end
-	
-	if string.find(msg, L["meteortrigger"]) then
+		
+	elseif string.find(msg, L["meteortrigger"]) then
 		self:Sync(syncName.meteor)
-	end
-	
-	if string.find(msg, L["thunderclaptrigger"]) then
+	elseif string.find(msg, L["thunderclaptrigger"]) then
 		self:Sync(syncName.thunderclap)
-	end
-	if string.find(msg, L["shadowstormtrigger"]) then
+	elseif string.find(msg, L["shadowstormtrigger"]) then
 		self:Sync(syncName.shadowstorm)
-	end
-	
-	if msg == L["explodetrigger"] then
+	elseif msg == L["explodetrigger"] then
 		self:Sync(syncName.explode)
-	end
-	if msg == L["enragetrigger"] then
+	elseif msg == L["enragetrigger"] then
 		self:Sync(syncName.enrage)
-	end
-	
-	if string.find(msg, L["trigger_arcaneFireReflect1"]) or string.find(msg, L["trigger_arcaneFireReflect2"]) or string.find(msg, L["trigger_arcaneFireReflect3"]) or string.find(msg, L["trigger_arcaneFireReflect4"]) or string.find(msg, L["trigger_arcaneFireReflect5"]) or string.find(msg, L["trigger_arcaneFireReflect6"]) then
+	elseif string.find(msg, L["trigger_arcaneFireReflect1"]) or string.find(msg, L["trigger_arcaneFireReflect2"]) or string.find(msg, L["trigger_arcaneFireReflect3"]) or string.find(msg, L["trigger_arcaneFireReflect4"]) or string.find(msg, L["trigger_arcaneFireReflect5"]) or string.find(msg, L["trigger_arcaneFireReflect6"]) then
 		self:Sync(syncName.arcref)
+	elseif string.find(msg, L["trigger_shadowFrostReflect1"]) or string.find(msg, L["trigger_shadowFrostReflect2"]) or string.find(msg, L["trigger_shadowFrostReflect3"]) or string.find(msg, L["trigger_shadowFrostReflect4"]) or string.find(msg, L["trigger_shadowFrostReflect5"]) then
+		self:Sync(syncName.sharef)		
 	end
 	
-	if string.find(msg, L["trigger_shadowFrostReflect1"]) or string.find(msg, L["trigger_shadowFrostReflect2"]) or string.find(msg, L["trigger_shadowFrostReflect3"]) or string.find(msg, L["trigger_shadowFrostReflect4"]) or string.find(msg, L["trigger_shadowFrostReflect5"]) then
-		self:Sync(syncName.sharef)		
+	if string.find(msg, L["trigger_selfReflect"]) then
+		self:SelfReflect()
 	end
 end
 
@@ -223,26 +219,26 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 end
 
 function module:Explode()
-	self:Message(L["explodewarn"], "Important")
+	self:Message(L["explodewarn"], "Important", false, nil, false)
 	self:Bar(L["explodewarn"], timer.explode, icon.explode, true, "Black")
 	self:WarningSign(icon.explode, timer.explode)
 	self:Sound("RunAway")
 end
 
 function module:Enrage()
-	self:Message(L["enragewarn"], "Important")
+	self:Message(L["enragewarn"], "Important", false, nil, false)
 end
 
 function module:Thunderclap()
 	if bwDefendersFirst == true then
-		self:Message(L["thunderclap_split"], "Attention")
+		self:Message(L["thunderclap_split"], "Attention", false, nil, false)
 		bwDefendersFirst = false
 	end
 end
 
 function module:ShadowStorm()
 	if bwDefendersFirst == true then
-		self:Message(L["shadowstorm_stay"], "Attention")
+		self:Message(L["shadowstorm_stay"], "Attention", false, nil, false)
 		bwDefendersFirst = false
 	end
 end
@@ -263,5 +259,10 @@ end
 
 function module:Meteor()
 	self:IntervalBar(L["meteorbar"], timer.meteor[1], timer.meteor[2], icon.meteor, true, "cyan")
-	self:Message(L["meteorwarn"], "Important")
+	self:Message(L["meteorwarn"], "Important", false, nil, false)
+end
+
+function module:SelfReflect()
+	self:Message(L["msg_selfReflect"], "Personal", false, nil, false)
+	self:Sound("Beware")
 end
