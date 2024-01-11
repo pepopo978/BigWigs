@@ -94,7 +94,7 @@ L:RegisterTranslations("esES", function() return {
 -- module variables
 module.revision = 20004 -- To be overridden by the module!
 module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
-module.wipemobs = {understudy} -- adds which will be considered in CheckForEngage
+-- module.wipemobs = {understudy} -- adds which will be considered in CheckForEngage
 module.toggleoptions = {"shout", "unbalance", "shieldwall", "bosskill"}
 
 
