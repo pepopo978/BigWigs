@@ -123,7 +123,7 @@ module.proximitySilent = false
 local timer = {
 	berserk = 900,
 	deepbreathInc = 23,
-	deepbreath = 6,
+	deepbreath = 6.5,
 	lifedrainAfterFlight = 24,
 	lifedrain = 24,
 	groundPhase = 50,
@@ -311,7 +311,7 @@ end
 function module:Breath()
 	if self.db.profile.deepbreath then
 		self:RemoveBar(L["deepbreath_incoming_bar"])
-		self:Message(L["deepbreath_warning"], "Important")
+		self:Message(L["deepbreath_warning"], "Important", nil, "RunAway")
 		self:Bar(L["deepbreath_bar"], timer.deepbreath, icon.deepbreath)
 		self:RemoveProximity()
 	end

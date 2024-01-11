@@ -114,7 +114,7 @@ L:RegisterTranslations("enUS", function() return {
 
 	guardians_bar = "Guardian %d",
 
-	fissure_trigger = "cast Shadow Fissure.",
+	fissure_trigger = "casts Shadow Fissure.",
 	fissure_warning = "Shadow Fissure!",
 
 	frostbolt_trigger = "Kel'Thuzad begins to cast Frostbolt.",
@@ -751,7 +751,7 @@ end
 
 function module:Fissure()
 	if self.db.profile.fissure then
-		self:Message(L["fissure_warning"], "Urgent", true, "Alarm")
+		self:Message(L["fissure_warning"], "Urgent", true, "Beware")
 		-- add bar?
 	end
 end

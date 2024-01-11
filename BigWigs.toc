@@ -158,6 +158,9 @@ Raids\Other\Nerubian.lua
 
 Raids\Onyxia\Onyxia.lua
 
+
+Raids\Naxxramas\Golem.lua
+Raids\Naxxramas\Spiders.lua
 Raids\Naxxramas\Gargoyle.lua
 Raids\Naxxramas\Anubrekhan.lua
 Raids\Naxxramas\Gluth.lua
