@@ -29,7 +29,7 @@ L:RegisterTranslations("enUS", function() return {
 	adddeath_name = "Add Death Alert",
 	adddeath_desc = "Alerts when an add dies.",
 
-	disabletrigger = "I... am... undone.",
+	disabletrigger = "I... am... undone!",
 
 	starttrigger1 = "Brazenly you have disregarded powers beyond your understanding.",
 	starttrigger2 = "Teamanare shi rikk mannor rikk lok karkun",
@@ -61,7 +61,7 @@ L:RegisterTranslations("enUS", function() return {
 	dkbar = "Deathknight - %d",
 	riderbar = "Rider - %d",
 
-	inroomtrigger = "I have waited long enough! Now, you face the harvester of souls.",
+	inroomtrigger = "I have waited long enough",
 	inroomwarn = "He's in the room!",
 
 	inroombartext = "In Room",
@@ -207,7 +207,7 @@ end
 ------------------------------
 
 function module:CHAT_MSG_MONSTER_YELL( msg )
-	if msg == L["inroomtrigger"] then
+	if string.find(msg, L["inroomtrigger"]) then
 		if self.db.profile.room then
 			self:Message(L["inroomwarn"], "Important")
 		end
@@ -261,15 +261,11 @@ function module:Trainee()
 		traineeTime = timer.firstTrainee
 	end
 
-	if self.db.profile.add then
+	if self.db.profile.add and numTrainees < 12 then
 		self:Bar(string.format(L["trabar"], numTrainees), traineeTime, icon.trainee)
-	end
-	self:ScheduleEvent("bwgothiktrawarn", self.WaveWarn, traineeTime - 3, self, L["trawarn"], L, "Attention")
-	self:ScheduleRepeatingEvent("bwgothiktrarepop", self.Trainee, traineeTime, self)
-
-
-	if numTrainees >= 12 then  -- cancels bar after wave 11
-		self:RemoveBar(string.format(L["trabar"], numTrainees - 1))
+		self:ScheduleEvent("bwgothiktrawarn", self.WaveWarn, traineeTime - 3, self, L["trawarn"], L, "Attention")
+		self:ScheduleRepeatingEvent("bwgothiktrarepop", self.Trainee, traineeTime, self)
+	else
 		self:CancelScheduledEvent("bwgothiktrawarn")
 		self:CancelScheduledEvent("bwgothiktrarepop")
 		numTrainees = 0
@@ -313,15 +309,11 @@ function module:DeathKnight()
 		deathknightTime = timer.firstDeathknight
 	end
 
-	if self.db.profile.add then
+	if self.db.profile.add and numDeathknights < 8 then
 		self:Bar(string.format(L["dkbar"], numDeathknights) .. " " .. shackles[numDeathknights], deathknightTime, icon.deathknight)
-	end
-	self:ScheduleEvent("bwgothikdkwarn", self.WaveWarn, deathknightTime - 3, self, L["dkwarn"], L, "Urgent")
-	self:ScheduleRepeatingEvent("bwgothikdkrepop", self.DeathKnight, deathknightTime, self)
-
-
-	if numDeathknights >= 8 then  -- cancels bar after wave 7
-		self:RemoveBar(string.format(L["dkbar"], numDeathknights - 1))
+		self:ScheduleEvent("bwgothikdkwarn", self.WaveWarn, deathknightTime - 3, self, L["dkwarn"], L, "Urgent")
+		self:ScheduleRepeatingEvent("bwgothikdkrepop", self.DeathKnight, deathknightTime, self)
+	else
 		self:CancelScheduledEvent("bwgothikdkwarn")
 		self:CancelScheduledEvent("bwgothikdkrepop")
 		numDeathknights = 0
@@ -335,14 +327,11 @@ function module:Rider()
 		riderTime = timer.firstRider
 	end
 
-	if self.db.profile.add then
+	if self.db.profile.add and numRiders < 5 then
 		self:Bar(string.format(L["riderbar"], numRiders), riderTime, icon.rider)
-	end
-	self:ScheduleEvent("bwgothikriderwarn", self.WaveWarn, riderTime - 3, self, L["riderwarn"], L, "Important")
-	self:ScheduleRepeatingEvent("bwgothikriderrepop", self.Rider, riderTime, self)
-
-	if numRiders >= 5 then  -- cancels bar after wave 4
-		self:RemoveBar(string.format(L["riderbar"], numRiders - 1))
+		self:ScheduleEvent("bwgothikriderwarn", self.WaveWarn, riderTime - 3, self, L["riderwarn"], L, "Important")
+		self:ScheduleRepeatingEvent("bwgothikriderrepop", self.Rider, riderTime, self)
+	else
 		self:CancelScheduledEvent("bwgothikriderwarn")
 		self:CancelScheduledEvent("bwgothikriderrepop")
 		numRiders = 0
