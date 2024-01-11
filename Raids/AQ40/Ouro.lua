@@ -190,8 +190,8 @@ local timer = {
 	sandblast = 2,
 	earliestFirstSandblast = 30,
 	latestFirstSandblast = 45,
-	latestSandblastInterval = 12,
-	earliestSandblastInterval = 17,
+	earliestSandblastInterval = 12,
+	latestSandblastInterval = 17,
 	nextEmerge = 27,
 }
 local icon = {
