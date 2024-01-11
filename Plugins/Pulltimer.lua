@@ -193,13 +193,10 @@ function BigWigsPulltimer:BigWigs_PullCommand(msg)
 			else
 				timer.pulltimer = 6
 			end
-		elseif ((timer.pulltimer > 63) or (timer.pulltimer < 1))  then
+		elseif ((timer.pulltimer > 300) or (timer.pulltimer < 1))  then
 			return
 		end
 
-		self:Sync("BWCustomBar "..timer.pulltimer.." ".."bwPullTimer")	--[[This triggers a pull timer for older versions of bigwigs.
-		Modified CustomBar.lua RecvSync to ignore sync calls with "bwPullTimer" string in them.
-		--]]
 		self:Sync(syncName.pulltimer.." "..timer.pulltimer)
 	else
 		self:Print(L["You have to be the raid leader or an assistant"])
