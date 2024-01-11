@@ -2,7 +2,7 @@
 local module, L = BigWigs:ModuleDeclaration("Instructor Razuvious", "Naxxramas")
 local understudy = AceLibrary("Babble-Boss-2.2")["Deathknight Understudy"]
 
-module.revision = 30012
+module.revision = 30040
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"mc", "shout", "unbalance", "shieldwall", "bosskill"}
 
@@ -88,7 +88,6 @@ L:RegisterTranslations("esES", function() return {
 local timer = {
 	firstShout = 14.5,
 	shout = 25,
-	--noShoutDelay = 5,
 	unbalance = 30,
 	shieldwall = 20,
 	mc = 60,
@@ -115,7 +114,7 @@ module:RegisterYellEngage(L["starttrigger1"])
 module:RegisterYellEngage(L["starttrigger2"])
 module:RegisterYellEngage(L["starttrigger3"])
 
-local _, playerClass = UnitClass("player")
+local badEngageSync = nil
 
 function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_RAID_BOSS_EMOTE", "Event")--shout
@@ -147,15 +146,45 @@ end
 function module:OnSetup()
 end
 
+function module:CheckForEngage()
+end
+
 function module:OnEngage()
+	badEngageSync = nil
+	
 	if self.db.profile.shout then
 		self:Bar(L["bar_shout"], timer.firstShout, icon.shout, true, "red")
 		self:DelayedWarningSign(timer.firstShout - 3, icon.shout, 0.7)
-		--self:ScheduleEvent("bwrazuviousnoshout", self.NoShout, timer.shout + timer.noShoutDelay, self)--fix for no first shout
 	end
+	
+	self:ScheduleRepeatingEvent("bwCheckRazuviousEngaged", self.CheckRazuviousEngaged, 0.5, self)
 end
 
 function module:OnDisengage()
+end
+
+function module:CheckRazuviousEngaged()
+	TargetByName("Instructor Razuvious")
+	if UnitName("Target") ~= "Instructor Razuvious" then
+		self:CancelScheduledEvent("bwCheckRazuviousEngaged")
+	elseif UnitName("Target") == "Instructor Razuvious" then
+		if not UnitAffectingCombat("Target") then
+			if badEngageSync == nil then
+				self:RemoveBar(L["bar_shout"])
+				self:CancelDelayedWarningSign(icon.shout)
+			end
+			badEngageSync = true
+		elseif UnitAffectingCombat("Target") and badEngageSync == true then
+			if self.db.profile.shout then
+				self:Bar(L["bar_shout"], timer.firstShout, icon.shout, true, "red")
+				self:DelayedWarningSign(timer.firstShout - 3, icon.shout, 0.7)
+			end
+			self:CancelScheduledEvent("bwCheckRazuviousEngaged")
+		elseif UnitAffectingCombat("Target") and badEngageSync ~= true then
+			self:CancelScheduledEvent("bwCheckRazuviousEngaged")
+		end
+	end
+	TargetLastTarget()
 end
 
 function module:Event(msg)
@@ -187,18 +216,6 @@ function module:Event(msg)
 	end
 end
 
---[[
-function module:NoShout()
-	self:CancelDelayedWarningSign(icon.shout)
-	self:CancelScheduledEvent("bwrazuviousnoshout")
-	self:ScheduleEvent("bwrazuviousnoshout", self.NoShout, timer.shout + timer.noShoutDelay, self)
-	if self.db.profile.shout then
-		self:Bar(L["shoutbar"], timer.shout - timer.noShoutDelay, icon.shout, true, "red")
-		self:DelayedWarningSign(timer.shout - 3, icon.shout, 0.7)
-	end
-end
-]]--
-
 function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.shout and self.db.profile.shout then
 		self:Shout()
@@ -216,9 +233,6 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 end
 
 function module:Shout()
-	--self:CancelScheduledEvent("bwrazuviousnoshout")
-	--self:ScheduleEvent("bwrazuviousnoshout", self.NoShout, timer.shout + timer.noShoutDelay, self)
-	
 	self:CancelDelayedWarningSign(icon.shout)
 	
 	self:Message(L["msg_shout"], "Attention", nil, "Alarm")
@@ -232,7 +246,7 @@ end
 
 function module:Shieldwall()
 	self:Bar(L["bar_shieldWall"], timer.shieldwall, icon.shieldwall, true, "green")
-	if playerClass == "PRIEST" then
+	if UnitClass("Player") == "Priest" then
 		self:DelayedWarningSign(timer.shieldwall, icon.taunt, 0.7)
 	end
 end
@@ -243,7 +257,7 @@ end
 
 function module:McEnd(rest)
 	self:RemoveBar(rest..L["mc_bar"])
-	if playerClass == "WARRIOR" then
+	if UnitClass("Player") == "Warrior" then
 		self:WarningSign(icon.taunt, 0.7)
 		self:Sound("Info")
 	end

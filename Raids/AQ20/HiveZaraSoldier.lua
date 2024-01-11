@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Hive'Zara Soldier", "Ruins of Ahn'Qiraj")
 
-module.revision = 30039
+module.revision = 30040
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"retaliationgain" , "retaliationhityou"}
 module.trashMod = true
@@ -42,7 +42,7 @@ local syncName = {
 }
 
 function module:OnEnable()
-	self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
 	
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event")--trigger_retaliationGain
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event")--trigger_retaliationHitYou
