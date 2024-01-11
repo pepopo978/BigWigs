@@ -1,4 +1,4 @@
-﻿--[[
+--[[
 Name: Babble-Boss-2.2
 Revision: 20005
 Author(s): ckknight (ckknight@gmail.com)
@@ -28,6 +28,8 @@ local BabbleBoss = AceLibrary("AceLocale-2.2"):new(MAJOR_VERSION)
 
 BabbleBoss:RegisterTranslations("enUS", function()
 	return {
+		["Patchwork Golem"] = true,
+		["Carrion Spinner"] = true,
 		["Nerubian Overseer"] = true,
 		["Avalanchion"] = true,
 		["The Windreaver"] = true,
