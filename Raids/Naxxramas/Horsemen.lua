@@ -240,7 +240,7 @@ fhAlert:SetScript("OnEvent", function()
                 for healerIndex = 1, 3 do
                     if string.find(d, '[' .. healerIndex .. ']' .. UnitName('player'), 1, true) then
                         fhAlert.healerIndex = healerIndex
-                        DEFAULT_CHAT_FRAME:AddMessage("Healer index set to " .. healerIndex)
+                        DEFAULT_CHAT_FRAME:AddMessage("4HM Healer index set to " .. healerIndex)
                         break
                     end
                 end
@@ -248,6 +248,8 @@ fhAlert:SetScript("OnEvent", function()
         end
     end
 end)
+-- /script SendAddonMessage("TWABW", "[1]healername [2]healername [3]healername [1]healername [2]healername [3]healername [1]healername [2]healername [3]healername [1]healername [2]healername [3]healername", "RAID")
+
 
 -- called after boss is engaged
 function module:OnEngage()
@@ -282,7 +284,7 @@ function module:OnEngage()
         end
     end
 
-    if playerGroup > 0 then
+    if playerGroup > 0 and fhAlert.healerIndex == 0 then
         if playerGroup == 3 then
             fh_alert_marks(MOVE_THANE)
         end
@@ -350,11 +352,11 @@ function module:DelayedVoidZoneEvent()
     if target then
         self:Icon(target, 3)
         if target == UnitName("player") then
-            self:Message("Void Zone on YOU !!!", "Important")
+            self:Message("Void Zone on YOU !!!", "Important", nil, false)
             self:TriggerEvent("BigWigs_Sound", "AirHorn")
             SendChatMessage("Void Zone On Me !", "SAY")
         else
-            self:Message("Void Zone on " .. target .. " !!!", "Important")
+            self:Message("Void Zone on " .. target .. " !!!", "Important", nil, false)
         end
     end
 end
@@ -464,7 +466,7 @@ function module:Mark()
         globalMarks = 0
     end
 
-    if playerGroup > 0 then
+    if playerGroup > 0 and fhAlert.healerIndex == 0 then
 
         if self.marks == 0 or self.marks == 12 or self.marks == 24 or self.marks == 36 then
             if playerGroup == 3 then
@@ -530,7 +532,7 @@ function module:Mark()
     if self.db.profile.mark then
         self:Message(string.format(L["mark_warn"], self.marks), "Important")
         self:Bar(string.format(L["markbar"], self.marks + 1), timer.mark, icon.mark)
-        self:DelayedMessage(timer.mark - 5, string.format(L["mark_warn_5"], self.marks + 1), "Urgent")
+        self:DelayedMessage(timer.mark - 5, string.format(L["mark_warn_5"], self.marks + 1), "Urgent", nil, false)
         if globalMarks == 1 then self:Sound("MarkOne") end
         if globalMarks == 2 then self:Sound("MarkTwo") end
         if globalMarks == 0 then self:Sound("MarkThree") end
@@ -539,14 +541,14 @@ end
 
 function module:Meteor()
     if self.db.profile.meteor then
-        self:Message(L["meteorwarn"], "Important")
+        self:Message(L["meteorwarn"], "Important", nil, false)
         self:IntervalBar(L["meteorbar"], timer.meteor[1], timer.meteor[2], icon.meteor)
     end
 end
 
 function module:Wrath()
     if self.db.profile.wrath then
-        self:Message(L["wrathwarn"], "Important")
+        self:Message(L["wrathwarn"], "Important", nil, false)
         self:IntervalBar(L["wrathbar"], timer.wrath[1], timer.wrath[2], icon.wrath)
     end
 end
