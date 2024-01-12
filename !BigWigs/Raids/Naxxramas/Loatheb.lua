@@ -81,11 +81,11 @@ L:RegisterTranslations("enUS", function() return {
 	shadowpotandbandage = "-- Drink Shadow Protection Potion and Bandage ! --",
 	noconsumable = "-- No Consumable at this time ! --",
 
-	soundshadowpot = "Interface\\Addons\\BigWigs\\Sounds\\potion.wav",
-	soundbandage = "Interface\\Addons\\BigWigs\\Sounds\\bandage.wav",
-	soundwrtorhs = "Interface\\Addons\\BigWigs\\Sounds\\healthstone.wav",
-	soundshadowpotandbandage = "Interface\\Addons\\BigWigs\\Sounds\\potionandbandage.wav",
-	soundgoforbuff = "Interface\\Addons\\BigWigs\\Sounds\\goforbuff.wav",
+	soundshadowpot = "Interface\\Addons\\!BigWigs\\Sounds\\potion.wav",
+	soundbandage = "Interface\\Addons\\!BigWigs\\Sounds\\bandage.wav",
+	soundwrtorhs = "Interface\\Addons\\!BigWigs\\Sounds\\healthstone.wav",
+	soundshadowpotandbandage = "Interface\\Addons\\!BigWigs\\Sounds\\potionandbandage.wav",
+	soundgoforbuff = "Interface\\Addons\\!BigWigs\\Sounds\\goforbuff.wav",
 
 } end )
 

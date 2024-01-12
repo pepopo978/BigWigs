@@ -9,12 +9,12 @@ local L = AceLibrary("AceLocale-2.2"):new("BigWigs")
 
 local surface = AceLibrary("Surface-1.0")
 
-surface:Register("Armory", "Interface\\AddOns\\BigWigs\\Textures\\Armory")
-surface:Register("Otravi", "Interface\\AddOns\\BigWigs\\Textures\\otravi")
-surface:Register("Smooth", "Interface\\AddOns\\BigWigs\\Textures\\smooth")
-surface:Register("Glaze", "Interface\\AddOns\\BigWigs\\Textures\\glaze")
-surface:Register("Charcoal", "Interface\\AddOns\\BigWigs\\Textures\\Charcoal")
-surface:Register("BantoBar", "Interface\\AddOns\\BigWigs\\Textures\\default")
+surface:Register("Armory", "Interface\\Addons\\!BigWigs\\Textures\\Armory")
+surface:Register("Otravi", "Interface\\Addons\\!BigWigs\\Textures\\otravi")
+surface:Register("Smooth", "Interface\\Addons\\!BigWigs\\Textures\\smooth")
+surface:Register("Glaze", "Interface\\Addons\\!BigWigs\\Textures\\glaze")
+surface:Register("Charcoal", "Interface\\Addons\\!BigWigs\\Textures\\Charcoal")
+surface:Register("BantoBar", "Interface\\Addons\\!BigWigs\\Textures\\default")
 
 ----------------------------
 --    Raid Class Colors   --
@@ -669,7 +669,7 @@ end
 ------------------------------
 
 function BigWigs:OnInitialize()
-	if not self.version then self.version = GetAddOnMetadata("BigWigs", "Version") end
+	if not self.version then self.version = GetAddOnMetadata("!BigWigs", "Version") end
 	local rev = self.revision
 	for name, module in self:IterateModules() do
 		--self:RegisterModule(name,module)
