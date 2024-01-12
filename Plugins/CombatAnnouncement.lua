@@ -788,20 +788,17 @@ end
 --         Events           --
 ------------------------------
 
-function BigWigsCombatAnnouncement:SpellStatus_SpellCastInstant(sId, sName, sRank, sFullName, sCastTime)
+function BigWigsCombatAnnouncement:SpellStatus_SpellCastInstant(id, name, rank, fullname, caststart, caststop, castduration, castdelay, activetarget)
 	if not BigWigsCombatAnnouncement:IsBroadcasting() then
 		return
 	end
 	
 	for optionname, translatedname in pairs(SpellTranslation) do
 		if self.db.profile[optionname] == true then
-			if sName == translatedname then
-				local CombatAnnouncementString = "Casted "..sName
-				if UnitName("target") then
-					CombatAnnouncementString = CombatAnnouncementString.." on "..UnitName("target")
-					if RaidMarkerIndexToText[GetRaidTargetIndex("target")] then
-						CombatAnnouncementString = CombatAnnouncementString.." "..RaidMarkerIndexToText[GetRaidTargetIndex("target")]
-					end
+			if name == translatedname then
+				local CombatAnnouncementString = "Casted "..name
+				if activetarget and activetarget ~= "none" then
+					CombatAnnouncementString = CombatAnnouncementString.." on "..activetarget
 				end
 				BigWigsCombatAnnouncement:AnnounceAbility(CombatAnnouncementString)
 			end

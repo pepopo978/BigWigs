@@ -1,7 +1,7 @@
 --[[
 Name: SpellStatus-1.0
-Revision: $Rev: 14589 $
-Author(s): Nightdew (denzsolnightdew@gmail.com)
+Revision: $Rev: 15000 $
+Author(s): Nightdew (denzsolnightdew@gmail.com) improved by Balake
 Website: http://www.wowace.com/index.php/SpellStatus-1.0
 Documentation: http://www.wowace.com/index.php/SpellStatus-1.0
 SVN: http://svn.wowace.com/root/trunk/SpellStatusLib/SpellStatus-1.0
@@ -10,7 +10,7 @@ Dependencies: AceLibrary, AceDebug-2.0, AceEvent-2.0, AceHook-2.1, Deformat-2.0,
 ]]
 
 local MAJOR_VERSION = "SpellStatus-1.0"
-local MINOR_VERSION = "$Revision: 14589 $"
+local MINOR_VERSION = "$Revision: 15000 $"
 
 if (not AceLibrary) then 
 	error(MAJOR_VERSION .. " requires AceLibrary.") 
@@ -54,6 +54,17 @@ AceLibrary("AceHook-2.1"):embed(SpellStatus)
 --
 -- Local functions not to be called from outside
 --
+
+SpellstatusIndexToIcon = {
+	[1] = "|cFFF7EF52✦|r",
+	[2] = "|cFFE76100●|r",
+	[3] = "|cFFDE55E7♦|r",
+	[4] = "|cFF2BD923▼|r",
+	[5] = "|cFF8FB9D0☽|r",
+	[6] = "|cFF00B9F3■|r",
+	[7] = "|cFFB20A05✖|r",
+	[8] = "|cFFF1EFE4☻|r",
+}
 
 local function InitializeHooks(self)
 	self:Hook("CastSpell")
@@ -109,6 +120,7 @@ local function ResetActiveVariables(self)
 	self.vars.ActiveCastStartTime = nil
 	self.vars.ActiveCastStopTime = nil
 	self.vars.ActiveCastDuration = nil
+	self.vars.ActiveTarget = nil
 
 	--Casting
 	self.vars.ActiveCastDelay = nil
@@ -309,7 +321,7 @@ local function AssignNextMeleeSpellData(self, spellId, spellName, spellRank, spe
 end
 
 
-local function AssignSpellData(self, spellId, spellName, spellRank, spellFullName)
+local function AssignSpellData(self, spellId, spellName, spellRank, spellFullName, spellTarget)
 	--self:LevelDebug(1, "AssignSpellData", spellId, spellName, spellRank, spellFullName)
 
 	--If Next Melee spell stop dont continue
@@ -334,6 +346,7 @@ local function AssignSpellData(self, spellId, spellName, spellRank, spellFullNam
 	self.vars.ActiveName = spellName
 	self.vars.ActiveRank = spellRank
 	self.vars.ActiveFullName = spellFullName
+	self.vars.ActiveTarget = spellTarget
 
 	self.vars.Preparing = spellId ~= nil
 	self.vars.Using = not self.vars.Preparing
@@ -431,8 +444,14 @@ function CastOriginal(self, methodName, param1, param2, param3, sId, sName, sRan
 	self:LevelDebug(1, ">>>> CastOriginal", 
 		methodName, param1, param2, param3, 
 		sId, sName, sRank, sFullName)
-
-	ResetCastOriginal(self, sId, sName, sRank, sFullName)	
+		
+	local spellTarget = UnitName("target")
+	if spellTarget and GetRaidTargetIndex("target") then spellTarget = spellTarget.." ("..SpellstatusIndexToIcon[GetRaidTargetIndex("target")]..")" end
+	if methodName == "CastSpellByName" and param2 == true then spellTarget = UnitName("player") end
+	if methodName == "UseAction" and param3 == true then spellTarget = UnitName("player") end
+	if spellTarget == nil then spellTarget = "none" end
+		
+	ResetCastOriginal(self, sId, sName, sRank, sFullName)
 
 	self:LevelDebug(3, "-> CastOriginal")
 	self.hooks[methodName](param1, param2, param3)
@@ -440,7 +459,7 @@ function CastOriginal(self, methodName, param1, param2, param3, sId, sName, sRan
 
 	TriggerFailureEvent(self)
 	if (not self.vars.AttemptCastFailure) then
-		AssignSpellData(self, sId, sName, sRank, sFullName)
+		AssignSpellData(self, sId, sName, sRank, sFullName, spellTarget)
 	end
 	
 	ResetCastOriginal(self, nil, nil, nil, nil)	
@@ -627,7 +646,8 @@ function SpellStatus:SPELLCAST_START(spellName, duration)
 		self.vars.ActiveFullName,
 		self.vars.ActiveCastStartTime,
 		self.vars.ActiveCastStopTime,
-		self.vars.ActiveCastDuration
+		self.vars.ActiveCastDuration,
+		self.vars.ActiveTarget
 	)
 end
 
@@ -712,7 +732,8 @@ function SpellStatus:SPELLCAST_STOP()
 			self.vars.ActiveCastStartTime,
 			self.vars.ActiveCastStopTime,
 			self.vars.ActiveCastDuration,
-			self.vars.ActiveCastDelayTotal
+			self.vars.ActiveCastDelayTotal,
+			self.vars.ActiveTarget
 		)
 		--We cant reset because maybe we have a failure!!!
 		--ResetActiveVariables(self)

@@ -9,41 +9,41 @@ local L = AceLibrary("AceLocale-2.2"):new("BigWigsSound")
 --~~ local dewdrop = DewdropLib:GetInstance("1.0")
 
 local sounds = {
-	Long = "Interface\\AddOns\\BigWigs\\Sounds\\Long.mp3",
-	Info = "Interface\\AddOns\\BigWigs\\Sounds\\Info.ogg",
-	Alert = "Interface\\AddOns\\BigWigs\\Sounds\\Alert.mp3",
-	Alarm = "Interface\\AddOns\\BigWigs\\Sounds\\Alarm.mp3",
-	Victory = "Interface\\AddOns\\BigWigs\\Sounds\\Victory.mp3",
+	Long = "Interface\\Addons\\!BigWigs\\Sounds\\Long.mp3",
+	Info = "Interface\\Addons\\!BigWigs\\Sounds\\Info.ogg",
+	Alert = "Interface\\Addons\\!BigWigs\\Sounds\\Alert.mp3",
+	Alarm = "Interface\\Addons\\!BigWigs\\Sounds\\Alarm.mp3",
+	Victory = "Interface\\Addons\\!BigWigs\\Sounds\\Victory.mp3",
 
-	Beware = "Interface\\AddOns\\BigWigs\\Sounds\\Beware.wav",
-	RunAway = "Interface\\AddOns\\BigWigs\\Sounds\\RunAway.wav",
+	Beware = "Interface\\Addons\\!BigWigs\\Sounds\\Beware.wav",
+	RunAway = "Interface\\Addons\\!BigWigs\\Sounds\\RunAway.wav",
 
-	One = "Interface\\AddOns\\BigWigs\\Sounds\\1.ogg",
-	Two = "Interface\\AddOns\\BigWigs\\Sounds\\2.ogg",
-	Three = "Interface\\AddOns\\BigWigs\\Sounds\\3.ogg",
-	Four = "Interface\\AddOns\\BigWigs\\Sounds\\4.ogg",
-	Five = "Interface\\AddOns\\BigWigs\\Sounds\\5.ogg",
-	Six = "Interface\\AddOns\\BigWigs\\Sounds\\6.ogg",
-	Seven = "Interface\\AddOns\\BigWigs\\Sounds\\7.ogg",
-	Eight = "Interface\\AddOns\\BigWigs\\Sounds\\8.ogg",
-	Nine = "Interface\\AddOns\\BigWigs\\Sounds\\9.ogg",
-	Ten = "Interface\\AddOns\\BigWigs\\Sounds\\10.ogg",
+	One = "Interface\\Addons\\!BigWigs\\Sounds\\1.ogg",
+	Two = "Interface\\Addons\\!BigWigs\\Sounds\\2.ogg",
+	Three = "Interface\\Addons\\!BigWigs\\Sounds\\3.ogg",
+	Four = "Interface\\Addons\\!BigWigs\\Sounds\\4.ogg",
+	Five = "Interface\\Addons\\!BigWigs\\Sounds\\5.ogg",
+	Six = "Interface\\Addons\\!BigWigs\\Sounds\\6.ogg",
+	Seven = "Interface\\Addons\\!BigWigs\\Sounds\\7.ogg",
+	Eight = "Interface\\Addons\\!BigWigs\\Sounds\\8.ogg",
+	Nine = "Interface\\Addons\\!BigWigs\\Sounds\\9.ogg",
+	Ten = "Interface\\Addons\\!BigWigs\\Sounds\\10.ogg",
 
 	Murloc = "Sound\\Creature\\Murloc\\mMurlocAggroOld.wav",
 	Pain = "Sound\\Creature\\Thaddius\\THAD_NAXX_ELECT.wav",
-	Shakira = "Interface\\AddOns\\BigWigs\\Sounds\\Shakira.mp3",
+	Shakira = "Interface\\Addons\\!BigWigs\\Sounds\\Shakira.mp3",
 
-	BikeHorn = "Interface\\AddOns\\BigWigs\\Sounds\\BikeHorn.ogg",
-	AirHorn = "Interface\\AddOns\\BigWigs\\Sounds\\AirHorn.ogg",
+	BikeHorn = "Interface\\Addons\\!BigWigs\\Sounds\\BikeHorn.ogg",
+	AirHorn = "Interface\\Addons\\!BigWigs\\Sounds\\AirHorn.ogg",
 
-	ShackleBroke = "Interface\\AddOns\\BigWigs\\Sounds\\ShackleBroke.mp3",
-	ShackleOne = "Interface\\AddOns\\BigWigs\\Sounds\\ShackleOne.mp3",
-	ShackleTwo = "Interface\\AddOns\\BigWigs\\Sounds\\ShackleTwo.mp3",
-	ShackleThree = "Interface\\AddOns\\BigWigs\\Sounds\\ShackleThree.mp3",
+	ShackleBroke = "Interface\\Addons\\!BigWigs\\Sounds\\ShackleBroke.mp3",
+	ShackleOne = "Interface\\Addons\\!BigWigs\\Sounds\\ShackleOne.mp3",
+	ShackleTwo = "Interface\\Addons\\!BigWigs\\Sounds\\ShackleTwo.mp3",
+	ShackleThree = "Interface\\Addons\\!BigWigs\\Sounds\\ShackleThree.mp3",
 
-	MarkOne = "Interface\\AddOns\\BigWigs\\Sounds\\MarkOne.mp3",
-	MarkTwo = "Interface\\AddOns\\BigWigs\\Sounds\\MarkTwo.mp3",
-	MarkThree = "Interface\\AddOns\\BigWigs\\Sounds\\MarkThree.mp3",
+	MarkOne = "Interface\\Addons\\!BigWigs\\Sounds\\MarkOne.mp3",
+	MarkTwo = "Interface\\Addons\\!BigWigs\\Sounds\\MarkTwo.mp3",
+	MarkThree = "Interface\\Addons\\!BigWigs\\Sounds\\MarkThree.mp3",
 }
 
 
