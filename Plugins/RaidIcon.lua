@@ -18,6 +18,7 @@ L:RegisterTranslations("enUS", function() return {
 	["place"] = true,
 	["icon"] = true,
 	["sticky"] = true,
+	["chat"] = true,
 
 	["Place"] = true,
 	["Place Raid Icons"] = true,
@@ -30,6 +31,10 @@ L:RegisterTranslations("enUS", function() return {
 	["Sticky"] = true,
 	["Sticky Markers"] = true,
 	["Markers are not removed by reapplying the same mark on a unit."] = true,
+
+	["Chat"] = true,
+	["Chat Markers"] = true,
+	["Type {marker} to post it in chat channels."] = true,
 	
 	["Options for Raid Icons."] = true,
 
@@ -199,6 +204,7 @@ BigWigsRaidIcon.defaultDB = {
 	place = true,
 	icon = L["skull"],
 	sticky = true,
+	chat = true,
 }
 BigWigsRaidIcon.icontonumber = {
 	[L["star"]] = 1,
@@ -238,6 +244,13 @@ BigWigsRaidIcon.consoleOptions = {
 			get = function() return BigWigsRaidIcon.db.profile.sticky end,
 			set = function(v) BigWigsRaidIcon.db.profile.sticky = v end,
 		},
+		[L["chat"]] = {
+			type = "toggle",
+			name = L["Chat Markers"],
+			desc = L["Type {marker} to post it in chat channels."],
+			get = function() return BigWigsRaidIcon.db.profile.chat end,
+			set = function(v) BigWigsRaidIcon.db.profile.chat = v end,
+		},
 	}
 }
 
@@ -249,6 +262,7 @@ function BigWigsRaidIcon:OnEnable()
 	self:RegisterEvent("BigWigs_SetRaidIcon")
 	self:RegisterEvent("BigWigs_RemoveRaidIcon")
 	self:Hook("SetRaidTargetIcon", "StickySetRaidTarget")
+	self:Hook("SendChatMessage", "ConvertRaidMarkers")
 end
 
 function BigWigsRaidIcon:BigWigs_SetRaidIcon(player, iconnumber)
@@ -288,4 +302,18 @@ function BigWigsRaidIcon:StickySetRaidTarget(unit, index)
 	if self.db.profile.sticky then
 		SetRaidTarget(unit, index);
 	end
+end
+
+function BigWigsRaidIcon:ConvertRaidMarkers(msg, chatType, language, channel)
+	if self.db.profile.chat then
+		msg = string.gsub(msg, "{star}", SpellstatusIndexToIcon[1])
+		msg = string.gsub(msg, "{circle}", SpellstatusIndexToIcon[2])
+		msg = string.gsub(msg, "{diamond}", SpellstatusIndexToIcon[3])
+		msg = string.gsub(msg, "{triangle}", SpellstatusIndexToIcon[4])
+		msg = string.gsub(msg, "{moon}", SpellstatusIndexToIcon[5])
+		msg = string.gsub(msg, "{square}", SpellstatusIndexToIcon[6])
+		msg = string.gsub(msg, "{cross}", SpellstatusIndexToIcon[7])
+		msg = string.gsub(msg, "{skull}", SpellstatusIndexToIcon[8])
+	end
+	self.hooks["SendChatMessage"](msg, chatType, language, channel)
 end

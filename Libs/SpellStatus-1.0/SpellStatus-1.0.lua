@@ -56,14 +56,14 @@ AceLibrary("AceHook-2.1"):embed(SpellStatus)
 --
 
 SpellstatusIndexToIcon = {
-	[1] = "|cFFF7EF52✦|r",
-	[2] = "|cFFE76100●|r",
-	[3] = "|cFFDE55E7♦|r",
-	[4] = "|cFF2BD923▼|r",
-	[5] = "|cFF8FB9D0☽|r",
-	[6] = "|cFF00B9F3■|r",
-	[7] = "|cFFB20A05✖|r",
-	[8] = "|cFFF1EFE4☻|r",
+	[1] = "|cFFF7EF52[✦]|r",
+	[2] = "|cFFE76100[●]|r",
+	[3] = "|cFFDE55E7[♦]|r",
+	[4] = "|cFF2BD923[▼]|r",
+	[5] = "|cFF8FB9D0[☽]|r",
+	[6] = "|cFF00B9F3[■]|r",
+	[7] = "|cFFB20A05[✖]|r",
+	[8] = "|cFFF1EFE4[☻]|r",
 }
 
 local function InitializeHooks(self)
@@ -446,7 +446,7 @@ function CastOriginal(self, methodName, param1, param2, param3, sId, sName, sRan
 		sId, sName, sRank, sFullName)
 		
 	local spellTarget = UnitName("target")
-	if spellTarget and GetRaidTargetIndex("target") then spellTarget = spellTarget.." ("..SpellstatusIndexToIcon[GetRaidTargetIndex("target")]..")" end
+	if spellTarget and GetRaidTargetIndex("target") then spellTarget = spellTarget.." "..SpellstatusIndexToIcon[GetRaidTargetIndex("target")] end
 	if methodName == "CastSpellByName" and param2 == true then spellTarget = UnitName("player") end
 	if methodName == "UseAction" and param3 == true then spellTarget = UnitName("player") end
 	if spellTarget == nil then spellTarget = "none" end
