@@ -56,14 +56,14 @@ AceLibrary("AceHook-2.1"):embed(SpellStatus)
 --
 
 SpellstatusIndexToIcon = {
-	[1] = "|cFFF7EF52[✦]|r",
-	[2] = "|cFFE76100[●]|r",
-	[3] = "|cFFDE55E7[♦]|r",
-	[4] = "|cFF2BD923[▼]|r",
-	[5] = "|cFF8FB9D0[☽]|r",
-	[6] = "|cFF00B9F3[■]|r",
-	[7] = "|cFFB20A05[✖]|r",
-	[8] = "|cFFF1EFE4[☻]|r",
+	[1] = "|cFFF7EF52[✦]|r", --u+2726
+	[2] = "|cFFE76100[●]|r", --u+25CF
+	[3] = "|cFFDE55E7[♦]|r", --u+2666
+	[4] = "|cFF2BD923[▼]|r", --u+25BC
+	[5] = "|cFF8FB9D0[☽]|r", --u+263D
+	[6] = "|cFF00B9F3[■]|r", --u+25A0
+	[7] = "|cFFB20A05[✖]|r", --u+2716
+	[8] = "|cFFF1EFE4[☻]|r", --u+263B
 }
 
 local function InitializeHooks(self)
