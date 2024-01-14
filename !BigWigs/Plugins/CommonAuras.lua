@@ -239,9 +239,6 @@ function BigWigsCommonAuras:OnEnable()
 	end
 	
 	self:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE", "CheckCasts")
-	self:RegisterEvent("CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE", "CheckCasts")
-	self:RegisterEvent("CHAT_MSG_SPELL_PARTY_DAMAGE", "CheckCasts")
-	
 	
 	self:RegisterEvent("BigWigs_RecvSync")
 
