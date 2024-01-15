@@ -416,37 +416,37 @@ function module:OnEngage()
 	end
 	
 	if self.db.profile.abomwarn then
-		self:DelayedMessage(44, L["abomwarn_text"].."1", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(72, L["abomwarn_text"].."2", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(100, L["abomwarn_text"].."3", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(130, L["abomwarn_text"].."4", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(153, L["abomwarn_text"].."5", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(176, L["abomwarn_text"].."6", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(193, L["abomwarn_text"].."7", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(212, L["abomwarn_text"].."8", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(232, L["abomwarn_text"].."9", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(252, L["abomwarn_text"].."10", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(268, L["abomwarn_text"].."11", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(285, L["abomwarn_text"].."12", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(300, L["abomwarn_text"].."13", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(318, L["abomwarn_text"].."14", "Personal", nil, "AirHorn", nil)
+		self:ScheduleEvent("abom1", self.AbominationSpawns, 44, self, "1")
+		self:ScheduleEvent("abom2", self.AbominationSpawns, 72, self, "2")
+		self:ScheduleEvent("abom3", self.AbominationSpawns, 100, self, "3")
+		self:ScheduleEvent("abom4", self.AbominationSpawns, 130, self, "4")
+		self:ScheduleEvent("abom5", self.AbominationSpawns, 153, self, "5")
+		self:ScheduleEvent("abom6", self.AbominationSpawns, 176, self, "6")
+		self:ScheduleEvent("abom7", self.AbominationSpawns, 193, self, "7")
+		self:ScheduleEvent("abom8", self.AbominationSpawns, 212, self, "8")
+		self:ScheduleEvent("abom9", self.AbominationSpawns, 232, self, "9")
+		self:ScheduleEvent("abom10", self.AbominationSpawns, 252, self, "10")
+		self:ScheduleEvent("abom11", self.AbominationSpawns, 268, self, "11")
+		self:ScheduleEvent("abom12", self.AbominationSpawns, 285, self, "12")
+		self:ScheduleEvent("abom13", self.AbominationSpawns, 300, self, "13")
+		self:ScheduleEvent("abom14", self.AbominationSpawns, 318, self, "14")
 	end
 	
 	if self.db.profile.weaverwarn then
-		self:DelayedMessage(44, L["weaverwarn_text"].."1", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(68, L["weaverwarn_text"].."2", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(97, L["weaverwarn_text"].."3", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(130, L["weaverwarn_text"].."4", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(155, L["weaverwarn_text"].."5", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(170, L["weaverwarn_text"].."6", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(190, L["weaverwarn_text"].."7", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(213, L["weaverwarn_text"].."8", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(235, L["weaverwarn_text"].."9", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(256, L["weaverwarn_text"].."10", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(271, L["weaverwarn_text"].."11", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(285, L["weaverwarn_text"].."12", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(294, L["weaverwarn_text"].."13", "Personal", nil, "AirHorn", nil)
-		self:DelayedMessage(300, L["weaverwarn_text"].."14", "Personal", nil, "AirHorn", nil)
+		self:ScheduleEvent("weaver1", self.WeaverSpawns, 44, self, "1")
+		self:ScheduleEvent("weaver2", self.WeaverSpawns, 68, self, "2")
+		self:ScheduleEvent("weaver3", self.WeaverSpawns, 97, self, "3")
+		self:ScheduleEvent("weaver4", self.WeaverSpawns, 130, self, "4")
+		self:ScheduleEvent("weaver5", self.WeaverSpawns, 155, self, "5")
+		self:ScheduleEvent("weaver6", self.WeaverSpawns, 170, self, "6")
+		self:ScheduleEvent("weaver7", self.WeaverSpawns, 190, self, "7")
+		self:ScheduleEvent("weaver8", self.WeaverSpawns, 213, self, "8")
+		self:ScheduleEvent("weaver9", self.WeaverSpawns, 235, self, "9")
+		self:ScheduleEvent("weaver10", self.WeaverSpawns, 256, self, "10")
+		self:ScheduleEvent("weaver11", self.WeaverSpawns, 271, self, "11")
+		self:ScheduleEvent("weaver12", self.WeaverSpawns, 285, self, "12")
+		self:ScheduleEvent("weaver13", self.WeaverSpawns, 294, self, "13")
+		self:ScheduleEvent("weaver14", self.WeaverSpawns, 300, self, "14")
 	end
 
 end
@@ -775,3 +775,16 @@ function module:WeaverDies(name)
 		end
 	end
 end
+
+function module:AbominationSpawns(count)
+	if count and self.db.profile.abomwarn then
+		self:Message(L["abomwarn_text"]..count.."/14", "Personal", nil, "AirHorn", nil)
+	end
+end
+
+function module:WeaverSpawns(count)
+	if count and self.db.profile.weaverwarn then
+		self:Message(L["weaverwarn_text"]..count.."/14", "Personal", nil, "AirHorn", nil)
+	end
+end
+
