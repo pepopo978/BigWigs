@@ -525,19 +525,30 @@ function BigWigs:CheckForWipe(module)
 				return true
 			end
 
-			local num = GetNumRaidMembers()
-			for i = 1, num do
+			for i = 1, GetNumRaidMembers() do
 				local raidUnit = string.format("raid%s", i)
 				if UnitExists(raidUnit) and UnitAffectingCombat(raidUnit) then
 					return true
 				end
 			end
-
 			return false
 		end
-
-		local inCombat = RaidMemberInCombat()
-		if not inCombat then
+		
+		local function RaidMemberAlive()
+			if not UnitIsDeadOrGhost("player") then
+				return true
+			end
+			
+			for i = 1, GetNumRaidMembers() do
+				local raidUnit= string.format("raid%s", i)
+				if UnitExists(raidUnit) and not UnitIsDeadOrGhost(raidUnit) then
+					return true
+				end
+			end
+			return false
+		end				
+				
+		if not RaidMemberAlive() or not RaidMemberInCombat() then
 			module:DebugMessage("Wipe detected for module ["..module:ToString().."].")
 			module:CancelScheduledEvent(module:ToString().."_CheckWipe")
 			self:TriggerEvent("BigWigs_RebootModule", module:ToString())
@@ -780,14 +791,14 @@ function BigWigs:ModuleDeclaration(bossName, zoneName)
 	local isOutdoorraid = true
 	for i, value in ipairs(raidZones) do
 		if value == zoneName then
-			module.zonename = BIGWIGS_ZONE_NAMES[zoneName]
+			module.zonename = AceLibrary("Babble-Zone-2.2")[zoneName]
 			isOutdoorraid = false
 			break
 		end
 	end
 	if isOutdoorraid then
 		module.zonename = {
-			BIGWIGS_ZONE_NAMES["Outdoor Raid Bosses Zone"],
+			AceLibrary("AceLocale-2.2"):new("BigWigs")["Outdoor Raid Bosses Zone"],
 			AceLibrary("Babble-Zone-2.2")[zoneName]
 		}
 	end
@@ -918,7 +929,7 @@ function BigWigs:RegisterModule(name, module)
 			if not self.cmdtable.args[L["boss"]].args[zone] then
 				self.cmdtable.args[L["boss"]].args[zone] = {
 					type = "group",
-					name = zonename,
+					name = BIGWIGS_ZONE_NAMES[zonename],
 					desc = string.format(L["Options for bosses in %s."], zonename),
 					args = {
 						trash = {
@@ -1176,7 +1187,7 @@ function BigWigs:AddLoDMenu( zonename )
 		if not self.cmdtable.args[L["boss"]].args[zone] then
 			self.cmdtable.args[L["boss"]].args[zone] = {
 				type = "group",
-				name = zonename,
+				name = BIGWIGS_ZONE_NAMES[zonename],
 				desc = string.format(L["Options for bosses in %s."], zonename),
 				args = {
 					trash = {
