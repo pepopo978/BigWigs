@@ -32,6 +32,19 @@ RAID_CLASS_COLORS = {
 	["WARRIOR"] = { r = 0.78, g = 0.61, b = 0.43, colorStr = "ffc79c6e" },
 }
 
+-- AceConsole zone commands
+BIGWIGS_ZONE_NAMES = {
+	["Zul'Gurub"] = "1.ZG",
+	["Ruins of Ahn'Qiraj"] = "2.AQ20",
+	["Molten Core"] = "3.MC",
+	["Blackwing Lair"] = "4.BWL",
+	["Ahn'Qiraj"] = "5.AQ40",
+	["Naxxramas"] = "6.Naxxramas",
+	["Onyxia's Lair"] = "Onyxia",
+	["Silithus"] = "Silithus",
+	["Outdoor Raid Bosses"] = "Outdoor",
+	["Outdoor Raid Bosses Zone"] = "Outdoor",
+}
 ----------------------------
 --      Localization      --
 ----------------------------
@@ -767,14 +780,14 @@ function BigWigs:ModuleDeclaration(bossName, zoneName)
 	local isOutdoorraid = true
 	for i, value in ipairs(raidZones) do
 		if value == zoneName then
-			module.zonename = AceLibrary("Babble-Zone-2.2")[zoneName]
+			module.zonename = BIGWIGS_ZONE_NAMES[zoneName]
 			isOutdoorraid = false
 			break
 		end
 	end
 	if isOutdoorraid then
 		module.zonename = {
-			AceLibrary("AceLocale-2.2"):new("BigWigs")["Outdoor Raid Bosses Zone"],
+			BIGWIGS_ZONE_NAMES["Outdoor Raid Bosses Zone"],
 			AceLibrary("Babble-Zone-2.2")[zoneName]
 		}
 	end
@@ -907,11 +920,21 @@ function BigWigs:RegisterModule(name, module)
 					type = "group",
 					name = zonename,
 					desc = string.format(L["Options for bosses in %s."], zonename),
-					args = {},
+					args = {
+						trash = {
+							type = "group",
+							name = "Trash",
+							order = -1,
+							desc = string.format("Options for trash in %s.", zonename),
+							args = {},
+						},
+					},
 				}
 			end
 			if module.external then
 				self.cmdtable.args[L["extra"]].args[L2["cmd"]] = cons or module.consoleOptions
+			elseif module.trashMod then
+				self.cmdtable.args[L["boss"]].args[zone].args["trash"].args[L2["cmd"]] = cons or module.consoleOptions
 			else
 				self.cmdtable.args[L["boss"]].args[zone].args[L2["cmd"]] = cons or module.consoleOptions
 			end
@@ -1150,45 +1173,21 @@ function BigWigs:AddLoDMenu( zonename )
 			zone = L[zonename]
 		end
 
-
-
 		if not self.cmdtable.args[L["boss"]].args[zone] then
 			self.cmdtable.args[L["boss"]].args[zone] = {
 				type = "group",
 				name = zonename,
 				desc = string.format(L["Options for bosses in %s."], zonename),
-				args = {}
+				args = {
+					trash = {
+						type = "group",
+						name = "Trash",
+						order = -1,
+						desc = string.format("Options for trash in %s.", zonename),
+						args = {},
+					},
+				},
 			}
 		end
-		-- if zone == L["Other"] then
-		-- local zones = BigWigsLoD:GetZones()
-		-- zones = zones[L["Other"]]
-		-- self.cmdtable.args[L["boss"]].args[zone].args[L["Load"]] = {
-		-- type = "execute",
-		-- name = L["Load All"],
-		-- desc = string.format( L["Load all %s modules."], zonename ),
-		-- order = 1,
-		-- func = function()
-		-- for z, v in pairs( zones ) do
-		-- BigWigsLoD:LoadZone( z )
-		-- if self.cmdtable.args[L["boss"]].args[z] and self.cmdtable.args[L["boss"]].args[z].args[L["Load"]] then
-		-- self.cmdtable.args[L["boss"]].args[z].args[L["Load"]] = nil
-		-- end
-		-- end
-		-- self.cmdtable.args[L["boss"]].args[zone] = nil
-		-- end
-		-- }
-		-- else
-		-- self.cmdtable.args[L["boss"]].args[zone].args[L["Load"]] = {
-		-- type = "execute",
-		-- name = L["Load All"],
-		-- desc = string.format( L["Load all %s modules."], zonename ),
-		-- order = 1,
-		-- func = function()
-		-- BigWigsLoD:LoadZone( zonename )
-		-- self.cmdtable.args[L["boss"]].args[zone].args[L["Load"]] = nil
-		-- end
-		-- }
-		-- end
 	end
 end
