@@ -38,7 +38,7 @@ BIGWIGS_ZONE_NAMES = {
 	["Ruins of Ahn'Qiraj"] = "2.AQ20",
 	["Molten Core"] = "3.MC",
 	["Blackwing Lair"] = "4.BWL",
-	["Emerald Sanctum"] = "5.ES"
+	["Emerald Sanctum"] = "5.ES",
 	["Ahn'Qiraj"] = "6.AQ40",
 	["Naxxramas"] = "7.Naxxramas",
 	["Onyxia's Lair"] = "Onyxia",
@@ -99,7 +99,7 @@ L:RegisterTranslations("enUS", function() return {
 	["Ahn'Qiraj"] = "AQ40",
 	["Ruins of Ahn'Qiraj"] = "AQ20",
 	["Onyxia's Lair"] = "Onyxia",
-	["Emerald Sanctum"] = "ES"
+	["Emerald Sanctum"] = "ES",
 	["Naxxramas"] = "Naxxramas",
 	["Silithus"] = true,
 	["Outdoor Raid Bosses"] = "Outdoor",
