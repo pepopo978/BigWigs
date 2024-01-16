@@ -814,7 +814,12 @@ function BigWigs:RegisterModule(name, module)
 	local opts
 	if module:IsBossModule() and module.toggleoptions then
 		opts = {}
-		for _,v in pairs(module.toggleoptions) do if v ~= -1 then opts[v] = true end end
+		for _,v in pairs(module.toggleoptions) do
+			if v ~= -1 then opts[v] = true end
+			if module.defaultDB and module.defaultDB[v] ~= nil then
+				opts[v] = module.defaultDB[v]
+			end
+		end
 	end
 
 	if module.db and module.RegisterDefaults and type(module.RegisterDefaults) == "function" then
