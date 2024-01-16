@@ -43,6 +43,7 @@ module.trashMod = true
 module.defaultDB = {
 	lightningtotem = true,
 	autotarget = false,
+	bosskill = nil,
 }
 
 -- locals
@@ -89,9 +90,7 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.lightningtotem and self.db.profile.lightningtotem then
 		self:Message(L["msg_totemUp"], "Important", nil, "Beware")
 		self:WarningSign(icon.lightningTotem, 3, true, "TOTEM!")
-        if self.db.profile.autotarget then
-            TargetByName("Lightning Totem",true)
-        end
+		if self.db.profile.autotarget then TargetByName("Lightning Totem",true) end
 	end
 end
 
