@@ -773,7 +773,7 @@ function BigWigs:ADDON_LOADED(addon)
 end
 
 function BigWigs:ModuleDeclaration(bossName, zoneName)
-	translatedName = AceLibrary("Babble-Boss-2.2")[bossName]
+	translatedName = BB:HasTranslation(bossName) and BB[bossName] or bossName
 	local module = BigWigs:NewModule(translatedName)
 	local L = AceLibrary("AceLocale-2.2"):new("BigWigs" .. translatedName)
 	module.translatedName = translatedName
@@ -781,17 +781,13 @@ function BigWigs:ModuleDeclaration(bossName, zoneName)
 	local name = string.gsub(bossName, "%s", "") -- untranslated, unique string
 	module.bossSync = bossName
 
-	--local name = string.gsub(bossName, "%s", "") -- untranslated, unique string
-	--local module = BigWigs:NewModule(name)
-	--local L = AceLibrary("AceLocale-2.2"):new("BigWigs" .. name)
-	--module.translatedName = AceLibrary("Babble-Boss-2.2")[bossName]
 
 	-- zone
 	local raidZones = {"Blackwing Lair", "Ruins of Ahn'Qiraj", "Ahn'Qiraj", "Molten Core", "Naxxramas", "Zul'Gurub"}
 	local isOutdoorraid = true
 	for i, value in ipairs(raidZones) do
 		if value == zoneName then
-			module.zonename = AceLibrary("Babble-Zone-2.2")[zoneName]
+			module.zonename = BZ:HasTranslation(zoneName) and BZ[zoneName] or zoneName
 			isOutdoorraid = false
 			break
 		end
@@ -799,7 +795,7 @@ function BigWigs:ModuleDeclaration(bossName, zoneName)
 	if isOutdoorraid then
 		module.zonename = {
 			AceLibrary("AceLocale-2.2"):new("BigWigs")["Outdoor Raid Bosses Zone"],
-			AceLibrary("Babble-Zone-2.2")[zoneName]
+			BZ:HasTranslation(zoneName) and BZ[zoneName] or zoneName
 		}
 	end
 
@@ -970,12 +966,10 @@ function BigWigs:RegisterModule(name, module)
 end
 
 function BigWigs:EnableModule(moduleName, nosync)
-	--local name = BB:HasTranslation(moduleName) and BB[moduleName] or moduleName
 	local m = self:GetModule(moduleName)
 	if m and not self:IsModuleActive(moduleName) then
 		self:ToggleModuleActive(moduleName, true)
 		if m:IsBossModule() then
-			--m.bossSync = m:ToString()
 			if not m.translatedName then
 				m.translatedName = m:ToString()
 				self:DebugMessage("translatedName for module " .. m:ToString() .. " missing")
@@ -983,8 +977,10 @@ function BigWigs:EnableModule(moduleName, nosync)
 			self:TriggerEvent("BigWigs_Message", string.format(L["%s mod enabled"], m.translatedName or "??"), "Core", true)
 		end
 
-		--if not nosync then self:TriggerEvent("BigWigs_SendSync", (m.external and "EnableExternal " or "EnableModule ") .. m.bossSync or (BB:GetReverseTranslation(moduleName))) end
-		if not nosync then self:TriggerEvent("BigWigs_SendSync", (m.external and "EnableExternal " or "EnableModule ") .. (m.synctoken or BB:GetReverseTranslation(moduleName))) end
+		if not nosync then
+			local syncToken = m.synctoken or BB:HasReverseTranslation(moduleName) and BB:GetReverseTranslation(moduleName) or moduleName
+			self:TriggerEvent("BigWigs_SendSync", (m.external and "EnableExternal " or "EnableModule ") .. syncToken)
+		end
 
 		self:SetupModule(moduleName)
 	end
@@ -992,13 +988,8 @@ end
 
 -- registers generic events
 function BigWigs:SetupModule(moduleName)
-	--local name = BB:HasTranslation(moduleName) and BB[moduleName] or moduleName
 	local m = self:GetModule(moduleName)
 	if m and m:IsBossModule() then
-		--m.bossSync = m:ToString()
-		--m.bossSync = BB:GetReverseTranslation(moduleName) -- untranslated string
-		--self:Print("bossSync: " .. string.gsub(BB:GetReverseTranslation(moduleName), "%s", ""))
-		--m.bossSync = string.gsub(BB:GetReverseTranslation(moduleName), "%s", "") -- untranslated, unique string without spaces
 
 		m:RegisterEvent("PLAYER_REGEN_DISABLED", "CheckForEngage") -- addition
 		m:RegisterEvent("PLAYER_REGEN_ENABLED", "CheckForWipe")
@@ -1014,7 +1005,6 @@ function BigWigs:SetupModule(moduleName)
 end
 
 function BigWigs:DisableModule(moduleName)
-	--local name = BB:HasTranslation(moduleName) and BB[moduleName] or moduleName
 	local m = self:GetModule(moduleName)
 	if m then
 		if m:IsBossModule() then
