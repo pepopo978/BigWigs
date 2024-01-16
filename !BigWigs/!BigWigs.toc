@@ -158,7 +158,7 @@ Raids\Other\Nerubian.lua
 
 Raids\Onyxia\Onyxia.lua
 
-
+Raids\Naxxramas\LivingMonstrosity.lua
 Raids\Naxxramas\Golem.lua
 Raids\Naxxramas\Spiders.lua
 Raids\Naxxramas\Gargoyle.lua
