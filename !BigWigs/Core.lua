@@ -34,13 +34,14 @@ RAID_CLASS_COLORS = {
 
 -- AceConsole zone commands
 BIGWIGS_ZONE_NAMES = {
-	["Zul'Gurub"] = "1.ZG",
-	["Ruins of Ahn'Qiraj"] = "2.AQ20",
-	["Molten Core"] = "3.MC",
-	["Blackwing Lair"] = "4.BWL",
-	["Emerald Sanctum"] = "5.ES",
-	["Ahn'Qiraj"] = "6.AQ40",
-	["Naxxramas"] = "7.Naxxramas",
+	["Karazhan"] = "1.Kara",
+	["Zul'Gurub"] = "2.ZG",
+	["Ruins of Ahn'Qiraj"] = "3.AQ20",
+	["Molten Core"] = "4.MC",
+	["Blackwing Lair"] = "5.BWL",
+	["Emerald Sanctum"] = "6.ES",
+	["Ahn'Qiraj"] = "7.AQ40",
+	["Naxxramas"] = "8.Naxxramas",
 	["Onyxia's Lair"] = "Onyxia",
 	["Silithus"] = "Silithus",
 	["Outdoor Raid Bosses"] = "Outdoor",
@@ -93,6 +94,7 @@ L:RegisterTranslations("enUS", function() return {
 	["Load all %s modules."] = true,
 
 	-- AceConsole zone commands
+	["Karazhan"] = "Kara",
 	["Zul'Gurub"] = "ZG",
 	["Molten Core"] = "MC",
 	["Blackwing Lair"] = "BWL",
@@ -785,7 +787,7 @@ function BigWigs:ModuleDeclaration(bossName, zoneName)
 
 
 	-- zone
-	local raidZones = {"Blackwing Lair", "Ruins of Ahn'Qiraj", "Ahn'Qiraj", "Molten Core", "Naxxramas", "Emerald Sanctum", "Zul'Gurub"}
+	local raidZones = {"Blackwing Lair", "Ruins of Ahn'Qiraj", "Ahn'Qiraj", "Molten Core", "Naxxramas", "Emerald Sanctum", "Karazhan", "Zul'Gurub"}
 	local isOutdoorraid = true
 	for i, value in ipairs(raidZones) do
 		if value == zoneName then
