@@ -836,8 +836,7 @@ function module:SetupMap()
 	cthunmap.map:SetHeight(200)
 	cthunmap.map.texture = cthunmap.map:CreateTexture(nil, "BACKGROUND")
 	cthunmap.map.texture:SetAllPoints(cthunmap.map)
---	cthunmap.map.texture:SetTexture("Interface\\Addons\\!BigWigs\\Textures\\cthunmaptexture")
-	cthunmap.map.texture:SetTexture("Interface\\Addons\\!BigWigs\\Textures\\TestTexture2")
+	cthunmap.map.texture:SetTexture("Interface\\Addons\\!BigWigs\\Textures\\cthunmaptexture")
 	
 	cthunmap.map.unit = {}
 	for i = 1, 40 do
