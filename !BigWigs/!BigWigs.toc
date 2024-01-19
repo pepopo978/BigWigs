@@ -178,5 +178,21 @@ Raids\Naxxramas\Horsemen.lua
 Raids\Naxxramas\Sapphiron.lua
 Raids\Naxxramas\Kelthuzad.lua
 
+Raids\EmeraldSanctum\Erennius.lua
+Raids\EmeraldSanctum\Solnius.lua
+Raids\EmeraldSanctum\SanctumDragonkin.lua
+Raids\EmeraldSanctum\SanctumDreamer.lua
+Raids\EmeraldSanctum\SanctumSupressor.lua
+Raids\EmeraldSanctum\SanctumWyrmkin.lua
+Raids\EmeraldSanctum\SanctumWyrm.lua
+
+Raids\Karazhan\LordBlackwaldII.lua
+Raids\Karazhan\BroodQueenAraxxna.lua
+Raids\Karazhan\Grizikil.lua
+Raids\Karazhan\ClawlordHowlfang.lua
+Raids\Karazhan\Moroes.lua
+Raids\Karazhan\PhantomServant.lua
+Raids\Karazhan\DarkRiderChampion.lua
+
 Battlegrounds\AlteracValley.lua
 Battlegrounds\ArathiBasin.lua
