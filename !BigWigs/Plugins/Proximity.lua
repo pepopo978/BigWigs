@@ -374,6 +374,13 @@ local function tablelength(T)
 	for _ in pairs(T) do count = count + 1 end
 	return count
 end
+
+function BigWigsProximity:PlayerCanChain()
+	if tooClose and tablelength(tooClose) > 0 then
+		return true
+	end
+end
+
 local function proximityCheck(unit)
 	return CheckInteractDistance(unit, 3)
 end
