@@ -4,6 +4,7 @@ This Modification is built for Patch 1.12.1 and its content for use on the <b>Tu
 
 ## How to install
 - Download manually via github (click on Clone or Download -> Download ZIP.
+- Delete old Bigwigs or !Bigwigs folder
 - Place "!BigWigs" folder in gamefolder>Interface>AddOns
 - Place "Fonts" folder in [original gamefolder directory](https://github.com/balakethelock/BigWigs/assets/111737968/2cddcb31-b318-4e6a-9203-413195a34c8d)
 
