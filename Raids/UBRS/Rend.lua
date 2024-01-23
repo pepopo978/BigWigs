@@ -3,7 +3,7 @@ local module, L = BigWigs:ModuleDeclaration("Warchief Rend Blackhand", "Blackroc
 local gyth = AceLibrary("Babble-Boss-2.2")["Gyth"]
 local rend = AceLibrary("Babble-Boss-2.2")["Warchief Rend Blackhand"]
 
-module.revision = 30025
+module.revision = 30041
 module.enabletrigger = {gyth, rend}
 module.toggleoptions = {"flamebreath", "freeze", "dismount", "whirlwind", "enrage", -1, "waves", "bosskill"}
 module.zonename = {
@@ -84,10 +84,19 @@ L:RegisterTranslations("enUS", function() return {
 	bar_waves7 = "Wave 7/7 - Boss next!",
 } end )
 
-bwRendWaves = 0
-bwWaveWhelpTotal = 0
-bwWaveSpawnTotal = 0
-bwWaveHandlerTotal = 0
+local bwRendWaves = 0
+
+local bwWhelpDead = 0
+local bwSpawnDead = 0
+local bwHandlerDead = 0
+
+local bwWaveWhelpTotal = 0
+local bwWaveSpawnTotal = 0
+local bwWaveHandlerTotal = 0
+
+local rendDead = nil
+local gythDead = nil
+local bwPlayerIsAttacking = nil
 
 local timer = {
 	beforeWave1 = 13.5,
@@ -169,10 +178,20 @@ function module:OnSetup()
 end
 
 function module:OnEngage()
+	bwRendWaves = 0
+
+	bwWhelpDead = 0
+	bwSpawnDead = 0
+	bwHandlerDead = 0
+
+	bwWaveWhelpTotal = 0
+	bwWaveSpawnTotal = 0
+	bwWaveHandlerTotal = 0
+
 	rendDead = nil
 	gythDead = nil
-	
-	bwRendWaves = 0
+	bwPlayerIsAttacking = nil
+
 	if self.db.profile.waves then
 		self:Sync(syncName.waves)
 	end
@@ -187,6 +206,7 @@ end
 function module:OnRegister()
 	self:RegisterEvent("MINIMAP_ZONE_CHANGED")
 end
+
 function module:MINIMAP_ZONE_CHANGED(msg)
 	if GetMinimapZoneText() ~= "Blackrock Stadium" or self.core:IsModuleActive(module.translatedName) then
 		return
@@ -312,10 +332,10 @@ function module:Dismount()
 				bwPlayerIsAttacking = true
 			end
 			
-			TargetByName(rest,true)
+			TargetByName("Warchief Rend Blackhand",true)
 			SetRaidTarget("target",6)
 			TargetLastTarget()
-			if bwPlayerIsAttacking then
+			if bwPlayerIsAttacking == true then
 				AttackTarget()
 			end
 		end

@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Jin'do the Hexxer", "Zul'Gurub")
 
-module.revision = 30039
+module.revision = 30041
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"curse", "hex", "brainwash", "healingward", "puticon", "autotarget", "bosskill"}
 
@@ -211,6 +211,8 @@ function module:BrainWash()
 	self:Message(L["msg_brainWash"], "Attention", true, "Alarm")
 	
 	if UnitName("Target") == "Jin'do the Hexxer" and UnitName("TargetTarget") == UnitName("Player") then return end
+	
+	if UnitName("Target") == "Shade of Jin'do" then return end
 	
 	if UnitClass("Player") == "Warrior" and self.db.profile.autotarget then
 		TargetByName("Brain Wash Totem", true)
