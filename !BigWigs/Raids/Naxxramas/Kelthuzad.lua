@@ -4,7 +4,6 @@
 ----------------------------------
 
 local module, L = BigWigs:ModuleDeclaration("Kel'Thuzad", "Naxxramas")
-local kelthuzad = AceLibrary("Babble-Boss-2.2")["Kel'Thuzad"]
 
 ----------------------------
 --      Localization      --
@@ -756,35 +755,8 @@ end
 
 function module:Fissure()
 	if self.db.profile.fissure then
-		self:ScheduleEvent("DelayedFissureEvent", self.DelayedFissureEvent, 0.2, self)
+		self:Message(L["fissure_warning"], "Urgent", true, "ShadowFissure")
 	end
-end
-
-function module:DelayedFissureEvent()
-	local target = self:CheckTarget()
-
-	if target then
-	    self:Icon(target, 3)
-	    if target == UnitName("player") then
-	        self:Message("SHADOW FISSURE on YOU !!!", "Important", nil, "FissureOnYou", nil)
-	        SendChatMessage("SHADOW FISSURE On Me !", "SAY")
-	    else
-	        self:Message("SHADOW FISSURE on " .. target .. " !!!", "Important", nil, "ShadowFissure", nil)
-	    end
-	end
-end
-
-function module:CheckTarget()
-	if UnitName("target") == kelthuzad then
-	    return UnitName("targettarget")
-	else
-	    for i = 1, GetNumRaidMembers() do
-	        if UnitName("Raid" .. i .. "target") == kelthuzad then
-	            return UnitName("Raid" .. i .. "targettarget")
-	        end
-	    end
-	end
-	return nil
 end
 
 function module:AbominationDies(name)
