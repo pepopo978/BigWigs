@@ -5,7 +5,6 @@
 
 local module, L = BigWigs:ModuleDeclaration("Kel'Thuzad", "Naxxramas")
 
-
 ----------------------------
 --      Localization      --
 ----------------------------
@@ -62,17 +61,17 @@ L:RegisterTranslations("enUS", function() return {
 	addcount_cmd = "addcount",
 	addcount_name = "P1 Add counter",
 	addcount_desc = "Counts number of killed adds in P1",
-	
+
 	abomwarn_cmd = "abomwarn",
 	abomwarn_name = "P1 Aboms alert",
 	abomwarn_desc = "Play sound when Abom spawns",
-	
+
 	abomwarn_text = "Spawned Abomination ",
-	
+
 	weaverwarn_cmd = "weaverarn",
 	weaverwarn_name = "P1 Weavers alert",
 	weaverwarn_desc = "Play sound when Weaver spawns",
-	
+
 	weaverwarn_text = "Spawned Soulweaver ",
 
 	mc_trigger1 = "Your soul, is bound to me now!",
@@ -376,7 +375,7 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Affliction")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Affliction")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Affliction")
-	
+
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE", "ShackleCheck")
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "ShackleCheck")
 
@@ -429,7 +428,7 @@ function module:OnEngage()
 	self:ScheduleEvent("abom12", self.AbominationSpawns, 285, self, "12")
 	self:ScheduleEvent("abom13", self.AbominationSpawns, 300, self, "13")
 	self:ScheduleEvent("abom14", self.AbominationSpawns, 318, self, "14")
-	
+
 	self:ScheduleEvent("weaver1", self.WeaverSpawns, 44, self, "1")
 	self:ScheduleEvent("weaver2", self.WeaverSpawns, 68, self, "2")
 	self:ScheduleEvent("weaver3", self.WeaverSpawns, 97, self, "3")
@@ -704,7 +703,7 @@ end
 
 function module:MindControl()
 	if self.db.profile.mc then
-		self:Message(L["mc_warning"], "Urgent")
+		self:Message(L["mc_warning"], "Urgent", nil, "MindControl", nil)
 		self:IntervalBar(L["mc_bar"], timer.mindcontrol[1], timer.mindcontrol[2], icon.mindcontrol)
 	end
 
@@ -756,8 +755,7 @@ end
 
 function module:Fissure()
 	if self.db.profile.fissure then
-		self:Message(L["fissure_warning"], "Urgent", true, "Beware")
-		-- add bar?
+		self:Message(L["fissure_warning"], "Urgent", true, "ShadowFissure")
 	end
 end
 
@@ -783,13 +781,13 @@ end
 
 function module:AbominationSpawns(count)
 	if count and self.db.profile.abomwarn then
-		self:Message(L["abomwarn_text"]..count.."/14", "Personal", nil, "AirHorn", nil)
+		self:Message(L["abomwarn_text"]..count.."/14", "Personal", nil, "Alarm", nil)
 	end
 end
 
 function module:WeaverSpawns(count)
 	if count and self.db.profile.weaverwarn then
-		self:Message(L["weaverwarn_text"]..count.."/14", "Personal", nil, "AirHorn", nil)
+		self:Message(L["weaverwarn_text"]..count.."/14", "Personal", nil, "Alarm", nil)
 	end
 end
 
