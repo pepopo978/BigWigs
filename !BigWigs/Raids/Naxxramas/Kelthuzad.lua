@@ -769,7 +769,7 @@ function module:DelayedFissureEvent()
 	        self:Message("SHADOW FISSURE on YOU !!!", "Important", nil, "FissureOnYou", nil)
 	        SendChatMessage("SHADOW FISSURE On Me !", "SAY")
 	    else
-	        self:Message("SHADOW FISSURE on " .. target .. " !!!", "Important", nil, "Fissure", nil)
+	        self:Message("SHADOW FISSURE on " .. target .. " !!!", "Important", nil, "ShadowFissure", nil)
 	    end
 	end
 end
