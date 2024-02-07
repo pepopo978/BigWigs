@@ -44,6 +44,10 @@ local sounds = {
 	MarkOne = "Interface\\Addons\\!BigWigs\\Sounds\\MarkOne.mp3",
 	MarkTwo = "Interface\\Addons\\!BigWigs\\Sounds\\MarkTwo.mp3",
 	MarkThree = "Interface\\Addons\\!BigWigs\\Sounds\\MarkThree.mp3",
+
+	ShadowFissure = "Interface\\Addons\\!BigWigs\\Sounds\\ShadowFissure.mp3",
+	FissureOnYou = "Interface\\Addons\\!BigWigs\\Sounds\\FissureOnYou.mp3",
+	MindControl = "Interface\\Addons\\!BigWigs\\Sounds\\MindControl.mp3",
 }
 
 
