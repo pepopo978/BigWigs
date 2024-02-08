@@ -371,6 +371,7 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_PARTY_MISSES", "Event")
 	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS", "Event")
 	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_MISSES", "Event")
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event")
 
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Affliction")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Affliction")
@@ -781,13 +782,13 @@ end
 
 function module:AbominationSpawns(count)
 	if count and self.db.profile.abomwarn then
-		self:Message(L["abomwarn_text"]..count.."/14", "Personal", nil, "Alarm", nil)
+		self:Message(L["abomwarn_text"]..count.."/14", "Personal")
 	end
 end
 
 function module:WeaverSpawns(count)
 	if count and self.db.profile.weaverwarn then
-		self:Message(L["weaverwarn_text"]..count.."/14", "Personal", nil, "Alarm", nil)
+		self:Message(L["weaverwarn_text"]..count.."/14", "Personal")
 	end
 end
 
