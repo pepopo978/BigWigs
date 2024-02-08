@@ -459,6 +459,9 @@ function BigWigsCommonAuras:BigWigs_RecvSync( sync, rest, nick )
 			elseif zone == "Stormwind" or zone == "Ironforge" or zone == "Darnassus" then
 				portalColor = "Blue"
 				portalText = "--ALLIANCE-- portal to "
+			elseif zone == "Karazhan" then
+				portalColor = "Green"
+				portalText = "--NEUTRAL-- portal to "
 			end
 			self:TriggerEvent("BigWigs_Message", portalText..zone, "Attention", false, nil, false)
 			self:TriggerEvent("BigWigs_StartBar", self, rest, timer.portal, BS:GetSpellIcon(rest), true, portalColor)

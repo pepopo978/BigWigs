@@ -2,7 +2,7 @@
 local module, L = BigWigs:ModuleDeclaration("Instructor Razuvious", "Naxxramas")
 local understudy = AceLibrary("Babble-Boss-2.2")["Deathknight Understudy"]
 
-module.revision = 30040
+module.revision = 30042
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"mc", "shout", "unbalance", "shieldwall", "bosskill"}
 
@@ -157,7 +157,7 @@ function module:OnEngage()
 		self:DelayedWarningSign(timer.firstShout - 3, icon.shout, 0.7)
 	end
 	
-	self:ScheduleRepeatingEvent("bwCheckRazuviousEngaged", self.CheckRazuviousEngaged, 0.5, self)
+	--self:ScheduleRepeatingEvent("bwCheckRazuviousEngaged", self.CheckRazuviousEngaged, 0.5, self)
 end
 
 function module:OnDisengage()

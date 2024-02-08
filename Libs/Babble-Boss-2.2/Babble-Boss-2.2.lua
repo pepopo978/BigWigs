@@ -116,6 +116,7 @@ BabbleBoss:RegisterTranslations("enUS", function()
 		["Emeriss"] = true,
 		["Taerar"] = true,
 		["Lethon"] = true,
+		["Dark Reaver of Karazhan"] = true,
 		["High Priestess Jeklik"] = true,
 		["High Priest Venoxis"] = true,
 		["High Priest Thekal"] = true,
