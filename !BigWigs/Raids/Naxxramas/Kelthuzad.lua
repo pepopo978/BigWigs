@@ -371,7 +371,6 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_PARTY_MISSES", "Event")
 	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS", "Event")
 	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_MISSES", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event")
 
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Affliction")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Affliction")
@@ -507,6 +506,11 @@ function module:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE( msg )
 	if string.find(msg, L["frostbolt_trigger"]) then
 		self:Sync(syncName.frostbolt)
 	end
+	
+	-- shadow fissure
+	if string.find(msg, L["fissure_trigger"]) then
+		self:Sync(syncName.fissure)
+	end
 end
 
 function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
@@ -590,11 +594,6 @@ function module:ShackleCheck(msg)
 end
 
 function module:Event(msg)
-	-- shadow fissure
-	if string.find(msg, L["fissure_trigger"]) then
-		self:Sync(syncName.fissure)
-	end
-
 	-- frost bolt
 	if GetTime() < frostbolttime + timer.frostbolt then
 		if string.find(msg, L["attack_trigger1"]) or string.find(msg, L["attack_trigger2"]) or string.find(msg, L["attack_trigger3"]) or string.find(msg, L["attack_trigger4"]) then
