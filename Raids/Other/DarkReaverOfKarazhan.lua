@@ -252,6 +252,8 @@ end
 function module:ForlornSpiritSpawn()
 	self:RemoveBar(L["bar_forlornSpiritSpawnCd"])
 	self:Bar(L["bar_forlornSpiritSpawnCd"], timer.forlornSpiritSpawnCd, icon.forlornSpiritSpawnCd, true, color.forlornSpiritSpawnCd)
+	
+	self:Message(L["msg_forlornSpiritSpawn"], "Positive", false, nil, false)
 end
 
 function module:LurkingShadowSpawn(rest)

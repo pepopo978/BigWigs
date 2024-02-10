@@ -1,6 +1,6 @@
 ## Interface: 11200
 
-## Title: |cFFFF8080Relar|r Big Wigs |cff7fff7f30042|r |cffabd473Turtle-WoW|r
+## Title: |cFFFF8080Relar|r Big Wigs |cff7fff7f30043|r |cffabd473Turtle-WoW|r
 ## Title-zhCN: |cffabd473Turtle-WoW|r Big Wigs
 ## Notes: Boss Mods with Timer bars.
 ## Notes-esES: Módulos para Jefes con barras temporizadoras.
@@ -157,7 +157,8 @@ Raids\Other\Taerar.lua
 Raids\Other\Ysondre.lua
 Raids\Other\Kazzak.lua
 Raids\Other\Nerubian.lua
-Raids\other\DarkReaverOfKarazhan.lua
+Raids\Other\DarkReaverOfKarazhan.lua
+Raids\Other\NerubianOverseer.lua
 
 Raids\Onyxia\Onyxia.lua
 
