@@ -6,11 +6,11 @@ module.enabletrigger = module.translatedName
 module.toggleoptions = {"shadowshock", "venomspit", "poisoncloud", "corrosivepoison", "necroticpoison", "webspray", "explode", "bosskill"}
 module.zonename = {
 	AceLibrary("AceLocale-2.2"):new("BigWigs")["Outdoor Raid Bosses Zone"],
-	AceLibrary("Babble-Zone-2.2")["Deadwind Pass"],
+	AceLibrary("Babble-Zone-2.2")["Eastern Plaguelands"],
 }
 
 L:RegisterTranslations("enUS", function() return {
-	cmd = "DarkReaverOfKarazhan",
+	cmd = "NerubianOverseer",
 
 	shadowshock_cmd = "shadowshock",
 	shadowshock_name = "Shadow Shock adds Alert",

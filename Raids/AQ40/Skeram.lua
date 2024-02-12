@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("The Prophet Skeram", "Ahn'Qiraj")
 
-module.revision = 30027
+module.revision = 30044
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"mc", "bosskill"}
 
@@ -130,12 +130,14 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 end
 
 function module:MC(rest)
-	for i=1,GetNumRaidMembers() do
-		if UnitName("raid"..i) == rest then
-			SetRaidTarget("raid"..i, 4)
+	if IsRaidLeader() or IsRaidOfficer() then
+		for i=1,GetNumRaidMembers() do
+			if UnitName("raid"..i) == rest then
+				SetRaidTarget("raid"..i, 4)
+			end
 		end
 	end
-	
+		
 	self:Bar(rest..L["bar_mc"].. " >Click Me<", timer.mc, icon.mc, true, "White")
 	self:SetCandyBarOnClick("BigWigsBar "..rest..L["bar_mc"].. " >Click Me<", function(name, button, extra) TargetByName(extra, true) end, rest)
 	self:Message(rest..L["msg_mc"], "Attention", false, nil, false)

@@ -1,391 +1,281 @@
 
-----------------------------------
---      Module Declaration      --
-----------------------------------
-
 local module, L = BigWigs:ModuleDeclaration("Baron Geddon", "Molten Core")
 
-module.revision = 20004 -- To be overridden by the module!
-module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
-module.wipemobs = nil
-module.toggleoptions = {"inferno", "service", "bomb", "mana", "announce", "icon", "bosskill"}
-
-
----------------------------------
---      Module specific Locals --
----------------------------------
-
-local timer = {
-	bomb = 8,
-	inferno = 8,
-	earliestNextInferno = 18,
-	latestNextInferno = 24,
-	earliestFirstIgnite = 10,
-	latestFirstIgnite = 15,
-	earliestIgnite = 20,
-	latestIgnite = 30,
-	service = 8,
+module.revision = 30044
+module.enabletrigger = module.translatedName
+module.toggleoptions = {"bomb", "inferno", "service", "ignite", "icon", "bosskill"}
+module.zonename = {
+	AceLibrary("AceLocale-2.2"):new("BigWigs")["Molten Core"],
+	AceLibrary("Babble-Zone-2.2")["Molten Core"],
 }
-local icon = {
-	bomb = "Inv_Enchant_EssenceAstralSmall",
-	inferno = "Spell_Fire_Incinerate",
-	ignite = "Spell_Fire_Incinerate",
-	service = "Spell_Fire_SelfDestruct",
-}
-local syncName = {
-	bomb = "GeddonBomb"..module.revision,
-	bombStop = "GeddonBombStop"..module.revision,
-	inferno = "GeddonInferno"..module.revision,
-	ignite = "GeddonManaIgnite"..module.revision,
-	service = "GeddonService"..module.revision,
-}
-
-local firstinferno = true
-local firstignite = true
-
-----------------------------
---      Localization      --
-----------------------------
 
 L:RegisterTranslations("enUS", function() return {
-	inferno_trigger = "Baron Geddon gains Inferno\.",
-	service_trigger = "performs one last service for Ragnaros",
-	ignitemana_trigger = "afflicted by Ignite Mana",
-	bombyou_trigger = "You are afflicted by Living Bomb.",
-	bombother_trigger = "(.*) is afflicted by Living Bomb.",
-	bombyouend_trigger = "Living Bomb fades from you.",
-	bombotherend_trigger = "Living Bomb fades from (.*).",
-	ignitemana_trigger1 = "afflicted by Ignite Mana",
-	ignitemana_trigger2 = "Ignite Mana was resisted",
-	deathyou_trigger = "You die.",
-	deathother_trigger = "(.*) dies",
-
-	bomb_message_you = "You are the bomb!",
-	bomb_message_youscreen = "You are the bomb!",
-	bomb_message_other = "%s is the bomb!",
-
-	bomb_bar = "Living Bomb: %s",
-	bomb_bar1 = "Living Bomb: %s",
-	inferno_bar = "Next Inferno",
-	inferno_channel = "Inferno",
-	nextinferno_message = "3 seconds until Inferno!",
-	service_bar = "Last Service",
-	nextbomb_bar = "Next Living Bomb",
-	ignite_bar = "Possible Ignite Mana",
-
-	service_message = "Last Service! Baron Geddon exploding in 8 seconds!",
-	inferno_message = "Inferno for 8 seconds!",
-	ignite_message = "Dispel NOW!",
-
 	cmd = "Baron",
-
+	
+	bomb_cmd = "bomb",
+	bomb_name = "Living Bomb alert",
+	bomb_desc = "Warn when players are the bomb",
+	
+	inferno_cmd = "inferno",
+	inferno_name = "Inferno alert",
+	inferno_desc = "Timer bar for Geddon's Inferno.",
+	
 	service_cmd = "service",
 	service_name = "Last Service warning",
 	service_desc = "Timer bar for Geddon's last service.",
 
-	inferno_cmd = "inferno",
-	inferno_name = "Inferno alert",
-	inferno_desc = "Timer bar for Geddon's Inferno.",
-
-	bombtimer_cmd = "bombtimer",
-	bombtimer_name = "Living Bomb timers",
-	bombtimer_desc = "Shows a 8 second bar for when the bomb goes off at the target.",
-
-	bomb_cmd = "bomb",
-	bomb_name = "Living Bomb alert",
-	bomb_desc = "Warn when players are the bomb",
-
-	mana_cmd = "manaignite",
-	mana_name = "Ignite Mana alert",
-	mana_desc = "Shows timers for Ignite Mana and announce to dispel it",
+	ignite_cmd = "ignite",
+	ignite_name = "Ignite Mana alert",
+	ignite_desc = "Shows timers for Ignite Mana and announce to dispel it",
 
 	icon_cmd = "icon",
 	icon_name = "Raid Icon on bomb",
 	icon_desc = "Put a Raid Icon on the person who's the bomb. (Requires assistant or higher)",
-
-	announce_cmd = "whispers",
-	announce_name = "Whisper to Bomb targets",
-	announce_desc = "Sends a whisper to players targetted by Living Bomb. (Requires assistant or higher)",
-} end)
-
-L:RegisterTranslations("esES", function() return {
-	inferno_trigger = "Barón Geddon gana Inferno\.",
-	service_trigger = "lleva a cabo un último servicio para Ragnaros",
-	ignitemana_trigger = "sufre de Ignición de maná",
-	bombyou_trigger = "Sufres de Bomba viviente.",
-	bombother_trigger = "(.*) sufre de Bomba viviente.",
-	bombyouend_trigger = "Bomba viviente acaba de disiparse.",
-	bombotherend_trigger = "Bomba viviente desaparece de (.*).",
-	ignitemana_trigger1 = "sufre de Ignición de maná",
-	ignitemana_trigger2 = "Resistido Ignición de maná de Barón Geddon",
-	deathyou_trigger = "Has muerto.",
-	deathother_trigger = "(.*) ha muerto",
-
-	bomb_message_you = "¡Eres la bomba!",
-	bomb_message_youscreen = "¡Eres la bomba!",
-	bomb_message_other = "¡%s es la bomba!",
-
-	bomb_bar = "Bomba viviente: %s",
-	bomb_bar1 = "Bomba viviente: %s",
-	inferno_bar = "Próximo Inferno",
-	inferno_channel = "Inferno",
-	nextinferno_message = "¡3 segundos hasta Inferno!",
-	service_bar = "Último Servicio",
-	nextbomb_bar = "Próximo Bomba viviente",
-	ignite_bar = "Ignición de maná Posible",
-
-	service_message = "¡Último servicio! Barón Geddon se explota en 8 segundos!",
-	inferno_message = "¡Inferno por 8 segundos!",
-	ignite_message = "¡Disipa AHORA!",
-
-	--cmd = "Baron",
-
-	--service_cmd = "service",
-	service_name = "Alerta de Último servicio",
-	service_desc = "Barra temporizadora para el último servicio de Barón Geddon.",
-
-	--inferno_cmd = "inferno",
-	inferno_name = "Alerta de Inferno",
-	inferno_desc = "Barra temporizadora para el Inferno de Barón Geddon.",
-
-	--bombtimer_cmd = "bombtimer",
-	bombtimer_name = "Temporizador de Bomba viviente",
-	bombtimer_desc = "Muestra una barra de 8 segundos cuando se explote la bomba.",
-
-	--bomb_cmd = "bomb",
-	bomb_name = "Alerta de Bomba viviente",
-	bomb_desc = "Avisa cuando jugadores sean la bomba",
-
-	--mana_cmd = "manaignite",
-	mana_name = "Alerta de Ignición de maná",
-	mana_desc = "Muestra temporizadores para Ignición de maná y anuncia para disiparlo",
-
-	--icon_cmd = "icon",
-	icon_name = "Marcar la bomba",
-	icon_desc = "Marca con un icono el jugador quien tiene la bomba. (Requiere asistente o líder)",
-
-	--announce_cmd = "whispers",
-	announce_name = "Susurrar a los objetivos de la Bomba",
-	announce_desc = "Susurra a los jugadores quien tienen la Bomba viviente. (Require asistente o líder)",
-} end)
-
-L:RegisterTranslations("deDE", function() return {
-	inferno_trigger = "Baron Geddon bekommt \'Inferno",
-	service_trigger = "performs one last service for Ragnaros",
-	ignitemana_trigger = "von Mana entz\195\188nden betroffen",
-	bombyou_trigger = "Ihr seid von Lebende Bombe betroffen.",
-	bombother_trigger = "(.*) ist von Lebende Bombe betroffen.",
-	bombyouend_trigger = "'Lebende Bombe\' schwindet von Euch.",
-	bombotherend_trigger = "Lebende Bombe schwindet von (.*).",
-	ignitemana_trigger1 = "von Mana entz\195\188nden betroffen",
-	ignitemana_trigger2 = "Mana entz\195\188nden(.+)widerstanden",
-	deathyou_trigger = "Ihr sterbt.",
-	deathother_trigger = "(.*) stirbt",
-
-	bomb_message_you = "Du bist die Bombe!",
-	bomb_message_youscreen = "Du bist die Bombe!",
-	bomb_message_other = "%s ist die Bombe!",
-
-	bomb_bar = "Lebende Bombe: %s",
-	bomb_bar1 = "Lebende Bombe: %s",
-	inferno_bar = "N\195\164chstes Inferno",
-	inferno_channel = "Inferno",
-	nextinferno_message = "3 Sekunden bis Inferno!",
-	service_bar = "Letzter Dienst.",
-	nextbomb_bar = "N\195\164chste Lebende Bombe",
-	ignite_bar = "Mögliches Mana entz\195\188nden",
-
-	service_message = "Letzter Dienst! Baron Geddon explodiert in 8 Sekunden!",
-	inferno_message = "Inferno 8 Sekunden lang!",
-	ignite_message = "Entferne Magie JETZT!",
-
-	cmd = "Baron",
-
-	service_cmd = "service",
-	service_name = "Alarm f\195\188r Letzten Dienst",
-	service_desc = "Timer Balken f\195\188r Baron Geddons Letzten Dienst.",
-
-	inferno_cmd = "inferno",
-	inferno_name = "Alarm f\195\188r Inferno",
-	inferno_desc = "Timer Balken f\195\188r Baron Geddons Inferno.",
-
-	bombtimer_cmd = "bombtimer",
-	bombtimer_name = "Timer f\195\188r Lebende Bombe",
-	bombtimer_desc = "Zeigt einen 8 Sekunden Timer f\195\188r die Explosion der Lebenden Bombe an.",
-
-	bomb_cmd = "bomb",
-	bomb_name = "Alarm f\195\188r Lebende Bombe",
-	bomb_desc = "Warnen, wenn andere Spieler die Bombe sind.",
-
-	mana_cmd = "mana",
-	mana_name = "Alarm f\195\188r Mana entz\195\188nden",
-	mana_desc = "Zeige Timer f\195\188r Mana entz\195\188nden und verk\195\188nde Magie entfernen",
-
-	icon_cmd = "icon",
-	icon_name = "Schlachtzugssymbole auf die Bombe",
-	icon_desc = "Markiert den Spieler, der die Bombe ist.\n\n(Ben\195\182tigt Schlachtzugleiter oder Assistent).",
-
-	announce_cmd = "whispers",
-	announce_name = "Der Bombe fl\195\188stern",
-	announce_desc = "Dem Spieler fl\195\188stern, wenn er die Bombe ist.\n\n(Ben\195\182tigt Schlachtzugleiter oder Assistent).",
+	
+	
+	trigger_bomb = "(.+) is afflicted by Living Bomb.",
+	trigger_bombYou = "You are afflicted by Living Bomb.",
+	trigger_bombFade = "Living Bomb fades from (.+).",
+	bar_bomb = " Bomb!",
+	msg_bomb = " is the Bomb!",
+	
+	trigger_inferno = "Baron Geddon gains Inferno.",
+	trigger_infernoFade = "Inferno fades from Baron Geddon.",--to be confirmed, check CLEU
+	trigger_infernoYou = "You suffer (.+) Fire damage from Baron Geddon's Inferno.",--to be confirmed, check CLEU
+	bar_infernoChannel = "Inferno",
+	bar_infernoCd = "Next Inferno",
+	
+	trigger_service = "performs one last service for Ragnaros",
+	bar_service = "Armageddon!",
+	msg_service = "Last Service! Baron Geddon exploding in 8 seconds!",
+	
+	trigger_ignite = "afflicted by Ignite Mana",
+	trigger_ignite2 = "Ignite Mana was resisted",
+	bar_igniteCd = "Ignite Mana CD",
+	msg_ignite = "Dispel mana users NOW!",
 } end)
 
 
-------------------------------
---      Initialization      --
-------------------------------
+local timer = {
+	bomb = 8,
+	
+	infernoChannel = 8,
+	firstInfernoCd = {18,24},
+	infernoCd = {10,16},
+	
+	service = 8,
+	
+	firstIgniteCd = {10,15},
+	igniteCd = {20,30},
+}
+local icon = {
+	bomb = "Inv_Enchant_EssenceAstralSmall",
+	bombBigIcon = "Spell_Shadow_MindBomb",
+	inferno = "Spell_Fire_Incinerate",
+	service = "Spell_Fire_SelfDestruct",
+	ignite = "Spell_Fire_Incinerate",
+}
+local color = {
+	bomb = "Cyan",
+	infernoChannel = "Red",
+	infernoCd = "Black",
+	service = "White",
+	ignite = "Blue",
+}
+local syncName = {
+	bomb = "GeddonBomb"..module.revision,
+	bombFade = "GeddonBombStop"..module.revision,
+	inferno = "GeddonInferno"..module.revision,
+	infernoFade = "GeddonInfernoFade"..module.revision,
+	service = "GeddonService"..module.revision,
+	ignite = "Geddonignite"..module.revision,
+}
 
--- called after module is enabled
 function module:OnEnable()
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
+	
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS")
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event")
+	
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event")
-	--self:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLY_DEATH", "Event")
+
 	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")
 
 	self:ThrottleSync(5, syncName.bomb)
-	self:ThrottleSync(3, syncName.bombStop)
+	self:ThrottleSync(3, syncName.bombFade)
+	self:ThrottleSync(5, syncName.inferno)
+	self:ThrottleSync(5, syncName.infernoFade)
 	self:ThrottleSync(4, syncName.service)
 	self:ThrottleSync(4, syncName.ignite)
-	self:ThrottleSync(29, syncName.inferno)
+	
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
 	self.started = nil
-	firstinferno = true
-	firstignite = true
-
-	bombt = 0
 end
 
--- called after boss is engaged
 function module:OnEngage()
-	self:Inferno()
-	self:ManaIgnite()
+	if self.db.profile.inferno then
+		self:IntervalBar(L["bar_infernoCd"], timer.firstInfernoCd[1], timer.firstInfernoCd[2], icon.inferno, true, color.infernoCd)
+	end
+	
+	if self.db.profile.ignite then
+		self:IntervalBar(L["bar_igniteCd"], timer.firstIgniteCd[1], timer.firstIgniteCd[2], icon.ignite, true, color.ignite)
+	end
 end
 
--- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
 end
 
-------------------------------
---      Event Handlers      --
-------------------------------
-
-function module:Event(msg)
-	local _,_, bombother, mcverb = string.find(msg, L["bombother_trigger"])
-	local _,_, bombotherend, mcverb = string.find(msg, L["bombotherend_trigger"])
-	--local _,_, bombotherdeath,mctype = string.find(msg, L["deathother_trigger"])
-	if string.find(msg, L["bombyou_trigger"]) then
-		self:Sync(syncName.bomb)
-		SendChatMessage("Bomb on "..UnitName("player").."!","SAY")
-		if self.db.profile.bomb then
-			self:Bar(string.format(L["bomb_bar1"], UnitName("player")), timer.bomb, icon.bomb, true, "red")
-			self:Message(L["bomb_message_youscreen"], "Attention", "RunAway")
-			self:WarningSign("Spell_Shadow_MindBomb", timer.bomb)
-		end
-		if self.db.profile.icon then
-			self:Icon(UnitName("player"))
-		end
-	elseif string.find(msg, L["bombyouend_trigger"]) then
-		self:RemoveBar(string.format(L["bomb_bar1"], UnitName("player")))
-		self:Sync(syncName.bombStop)
-	elseif string.find(msg, L["deathyou_trigger"]) then
-		self:RemoveBar(string.format(L["bomb_bar1"], UnitName("player")))
-	elseif bombother then
-		bombt = bombother
-		self:Sync(syncName.bomb)
-		if self.db.profile.bomb then
-			self:Bar(string.format(L["bomb_bar"], bombother), timer.bomb, icon.bomb, true, "red")
-			self:Message(string.format(L["bomb_message_other"], bombother), "Attention")
-		end
-		if self.db.profile.icon then
-			self:Icon(bombother)
-		end
-		if self.db.profile.announce then
-			self:TriggerEvent("BigWigs_SendTell", bombother, L["bomb_message_you"])
-		end
-	elseif bombotherend then
-		self:RemoveBar(string.format(L["bomb_bar"], bombotherend))
-		--elseif string.find(msg, L["deathother_trigger"]) then
-		--	self:RemoveBar(string.format(L["bomb_bar"], bombotherdeath))
-	elseif (string.find(msg, L["ignitemana_trigger1"]) or string.find(msg, L["ignitemana_trigger2"])) then
-		self:Sync(syncName.ignite)
-	end
-end
-
-function module:CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS(msg)
-	if string.find(msg, L["inferno_trigger"]) then
-		BigWigs:DebugMessage("inferno trigger")
-		self:Sync(syncName.inferno)
-	end
-end
-
 function module:CHAT_MSG_MONSTER_EMOTE(msg)
-	if string.find(msg, L["service_trigger"]) and self.db.profile.service then
+	if string.find(msg, L["trigger_service"]) then
 		self:Sync(syncName.service)
 	end
 end
 
+function module:Event(msg)
+	if string.find(msg, L["trigger_bomb"]) then
+		local _,_, bombPlayer,_ = string.find(msg, L["trigger_bomb"])
+		self:Sync(syncName.bomb .. " " .. bombPlayer)
+	
+	elseif msg == L["trigger_bombYou"] then
+		self:Sync(syncName.bomb .. " " .. UnitName("Player"))
+		
+	elseif string.find(msg, L["trigger_bombFade"]) then
+		local _,_, bombFadePlayer,_ = string.find(msg, L["trigger_bombFade"])
+		if bombFadePlayer == "you" then bombFadePlayer = UnitName("Player") end
+		self:Sync(syncName.bombFade .. " " .. bombFadePlayer)
+		
+		
+	elseif msg == L["trigger_inferno"] then
+		self:Sync(syncName.inferno)
+	elseif msg == L["trigger_infernoFade"] then
+		self:Sync(syncName.infernoFade)
+	elseif string.find(msg, L["trigger_infernoYou"]) then
+		self:InfernoYou()
+		
+	elseif string.find(msg, L["trigger_ignite"]) or string.find(msg, L["trigger_ignite2"]) then
+		self:Sync(syncName.ignite)
+	end
+end
 
-------------------------------
---      Synchronization	    --
-------------------------------
 
 function module:BigWigs_RecvSync(sync, rest, nick)
-	if sync == syncName.bomb then
-	elseif sync == syncName.inferno then
+	if sync == syncName.bomb and rest and self.db.profile.bomb then
+		self:Bomb(rest)
+	elseif sync == syncName.bombFade and rest and self.db.profile.bomb then
+		self:BombFade(rest)
+	elseif sync == syncName.inferno and self.db.profile.inferno then
 		self:Inferno()
-	elseif sync == syncName.ignite then
-		self:ManaIgnite()
-	elseif sync == syncName.bombStop and self.db.profile.bomb then
-		self:RemoveBar(string.format(L["bomb_bar"], bombt))
+	elseif sync == syncName.infernoFade and self.db.profile.inferno then
+		self:InfernoFade()
 	elseif sync == syncName.service and self.db.profile.service then
-		self:Bar(L["service_bar"], timer.service, icon.service, true, "white")
-		self:Message(L["service_message"], "Important")
+		self:Service()
+	elseif sync == syncName.ignite and self.db.profile.ignite then
+		self:Ignite()
 	end
 end
 
-------------------------------
---      Sync Handlers	    --
-------------------------------
+
+function module:Bomb(rest)
+	self:Bar(rest..L["bar_bomb"], timer.bomb, icon.bomb, true, color.bomb)
+	self:Message(rest..L["msg_bomb"], "Urgent", false, nil, false)
+	
+	if rest == UnitName("Player") then
+		SendChatMessage(UnitName("player").." is the Bomb!","SAY")
+		self:WarningSign(icon.bombBigIcon, timer.bomb)
+		self:Sound("RunAway")
+	end
+	
+	if IsRaidLeader() or IsRaidOfficer() then
+		for i=1,GetNumRaidMembers() do
+			if UnitName("raid"..i) == rest then
+				SetRaidTarget("raid"..i, 8)
+			end
+		end
+	end
+end
+
+function module:BombFade(rest)
+	self:RemoveBar(rest..L["bar_bomb"])
+	
+	if IsRaidLeader() or IsRaidOfficer() then
+		for i=1,GetNumRaidMembers() do
+			if UnitName("raid"..i) == rest then
+				SetRaidTarget("raid"..i, 0)
+			end
+		end
+	end
+end
 
 function module:Inferno()
-	--self:DelayedSync(timer.nextInferno, syncName.inferno)
-
-	if self.db.profile.inferno then
-		self:RemoveBar(L["inferno_bar"])
-		if firstinferno then
-			self:IntervalBar(L["inferno_bar"], timer.earliestNextInferno, timer.latestNextInferno, icon.inferno, true, "blue")
-			firstinferno = false
-		else
-			self:Message(L["inferno_message"], "Important")
-			self:Bar(L["inferno_channel"], timer.inferno, icon.inferno, true, "cyan")
-			self:DelayedIntervalBar(timer.inferno, L["inferno_bar"], timer.earliestNextInferno - timer.inferno, timer.latestNextInferno - timer.inferno, icon.inferno, true, "blue")
-		end
-
-		self:DelayedMessage(timer.earliestNextInferno - 5, L["nextinferno_message"], "Urgent", nil, nil, true)
-	end
-
-	firstinferno = false
+	self:RemoveBar(L["bar_infernoCd"])
+	
+	self:Bar(L["bar_infernoChannel"], timer.infernoChannel, icon.inferno, true, color.infernoChannel)
+	self:DelayedIntervalBar(timer.infernoChannel, L["bar_infernoCd"], timer.infernoCd[1], timer.infernoCd[2], icon.inferno, true, color.infernoCd)
 end
 
-function module:ManaIgnite()
-	if self.db.profile.mana then
-		if not firstignite then
-			self:Message(L["ignite_message"], "Important")
-			self:IntervalBar(L["ignite_bar"], timer.earliestIgnite, timer.latestIgnite, icon.ignite, true, "black")
-		else
-			self:IntervalBar(L["ignite_bar"], timer.earliestFirstIgnite, timer.latestFirstIgnite, icon.ignite, true, "black")
+function module:InfernoFade()
+	self:RemoveBar(L["bar_infernoChannel"])
+	self:IntervalBar(L["bar_infernoCd"], timer.firstInfernoCd[1], timer.firstInfernoCd[2], icon.inferno, true, color.infernoCd)
+end
+
+function module:InfernoYou()
+	local doWarn = false
+	
+	
+	if UnitName("Target") == nil then
+		doWarn = true
+	elseif UnitName("Target") ~= nil and UnitName("TargetTarget") == nil then
+		doWarn = true
+	
+	--don't do it if you're the tank
+	elseif UnitName("Target") == "Baron Geddon" and UnitName("TargetTarget") == UnitName("Player") then
+		doWarn = false
+		return
+	end
+	
+	
+	if doWarn == true then
+		--don't do it if you're the bomb
+		for i = 1, 10 do local icon, count = UnitDebuff("Player", i)
+			if icon and icon == "Interface\\Icons\\Inv_Enchant_EssenceAstralSmall" then
+				doWarn = false
+				return
+			end
 		end
-		firstignite = false
-		if playerClass == "PALADIN" or playerClass == "PRIEST" then
-			self:WarningSign(icon.ignite, 0.7)
-		end
+	end
+	
+	
+	if doWarn == true then
+		--icon + sound if taking damage from ignite
+		self:WarningSign(icon.ignite, 0.7)
+		self:Sound("Info")
+	end
+	
+end
+
+function module:Service()
+	self:Bar(L["bar_service"], timer.service, icon.service, true, color.service)
+	self:Message(L["msg_service"], "Important", false, nil, false)
+	
+	self:CancelDelayedBar(L["bar_infernoCd"])
+	self:RemoveBar(L["bar_infernoCd"])
+	self:RemoveBar(L["bar_infernoChannel"])
+	self:RemoveBar(L["bar_igniteCd"])
+end
+
+function module:Ignite()
+	self:IntervalBar(L["bar_igniteCd"], timer.igniteCd[1], timer.igniteCd[2], icon.ignite, true, color.ignite)
+
+	if UnitClass("Player") == "Paladin" or UnitClass("Player") == "Priest" then
+		self:WarningSign(icon.ignite, 0.7)
+		self:Sound("Info")
+		self:Message(L["msg_ignite"], "Personal", false, nil, false)
 	end
 end
