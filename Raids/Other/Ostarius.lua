@@ -1,9 +1,9 @@
 
 local module, L = BigWigs:ModuleDeclaration("Ostarius", "Tanaris")
 
-module.revision = 30045
+module.revision = 30046
 module.enabletrigger = module.translatedName
-module.toggleoptions = {"conflagbar", "conflagyou", -1, "blizzard", "rainoffire", "sonicburst", -1, "activation", "bosskill"}
+module.toggleoptions = {"conflagbar", "conflagyou", -1, "blizzard", "rainoffire", "sonicburst", -1, "traps", "eq", -1, "activation", -1, "phase", "bosskill"}
 module.zonename = {
 	AceLibrary("AceLocale-2.2"):new("BigWigs")["Outdoor Raid Bosses Zone"],
 	AceLibrary("Babble-Zone-2.2")["Tanaris"],
@@ -36,6 +36,18 @@ L:RegisterTranslations("enUS", function() return {
 	activation_name = "Activation timer",
 	activation_desc = "Timer for boss' activation",
 	
+	phase_cmd = "phase",
+	phase_name = "Phase Alert",
+	phase_desc = "Warn for phase changes",
+
+	traps_cmd = "traps",
+	traps_name = "Traps Alert",
+	traps_desc = "Warn for traps phase start/end",
+
+	eq_cmd = "eq",
+	eq_name = "Earthquake Alert",
+	eq_desc = "Warn for Earthquake",
+	
 		--using self only because affects many people within the same second
 	trigger_conflagYou = "You are afflicted by Conflagration.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 	say_conflagYou = "CONFLAG ON ME! RUN AWAY!",
@@ -45,10 +57,14 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_conflagHitYou = "'s Conflagration hits you for", --CHAT_MSG_SPELL_SELF_DAMAGE
 	msg_conflagHitYou = "Move away from Conflagration!",
 	
+	trigger_blizzardPhase = "Elusive... Then face the might of the frost!", --CHAT_MSG_MONSTER_YELL
+	msg_blizzardPhase = "No longer casting Rain of Fire - Now casting Blizzard!",
 	trigger_blizzardYou = "You are afflicted by Blizzard.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 	msg_blizzardYou = "Move away from Blizzard!",
 	trigger_blizzardYouFade = "Blizzard fades from you.", --CHAT_MSG_SPELL_AURA_GONE_SELF
 	
+	trigger_rainOfFirePhase = "Fire will burn your corruption!", --CHAT_MSG_MONSTER_YELL
+	msg_rainOfFirePhase = "Now casting Rain of Fire!",
 	trigger_rainOfFireYou = "You are afflicted by Rain of Fire.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 	msg_rainOfFireYou = "Move away from Rain of Fire!",
 	trigger_rainOfFireYouFade = "Rain of Fire fades from you.", --CHAT_MSG_SPELL_AURA_GONE_SELF
@@ -78,18 +94,40 @@ L:RegisterTranslations("enUS", function() return {
 	
 	trigger_engage = "Ostarius gains Defensive Storm.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
 	
-	trigger_aaaaa = "Ostarius reactivates all defenses out of desperation!", --CHAT_MSG_RAID_BOSS_EMOTE
 	
-		--starts doing earthquake, 1st as he yells, removes Defensive Storm
-		--starts doing Chain Lightning too?
-	trigger_bbbbb = "Still you persist, servants of the old ones? Very well.", --CHAT_MSG_MONSTER_YELL
+	--unused
+		--p1 only, from adds, blue beam, stunnable, may cause clutter if warning this + conflag
+	trigger_mortalityScan = "You are afflicted by Mortality Scan.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_mortalityScanFade = "Mortality Scan fades from you.", --CHAT_MSG_SPELL_AURA_GONE_SELF
+	
+	--unused
+		--p2 only, from traps and pillars, better to stand in this than other ability, so may not want to warn about
+	trigger_frostBreath = "You are afflicted by Frost Breath.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_frostBreathFade = "Frost Breath fades from you.", --CHAT_MSG_SPELL_AURA_GONE_SELF
+
+	--p3 only, 30-28%, 20-18%, 10-8%
+	trigger_earthquake = "'s Earthquake", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	msg_earthquakeSoon = "Earthquake soon! Melee out!",
+	msg_earthquakeDone = "Earthquake done! Melee in!",
+	
+	--is there a yell for all phases?
+	--is p2 or p3 the slow part?
+	msg_phase2 = "Phase 2 - AoEs",
+	msg_phase3 = "Phase 3 -- No longer casting Blizzard -- Go S L O W...",
+	msg_phase4 = "Phase 4 - Kill the boss!",
+	msg_traps = "Activating Traps! Disarm on sight!",
+	msg_trapsFade = "Traps phase ended!",
+		
+	trigger_p3 = "Still you persist, servants of the old ones? Very well.", --CHAT_MSG_MONSTER_YELL
+	trigger_p4 = "NO! I will not fail again!", --CHAT_MSG_MONSTER_YELL
 	
 	--[[
 	Frost Breath?
-	Stomp?
-	Earthquake? starts happenning after a yell. Melee only?
-	Harsh Winds?
 	Mortality Scan, 11sec, channel, casted by Ostarius or not? Overlaps many. Kickable?
+	
+	Stomp?
+	Harsh Winds?
+	
 	Chain Lightning, interruptible? Happenned 3x, at 15sec interval
 	The yells?
 	Gate Construct, there is 8, do they spawn at the same time?
@@ -105,6 +143,7 @@ local timer = {
 	
 	conflag = 10,
 	
+	--unused atm
 	frostBreath = 99,
 	stomp = 99,
 	earthquake = 99,
@@ -119,17 +158,21 @@ local icon = {
 	rainOfFire = "spell_shadow_rainoffire",
 	sonicBurst = "spell_shadow_teleport",
 	
+	traps = "spell_shadow_grimward",
+	earthquake = "spell_nature_earthquake",
+	mortalityScan = "ability_thunderbolt",
+	
+	--unused atm
 	frostBreath = "spell_frost_frostnova",
 	stomp = "ability_warstomp",
-	earthquake = "spell_nature_earthquake",
 	harshWinds = "spell_nature_earthbind",
-	mortalityScan = "ability_thunderbolt",
 	chainLightning = "spell_nature_chainlightning",
 }
 local color = {
 	activeX = "White",
 	conflag = "Red",
 	
+	--unused atm
 	frostBreath = "Blue",
 	stomp = "Yellow",
 	earthquake = "Cyan",
@@ -147,21 +190,49 @@ local syncName = {
 	
 	conflag = "OstariusConflag"..module.revision,
 	conflagFade = "OstariusConflagFade"..module.revision,
+	
+	phase2 = "OstariusPhase2"..module.revision,
+	phase3 = "OstariusPhase3"..module.revision,
+	phase4 = "OstariusPhase4"..module.revision,
+	
+	traps = "OstariusTraps"..module.revision,
+	trapsFade = "OstariusTrapsFade"..module.revision,
+	
+	eq30 = "OstariusEq30"..module.revision,
+	eq20 = "OstariusEq20"..module.revision,
+	eq10 = "OstariusEq10"..module.revision,
+	eq = "OstariusEq"..module.revision,
+	
+	rainOfFirePhase = "OstariusRainOfFirePhase"..module.revision,
+	blizzardPhase = "OstariusBlizzardPhase"..module.revision,
 }
+
+local phase = 1
+local traps = nil
+local eq30 = nil
+local eq20 = nil
+local eq10 = nil
 
 function module:OnEnable()
 	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
 	
-	self:RegisterEvent("CHAT_MSG_MONSTER_YELL") --trigger_active6, trigger_bbbbb
-	self:RegisterEvent("CHAT_MSG_RAID_BOSS_EMOTE") --trigger_aaaaa
+	self:RegisterEvent("CHAT_MSG_MONSTER_YELL") --trigger_active33, trigger_active27, trigger_active17, trigger_active13, trigger_active6, trigger_activeNow, trigger_p3, trigger_p4, trigger_blizzardPhase, trigger_rainOfFirePhase
+	
+	self:RegisterEvent("UNIT_HEALTH")
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event") --trigger_earthquake
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event") --trigger_earthquake
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event") --trigger_earthquake
+	
+	
 	
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event") --trigger_engage
 	
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event") --trigger_conflagYou, trigger_blizzardYou, trigger_rainOfFireYou, trigger_sonicBurstYou
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event") --trigger_conflagYou, trigger_blizzardYou, trigger_rainOfFireYou, trigger_sonicBurstYou, trigger_mortalityScan, trigger_frostBreath
 	
 	self:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE", "Event") --trigger_conflagHitYou
 	
-	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event") --trigger_conflagYouFade, trigger_blizzardYouFade, trigger_rainOfFireYouFade
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event") --trigger_conflagYouFade, trigger_blizzardYouFade, trigger_rainOfFireYouFade, trigger_mortalityScanFade, trigger_frostBreathFade
 		
 	
 	self:ThrottleSync(3, syncName.active33)
@@ -174,9 +245,20 @@ function module:OnEnable()
 	self:ThrottleSync(0, syncName.conflag)
 	self:ThrottleSync(0, syncName.conflagFade)
 	
-	self:ThrottleSync(3, syncName.aaaaa)
-	self:ThrottleSync(3, syncName.bbbbb)
+	self:ThrottleSync(10, syncName.phase2)
+	self:ThrottleSync(10, syncName.phase3)
+	self:ThrottleSync(10, syncName.phase4)
 	
+	self:ThrottleSync(10, syncName.traps)
+	self:ThrottleSync(10, syncName.trapsFade)
+	
+	self:ThrottleSync(10, syncName.eq30)
+	self:ThrottleSync(10, syncName.eq20)
+	self:ThrottleSync(10, syncName.eq10)
+	self:ThrottleSync(10, syncName.eq)
+	
+	self:ThrottleSync(10, syncName.blizzardPhase)
+	self:ThrottleSync(10, syncName.rainOfFirePhase)	
 end
 
 function module:OnSetup()
@@ -203,12 +285,45 @@ function module:CHAT_MSG_MONSTER_YELL(msg, sender)
 		self:Sync(syncName.active6)
 	elseif msg == L["trigger_activeNow"] then
 		self:Sync(syncName.activeNow)
-	elseif msg == L["trigger_bbbbb"] then
-		self:Sync(syncName.bbbbb)
+	
+	elseif msg == L["trigger_p3"] then
+		self:Sync(syncName.phase3)
+	elseif msg == L["trigger_p4"] then
+		self:Sync(syncName.phase4)
+		
+	elseif msg == L["trigger_blizzardPhase"] then
+		self:Sync(syncName.blizzardPhase)
+	elseif msg == L["trigger_rainOfFirePhase"] then
+		self:Sync(syncName.rainOfFirePhase)
 	end
 end
 
-function module:CHAT_MSG_RAID_BOSS_EMOTE(msg, sender)
+function module:UNIT_HEALTH(msg)
+	if UnitName(msg) == boss then
+		local health = UnitHealth(msg)
+		if health >= 71 and phase ~= 1 then
+			phase = 1
+			if traps ~= nil then
+				traps = nil
+			end
+		elseif phase == 1 and health <= 70 and health >= 31 then
+			self:Sync(syncName.phase2)
+		elseif traps == nil and health <= 50 and health >= 31 then
+			self:Sync(syncName.traps)
+		elseif eq30 == nil and health <=32 then
+			self:Sync(syncName.eq30)
+		--elseif phase == 2 and health <= 30 then
+		--	self:Sync(syncName.phase3)
+		elseif traps == true and health <= 30 then
+			self:Sync(syncName.trapsFade)
+		elseif eq20 == nil and health <=22 then
+			self:Sync(syncName.eq20)
+		--elseif phase == 3 and health <=15 then
+		--	self:Sync(syncName.phase4)
+		elseif eq10 == nil and health <=12 then
+			self:Sync(syncName.eq10)
+		end
+	end
 end
 
 function module:Event(msg)
@@ -253,6 +368,9 @@ function module:Event(msg)
 			self:Message(L["msg_sonicBurstYou"], "Urgent", false, nil, false)
 			self:WarningSign(icon.sonicBurst, 1)
 		end
+		
+	elseif string.find(msg, L["trigger_earthquake"]) then
+		self:Sync(syncName.eq)
 	end
 end
 
@@ -275,6 +393,32 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		self:Conflag(rest)
 	elseif sync == syncName.conflagFade and rest and self.db.profile.conflagbar then
 		self:ConflagFade(rest)
+		
+	elseif sync == syncName.phase2 and self.db.profile.phase then
+		self:Phase2()
+	elseif sync == syncName.phase3 and self.db.profile.phase then
+		self:Phase3()
+	elseif sync == syncName.phase4 and self.db.profile.phase then
+		self:Phase4()
+	
+	elseif sync == syncName.blizzardPhase and self.db.profile.phase then
+		self:BlizzardPhase()
+	elseif sync == syncName.rainOfFirePhase and self.db.profile.phase then
+		self:RainOfFirePhase()
+	
+	elseif sync == syncName.traps and self.db.profile.traps then
+		self:Traps()
+	elseif sync == syncName.trapsFade then
+		self:TrapsFade()
+	
+	elseif sync == syncName.eq30 then
+		self:EQ30()
+	elseif sync == syncName.eq20 then
+		self:EQ20()
+	elseif sync == syncName.eq10 then
+		self:EQ10()
+	elseif sync == syncName.eq then
+		self:EQ()
 	end
 end
 
@@ -326,4 +470,89 @@ end
 
 function module:ConflagFade(rest)
 	self:RemoveBar(rest..L["bar_conflag"])
+end
+
+function module:Phase2()
+	phase = 2
+	self:Message(L["msg_phase2"], "Important", false, nil, false)
+end
+
+function module:Phase3()
+	phase = 3
+	self:Message(L["msg_phase3"], "Important", false, nil, false)
+end
+
+function module:Phase4()
+	phase = 4
+	self:Message(L["msg_phase4"], "Important", false, nil, false)
+end
+
+function module:RainOfFirePhase()
+	self:Message(L["msg_rainOfFirePhase"], "Important", false, nil, false)
+end
+
+function module:BlizzardPhase()
+	self:Message(L["msg_blizzardPhase"], "Important", false, nil, false)
+end
+
+
+function module:Traps()
+	if traps == nil and UnitClass("Player") == "Rogue" and self.db.profile.traps then
+		self:Message(L["msg_traps"], "Personal", false, nil, false)
+		self:Sound("Beware")
+		self:WarningSign(icon.traps, 1)
+	end
+	traps = true
+end
+
+function module:TrapsFade()
+	if traps == true and UnitClass("Player") == "Rogue" and self.db.profile.traps then
+		self:Message(L["msg_trapsFade"], "Personal", false, nil, false)
+		self:Sound("Beware")
+		self:WarningSign(icon.traps, 1)
+	end
+	traps = nil
+end
+
+function module:EQ30()
+	if self.db.profile.eq then
+		if UnitClass("Player") == "Warrior" or UnitClass("Player") == "Rogue" or UnitClass("Player") == "Shaman" or UnitClass("Player") == "Druid" or UnitClass("Player") == "Paladin" then
+			self:Message(L["msg_earthquakeSoon"], "Urgent", false, nil, false)
+			self:Sound("RunAway")
+			self:WarningSign(icon.earthquake, 1)
+		end
+	end
+	eq30 = true
+end
+
+function module:EQ20()
+	if self.db.profile.eq then
+		if UnitClass("Player") == "Warrior" or UnitClass("Player") == "Rogue" or UnitClass("Player") == "Shaman" or UnitClass("Player") == "Druid" or UnitClass("Player") == "Paladin" then
+			self:Message(L["msg_earthquakeSoon"], "Urgent", false, nil, false)
+			self:Sound("RunAway")
+			self:WarningSign(icon.earthquake, 1)
+		end
+	end
+	eq20 = true
+end
+
+function module:EQ10()
+	if self.db.profile.eq then
+		if UnitClass("Player") == "Warrior" or UnitClass("Player") == "Rogue" or UnitClass("Player") == "Shaman" or UnitClass("Player") == "Druid" or UnitClass("Player") == "Paladin" then
+			self:Message(L["msg_earthquakeSoon"], "Urgent", false, nil, false)
+			self:Sound("RunAway")
+			self:WarningSign(icon.earthquake, 1)
+		end
+	end
+	eq10 = true
+end
+
+function module:EQ()
+	if self.db.profile.eq then
+		if UnitClass("Player") == "Warrior" or UnitClass("Player") == "Rogue" or UnitClass("Player") == "Shaman" or UnitClass("Player") == "Druid" or UnitClass("Player") == "Paladin" then
+			self:Message(L["msg_earthquakeDone"], "Positive", false, nil, false)			
+			self:WarningSign(icon.earthquake, 1)
+			self:Sound("Info")
+		end
+	end
 end

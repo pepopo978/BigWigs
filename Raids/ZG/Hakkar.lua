@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Hakkar", "Zul'Gurub")
 
-module.revision = 30027
+module.revision = 30046
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"mc", "siphon", "enrage", -1, "aspectjeklik", "aspectvenoxis", "aspectmarli", "aspectthekal", "aspectarlokk", "bosskill"}
 
@@ -50,6 +50,7 @@ L:RegisterTranslations("enUS", function() return {
 	
 	mindcontrolyou_trigger = "You are afflicted by Cause Insanity.",
 	mindcontrolother_trigger = "(.+) is afflicted by Cause Insanity.",
+	trigger_mindcontrolTotem = "Hakkar's Cause Insanity fails. Grounding Totem is immune.",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE
 	mindcontrol_message = "%s is mindcontrolled!",
 	mindcontrol_message_you = "You are mindcontrolled!",
 	mindcontrol_bar = "MC: %s",
@@ -306,7 +307,7 @@ local syncName = {
 module:RegisterYellEngage(L["engage_trigger"])
 
 function module:OnEnable()
-	self:RegisterEvent("CHAT_MSG_SAY", "Event")--debug
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--debug
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")
@@ -364,6 +365,9 @@ function module:Event(msg)
 		self:Sync(syncName.mindcontrol .. " "..mindcontrolother)
 	elseif msg == L["mindcontrolyou_trigger"] then
 		self:Sync(syncName.mindcontrol .. " "..UnitName("player"))
+	elseif msg == L["trigger_mindcontrolTotem"] then
+		self:Sync(syncName.mindcontrol .. " ".."Grounded!")
+	
 	
 	elseif msg == L["siphon_trigger"] then
 		self:Sync(syncName.bloodSiphon)
@@ -459,11 +463,16 @@ end
 function module:MindControl(rest)
 	self:DelayedBar(10, L["nextmc_bar"], 11, icon.mindcontrol, true, "Black")
 	self:Bar(string.format(L["mindcontrol_bar"], rest), 10, icon.mindcontrol, true, "White")
-	self:Message(string.format(L["mindcontrol_message"], rest), "Attention")
+	
+	if rest ~= "Grounded!" then
+		self:Message(string.format(L["mindcontrol_message"], rest), "Attention")
 		
-	for i=1,GetNumRaidMembers() do
-		if UnitName("raid"..i) == rest then
-			SetRaidTarget("raid"..i, 4)
+		if (IsRaidLeader() or IsRaidOfficer()) then
+			for i=1,GetNumRaidMembers() do
+				if UnitName("raid"..i) == rest then
+					SetRaidTarget("raid"..i, 4)
+				end
+			end
 		end
 	end
 end
