@@ -1,9 +1,9 @@
 
 local module, L = BigWigs:ModuleDeclaration("Ostarius", "Tanaris")
 
-module.revision = 30046
+module.revision = 30047
 module.enabletrigger = module.translatedName
-module.toggleoptions = {"conflagbar", "conflagyou", -1, "blizzard", "rainoffire", "sonicburst", -1, "traps", "eq", -1, "activation", -1, "phase", "bosskill"}
+module.toggleoptions = {"conflagbar", "conflagyou", -1, "chainlightning", -1, "blizzard", "rainoffire", "sonicburst", -1, "traps", "eq", "stomp", -1, "activation", -1, "phase", "portals", "bosskill"}
 module.zonename = {
 	AceLibrary("AceLocale-2.2"):new("BigWigs")["Outdoor Raid Bosses Zone"],
 	AceLibrary("Babble-Zone-2.2")["Tanaris"],
@@ -19,6 +19,10 @@ L:RegisterTranslations("enUS", function() return {
 	conflagyou_cmd = "conflagyou",
 	conflagyou_name = "Conflagration Damage Alert",
 	conflagyou_desc = "Warn for Conflagration Damage",
+	
+	chainlightning_cmd = "chainlightning",
+	chainlightning_name = "Chain Lightning Alert",
+	chainlightning_desc = "Warn for Chain Lightning",
 	
 	blizzard_cmd = "blizzard",
 	blizzard_name = "Blizzard Alert",
@@ -39,7 +43,11 @@ L:RegisterTranslations("enUS", function() return {
 	phase_cmd = "phase",
 	phase_name = "Phase Alert",
 	phase_desc = "Warn for phase changes",
-
+	
+	portals_cmd = "portals",
+	portals_name = "Portals Alert",
+	portals_desc = "Warn for Portals",
+	
 	traps_cmd = "traps",
 	traps_name = "Traps Alert",
 	traps_desc = "Warn for traps phase start/end",
@@ -47,6 +55,10 @@ L:RegisterTranslations("enUS", function() return {
 	eq_cmd = "eq",
 	eq_name = "Earthquake Alert",
 	eq_desc = "Warn for Earthquake",
+	
+	stomp_cmd = "stomp",
+	stomp_name = "Stomp on tank Alert",
+	stomp_desc = "Warn for Stomp on tank",
 	
 		--using self only because affects many people within the same second
 	trigger_conflagYou = "You are afflicted by Conflagration.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
@@ -57,6 +69,9 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_conflagHitYou = "'s Conflagration hits you for", --CHAT_MSG_SPELL_SELF_DAMAGE
 	msg_conflagHitYou = "Move away from Conflagration!",
 	
+	trigger_chainLightning = "Ostarius's Chain Lightning",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_chainLightning = "Next Chain Lightning",
+	
 	trigger_blizzardPhase = "Elusive... Then face the might of the frost!", --CHAT_MSG_MONSTER_YELL
 	msg_blizzardPhase = "No longer casting Rain of Fire - Now casting Blizzard!",
 	trigger_blizzardYou = "You are afflicted by Blizzard.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
@@ -64,7 +79,7 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_blizzardYouFade = "Blizzard fades from you.", --CHAT_MSG_SPELL_AURA_GONE_SELF
 	
 	trigger_rainOfFirePhase = "Fire will burn your corruption!", --CHAT_MSG_MONSTER_YELL
-	msg_rainOfFirePhase = "Now casting Rain of Fire!",
+	msg_rainOfFirePhase = "Now casting Rain of Fire! - No more Portals!",
 	trigger_rainOfFireYou = "You are afflicted by Rain of Fire.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 	msg_rainOfFireYou = "Move away from Rain of Fire!",
 	trigger_rainOfFireYouFade = "Rain of Fire fades from you.", --CHAT_MSG_SPELL_AURA_GONE_SELF
@@ -92,6 +107,9 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_activeNow = "Guardians, awaken and smite these intruders!", --CHAT_MSG_MONSTER_YELL
 	msg_activeNow = "Ostarius Active!",
 	
+	bar_portals = "Next Portals",
+	msg_portals = "Portals!",
+	
 	trigger_engage = "Ostarius gains Defensive Storm.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
 	
 	
@@ -109,6 +127,11 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_earthquake = "'s Earthquake", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 	msg_earthquakeSoon = "Earthquake soon! Melee out!",
 	msg_earthquakeDone = "Earthquake done! Melee in!",
+	
+	trigger_stomp = "(.+) is afflicted by Stomp.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_stompYou = "You are afflicted by Stomp.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_stompFade = "Stomp fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_stomp = " Stomped",
 	
 	--is there a yell for all phases?
 	--is p2 or p3 the slow part?
@@ -141,18 +164,24 @@ local timer = {
 	active13 = 13,
 	active6 = 6,
 	
+	portals = 40,
+	
 	conflag = 10,
+	
+	chainLightning = 15,
+	
+	stomp = 12,
 	
 	--unused atm
 	frostBreath = 99,
-	stomp = 99,
 	earthquake = 99,
 	harshWinds = 99,
 	mortalityScan = 11,
-	chainLightning = 99,
 }
 local icon = {
 	activeX = "inv_misc_pocketwatch_01",
+	portals = "spell_arcane_portaldarnassus",
+	
 	conflag = "spell_fire_incinerate",
 	blizzard = "spell_frost_icestorm",
 	rainOfFire = "spell_shadow_rainoffire",
@@ -162,23 +191,27 @@ local icon = {
 	earthquake = "spell_nature_earthquake",
 	mortalityScan = "ability_thunderbolt",
 	
+	chainLightning = "spell_nature_chainlightning",
+	stomp = "ability_warstomp",
+	
 	--unused atm
 	frostBreath = "spell_frost_frostnova",
-	stomp = "ability_warstomp",
 	harshWinds = "spell_nature_earthbind",
 	chainLightning = "spell_nature_chainlightning",
 }
 local color = {
 	activeX = "White",
+	portals = "Cyan",
+	
 	conflag = "Red",
+	chainLightning = "Blue",
+	stomp = "Yellow",
 	
 	--unused atm
 	frostBreath = "Blue",
-	stomp = "Yellow",
 	earthquake = "Cyan",
 	harshWinds = "Green",
 	mortalityScan = "Black",
-	chainLightning = "Orange",
 }
 local syncName = {
 	active33 = "OstariusActive33"..module.revision,
@@ -188,8 +221,12 @@ local syncName = {
 	active6 = "OstariusActive6"..module.revision,
 	activeNow = "OstariusActiveNow"..module.revision,
 	
+	portals = "OstariusPortals"..module.revision,
+	
 	conflag = "OstariusConflag"..module.revision,
 	conflagFade = "OstariusConflagFade"..module.revision,
+	
+	chainLightning = "OstariusChainLightning"..module.revision,
 	
 	phase2 = "OstariusPhase2"..module.revision,
 	phase3 = "OstariusPhase3"..module.revision,
@@ -202,6 +239,8 @@ local syncName = {
 	eq20 = "OstariusEq20"..module.revision,
 	eq10 = "OstariusEq10"..module.revision,
 	eq = "OstariusEq"..module.revision,
+	stomp = "OstariusStomp"..module.revision,
+	stompFade = "OstariusStompFade"..module.revision,
 	
 	rainOfFirePhase = "OstariusRainOfFirePhase"..module.revision,
 	blizzardPhase = "OstariusBlizzardPhase"..module.revision,
@@ -220,20 +259,22 @@ function module:OnEnable()
 	
 	self:RegisterEvent("UNIT_HEALTH")
 	
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event") --trigger_earthquake
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event") --trigger_earthquake
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event") --trigger_earthquake
-	
-	
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event") --trigger_earthquake, trigger_chainLightning
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event") --trigger_earthquake, trigger_chainLightning
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event") --trigger_earthquake, trigger_chainLightning
 	
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event") --trigger_engage
 	
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event") --trigger_conflagYou, trigger_blizzardYou, trigger_rainOfFireYou, trigger_sonicBurstYou, trigger_mortalityScan, trigger_frostBreath
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event") --trigger_conflagYou, trigger_blizzardYou, trigger_rainOfFireYou, trigger_sonicBurstYou, trigger_mortalityScan, trigger_frostBreath, trigger_stomp
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event") --trigger_stomp
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event") --trigger_stomp
 	
 	self:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE", "Event") --trigger_conflagHitYou
 	
-	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event") --trigger_conflagYouFade, trigger_blizzardYouFade, trigger_rainOfFireYouFade, trigger_mortalityScanFade, trigger_frostBreathFade
-		
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event") --trigger_conflagYouFade, trigger_blizzardYouFade, trigger_rainOfFireYouFade, trigger_mortalityScanFade, trigger_frostBreathFade, trigger_stompFade
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event") --trigger_stompFade
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event") --trigger_stompFade
+	
 	
 	self:ThrottleSync(3, syncName.active33)
 	self:ThrottleSync(3, syncName.active27)
@@ -242,8 +283,12 @@ function module:OnEnable()
 	self:ThrottleSync(3, syncName.active6)
 	self:ThrottleSync(3, syncName.activeNow)
 	
+	self:ThrottleSync(10, syncName.portals)
+	
 	self:ThrottleSync(0, syncName.conflag)
 	self:ThrottleSync(0, syncName.conflagFade)
+	
+	self:ThrottleSync(5, syncName.chainLightning)
 	
 	self:ThrottleSync(10, syncName.phase2)
 	self:ThrottleSync(10, syncName.phase3)
@@ -256,17 +301,18 @@ function module:OnEnable()
 	self:ThrottleSync(10, syncName.eq20)
 	self:ThrottleSync(10, syncName.eq10)
 	self:ThrottleSync(10, syncName.eq)
+	self:ThrottleSync(5, syncName.stomp)
+	self:ThrottleSync(5, syncName.stompFade)
 	
 	self:ThrottleSync(10, syncName.blizzardPhase)
-	self:ThrottleSync(10, syncName.rainOfFirePhase)	
+	self:ThrottleSync(10, syncName.rainOfFirePhase)
 end
 
 function module:OnSetup()
 	self.started = nil
 end
 
-function module:OnEngage()
-	self:RemoveBar(L["bar_activeX"])
+function module:OnEngage()	
 end
 
 function module:OnDisengage()
@@ -343,6 +389,32 @@ function module:Event(msg)
 		self:Message(L["msg_conflagHitYou"], "Urgent", false, nil, false)
 		self:WarningSign(icon.conflag, 0.7)
 		self:Sound("Info")
+	
+	
+	elseif string.find(msg, L["trigger_chainLightning"]) then
+		self:Sync(syncName.chainLightning)
+		
+	
+	elseif string.find(msg, L["trigger_stomp"]) then
+		local _, _, stompPlayer, _ = string.find(msg, L["trigger_stomp"])
+		if UnitName("Target") ~= nil and UnitName("TargetTarget") ~= nil then
+			if UnitName("Target") == "Ostarius" and UnitName("TargetTarget") == stompPlayer then
+				self:Sync(syncName.stomp .. " " .. stompPlayer)
+			end
+		end
+		
+	elseif string.find(msg, L["trigger_stompYou"]) then
+		if UnitName("Target") ~= nil and UnitName("TargetTarget") ~= nil then
+			if UnitName("Target") == "Ostarius" and UnitName("TargetTarget") == UnitName("Player") then
+				self:Sync(syncName.stomp .. " " .. UnitName("Player"))
+			end
+		end
+		
+	elseif string.find(msg, L["trigger_stompFade"]) then
+		local _, _, stompFadePlayer, _ = string.find(msg, L["trigger_stompFade"])
+		if stompFadePlayer == "you" then stompFadePlayer = UnitName("Player") end
+		self:Sync(syncName.stompFade .. " " .. stompFadePlayer)
+		
 		
 		
 	elseif msg == L["trigger_blizzardYou"] and self.db.profile.blizzard then
@@ -389,10 +461,16 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 	elseif sync == syncName.activeNow and self.db.profile.activation then
 		self:ActiveNow()
 	
+	elseif sync == syncName.portals and self.db.profile.portals then
+		self:Portals()
+	
 	elseif sync == syncName.conflag and rest and self.db.profile.conflagbar then
 		self:Conflag(rest)
 	elseif sync == syncName.conflagFade and rest and self.db.profile.conflagbar then
 		self:ConflagFade(rest)
+		
+	elseif sync == syncName.chainLightning and self.db.profile.chainlightning then
+		self:ChainLightning()
 		
 	elseif sync == syncName.phase2 and self.db.profile.phase then
 		self:Phase2()
@@ -419,6 +497,11 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		self:EQ10()
 	elseif sync == syncName.eq then
 		self:EQ()
+		
+	elseif sync == syncName.stomp and rest and self.db.profile.stomp then
+		self:Stomp(rest)
+	elseif sync == syncName.stompFade and rest and self.db.profile.stomp then
+		self:StompFade(rest)
 	end
 end
 
@@ -462,6 +545,14 @@ function module:ActiveNow()
 	self:RemoveBar(L["bar_activeX"])
 	self:Message(L["msg_activeNow"], "Attention", false, nil, false)
 	self:Sound("Alarm")
+
+	self:Sync(syncName.portals)
+end
+
+function module:Portals()
+	self:Message(L["msg_portals"], "Urgent", false, nil, false)
+	self:Bar(L["bar_portals"], timer.portals, icon.portals, true, color.portals)
+	self:DelayedSync(timer.portals, syncName.portals)
 end
 
 function module:Conflag(rest)
@@ -472,6 +563,11 @@ function module:ConflagFade(rest)
 	self:RemoveBar(rest..L["bar_conflag"])
 end
 
+function module:ChainLightning()
+	self:RemoveBar(L["bar_chainLightning"])
+	self:Bar(L["bar_chainLightning"], timer.chainLightning, icon.chainLightning, true, color.chainLightning)
+end
+
 function module:Phase2()
 	phase = 2
 	self:Message(L["msg_phase2"], "Important", false, nil, false)
@@ -480,6 +576,10 @@ end
 function module:Phase3()
 	phase = 3
 	self:Message(L["msg_phase3"], "Important", false, nil, false)
+	
+	if self.db.profile.chainlightning then
+		self:ChainLightning()
+	end
 end
 
 function module:Phase4()
@@ -488,6 +588,9 @@ function module:Phase4()
 end
 
 function module:RainOfFirePhase()
+	self:RemoveBar(L["bar_portals"])
+	self:CancelDelayedSync(syncName.portals)
+	
 	self:Message(L["msg_rainOfFirePhase"], "Important", false, nil, false)
 end
 
@@ -555,4 +658,12 @@ function module:EQ()
 			self:Sound("Info")
 		end
 	end
+end
+
+function module:Stomp(rest)
+	self:Bar(rest..L["bar_stomp"], timer.stomp, icon.stomp, true, color.stomp)
+end
+
+function module:StompFade(rest)
+	self:RemoveBar(rest..L["bar_stomp"])
 end

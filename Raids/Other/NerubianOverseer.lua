@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Nerubian Overseer", "Eastern Plaguelands")
 
-module.revision = 30043
+module.revision = 30047
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"shadowshock", "venomspit", "poisoncloud", "corrosivepoison", "necroticpoison", "webspray", "explode", "bosskill"}
 module.zonename = {
@@ -80,6 +80,7 @@ local timer = {
 	poisonCloud = 30,
 	corrosivePoison = 30,
 	necroticPoison = 30,
+	firstWebSprayCd = 19,
 	webSprayCd = 24,
 	webSprayAfflic = 10,
 }
@@ -156,8 +157,8 @@ function module:OnEngage()
 	end
 	
 	if self.db.profile.webspray then
-		self:Bar(L["bar_webSprayCd"], timer.webSprayCd, icon.webSprayCd, true, color.webSprayCd)
-		self:ScheduleRepeatingEvent("webSprayCdBar", self.WebSprayCdBar, timer.webSprayCd, self)
+		self:Bar(L["bar_webSprayCd"], timer.firstWebSprayCd, icon.webSprayCd, true, color.webSprayCd)
+		self:ScheduleRepeatingEvent("webSprayCdBar", self.WebSprayCdBar, timer.firstWebSprayCd, self)
 	end
 end
 
