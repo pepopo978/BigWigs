@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Dark Reaver of Karazhan", "Deadwind Pass")
 
-module.revision = 30042
+module.revision = 30048
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"forlornspirit", "lurkingshadow", -1, "enrage", -1, "deterrence", "nimblereflexes", -1, "unbalancingstrike", "piercearmor", "bosskill"}
 module.zonename = {
@@ -41,7 +41,7 @@ L:RegisterTranslations("enUS", function() return {
 	piercearmor_desc = "Warns for Pierce Armor",
 	
 	
-		--4 adds, 20sec from engage, 20sec each time
+		--4 adds, 22sec(from 20, 2024-02-19) from engage, 22sec(from 20, 2024-02-19) each time
 	trigger_forlornSpiritSpawn = "Spirits, rise, and drive back this rabble!",--CHAT_MSG_MONSTER_YELL
 	trigger_forlornSpiritSpawn2 = "Rise, spirits. Defend the Master's lands!",--CHAT_MSG_MONSTER_YELL
 	bar_forlornSpiritSpawnCd = "4 Forlorn Spirit",
@@ -82,7 +82,7 @@ L:RegisterTranslations("enUS", function() return {
 } end )
 
 local timer = {
-	forlornSpiritSpawnCd = 20,
+	forlornSpiritSpawnCd = 22,
 	lurkingShadowSpawn = 10,
 	deterrence = 10,
 	nimbleReflexes = 8,
@@ -122,7 +122,7 @@ local syncName = {
 
 function module:OnEnable()
 	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
-	
+
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL")--trigger_engage, trigger_addsSpawn
 	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")--trigger_lurkingShadowSpawn
 	
@@ -155,7 +155,7 @@ end
 
 function module:OnEngage()
 	if self.db.profile.forlornspirit then
-		self:ForlornSpiritSpawn()
+		self:Bar(L["bar_forlornSpiritSpawnCd"], timer.forlornSpiritSpawnCd, icon.forlornSpiritSpawnCd, true, color.forlornSpiritSpawnCd)
 	end
 end
 
@@ -258,7 +258,7 @@ end
 
 function module:LurkingShadowSpawn(rest)
 	self:Bar(rest.." "..L["bar_lurkingShadowSpawn"].." >Click Me!<", timer.lurkingShadowSpawn, icon.lurkingShadowSpawn, true, color.lurkingShadowSpawn)
-	self:SetCandyBarOnClick("BigWigsBar "..rest.." "..L["bar_lurkingShadowSpawn"].." >Click Me!<", function(name, button, extra) TargetByName(extra, true) end, rest)
+	self:SetCandyBarOnClick("BigWigsBar "..rest.." "..L["bar_lurkingShadowSpawn"].." >Click Me!<", function(name, button, extra) TargetByName(extra, true) end, "Lurking Shadow")
 	
 	self:Message(rest..L["msg_lurkingShadowSpawn"], "Attention", false, nil, false)
 	
