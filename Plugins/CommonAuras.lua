@@ -92,7 +92,7 @@ BigWigsCommonAuras.defaultDB = {
 	broadcast = false,
 }
 BigWigsCommonAuras.consoleCmd = L["commonauras"]
-BigWigsCommonAuras.revision = 30039
+BigWigsCommonAuras.revision = 30049
 BigWigsCommonAuras.external = true
 BigWigsCommonAuras.consoleOptions = {
 	type = "group",
@@ -453,13 +453,13 @@ function BigWigsCommonAuras:BigWigs_RecvSync( sync, rest, nick )
 		rest = BS:HasTranslation(rest) and BS:GetTranslation(rest) or rest
 		local _, _, zone = string.find(rest, L["portal_regexp"])
 		if zone then
-			if zone == "Orgrimmar" or zone == "Thunder Bluff" or zone == "Undercity" then
+			if zone == "Orgrimmar" or zone == "Thunder Bluff" or zone == "Undercity" or zone == "Stonard" then
 				portalColor = "Red"
 				portalText = "--HORDE-- portal to "
-			elseif zone == "Stormwind" or zone == "Ironforge" or zone == "Darnassus" then
+			elseif zone == "Stormwind" or zone == "Ironforge" or zone == "Darnassus" or zone == "Theramore" then
 				portalColor = "Blue"
 				portalText = "--ALLIANCE-- portal to "
-			elseif zone == "Karazhan" then
+			elseif zone == "Karazhan" or zone  then
 				portalColor = "Green"
 				portalText = "--NEUTRAL-- portal to "
 			end

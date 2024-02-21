@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Ostarius", "Tanaris")
 
-module.revision = 30047
+module.revision = 30049
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"conflagbar", "conflagyou", -1, "chainlightning", -1, "blizzard", "rainoffire", "sonicburst", -1, "traps", "eq", "stomp", -1, "activation", -1, "phase", "portals", "bosskill"}
 module.zonename = {
@@ -302,7 +302,7 @@ function module:OnEnable()
 	self:ThrottleSync(10, syncName.eq10)
 	self:ThrottleSync(10, syncName.eq)
 	self:ThrottleSync(5, syncName.stomp)
-	self:ThrottleSync(5, syncName.stompFade)
+	self:ThrottleSync(0, syncName.stompFade)
 	
 	self:ThrottleSync(10, syncName.blizzardPhase)
 	self:ThrottleSync(10, syncName.rainOfFirePhase)
