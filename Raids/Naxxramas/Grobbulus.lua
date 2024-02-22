@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Grobbulus", "Naxxramas")
 
-module.revision = 30027
+module.revision = 30050
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"slimespray", "inject", "cloud", "icon",  -1, "enrage", "bosskill"}
 
@@ -37,65 +37,16 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_slimeSpray = "Slime Spray",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 	bar_slimeSprayCD = "Slime Spray CD",
 	
-	trigger_inject = "(.*) is afflicted by Mutating Injection.",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+	trigger_inject = "(.+) is afflicted by Mutating Injection.",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
 	trigger_injectYou = "You are afflicted by Mutating Injection.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_injectFade = "Mutating Injection fades from (.+),",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 	bar_injected = " Injected",
-	msg_injectYou = "You are injected!",
 	msg_inject = " Injected",
-	
-	trigger_injectDispel = "(.*)'s Mutating Injection is removed.",--CHAT_MSG_SPELL_BREAK_AURA,"
-	trigger_injectDispelYou = "Your Mutating Injection is removed.",--to be confirmed
 	
 	trigger_cloudCast = "Grobbulus casts Poison Cloud.",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF
 	bar_cloudCD = "Poison Cloud CD",
 	msg_cloudCast = "Cloud -- Move Grobbulus!",
 	trigger_cloudHitsYou = "Grobbulus Cloud's Poison hits you",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
-	--trigger_cloudHitsOther = "Grobbulus Cloud's Poison hits (.+) for", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE
-} end )
-
-L:RegisterTranslations("esES", function() return {
-	--cmd = "Grobbulus",
-
-	--enrage_cmd = "enrage",
-	enrage_name = "Alerta de Enfurecer",
-	enrage_desc = "Avisa para Enfurecer",
-
-	--youinjected_cmd = "youinjected",
-	youinjected_name = "Alerta Personal de Inyección",
-	youinjected_desc = "Avisa cuando estés inyectado",
-
-	--otherinjected_cmd = "otherinjected",
-	otherinjected_name = "Alerta de Inyección",
-	otherinjected_desc = "Avisa cuando otros jugadores están inyectados",
-
-	--icon_cmd = "icon",
-	icon_name = "Marcar para Inyección",
-	icon_desc = "Marca con un icono el jugador inyectado. (Require asistente o líder)",
-
-	--cloud_cmd = "cloud",
-	cloud_name = "Nube de veneno",
-	cloud_desc = "Avisa para Nube de veneno",
-
-	inject_trigger = "^([^%s]+) ([^%s]+) sufre de Inyección mutante",
-
-	you = "Tu",
-	are = "estás",
-
-	startwarn = "¡Entrando en combate con Grobbulus, 12 minutos hasta Enfurecer!",
-	enragebar = "Enfurecer",
-	enrage10min = "Enfurecer en 10 minutos",
-	enrage5min = "Enfurecer en 5 minutos",
-	enrage1min = "Enfurecer en 1 minuto",
-	enrage30sec = "Enfurecer en 30 segundos",
-	enrage10sec = "Enfurecer en 10 segundos",
-	bomb_message_you = "¡Estás inyectado!",
-	bomb_message_other = "¡%s está inyectado!",
-	bomb_bar = "%s inyectado",
-
-	cloud_trigger = "Grobbulus lanza Nube de veneno.",
-	cloud_warn = "¡Próximo Nube de veneno en ~15 segundos!",
-	cloud_bar = "Nube de veneno",
-
 } end )
 
 local timer = {
@@ -110,12 +61,13 @@ local icon = {
 	slimeSpray = "INV_Misc_Slime_01",
 	inject = "Spell_Shadow_CallofBone",
 	cloud = "Ability_Creature_Disease_02",
+	cleanse = "spell_holy_renew",
 }
 local syncName = {
 	enrage = "GrobbulusEnrage"..module.revision,
 	slimeSpray = "GrobbulusSlimeSpray"..module.revision,
 	inject = "GrobbulusInject"..module.revision,
-	injectDispel = "GrobbulusInjectDispel"..module.revision,
+	injectFade = "GrobbulusInjectFade"..module.revision,
 	cloud = "GrobbulusCloud"..module.revision,
 }
 
@@ -123,7 +75,6 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")--inject
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")--inject
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")--inject
-	self:RegisterEvent("CHAT_MSG_SPELL_BREAK_AURA", "Event")--injectDispel
 	
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event")--slimeSpray, cloudHitsYou
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event")--slimeSpray
@@ -131,10 +82,14 @@ function module:OnEnable()
 	
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF", "Event")--cloudCast
 	
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event")--trigger_injectFade
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event")--trigger_injectFade
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event")--trigger_injectFade
+	
 	self:ThrottleSync(10, syncName.enrage)
 	self:ThrottleSync(10, syncName.slimeSpray)
 	self:ThrottleSync(3, syncName.inject)
-	self:ThrottleSync(1, syncName.injectDispel)
+	self:ThrottleSync(0, syncName.injectFade)
 	self:ThrottleSync(5, syncName.cloud)
 end
 
@@ -171,14 +126,16 @@ function module:Event(msg)
 		self:Sync(syncName.inject.." "..injectPerson)
 	elseif msg == L["trigger_injectYou"] then
 		self:Sync(syncName.inject.." "..UnitName("player"))
-	elseif string.find(msg, L["trigger_injectDispel"]) then
-		local _,_, injectDispelPerson, _ = string.find(msg, L["trigger_injectDispel"])
-		self:Sync(syncName.injectDispel.." "..injectDispelPerson)
-	elseif msg == L["trigger_injectDispelYou"] then
-		self:Sync(syncName.injectDispel.." "..UnitName("player"))
+	
+	elseif string.find(msg, L["trigger_injectFade"]) then
+		local _,_, injectFadePerson, _ = string.find(msg, L["trigger_injectFade"])
+		if injectFadePerson == "you" then injectFadePerson = UnitName("Player") end
+		self:Sync(syncName.injectFade.." "..injectFadePerson)
+
 	
 	elseif msg == L["trigger_cloudCast"] then
 		self:Sync(syncName.cloud)
+		
 	elseif string.find(msg, L["trigger_cloudHitsYou"]) then
 		self:WarningSign(icon.cloud, 0.7)
 		self:Sound("Info")
@@ -193,10 +150,10 @@ function module:BigWigs_RecvSync( sync, rest, nick )
 		self:Enrage()
 	elseif sync == syncName.slimeSpray and self.db.profile.slimespray then
 		self:SlimeSpray()
-	elseif sync == syncName.inject and self.db.profile.inject and rest then
+	elseif sync == syncName.inject and rest and self.db.profile.inject then
 		self:Inject(rest)
-	elseif sync == syncName.injectDispel and self.db.profile.inject and rest then
-		self:InjectDispel(rest)
+	elseif sync == syncName.injectFade and rest and self.db.profile.inject then
+		self:InjectFade(rest)
 	elseif sync == syncName.cloud and self.db.profile.cloud then
 		self:Cloud()
 	end
@@ -210,9 +167,9 @@ function module:Enrage()
 	self:CancelDelayedMessage(L["msg_enrage60"])
 	self:CancelDelayedMessage(L["msg_enrage10"])
 	
-	self:Message(L["msg_enrage"], "Important", nil, "RunAway")
 	self:WarningSign(icon.enrage, 0.7)
-	self:Sound("Info")
+	self:Message(L["msg_enrage"], "Important", false, nil, false)
+	self:Sound("RunAway")
 end
 
 function module:SlimeSpray()
@@ -221,31 +178,42 @@ function module:SlimeSpray()
 end
 
 function module:Inject(rest)
-	if rest == UnitName("player") then
-		SendChatMessage("Inject on "..UnitName("player").."!","SAY")
-		self:WarningSign(icon.inject, 0.7)
-		self:Message(L["msg_injectYou"], "Personal", true, "Beware")
-	else
-		self:Message(rest..L["msg_inject"], "Personal")
-		--if (IsRaidLeader() or IsRaidOfficer()) then
-		--	SendChatMessage("Inject on you!","WHISPER",nil,rest)
-		--end
-	end
 	self:Bar(rest..L["bar_injected"], timer.injectDuration, icon.inject, true, "Red")
-	if self.db.profile.icon then
+	self:Message(rest..L["msg_inject"], "Urgent", false, nil, false)
+	
+	if (IsRaidLeader() or IsRaidOfficer()) and self.db.profile.icon then
 		for i=1,GetNumRaidMembers() do
 			if UnitName("raid"..i) == rest then
 				SetRaidTarget("raid"..i, 8)
 			end
 		end
 	end
+	
+	if rest == UnitName("Player") then
+		SendChatMessage("Inject on "..UnitName("Player").."!","SAY")
+		self:Sound("Beware")
+		self:WarningSign(icon.inject, 3)
+	end
 end
 
-function module:InjectDispel(rest)
+function module:InjectFade(rest)
 	self:RemoveBar(rest..L["bar_injected"])
+	
+	if (IsRaidLeader() or IsRaidOfficer()) and self.db.profile.icon then
+		for i=1,GetNumRaidMembers() do
+			if UnitName("raid"..i) == rest then
+				SetRaidTarget("raid"..i, 0)
+			end
+		end
+	end
+	
+	if rest == UnitName("Player") then
+		self:WarningSign(icon.cleanse, 1)
+		self:Sound("Long")
+	end
 end
 
 function module:Cloud()
-	self:Message(L["msg_cloudCast"], "Urgent")
+	self:Message(L["msg_cloudCast"], "Important", false, nil, false)
 	self:Bar(L["bar_cloudCD"], timer.cloudCD, icon.cloud, true, "Blue")
 end
