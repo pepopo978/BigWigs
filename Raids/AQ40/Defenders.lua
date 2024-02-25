@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Anubisath Defender", "Ahn'Qiraj")
 
-module.revision = 30039
+module.revision = 30051
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"reflect", "plagueyou", "plagueother", "icon", "thunderclap", "shadowstorm", "meteor", -1, "explode", "enrage"}
 module.trashMod = true
@@ -195,7 +195,7 @@ function module:Event(msg)
 		self:Sync(syncName.sharef)		
 	end
 	
-	if string.find(msg, L["trigger_selfReflect"]) then
+	if string.find(msg, L["trigger_selfReflect"]) and not string.find(msg, "Elemental Vulnerability") then
 		self:SelfReflect()
 	end
 end

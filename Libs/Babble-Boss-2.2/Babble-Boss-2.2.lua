@@ -28,6 +28,7 @@ local BabbleBoss = AceLibrary("AceLocale-2.2"):new(MAJOR_VERSION)
 
 BabbleBoss:RegisterTranslations("enUS", function()
 	return {
+		["Doctor Weavil"] = true,
 		["Ostarius"] = true,
 		["Rotmaw"] = true,
 		["Antnormi"] = true,

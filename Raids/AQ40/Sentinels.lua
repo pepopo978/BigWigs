@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Anubisath Sentinel", "Ahn'Qiraj")
 
-module.revision = 30039
+module.revision = 30051
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"abilities"}
 module.trashMod = true
@@ -195,7 +195,7 @@ function module:CheckForBossDeath(msg)
 end
 
 function module:Abilities(msg)
-	if string.find(msg, L["trigger_selfReflect"]) then
+	if string.find(msg, L["trigger_selfReflect"]) and not string.find(msg, "Elemental Vulnerability") then
 		self:SelfReflect()
 	end
 	

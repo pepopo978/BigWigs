@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Dark Reaver of Karazhan", "Deadwind Pass")
 
-module.revision = 30048
+module.revision = 30051
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"forlornspirit", "lurkingshadow", -1, "enrage", -1, "deterrence", "nimblereflexes", -1, "unbalancingstrike", "piercearmor", "bosskill"}
 module.zonename = {
@@ -41,7 +41,7 @@ L:RegisterTranslations("enUS", function() return {
 	piercearmor_desc = "Warns for Pierce Armor",
 	
 	
-		--4 adds, 22sec(from 20, 2024-02-19) from engage, 22sec(from 20, 2024-02-19) each time
+		--4 adds, yells every 20secs, spawns 2sec * count later (1st = 2sec, 2nd = 4sec, 3rd = 6sec, 4th = 8sec... later)
 	trigger_forlornSpiritSpawn = "Spirits, rise, and drive back this rabble!",--CHAT_MSG_MONSTER_YELL
 	trigger_forlornSpiritSpawn2 = "Rise, spirits. Defend the Master's lands!",--CHAT_MSG_MONSTER_YELL
 	bar_forlornSpiritSpawnCd = "4 Forlorn Spirit",
@@ -82,7 +82,7 @@ L:RegisterTranslations("enUS", function() return {
 } end )
 
 local timer = {
-	forlornSpiritSpawnCd = 22,
+	--forlornSpiritSpawnCd = 22,
 	lurkingShadowSpawn = 10,
 	deterrence = 10,
 	nimbleReflexes = 8,
@@ -120,8 +120,10 @@ local syncName = {
 	pierceArmorFade = "DrkPierceArmorFade"..module.revision,
 }
 
+local forlornCount = 0
+
 function module:OnEnable()
-	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
+	self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
 
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL")--trigger_engage, trigger_addsSpawn
 	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")--trigger_lurkingShadowSpawn
@@ -155,7 +157,7 @@ end
 
 function module:OnEngage()
 	if self.db.profile.forlornspirit then
-		self:Bar(L["bar_forlornSpiritSpawnCd"], timer.forlornSpiritSpawnCd, icon.forlornSpiritSpawnCd, true, color.forlornSpiritSpawnCd)
+		self:Bar(L["bar_forlornSpiritSpawnCd"], 22, icon.forlornSpiritSpawnCd, true, color.forlornSpiritSpawnCd)
 	end
 end
 
@@ -178,6 +180,25 @@ function module:CHAT_MSG_MONSTER_EMOTE(msg, sender)
 end
 
 function module:Event(msg)
+	if msg == "test" then
+		module:SendEngageSync()
+	elseif msg == L["trigger_forlornSpiritSpawn"] or msg == L["trigger_forlornSpiritSpawn2"] then
+		self:Sync(syncName.forlornSpiritSpawn)
+	end
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	if msg == L["trigger_enrage"] then
 		self:Sync(syncName.enrage)
 	
@@ -251,9 +272,14 @@ end
 
 function module:ForlornSpiritSpawn()
 	self:RemoveBar(L["bar_forlornSpiritSpawnCd"])
-	self:Bar(L["bar_forlornSpiritSpawnCd"], timer.forlornSpiritSpawnCd, icon.forlornSpiritSpawnCd, true, color.forlornSpiritSpawnCd)
 	
-	self:Message(L["msg_forlornSpiritSpawn"], "Positive", false, nil, false)
+	forlornCount = forlornCount + 1
+	--on yell, 2 * forlornCount
+	self:Bar(L["bar_forlornSpiritSpawnCd"], 2 * forlornCount, icon.forlornSpiritSpawnCd, true, color.forlornSpiritSpawnCd)
+	
+	--2s delay & 22sec total, 4-24, 6-26, 8-28
+	self:DelayedBar(2 * forlornCount, L["bar_forlornSpiritSpawnCd"], 20, icon.forlornSpiritSpawnCd, true, color.forlornSpiritSpawnCd)
+	self:DelayedMessage(2 * forlornCount, L["msg_forlornSpiritSpawn"], "Positive", false, nil, false)
 end
 
 function module:LurkingShadowSpawn(rest)
