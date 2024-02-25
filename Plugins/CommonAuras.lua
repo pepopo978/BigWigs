@@ -92,7 +92,7 @@ BigWigsCommonAuras.defaultDB = {
 	broadcast = false,
 }
 BigWigsCommonAuras.consoleCmd = L["commonauras"]
-BigWigsCommonAuras.revision = 30051
+BigWigsCommonAuras.revision = 30052
 BigWigsCommonAuras.external = true
 BigWigsCommonAuras.consoleOptions = {
 	type = "group",
@@ -465,11 +465,11 @@ function BigWigsCommonAuras:BigWigs_RecvSync( sync, rest, nick )
 			end
 			self:TriggerEvent("BigWigs_Message", portalText..zone, "Attention", false, nil, false)
 			if zone == "Stonard" then
-				self:TriggerEvent("BigWigs_StartBar", self, rest, timer.portal, iconPrefix.."Spell_Arcane_PortalStonard", true, portalColor)
+				self:TriggerEvent("BigWigs_StartBar", self, rest, timer.portal, L["iconPrefix"].."Spell_Arcane_PortalStonard", true, portalColor)
 			elseif zone == "Theramore" then
-				self:TriggerEvent("BigWigs_StartBar", self, rest, timer.portal, iconPrefix.."Spell_Arcane_PortalTheramore", true, portalColor)
+				self:TriggerEvent("BigWigs_StartBar", self, rest, timer.portal, L["iconPrefix"].."Spell_Arcane_PortalTheramore", true, portalColor)
 			elseif zone == "Karazhan" then
-				self:TriggerEvent("BigWigs_StartBar", self, rest, timer.portal, iconPrefix.."Spell_Arcane_PortalUndercity", true, portalColor)
+				self:TriggerEvent("BigWigs_StartBar", self, rest, timer.portal, L["iconPrefix"].."Spell_Arcane_PortalUndercity", true, portalColor)
 			else
 				self:TriggerEvent("BigWigs_StartBar", self, rest, timer.portal, BS:GetSpellIcon(rest), true, portalColor)
 			end
