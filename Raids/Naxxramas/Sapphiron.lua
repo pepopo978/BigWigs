@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Sapphiron", "Naxxramas")
 
-module.revision = 30053
+module.revision = 30054
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"frostbreath", "lifedrain", "block", "enrage", "blizzard", "tailsweep", "phase", -1, "proximity", -1, "parry", "bosskill"}
 
@@ -85,7 +85,7 @@ L:RegisterTranslations("enUS", function() return {
 	bar_timeToGroundPhase = "Next Ground Phase",
 	msg_groundPhase = "Ground Phase!",
 	
-	msg_lowHp = "Sapphiron under 10% - No more air phases!"
+	msg_lowHp = "Sapphiron under 10% - No more air phases!",
 	
 	trigger_parryYou = "You attack. Sapphiron parries.",
 	msg_parryYou = "Sapphiron Parried your attack - Stop killing the tank you idiot!",
@@ -150,6 +150,10 @@ local phase = "ground"
 module.proximityCheck = function(unit) return CheckInteractDistance(unit, 2) end
 module.proximitySilent = false
 
+function module:OnRegister()
+	self:RegisterEvent("MINIMAP_ZONE_CHANGED")
+end
+
 function module:OnEnable()
 	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
 	
@@ -213,6 +217,16 @@ end
 
 function module:OnDisengage()
 	self:RemoveProximity()
+end
+
+function module:MINIMAP_ZONE_CHANGED(msg)
+	if GetMinimapZoneText() ~= "Sapphiron's Lair" or self.core:IsModuleActive(module.translatedName) then
+		return
+	elseif GetMinimapZoneText() == "Kel'Thuzad Chamber" and self.core:IsModuleActive(module.translatedName) then
+		self.core:DisableModule(module.translatedName)
+	end
+	
+	self.core:EnableModule(module.translatedName)
 end
 
 function module:UNIT_HEALTH(msg)
