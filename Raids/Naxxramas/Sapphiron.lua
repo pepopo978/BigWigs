@@ -1,336 +1,465 @@
 
 local module, L = BigWigs:ModuleDeclaration("Sapphiron", "Naxxramas")
 
-module.revision = 20003
+module.revision = 30053
 module.enabletrigger = module.translatedName
-module.toggleoptions = {"berserk", "lifedrain", "deepbreath", "icebolt", -1, "proximity", "bosskill"}
+module.toggleoptions = {"frostbreath", "lifedrain", "block", "enrage", "blizzard", "tailsweep", "phase", -1, "proximity", -1, "parry", "bosskill"}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Sapphiron",
 
-	deepbreath_cmd = "deepbreath",
-	deepbreath_name = "Deep Breath alert",
-	deepbreath_desc = "Warn when Sapphiron begins to cast Deep Breath.",
+	frostbreath_cmd = "frostbreath",
+	frostbreath_name = "Deep Breath Alert",
+	frostbreath_desc = "Warn when Sapphiron begins to cast Deep Breath.",
 
 	lifedrain_cmd = "lifedrain",
-	lifedrain_name = "Life Drain",
+	lifedrain_name = "Life Drain Alert",
 	lifedrain_desc = "Warns about the Life Drain curse.",
+	
+	block_cmd = "block",
+	block_name = "Ice Blocks Alert",
+	block_desc = "Warns for Ice Blocks.",
+	
+	enrage_cmd = "enrage",
+	enrage_name = "Enrage Alert",
+	enrage_desc = "Warn for Enrage.",
 
-	berserk_cmd = "berserk",
-	berserk_name = "Berserk",
-	berserk_desc = "Warn for berserk.",
-
-	icebolt_cmd = "icebolt",
-	icebolt_name = "Announce Ice Block",
-	icebolt_desc = "Yell when you become an Ice Block.",
-
-	berserk_bar = "Berserk",
-	berserk_warn_10min = "10min to berserk!",
-	berserk_warn_5min = "5min to berserk!",
-	berserk_warn_rest = "%s sec to berserk!",
-
-	engage_message = "Sapphiron engaged! Berserk in 15min!",
-
-	lifedrain_message = "Life Drain! Possibly new one ~24sec!",
-	lifedrain_warn1 = "Life Drain in 5sec!",
-	lifedrain_bar = "Life Drain",
-
-	lifedrain_trigger = "afflicted by Life Drain",
-	lifedrain_trigger2 = "Life Drain was resisted by",
-	icebolt_trigger = "You are afflicted by Icebolt",
-	icebolt_trigger2 = "Icebolt",
-
-	deepbreath_incoming_message = "Ice Bomb casting in ~23sec!",
-	deepbreath_incoming_soon_message = "Ice Bomb casting in ~5sec!",
-	deepbreath_incoming_bar = "Ice Bomb Cast",
-	deepbreath_trigger = "begins to cast Frost Breath",
-	deepbreath_warning = "Ice Bomb Incoming!",
-	deepbreath_bar = "Ice Bomb Lands!",
-	icebolt_yell = "I'm an Ice Block!",
-
+	blizzard_cmd = "blizzard",
+	blizzard_name = "Blizzard Alert",
+	blizzard_desc = "Warn for Blizzard.",
+	
+	tailsweep_cmd = "tailsweep",
+	tailsweep_name = "Tail Sweep Alert",
+	tailsweep_desc = "Warn for Tail Sweep.",
+	
+	phase_cmd = "phase",
+	phase_name = "Phase Alert",
+	phase_desc = "Warn for Ground / Air Phases.",
+	
 	proximity_cmd = "proximity",
 	proximity_name = "Proximity Warning",
 	proximity_desc = "Show Proximity Warning Frame",
+	
+	parry_cmd = "parry",
+	parry_name = "Parry Alert",
+	parry_desc = "Warn for Parries",
+	
+	
+	trigger_frostBreath = "begins to cast Frost Breath.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_frostBreath = "Frost Breath Exploding!",
+	msg_frostBreath = "Ice Bomb Incoming - Hide!",
+	
+	trigger_lifeDrain = "afflicted by Life Drain", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_lifeDrainResist = "Life Drain was resisted by", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	msg_lifeDrain = "Life Drain, Decurse!",
+	bar_lifeDrain = "Life Drain",
+	
+	trigger_iceboltYou = "You are afflicted by Icebolt.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_iceboltOther = "(.+) is afflicted by Icebolt.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	msg_iceBlock = "Ice Block on ",
+	
+		--unused
+	trigger_iceboltFade = "Icebolt fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	
+	trigger_iceboltHits = "Icebolt hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_iceBlock1 = "Ice Block 1",
+	bar_iceBlock2 = "Ice Block 2",
+	bar_iceBlock3 = "Ice Block 3",
+	bar_iceBlock4 = "Ice Block 4",
+	bar_iceBlock5 = "Ice Block 5",
+	
+	trigger_enrage = "Sapphiron gains Enrage", --to be confirmed
+	bar_enrage = "Enrage",
+	msg_enrage60 = "60sec to Enrage!",
+	msg_enrage10 = "10sec to Enrage!",
+	
+	
+	trigger_blizzardYou = "You are afflicted by Chill.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_blizzardYouFade = "Chill fades from you.", --CHAT_MSG_SPELL_AURA_GONE_SELF
+	
+	trigger_tailSweepYou = "Sapphiron's Tail Sweep hits you", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+	msg_tailSweep = "Tail Sweep hits behind the boss for 30 yards.",
+	
+	bar_timeToAirPhase = "Next Air Phase",
+	msg_airPhase = "Air Phase - Spread out!",
+	bar_timeToGroundPhase = "Next Ground Phase",
+	msg_groundPhase = "Ground Phase!",
+	
+	msg_lowHp = "Sapphiron under 10% - No more air phases!"
+	
+	trigger_parryYou = "You attack. Sapphiron parries.",
+	msg_parryYou = "Sapphiron Parried your attack - Stop killing the tank you idiot!",
 } end )
 
-L:RegisterTranslations("esES", function() return {
-	--cmd = "Sapphiron",
+local timer = {
+	frostBreath = 7,
+	firstLifeDrain = 12,
+	lifeDrain = 24,
+	
+	iceBlock1 = 7,
+	iceBlock2 = 4,
+	iceBlock3 = 4,
+	iceBlock4 = 3.5,
+	iceBlock5 = 3,
+	
+	enrage = 900,
+	blizzard = 10,
+	tailSweep = 1,
+	
+	firstGroundPhase = 40,
+	groundPhase = 70,
+	airPhase = 30,
+}
+local icon = {
+	frostBreath = "spell_frost_frostward",
+	lifeDrain = "Spell_Shadow_LifeDrain02",
+	iceBlock = "spell_frost_frost",
+	enrage = "Spell_Shadow_UnholyFrenzy",
+	blizzard = "spell_frost_icestorm",
+	tailSweep = "inv_misc_monsterscales_05",
+	phase = "inv_misc_pocketwatch_01",
+	parry = "ability_parry",
+}
+local color = {
+	frostBreath = "Red",
+	lifeDrain = "Green",
+	iceBlock = "Blue",
+	enrage = "Black",
+	phase = "White",
+}
+local syncName = {
+	frostBreath = "SapphironBreath"..module.revision,
+	lifeDrain = "SapphironLifeDrain"..module.revision,
+	iceBlock = "SapphironIceBlock"..module.revision,
+	enrage = "SapphironEnrage"..module.revision,
+	groundPhase = "SapphironGroundPhase"..module.revision,
+	airPhase = "SapphironAirPhase"..module.revision,
+	iceboltHits = "SapphironIceboltHits"..module.revision,
+	lowHp = "SapphironLowHp"..module.revision,
+}
 
-	--deepbreath_cmd = "deepbreath",
-	deepbreath_name = "Alerta de Aliento de Escarcha",
-	deepbreath_desc = "Avisa para Aliento de Escarcha.",
+local lastLifeDrainTime = nil
+local airPhaseTime = nil
+local remainingLifeDrainTimer = nil
 
-	--lifedrain_cmd = "lifedrain",
-	lifedrain_name = "Drenaje de vida",
-	lifedrain_desc = "Avisa para Drenaje de vida.",
+local iceboltResync = nil
 
-	--berserk_cmd = "berserk",
-	berserk_name = "Rabia",
-	berserk_desc = "Avisa para Rabia.",
-
-	--icebolt_cmd = "icebolt",
-	icebolt_name = "Anunciar Bloqueo de hielo",
-	icebolt_desc = "Grita cuando tengas Bloqueo de hielo.",
-
-	berserk_bar = "Rabia",
-	berserk_warn_10min = "¡10 minutos hasta Rabia!",
-	berserk_warn_5min = "¡5 minutos hasta Rabia!",
-	berserk_warn_rest = "¡%s segundos hasta Rabia!",
-
-	engage_message = "¡Entrando en combate con Sapphiron! Rabia en 15 minutos!",
-
-	lifedrain_message = "¡Drenaje de vida! El próximo posiblemente en ~24 segundos!",
-	lifedrain_warn1 = "¡Drenaje de vida en 5 segundos!",
-	lifedrain_bar = "Drenaje de vida",
-
-	lifedrain_trigger = "sufre de Drenaje de vida",
-	lifedrain_trigger2 = "Ha Resistido Drenaje de vida",
-	icebolt_trigger = "Sufres de Descarga de hielo",
-
-	deepbreath_incoming_message = "¡Lanza Aliento de Escarcha en ~23 segundos!",
-	deepbreath_incoming_soon_message = "¡Lanza Aliento de Escarcha en ~5 segundos!",
-	deepbreath_incoming_bar = "Lanza Aliento de Escarcha",
-	deepbreath_trigger = "%s takes in a deep breath...",
-	deepbreath_warning = "¡Aliento de Escarcha entrante!",
-	deepbreath_bar = "¡Lanza Aliento de Escarcha!",
-	icebolt_yell = "¡Estoy en Bloqueo de hielo!",
-} end )
+local lowHp = nil
+local phase = "ground"
 
 module.proximityCheck = function(unit) return CheckInteractDistance(unit, 2) end
 module.proximitySilent = false
 
-local timer = {
-	berserk = 900,
-	deepbreathInc = 23,
-	deepbreath = 6,
-	lifedrainAfterFlight = 24,
-	lifedrain = 24,
-	groundPhase = 50,
-}
-local icon = {
-	deepbreath = "Spell_Frost_FrostShock",
-	deepbreathInc = "Spell_Arcane_PortalIronForge",
-	lifedrain = "Spell_Shadow_LifeDrain02",
-	berserk = "INV_Shield_01",
-}
-local syncName = {
-	lifedrain = "SapphironLifeDrain"..module.revision,
-	flight = "SapphironFlight"..module.revision,
-	icebolt = "SapphironIcebolt"..module.revision,
-	breath = "SapphironBreath"..module.revision,
-}
-
-local timeLifeDrain = nil
-local cachedUnitId = nil
-local lastTarget = nil
-
 function module:OnEnable()
-	if self:IsEventScheduled("bwsapphtargetscanner") then
-		self:CancelScheduledEvent("bwsapphtargetscanner")
-	end
-	if self:IsEventScheduled("bwsapphdelayed") then
-		self:CancelScheduledEvent("bwsapphdelayed")
-	end
-
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "CheckForLifeDrain")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "CheckForLifeDrain")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "CheckForLifeDrain")
-
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "CheckForIcebolt")
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "CheckForIcebolt")
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "CheckForIcebolt")
-
-	self:ThrottleSync(4, syncName.lifedrain)
-	self:ThrottleSync(5, syncName.flight)
-	self:ThrottleSync(30, syncName.icebolt)
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
+	
+	self:RegisterEvent("UNIT_HEALTH")
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event") --trigger_lifeDrain, trigger_iceboltYou, trigger_blizzardYou
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event") --trigger_lifeDrain, trigger_iceboltOther
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event") --trigger_lifeDrain, trigger_iceboltOther
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event") --trigger_lifeDrainResist, trigger_tailSweepYou
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event") --trigger_lifeDrainResist
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event") --trigger_frostBreath, trigger_lifeDrainResist
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event") --trigger_iceboltFade, trigger_blizzardYouFade
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event") --trigger_iceboltFade
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event") --trigger_iceboltFade
+	
+	self:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLYPLAYER_MISSES", "Event") --trigger_parryYou
+	
+	
+	self:ThrottleSync(3, syncName.frostBreath)
+	self:ThrottleSync(3, syncName.lifeDrain)
+	self:ThrottleSync(3, syncName.iceBlock)
+	self:ThrottleSync(3, syncName.enrage)
+	self:ThrottleSync(3, syncName.groundPhase)
+	self:ThrottleSync(3, syncName.airPhase)
+	self:ThrottleSync(70, syncName.iceboltHits)
+	self:ThrottleSync(10, syncName.lowHp)
 end
 
 function module:OnSetup()
 	self.started = nil
-	timeLifeDrain = nil
-	cachedUnitId = nil
-	lastTarget = nil
 end
 
 function module:OnEngage()
-	if self.db.profile.berserk then
-		self:Message(L["engage_message"], "Attention")
-		self:Bar(L["berserk_bar"], timer.berserk, icon.berserk)
-		self:DelayedMessage(timer.berserk - 10 * 60, L["berserk_warn_10min"], "Attention")
-		self:DelayedMessage(timer.berserk - 5 * 60, L["berserk_warn_5min"], "Attention")
-		self:DelayedMessage(timer.berserk - 60, string.format(L["berserk_warn_rest"], 60), "Urgent")
-		self:DelayedMessage(timer.berserk - 30, string.format(L["berserk_warn_rest"], 30), "Important")
-		self:DelayedMessage(timer.berserk - 10, string.format(L["berserk_warn_rest"], 10), "Important")
-		self:DelayedMessage(timer.berserk - 5, string.format(L["berserk_warn_rest"], 5), "Important")
+	lastLifeDrainTime = GetTime()
+	airPhaseTime = GetTime()
+	remainingLifeDrainTimer = 60
+	
+	iceboltResync = nil
+	
+	lowHp = nil
+	phase = "ground"
+	
+	if self.db.profile.enrage then
+		self:Bar(L["bar_enrage"], timer.enrage, icon.enrage, true, color.enrage)
+		self:DelayedMessage(timer.enrage - 60, L["msg_enrage60"], "Urgent", false, nil, false)
+		self:DelayedMessage(timer.enrage - 10, L["msg_enrage10"], "Urgent", false, nil, false)
 	end
-	if self.db.profile.deepbreath then
-		-- Lets start a repeated event after 5 seconds of combat so that
-		-- we're sure that the entire raid is in fact in combat when we
-		-- start it.
-		self:ScheduleEvent("besapphdelayed", self.StartTargetScanner, 5, self)
+	
+	if self.db.profile.lifedrain then
+		self:Bar(L["bar_lifeDrain"], timer.firstLifeDrain, icon.lifeDrain, true, color.lifeDrain)
 	end
+	
+	if self.db.profile.phase then
+		self:Bar(L["bar_timeToAirPhase"], timer.firstGroundPhase, icon.phase, true, color.phase)
+	end
+	
+	self:DelayedSync(timer.firstGroundPhase, syncName.airPhase)	
 end
 
 function module:OnDisengage()
-	if self:IsEventScheduled("bwsapphtargetscanner") then
-		self:CancelScheduledEvent("bwsapphtargetscanner")
-	end
-	if self:IsEventScheduled("bwsapphdelayed") then
-		self:CancelScheduledEvent("bwsapphdelayed")
-	end
 	self:RemoveProximity()
 end
 
-function module:CheckForLifeDrain(msg)
-	if string.find(msg, L["lifedrain_trigger"]) or string.find(msg, L["lifedrain_trigger2"]) then
-		if not timeLifeDrain or (timeLifeDrain + 2) < GetTime() then
-			self:Sync(syncName.lifedrain)
-			timeLifeDrain = GetTime()
+function module:UNIT_HEALTH(msg)
+	if UnitName(msg) == self.translatedName then
+		local health = UnitHealth(msg)
+		if health >= 10 and lowHp ~= nil then
+			lowHp = nil
+		elseif health < 10 and lowHp == nil then
+			self:Sync(syncName.lowHp)
 		end
-	elseif string.find(msg, L["icebolt_trigger"]) and self.db.profile.icebolt then
-		SendChatMessage(L["icebolt_yell"], "YELL")
-	end
-	if string.find(msg, L["icebolt_trigger2"]) then
-		self:Sync(syncName.icebolt)
 	end
 end
 
-function module:CheckForIcebolt(msg)
-	if string.find(msg, L["icebolt_trigger2"]) then
-		self:Sync(syncName.icebolt)
-	elseif string.find(msg, L["deepbreath_trigger"]) then
-		self:Sync(syncName.breath)
-	end
-end
-
-function module:BigWigs_RecvSync(sync, rest, nick)
-	if sync == syncName.lifedrain then
-		self:LifeDrain()
-	elseif sync == syncName.flight then
-		self:Flight()
-	elseif sync == syncName.icebolt then
-		self:Icebolt()
-	elseif sync == syncName.breath then
-		self:Breath()
-	end
-end
-
-function module:LifeDrain()
-	if self.db.profile.lifedrain then
-		self:Message(L["lifedrain_message"], "Urgent")
-		self:Bar(L["lifedrain_bar"], timer.lifedrain, icon.lifedrain)
-	end
-end
-
-function module:Flight()
-	if  self.db.profile.deepbreath and self.engaged then
-		if self:IsEventScheduled("bwsapphtargetscanner") then
-			self:CancelScheduledEvent("bwsapphtargetscanner")
-		end
-		if self:IsEventScheduled("bwsapphdelayed") then
-			self:CancelScheduledEvent("bwsapphdelayed")
-		end
-		self:Message(L["deepbreath_incoming_message"], "Urgent")
-		self:Bar(L["deepbreath_incoming_bar"], timer.deepbreathInc, icon.deepbreathInc)
-		lastTarget = nil
-		cachedUnitId = nil
-		self:ScheduleEvent("besapphdelayed", self.StartTargetScanner, timer.groundPhase, self)
-	end
-	if  self.db.profile.proximity then
-		self:Proximity()
-	end
-end
-
-function module:Icebolt()
-	if self.db.profile.deepbreath then
-		self:Bar(L["deepbreath_incoming_bar"], timer.deepbreathInc-6, icon.deepbreathInc)
-	end
-end
-
-function module:Breath()
-	if self.db.profile.deepbreath then
-		self:RemoveBar(L["deepbreath_incoming_bar"])
-		self:Message(L["deepbreath_warning"], "Important")
-		self:Bar(L["deepbreath_bar"], timer.deepbreath, icon.deepbreath)
-		self:RemoveProximity()
-	end
-end
-
-function module:StartTargetScanner()
-	if not self:IsEventScheduled("bwsapphtargetscanner") and self.engaged then
-		-- Start a repeating event that scans the raid for targets every 1 second.
-		self:ScheduleRepeatingEvent("bwsapphtargetscanner", self.RepeatedTargetScanner, 1, self)
-	end
-end
-
-function module:RepeatedTargetScanner()
-	if not UnitAffectingCombat("player") then
-		self:CancelScheduledEvent("bwsapphtargetscanner")
-		return
-	end
-
-	if not self.engaged then
-		return
-	end
-	local found = nil
-
-	-- If we have a cached unit (which we will if we found someone with the boss
-	-- as target), then check if he still has the same target
-	if cachedUnitId and UnitExists(cachedUnitId) and UnitName(cachedUnitId) == self.translatedName then
-		found = true
-	end
-
-	-- Check the players target
-	if not found and UnitExists("target") and UnitName("target") == self.translatedName then
-		cachedUnitId = "target"
-		found = true
-	end
-
-	-- Loop the raid roster
-	if not found then
-		for i = 1, GetNumRaidMembers() do
-			local unit = string.format("raid%dtarget", i)
-			if UnitExists(unit) and UnitName(unit) == self.translatedName then
-				cachedUnitId = unit
-				found = true
-				break
+function module:Event(msg)
+	if string.find(msg, L["trigger_frostBreath"]) then
+		self:Sync(syncName.frostBreath)
+	
+	
+	elseif string.find(msg, L["trigger_lifeDrain"]) or string.find(msg, L["trigger_lifeDrainResist"]) then
+		self:Sync(syncName.lifeDrain)
+		
+	elseif string.find(msg, L["trigger_iceboltHits"]) then
+		self:Sync(syncName.iceboltHits)
+	
+	elseif msg == L["trigger_iceboltYou"] then
+		self:Sync(syncName.iceBlock.." "..UnitName("player"))
+	
+	elseif string.find(msg, L["trigger_iceboltOther"]) then
+		local _,_, iceBlockPerson, _ = string.find(msg, L["trigger_iceboltOther"])
+		self:Sync(syncName.iceBlock.." "..iceBlockPerson)
+		
+	elseif msg == L["trigger_blizzardYou"] and self.db.profile.blizzard then
+		self:Blizzard()
+	elseif msg == L["trigger_blizzardYouFade"] and self.db.profile.blizzard then
+		self:BlizzardFade()
+		
+	elseif string.find(msg, L["trigger_tailSweepYou"]) and self.db.profile.tailsweep then
+		self:TailSweep()
+		
+	elseif string.find(msg, L["trigger_parryYou"]) and self.db.profile.parry then
+		if UnitName("Target") ~= nil and UnitName("TargetTarget") ~= nil then
+			if UnitName("Target") == "Sapphiron" and UnitName("TargetTarget") ~= UnitName("Player") then
+				self:ParryYou()
 			end
 		end
 	end
+end
 
-	-- We've checked everything. If nothing was found, just return home.
-	-- We basically shouldn't return here, because someone should always have
-	-- him targetted.
-	if not found then
-		return
+
+function module:BigWigs_RecvSync(sync, rest, nick)
+	if sync == syncName.frostBreath and self.db.profile.frostbreath then
+		self:FrostBreath()
+	elseif sync == syncName.lifeDrain and self.db.profile.lifedrain then
+		self:LifeDrain()
+	elseif sync == syncName.iceboltHits and iceboltResync == nil then
+		self:IceboltHits()
+	elseif sync == syncName.iceBlock and rest then
+		self:IceBlock(rest)
+	elseif sync == syncName.groundPhase then
+		self:GroundPhase()
+	elseif sync == syncName.airPhase then
+		self:AirPhase()
+	elseif sync == syncName.lowHp and lowHp == nil then
+		self:LowHp()
 	end
+end
 
-	local inFlight = nil
 
-	-- Alright, we've got a valid unitId with the boss as target, now check if
-	-- the boss had a target on the last iteration or not - if he didn't, and
-	-- still doesn't, then we fire the "in air" warning.
-	if not UnitExists(cachedUnitId.."target") then
-		-- Okay, the boss doesn't have a target.
-		if not lastTarget then
-			-- He didn't have a target last time either
-			inFlight = true
+function module:FrostBreath()
+	self:RemoveBar(L["bar_timeToGroundPhase"])
+	
+	self:RemoveBar(L["bar_iceBlock1"])
+	self:RemoveBar(L["bar_iceBlock2"])
+	self:RemoveBar(L["bar_iceBlock3"])
+	self:RemoveBar(L["bar_iceBlock4"])
+	self:RemoveBar(L["bar_iceBlock5"])
+	
+	self:CancelDelayedBar(L["bar_iceBlock2"])
+	self:CancelDelayedBar(L["bar_iceBlock3"])
+	self:CancelDelayedBar(L["bar_iceBlock4"])
+	self:CancelDelayedBar(L["bar_iceBlock5"])
+	
+	if self.db.profile.frostbreath then
+		self:Bar(L["bar_frostBreath"], timer.frostBreath, icon.frostBreath, true, color.frostBreath)
+		self:Message(L["msg_frostBreath"], "Urgent", false, nil, false)
+		self:WarningSign(icon.frostBreath, 1)
+		self:Sound("Beware")
+	end
+	
+	if self.db.profile.phase then
+		self:Bar(L["bar_timeToGroundPhase"], timer.frostBreath + 1, icon.phase, true, color.phase)
+	end
+	
+	if self.db.profile.proximity then
+		self:RemoveProximity()
+	end
+	
+	self:DelayedSync(timer.frostBreath + 1, syncName.groundPhase)
+end
+
+function module:LifeDrain()
+	lastLifeDrainTime = GetTime()
+	self:Bar(L["bar_lifeDrain"], timer.lifeDrain, icon.lifeDrain, true, color.lifeDrain)
+	
+	if UnitClass("Player") == "Mage" or UnitClass("Player") == "Druid" then
+		self:Message(L["msg_lifeDrain"], "Personal", false, nil, false)
+		self:WarningSign(icon.lifeDrain, 0.7)
+		self:Sound("Long")
+	end
+end
+
+function module:IceBlock(rest)
+	if self.db.profile.block then
+		self:Message(L["msg_iceBlock"]..rest, "Important", false, nil, false)
+	end
+	
+	if rest == UnitName("Player") then
+		SendChatMessage("Ice Block on "..UnitName("Player").."!","YELL")
+	end
+end
+
+function module:Enrage()
+	self:RemoveBar(L["bar_enrage"])
+	self:WarningSign(icon.enrage, 1)
+	self:Sound("Beware")
+end
+
+function module:IceboltHits()
+	self:RemoveBar(L["bar_timeToGroundPhase"])
+	
+	self:RemoveBar(L["bar_iceBlock1"])
+	self:RemoveBar(L["bar_iceBlock2"])
+	self:RemoveBar(L["bar_iceBlock3"])
+	self:RemoveBar(L["bar_iceBlock4"])
+	self:RemoveBar(L["bar_iceBlock5"])
+	
+	self:CancelDelayedBar(L["bar_iceBlock2"])
+	self:CancelDelayedBar(L["bar_iceBlock3"])
+	self:CancelDelayedBar(L["bar_iceBlock4"])
+	self:CancelDelayedBar(L["bar_iceBlock5"])
+	
+	if self.db.profile.phase then
+		self:Bar(L["bar_timeToGroundPhase"], timer.airPhase - timer.iceBlock1, icon.phase, true, color.phase)
+	end
+	
+	if self.db.profile.block then
+		self:Bar(L["bar_iceBlock2"], timer.iceBlock2, icon.iceBlock, true, color.iceBlock)
+		self:DelayedBar(timer.iceBlock2, L["bar_iceBlock3"], timer.iceBlock3, icon.iceBlock, true, color.iceBlock)
+		self:DelayedBar(timer.iceBlock2 + timer.iceBlock3, L["bar_iceBlock4"], timer.iceBlock4, icon.iceBlock, true, color.iceBlock)
+		self:DelayedBar(timer.iceBlock2 + timer.iceBlock3 + timer.iceBlock4, L["bar_iceBlock5"], timer.iceBlock5, icon.iceBlock, true, color.iceBlock)
+	end
+	
+	iceboltResync = true
+end
+
+function module:Blizzard()
+	self:WarningSign(icon.blizzard, timer.blizzard)
+	self:Sound("Info")
+end
+
+function module:BlizzardFade()
+	self:RemoveWarningSign(icon.blizzard)
+end
+
+function module:TailSweep()
+	self:Message(L["msg_tailSweep"], "Personal", false, nil, false)
+	self:WarningSign(icon.tailSweep, timer.tailSweep)
+end
+
+function module:GroundPhase()
+	phase = "ground"
+	
+	self:RemoveBar(L["bar_timeToGroundPhase"])
+	
+	self:RemoveBar(L["bar_iceBlock1"])
+	self:RemoveBar(L["bar_iceBlock2"])
+	self:RemoveBar(L["bar_iceBlock3"])
+	self:RemoveBar(L["bar_iceBlock4"])
+	self:RemoveBar(L["bar_iceBlock5"])
+	
+	self:CancelDelayedBar(L["bar_iceBlock2"])
+	self:CancelDelayedBar(L["bar_iceBlock3"])
+	self:CancelDelayedBar(L["bar_iceBlock4"])
+	self:CancelDelayedBar(L["bar_iceBlock5"])
+	
+	self:RemoveBar(L["bar_frostBreath"])
+	
+	if self.db.profile.proximity then
+		self:RemoveProximity()
+	end
+	
+	self:CancelDelayedSync(syncName.groundPhase)
+	
+	if self.db.profile.lifedrain then
+		remainingLifeDrainTimer = timer.lifeDrain - (airPhaseTime - lastLifeDrainTime)
+		self:Bar(L["bar_lifeDrain"], remainingLifeDrainTimer, icon.lifeDrain, true, color.lifeDrain)
+	end
+	
+	if lowHp == nil then
+		if self.db.profile.phase then
+			self:Bar(L["bar_timeToAirPhase"], timer.groundPhase, icon.phase, true, color.phase)
+			self:Message(L["msg_groundPhase"], "Important", false, nil, false)
 		end
-		lastTarget = nil
-	else
-		-- This should always be set before we hit the time when he actually
-		-- loses his target, hence we can check |if not lastTarget| above.
-		lastTarget = true
+		
+		self:DelayedSync(timer.groundPhase, syncName.airPhase)
 	end
+end
 
-	-- He's not flying, so we're just going to continue scanning.
-	if not inFlight then
-		return
+function module:AirPhase()
+	phase = "air"
+	
+	airPhaseTime = GetTime()
+	
+	self:RemoveBar(L["bar_lifeDrain"])
+	self:RemoveBar(L["bar_timeToAirPhase"])
+	self:CancelDelayedSync(syncName.airPhase)
+	
+	if self.db.profile.proximity then
+		self:Proximity()
 	end
+	
+	if self.db.profile.phase then
+		self:Bar(L["bar_timeToGroundPhase"], timer.airPhase, icon.phase, true, color.phase)
+		self:Message(L["msg_airPhase"], "Important", false, nil, false)
+	end
+	
+	if self.db.profile.block then
+		self:Bar(L["bar_iceBlock1"], timer.iceBlock1, icon.iceBlock, true, color.iceBlock)
+		self:DelayedBar(timer.iceBlock1, L["bar_iceBlock2"], timer.iceBlock2, icon.iceBlock, true, color.iceBlock)
+		self:DelayedBar(timer.iceBlock1 + timer.iceBlock2, L["bar_iceBlock3"], timer.iceBlock3, icon.iceBlock, true, color.iceBlock)
+		self:DelayedBar(timer.iceBlock1 + timer.iceBlock2 + timer.iceBlock3, L["bar_iceBlock4"], timer.iceBlock4, icon.iceBlock, true, color.iceBlock)
+		self:DelayedBar(timer.iceBlock1 + timer.iceBlock2 + timer.iceBlock3 + timer.iceBlock4, L["bar_iceBlock5"], timer.iceBlock5, icon.iceBlock, true, color.iceBlock)
+	end
+end
 
-	-- He's in flight! (I hope)
-	if self:IsEventScheduled("bwsapphtargetscanner") then
-		self:CancelScheduledEvent("bwsapphtargetscanner")
+function module:LowHp()
+	lowHp = true
+	
+	if phase == "ground" then
+		self:RemoveBar(L["bar_timeToAirPhase"])
+		self:CancelDelayedSync(syncName.airPhase)
 	end
-	self:Sync(syncName.flight)
+	
+	self:Message(L["msg_lowHp"], "Important", false, nil, false)
+end
+
+function module:ParryYou()
+	self:WarningSign(icon.parry, 0.7)
+	self:Message(L["msg_parryYou"], "Personal", false, nil, false)
 end
