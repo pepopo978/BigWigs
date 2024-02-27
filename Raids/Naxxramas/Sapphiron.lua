@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Sapphiron", "Naxxramas")
 
-module.revision = 30054
+module.revision = 30055
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"frostbreath", "lifedrain", "block", "enrage", "blizzard", "tailsweep", "phase", -1, "proximity", -1, "parry", "bosskill"}
 
@@ -224,9 +224,10 @@ function module:MINIMAP_ZONE_CHANGED(msg)
 		return
 	elseif GetMinimapZoneText() == "Kel'Thuzad Chamber" and self.core:IsModuleActive(module.translatedName) then
 		self.core:DisableModule(module.translatedName)
+		return
+	elseif GetMinimapZoneText() == "Sapphiron's Lair" then
+		self.core:EnableModule(module.translatedName)
 	end
-	
-	self.core:EnableModule(module.translatedName)
 end
 
 function module:UNIT_HEALTH(msg)

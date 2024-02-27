@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("C'Thun", "Ahn'Qiraj")
 
-module.revision = 30027
+module.revision = 30055
 local eyeofcthun = AceLibrary("Babble-Boss-2.2")["Eye of C'Thun"]
 local cthun = AceLibrary("Babble-Boss-2.2")["C'Thun"]
 module.enabletrigger = {eyeofcthun, cthun}
@@ -87,7 +87,6 @@ L:RegisterTranslations("enUS", function() return {
 	digestiveAcidTrigger = "You are afflicted by Digestive Acid [%s%(]*([%d]*).",
 	msgDigestiveAcid = "5 Acid Stacks",
 
-	["Second TentacleHP"] = "Second Tentacle %d%%",
 	["First Tentacle dead"] = "First Tentacle dead",
 	["First Tentacle"] = "First Tentacle",
 	["Second Tentacle"] = "Second Tentacle",
@@ -167,6 +166,10 @@ local isWeakened = nil
 local doCheckForWipe = false
 
 local eyeTarget = nil
+
+function module:OnRegister()
+	self:RegisterEvent("MINIMAP_ZONE_CHANGED")
+end
 
 function module:OnEnable()
 	--self:RegisterEvent("CHAT_MSG_SAY")--Debug
@@ -266,6 +269,13 @@ end
 function module:OnDisengage()
 	self:RemoveProximity()
 	self:TriggerEvent("BigWigs_StopDebuffTrack")
+end
+
+function module:MINIMAP_ZONE_CHANGED(msg)
+	--The Scarab Wall when you release, then Gates of Ahn'Qiraj as you run back, then Ahn'Qiraj when you zone in
+	if (GetMinimapZoneText() == "The Scarab Wall" or GetMinimapZoneText() == "Gates of Ahn'Qiraj") and self.core:IsModuleActive(module.translatedName) then
+		self.core:DisableModule(module.translatedName)
+	end
 end
 
 function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)

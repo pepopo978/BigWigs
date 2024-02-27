@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Qiraji Brainwasher", "Ahn'Qiraj")
 
-module.revision = 30025
+module.revision = 30055
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"mc"}
 module.trashMod = true
@@ -131,13 +131,23 @@ end
 function module:Mc(rest)
 	self:Bar(rest..L["bar_mc"], timer.mc, icon.mc, true, color.mc)
 	
-	for i=1,GetNumRaidMembers() do
-		if UnitName("raid"..i) == rest then
-			SetRaidTargetIcon("raid"..i, 6)
+	if IsRaidLeader() or IsRaidOfficer() then
+		for i=1,GetNumRaidMembers() do
+			if UnitName("raid"..i) == rest then
+				SetRaidTargetIcon("raid"..i, 6)
+			end
 		end
 	end
 end
 
 function module:McFade(rest)
 	self:RemoveBar(rest..L["bar_mc"])
+	
+	if IsRaidLeader() or IsRaidOfficer() then
+		for i=1,GetNumRaidMembers() do
+			if UnitName("raid"..i) == rest then
+				SetRaidTargetIcon("raid"..i, 0)
+			end
+		end
+	end
 end

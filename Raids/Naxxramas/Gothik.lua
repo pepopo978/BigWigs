@@ -5,7 +5,7 @@ local __tinsert = table.insert
 
 local module, L = BigWigs:ModuleDeclaration("Gothik the Harvester", "Naxxramas")
 
-module.revision = 20003
+module.revision = 30055
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"room", -1, "add", "adddeath", "bosskill"}
 
@@ -140,6 +140,10 @@ local numRiders = 0
 module:RegisterYellEngage(L["starttrigger1"])
 module:RegisterYellEngage(L["starttrigger2"])
 
+function module:OnRegister()
+	self:RegisterEvent("MINIMAP_ZONE_CHANGED")
+end
+
 function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
 end
@@ -156,13 +160,13 @@ end
 
 function module:OnEngage()
 	if self.db.profile.room then
-		self:Message(L["startwarn"], "Important")
+		self:Message(L["startwarn"], "Important", false, nil, false)
 		self:Bar(L["inroombartext"], timer.inroom, icon.inroom, true, "White")
-		self:DelayedMessage(timer.inroom - 3 * 60, L["warn_inroom_3m"], "Attention")
-		self:DelayedMessage(timer.inroom - 90, L["warn_inroom_90"], "Attention")
-		self:DelayedMessage(timer.inroom - 60, L["warn_inroom_60"], "Urgent")
-		self:DelayedMessage(timer.inroom - 30, L["warn_inroom_30"], "Important")
-		self:DelayedMessage(timer.inroom - 10, L["warn_inroom_10"], "Important")
+		self:DelayedMessage(timer.inroom - 3 * 60, L["warn_inroom_3m"], "Attention", false, nil, false)
+		self:DelayedMessage(timer.inroom - 90, L["warn_inroom_90"], "Attention", false, nil, false)
+		self:DelayedMessage(timer.inroom - 60, L["warn_inroom_60"], "Urgent", false, nil, false)
+		self:DelayedMessage(timer.inroom - 30, L["warn_inroom_30"], "Important", false, nil, false)
+		self:DelayedMessage(timer.inroom - 10, L["warn_inroom_10"], "Important", false, nil, false)
 	end
 
 	if self.db.profile.add then
@@ -175,10 +179,16 @@ end
 function module:OnDisengage()
 end
 
+function module:MINIMAP_ZONE_CHANGED(msg)
+	if GetMinimapZoneText() == "Eastern Plaguelands" and self.core:IsModuleActive(module.translatedName) then
+		self.core:DisableModule(module.translatedName)
+	end
+end
+
 function module:CHAT_MSG_MONSTER_YELL( msg )
 	if msg == L["inroomtrigger"] then
 		if self.db.profile.room then
-			self:Message(L["inroomwarn"], "Important")
+			self:Message(L["inroomwarn"], "Important", false, nil, false)
 		end
 		self:StopRoom()
 	elseif string.find(msg, L["disabletrigger"]) then
@@ -190,9 +200,9 @@ function module:CHAT_MSG_COMBAT_HOSTILE_DEATH( msg )
 	BigWigs:CheckForBossDeath(msg, self)
 
 	if self.db.profile.adddeath and msg == string.format(UNITDIESOTHER, L["rider_name"]) then
-		self:Message(L["riderdiewarn"], "Important")
+		self:Message(L["riderdiewarn"], "Important", false, nil, false)
 	elseif self.db.profile.adddeath and msg == string.format(UNITDIESOTHER, L["deathknight_name"]) then
-		self:Message(L["dkdiewarn"], "Important")
+		self:Message(L["dkdiewarn"], "Important", false, nil, false)
 	end
 end
 
