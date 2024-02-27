@@ -3,7 +3,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Kel'Thuzad", "Naxxramas")
 
-module.revision = 30055
+module.revision = 30056
 module.enabletrigger = module.translatedName
 module.toggleoptions = {
 	"phase",
@@ -307,15 +307,7 @@ function module:OnRegister()
 end
 
 function module:OnEnable()
-	self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
-	
-	
-	
-	
-	
-	
-	
-	
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
 	
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL") --trigger_engage, trigger_phase2_1,2,3, trigger_phase3, trigger_frostBlastYell
 	
@@ -524,71 +516,6 @@ function module:CHAT_MSG_COMBAT_FRIENDLY_DEATH(msg)
 end
 
 function module:Event(msg)
-	--debug
-	if msg == L["trigger_engage"] then
-		module:SendEngageSync()
-	elseif msg == L["trigger_phase2_1"] or msg == L["trigger_phase2_2"] or msg == L["trigger_phase2_3"] then
-		self:Sync(syncName.phase2)
-	
-	elseif string.find(msg, L["trigger_phase3"]) then
-		self:Sync(syncName.phase3)
-	
-	--elseif msg == L["trigger_mcYell1"] or msg == L["trigger_mcYell2"] then
-	--	self:Sync(syncName.mcYell)
-	
-	--elseif msg == L["trigger_frostBlastYell"] then
-	--	self:Sync(syncName.frostBlastYell)
-	--elseif msg == "hp42" then
-	--	local health = 42
-	--	if health > 40 and health <= 45 and p3warn == nil then
-	--		self:Sync(syncName.phase3soon)
-	--	elseif health > 45 and p3warn == true then
-	--		p3warn = nil
-	--	elseif health <= 40 and p3warn == nil then
-	--		p3warn = true
-	--	end
-	--elseif msg == "hp48" then
-	--	local health = 48
-	--	if health > 40 and health <= 45 and p3warn == nil then
-	--		self:Sync(syncName.phase3soon)
-	--	elseif health > 45 and p3warn == true then
-	--		p3warn = nil
-	--	elseif health <= 40 and p3warn == nil then
-	--		p3warn = true
-	--	end
-	--elseif msg == "hp35" then
-	--	local health = 35
-	--	if health > 40 and health <= 45 and p3warn == nil then
-	--		self:Sync(syncName.phase3soon)
-	--	elseif health > 45 and p3warn == true then
-	--		p3warn = nil
-	--	elseif health <= 40 and p3warn == nil then
-	--		p3warn = true
-	--	end
-	--elseif msg == "testAbom" then
-	--	self:Sync(syncName.abominationDead)
-	
-	--elseif msg == "testWeaver" then
-	--	self:Sync(syncName.soulWeaverDead)
-	
-	--elseif msg == "testKT" then
-	--	self:SendBossDeathSync()
-	--elseif string.find(msg, L["trigger_friendlyDead"]) then
-	--	local _, _, deadPlayer, _ = string.find(msg, L["trigger_friendlyDead"])
-	--	self:Sync(syncName.mcFade .. " " .. deadPlayer)
-	end
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	if msg == L["trigger_mcYou"] then
 		self:Sync(syncName.mc .. " " .. UnitName("Player"))
 	
