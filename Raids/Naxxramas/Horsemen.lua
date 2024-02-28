@@ -28,9 +28,9 @@ L:RegisterTranslations("enUS", function()
 		mark_name = "Mark Alerts",
 		mark_desc = "Warn for marks",
 
-        marksounds_cmd = "marksound",
-        marksounds_name = "Mark Alert Sounds",
-        marksounds_desc = "Text to speech mark alerts",
+		marksounds_cmd = "marksound",
+		marksounds_name = "Mark Alert Sounds",
+		marksounds_desc = "Text to speech mark alerts",
 
 		shieldwall_cmd = "shieldwall",
 		shieldwall_name = "Shieldwall Alerts",

@@ -66,7 +66,7 @@ local timer = {
 
 	fightDuration = 90,
 	danceDuration = 45,
-
+ 
 	firstErruption = 15,
 	firstDanceErruption = 4,
 	erruption = 0, -- will be changed during the encounter

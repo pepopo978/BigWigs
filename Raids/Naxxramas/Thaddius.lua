@@ -90,8 +90,8 @@ L:RegisterTranslations("enUS", function()
 		negwarn = "You changed to a Negative Charge!",
 		polaritytickbar = "Polarity tick",
 
-        throwbar = "Throw",
-        throwwarn = "Throw in ~5 seconds!",
+		throwbar = "Throw",
+		throwwarn = "Throw in ~5 seconds!",
 
 		magneticPull_Bar = "Magnetic Pull",
 
@@ -296,10 +296,10 @@ function module:Enrage()
 end
 
 function module:Throw()
-    if self.db.profile.throw then
-        self:Bar(L["throwbar"], timer.throw, icon.throw)
-        self:DelayedMessage(timer.throw - 5, L["throwwarn"], "Urgent")
-    end
+	if self.db.profile.throw then
+		self:Bar(L["throwbar"], timer.throw, icon.throw)
+		self:DelayedMessage(timer.throw - 5, L["throwwarn"], "Urgent")
+	end
 end
 
 function module:FeugenDeath()
