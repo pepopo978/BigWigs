@@ -24,7 +24,7 @@ L:RegisterTranslations("enUS", function() return {
 	adddeath_name = "Add Death Alert",
 	adddeath_desc = "Alerts when an add dies.",
 
-	disabletrigger = "I... am... undone.",
+	disabletrigger = "I... am... undone!",
 
 	starttrigger1 = "Brazenly you have disregarded powers beyond your understanding.",
 	starttrigger2 = "Teamanare shi rikk mannor rikk lok karkun",
@@ -55,9 +55,10 @@ L:RegisterTranslations("enUS", function() return {
 
 	wave = "%d/22: ", -- its only 22 waves not 26
 
-	inroomtrigger = "I have waited long enough! Now, you face the harvester of souls.",
+	inroomtrigger = "I have waited long enough",
 	inroomwarn = "He's in the room!",
 	inroombartext = "In Room",
+	teleporttext = "Teleport",
 } end )
 
 L:RegisterTranslations("esES", function() return {
@@ -124,6 +125,7 @@ local timer = {
 	deathknight = 25,
 	firstRider = 134,
 	rider = 30,
+	sideteleport = 15,
 }
 local icon = {
 	inroom = "Spell_Magic_LesserInvisibilty",
@@ -191,6 +193,7 @@ function module:CHAT_MSG_MONSTER_YELL( msg )
 			self:Message(L["inroomwarn"], "Important", false, nil, false)
 		end
 		self:StopRoom()
+		self:Bar(L["teleporttext"], timer.sideteleport, icon.inroom)
 	elseif string.find(msg, L["disabletrigger"]) then
 		self:SendBossDeathSync()
 	end

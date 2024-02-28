@@ -210,7 +210,7 @@ end
 --      Event Handlers      --
 ------------------------------
 
-function BigWigsWarningSign:BigWigs_ShowWarningSign(texturePath, duration, force)
+function BigWigsWarningSign:BigWigs_ShowWarningSign(texturePath, duration, force, text)
 	if self.db.profile.disabled then
 		return
 	end
@@ -231,6 +231,8 @@ function BigWigsWarningSign:BigWigs_ShowWarningSign(texturePath, duration, force
 		c.force     = force;
 
 		self.texture:SetTexture(texturePath)
+		if type(text) =="string" then self.text:SetText(text) else self.text:SetText("") end
+
 		self.frames.sign:Show()
 		self.db.profile.isVisible = true
 
@@ -454,6 +456,9 @@ function BigWigsWarningSign:CreateWarningSignFrame()
 	self.texture:SetAllPoints(self.frames.sign)
 	self.texture:SetTexCoord(0.08, 0.92, 0.08, 0.92) -- zoom in to hide border
 
+	self.text = self.frames.sign:CreateFontString(nil, "OVERLAY", "ZoneTextFont")
+	--self.text:SetAllPoints(self.frames.sign)
+	self.text:SetPoint("CENTER", self.frames.sign, "CENTER", 0, 0)
 	--[[local x = self.db.profile.posx
 	local y = self.db.profile.posy
 	if x and y then

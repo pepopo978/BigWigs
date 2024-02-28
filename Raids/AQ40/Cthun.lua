@@ -5,7 +5,7 @@ module.revision = 30055
 local eyeofcthun = AceLibrary("Babble-Boss-2.2")["Eye of C'Thun"]
 local cthun = AceLibrary("Babble-Boss-2.2")["C'Thun"]
 module.enabletrigger = {eyeofcthun, cthun}
-module.toggleoptions = {"icon", "rape", -1, "tentacle", "glare", "group", -1, "giant", "acid", "weakened", -1, "proximity", "stomach", "bosskill"}
+module.toggleoptions = {"icon", -1, "tentacle", "glare", "autotarget", "group", -1, "giant", "acid", "weakened", -1, "proximity", "stomach", "bosskill"}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Cthun",
@@ -25,11 +25,7 @@ L:RegisterTranslations("enUS", function() return {
 	tentacle_cmd = "tentacle",
 	tentacle_name = "Tentacle Alert",
 	tentacle_desc = "Warn for Tentacles",
-	
-	rape_cmd = "rape",
-	rape_name = "Rape jokes are funny",
-	rape_desc = "Some people like hentai jokes.",
-	
+
 	glare_cmd = "glare",
 	glare_name = "Dark Layr Alert",
 	glare_desc = "Warn for Dark Layr",
@@ -94,6 +90,10 @@ L:RegisterTranslations("enUS", function() return {
 	window_bar = "Window of Opportunity",
 	trigger_bigClawDies = "Giant Claw Tentacle dies.",
 	trigger_bigEyeDies = "Giant Eye Tentacle dies.",
+
+	autotarget_cmd = "autotarget",
+	autotarget_name = "Autotarget giant eye",
+	autotarget_desc = "Automatically target the giant eye instantly when it spawns",
 } end )
 
 module.proximityCheck = function(unit) return CheckInteractDistance(unit, 2) end
@@ -316,6 +316,10 @@ function module:CheckEyeBeam(msg)
 		self:Sync(syncName.eyeBeam)
 		if not cthunstarted then
 			self:SendEngageSync()
+		end
+	elseif string.find(msg, L["giant_eye_birth_trigger"]) then
+		if self.db.profile.autotarget then
+			TargetByName("Giant Eye Tentacle", true);
 		end
 	end
 end

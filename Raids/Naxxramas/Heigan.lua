@@ -1,76 +1,77 @@
-
 local module, L = BigWigs:ModuleDeclaration("Heigan the Unclean", "Naxxramas")
 
 module.revision = 30038
 module.enabletrigger = module.translatedName
-module.toggleoptions = {"disease", "manaBurn", "teleport", "erruption", -1, "bosskill"}
+module.toggleoptions = { "disease", "manaBurn", "teleport", "erruption", -1, "bosskill" }
 
-L:RegisterTranslations("enUS", function() return {
-	cmd = "Heigan",
-	
-	disease_cmd = "disease",
-	disease_name = "Decrepit Fever Alert",
-	disease_desc = "Warn for Decrepit Fever",
-	
-	manaBurn_cmd = "manaBurn",
-	manaBurn_name = "Mana Burn Alert",
-	manaBurn_desc = "Warn for Mana Burn",
-	
-	teleport_cmd = "teleport",
-	teleport_name = "Teleport Alert",
-	teleport_desc = "Warn for Teleports.",
+L:RegisterTranslations("enUS", function()
+	return {
+		cmd = "Heigan",
 
-	erruption_cmd = "erruption",
-	erruption_name = "Erruption Alert",
-	erruption_desc = "Warn for Erruption",
+		disease_cmd = "disease",
+		disease_name = "Decrepit Fever Alert",
+		disease_desc = "Warn for Decrepit Fever",
 
-	trigger_engage1 = "You are mine now!",--CHAT_MSG_MONSTER_YELL
-	trigger_engage2 = "You...are next!",--CHAT_MSG_MONSTER_YELL
-	trigger_engage3 = "I see you!",--CHAT_MSG_MONSTER_YELL
-	
-	trigger_die = "takes his last breath.",--to be confirmed
-	
-	trigger_disease = "afflicted by Decrepit Fever.",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
-	bar_disease = "Decrepit Fever CD",
-	msg_disease = "Decrepit Fever",
-	
-	trigger_manaBurn = "Heigan the Unclean's Mana Burn",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
-	bar_manaBurn = "Mana Burn CD",
-	
-	trigger_manaBurnYou = "Heigan the Unclean's Mana Burn hits you for",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
-	msg_manaBurnYou = "Mana Burn hit you!",
+		manaBurn_cmd = "manaBurn",
+		manaBurn_name = "Mana Burn Alert",
+		manaBurn_desc = "Warn for Mana Burn",
 
-	trigger_danceStart = "The end is upon you.",--CHAT_MSG_MONSTER_YELL
-	msg_danceStart = "Teleport!",
-	bar_dancing = "Dancing Ends",
-	bar_dancingSoon = "Dancing Soon",
-	
-	msg_fightStart = "Fight!",
-	bar_fighting = "Dancing Starts",
-	
-	bar_erruption = "Erruption",	
+		teleport_cmd = "teleport",
+		teleport_name = "Teleport Alert",
+		teleport_desc = "Warn for Teleports.",
 
-	["Eye Stalk"] = true,
-	["Rotting Maggot"] = true,
-} end )
+		erruption_cmd = "erruption",
+		erruption_name = "Erruption Alert",
+		erruption_desc = "Warn for Erruption",
+
+		trigger_engage1 = "You are mine now!", --CHAT_MSG_MONSTER_YELL
+		trigger_engage2 = "You...are next!", --CHAT_MSG_MONSTER_YELL
+		trigger_engage3 = "I see you!", --CHAT_MSG_MONSTER_YELL
+
+		trigger_die = "takes his last breath.", --to be confirmed
+
+		trigger_disease = "afflicted by Decrepit Fever.", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		bar_disease = "Decrepit Fever CD",
+		msg_disease = "Decrepit Fever",
+
+		trigger_manaBurn = "Heigan the Unclean's Mana Burn", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+		bar_manaBurn = "Mana Burn CD",
+
+		trigger_manaBurnYou = "Heigan the Unclean's Mana Burn hits you for", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+		msg_manaBurnYou = "Mana Burn hit you!",
+
+		trigger_danceStart = "The end is upon you.", --CHAT_MSG_MONSTER_YELL
+		msg_danceStart = "Teleport!",
+		bar_dancing = "Dancing Ends",
+		bar_dancingSoon = "Dancing Soon",
+
+		msg_fightStart = "Fight!",
+		bar_fighting = "Dancing Starts",
+
+		bar_erruption = "Erruption",
+
+		["Eye Stalk"] = true,
+		["Rotting Maggot"] = true,
+	}
+end)
 
 local timer = {
 	firstDiseaseCD = 30,
 	firstDiseaseAfterDanceCD = 5,
-	diseaseCD = {20,25},
-	
+	diseaseCD = { 20, 25 },
+
 	firstManaBurnCD = 15,
 	firstManaBurnAfterDanceCD = 10,
 	manaBurnCD = 3,
-	
+
 	fightDuration = 90,
 	danceDuration = 45,
-	
+
 	firstErruption = 15,
 	firstDanceErruption = 4,
 	erruption = 0, -- will be changed during the encounter
 	erruptionSlow = 10,
-	erruptionFast = 3,
+	erruptionFast = 3, -- was getting slightly out of sync with at 3
 	dancingSoon = 10,
 }
 local icon = {
@@ -82,10 +83,10 @@ local icon = {
 	dancing = "INV_Gizmo_RocketBoot_01",
 }
 local syncName = {
-	disease = "HeiganDisease"..module.revision,
-	manaBurn = "HeiganManaBurn"..module.revision,
-	danceStart = "HeiganToPlatform"..module.revision,
-	fightStart = "HeiganToFloor"..module.revision,
+	disease = "HeiganDisease" .. module.revision,
+	manaBurn = "HeiganManaBurn" .. module.revision,
+	danceStart = "HeiganToPlatform" .. module.revision,
+	fightStart = "HeiganToFloor" .. module.revision,
 }
 
 local eruption_count = 1
@@ -106,7 +107,7 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event")--manaBurn
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event")--manaBurn
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL", "Event")--DanceStart(Teleport)
-	
+
 	self:ThrottleSync(5, syncName.disease)
 	self:ThrottleSync(1, syncName.manaBurn)
 	self:ThrottleSync(10, syncName.danceStart)
@@ -118,7 +119,7 @@ end
 
 function module:OnEngage()
 	bwHeiganTimeFloorStarted = GetTime()
-	
+
 	if self.db.profile.disease then
 		self:Bar(L["bar_disease"], timer.firstDiseaseCD, icon.disease, true, "Green")
 	end
@@ -129,7 +130,7 @@ function module:OnEngage()
 		self:Bar(L["bar_fighting"], timer.fightDuration, icon.fightDuration, true, "White")
 		self:DelayedBar(timer.fightDuration - 10, L["bar_dancingSoon"], timer.dancingSoon, icon.dancing, true, "Cyan")
 	end
-	
+
 	eruption_count = 1
 	eruption_dir = 1
 	timer.erruption = timer.erruptionSlow
@@ -162,9 +163,6 @@ function module:Event(msg)
 	end
 end
 
-
-
-
 function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.disease and self.db.profile.disease then
 		self:Disease()
@@ -176,8 +174,6 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		self:FightStart()
 	end
 end
-
-
 
 function module:Disease()
 	--start a bar only if enough time left before dancing
@@ -203,16 +199,17 @@ function module:DanceStart()
 	self:RemoveBar(L["bar_manaBurn"])
 	self:RemoveBar(L["bar_fighting"])
 	self:RemoveBar(L["bar_dancingSoon"])
-	
+
 	eruption_count = 1
 	timer.erruption = timer.erruptionFast
-	
+
 	self:ScheduleEvent("HeiganErruption", self.Erruption, timer.firstDanceErruption, self)
-	self:ScheduleEvent("bwHeiganToFloor",  self.FightStart, timer.danceDuration, self)
-	
+	self:ScheduleEvent("bwHeiganToFloor", self.FightStart, timer.danceDuration, self)
+
 	if self.db.profile.teleport then
 		self:Message(string.format(L["msg_danceStart"], timer.danceDuration), "Attention")
 		self:Bar(L["bar_dancing"], timer.danceDuration, icon.danceDuration, true, "White")
+		self:Sound("Dance")
 	end
 	if self.db.profile.erruption then
 		self:Bar(L["bar_erruption"] .. eruption_help(eruption_count), timer.firstDanceErruption, icon.erruption, true, "Red")
@@ -222,11 +219,11 @@ end
 function module:FightStart()
 	self:CancelScheduledEvent("bwHeiganToFloor")
 	self:CancelScheduledEvent("HeiganErruption")
-	
+
 	eruption_count = 1
 	timer.erruption = timer.erruptionSlow
 	self:ScheduleEvent("HeiganErruption", self.Erruption, timer.erruption, self)
-	
+
 	if self.db.profile.teleport then
 		self:Message(L["msg_fightStart"], "Attention")
 		self:Bar(L["bar_fighting"], timer.fightDuration, icon.fightDuration, true, "White")
@@ -251,8 +248,7 @@ function module:Erruption()
 	if eruption_count == 1 then
 		eruption_dir = 1
 	end
-		
-	
+
 	local registered, time, elapsed = self:BarStatus(L["bar_fighting"])
 	if registered and timer and elapsed then
 		local remaining = time - elapsed
@@ -270,12 +266,14 @@ function module:Erruption()
 	else
 		if self.db.profile.erruption then
 			self:Bar(L["bar_erruption"] .. eruption_help(eruption_count), timer.erruption, icon.erruption, true, "Red")
-			if UnitName("Player") == "Relar" then DEFAULT_CHAT_FRAME:AddMessage("debugHeigan, here") end
+			if UnitName("Player") == "Relar" then
+				DEFAULT_CHAT_FRAME:AddMessage("debugHeigan, here")
+			end
 		end
 		self:ScheduleEvent("HeiganErruption", self.Erruption, timer.erruption, self)
 	end
 end
 
 function eruption_help(inp)
-	return ' '..inp
+	return ' ' .. inp
 end

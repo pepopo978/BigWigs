@@ -1,26 +1,29 @@
-
 local module, L = BigWigs:ModuleDeclaration("Venom Stalker", "Naxxramas")
 
 module.revision = 20048
-module.enabletrigger = {"Venom Stalker", "Necro Stalker"}
-module.toggleoptions = {"charge"}
+module.enabletrigger = { "Carrion Spinner", "Venom Stalker", "Necro Stalker" }
+module.toggleoptions = { "charge" }
 module.trashMod = true
 
-L:RegisterTranslations("enUS", function() return {
-	cmd = "SpiderTrash",
-	
-	charge_cmd = "charge",
-	charge_name = "Poison Charge",
-	charge_desc = "Displays a cooldown and an icon for Poison Charge.",
-	
-	charge_trigger = "is afflicted by Poison Charge",
-	chargeself_trigger = "You are afflicted by Poison Charge",
-	chargegone_self = "Poison Charge fades from you",
-	charge_bar = "Poison Charge CD",
-} end )
+L:RegisterTranslations("enUS", function()
+	return {
+		cmd = "SpiderTrash",
+
+		charge_cmd = "charge",
+		charge_name = "Poison Charge",
+		charge_desc = "Displays a cooldown and an icon for Poison Charge.",
+
+		charge_trigger = "is afflicted by Poison Charge",
+		chargeself_trigger = "You are afflicted by Poison Charge",
+		chargegone_self = "Poison Charge fades from you",
+		charge_bar = "Poison Charge CD",
+
+		poison_charge_warn = "You've been poisoned, dispel now!",
+	}
+end)
 
 local timer = {
-	charge = {10, 15},
+	charge = { 10, 15 },
 }
 
 local icon = {
@@ -58,10 +61,10 @@ function module:CHAT_MSG_SPELL_AURA_GONE_SELF(msg)
 		end
 	end
 end
-		
+
 function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
 	if msg == string.format(UNITDIESOTHER, "Venom Stalker") or
-	msg == string.format(UNITDIESOTHER, "Necro Stalker") then
+			msg == string.format(UNITDIESOTHER, "Necro Stalker") then
 		deathCount = deathCount + 1
 		if deathCount == 2 then
 			self:SendBossDeathSync()
@@ -73,22 +76,24 @@ function module:Event(msg)
 	if self.db.profile.charge and string.find(msg, L["charge_trigger"]) then
 		if GetTime() > lastCharge + 1 then
 			lastCharge = GetTime()
-			local registered, time, elapsed, running = self:BarStatus(L["charge_bar"]..chargeNumber)
+			local registered, time, elapsed, running = self:BarStatus(L["charge_bar"] .. chargeNumber)
 			if running and elapsed > 9.5 then
-				self:IntervalBar(L["charge_bar"]..chargeNumber, timer.charge[1], timer.charge[2], icon.charge, true, "red")
+				self:IntervalBar(L["charge_bar"] .. chargeNumber, timer.charge[1], timer.charge[2], icon.charge, true, "red")
 			elseif running and elapsed < 10 then
 				if chargeNumber == 1 then
 					chargeNumber = 2
 				else
 					chargeNumber = 1
 				end
-				self:IntervalBar(L["charge_bar"]..chargeNumber, timer.charge[1], timer.charge[2], icon.charge, true, "red")
+				self:IntervalBar(L["charge_bar"] .. chargeNumber, timer.charge[1], timer.charge[2], icon.charge, true, "red")
 			else
-				self:IntervalBar(L["charge_bar"]..chargeNumber, timer.charge[1], timer.charge[2], icon.charge, true, "red")
+				self:IntervalBar(L["charge_bar"] .. chargeNumber, timer.charge[1], timer.charge[2], icon.charge, true, "red")
 			end
+			self:Message(L["poison_charge_warn"], "Personal", true, "DispelPoison")
 		end
 	elseif self.db.profile.charge and string.find(msg, L["chargeself_trigger"]) then
 		poisonsOnSelf = poisonsOnSelf + 1
 		self:WarningSign(icon.charge, 6)
+		self:Message(L["poison_charge_warn"], "Personal", true, "DispelPoison")
 	end
 end
