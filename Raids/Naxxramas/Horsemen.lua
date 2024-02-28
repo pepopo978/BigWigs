@@ -6,7 +6,7 @@ local blaumeux = AceLibrary("Babble-Boss-2.2")["Lady Blaumeux"]
 
 module.revision = 20005
 module.enabletrigger = { thane, mograine, zeliek, blaumeux }
-module.toggleoptions = { "mark", "shieldwall", -1, "meteor", "void", "wrath",
+module.toggleoptions = { "mark", "marksounds", "shieldwall", -1, "meteor", "void", "wrath",
                          "bosskill", "proximity", -1, "healeronerotate",
                          "healertworotate", "healerthreerotate" }
 -- Proximity Plugin
@@ -27,6 +27,10 @@ L:RegisterTranslations("enUS", function()
 		mark_cmd = "mark",
 		mark_name = "Mark Alerts",
 		mark_desc = "Warn for marks",
+
+        marksounds_cmd = "marksound",
+        marksounds_name = "Mark Alert Sounds",
+        marksounds_desc = "Text to speech mark alerts",
 
 		shieldwall_cmd = "shieldwall",
 		shieldwall_name = "Shieldwall Alerts",
@@ -92,77 +96,6 @@ L:RegisterTranslations("enUS", function()
 		proximity_cmd = "proximity",
 		proximity_name = "Proximity Warning",
 		proximity_desc = "Show Proximity Warning Frame",
-	}
-end)
-
-L:RegisterTranslations("esES", function()
-	return {
-		--cmd = "Horsemen",
-
-		--mark_cmd = "mark",
-		mark_name = "Alerta de Marcas",
-		mark_desc = "Avisa para Marcas",
-
-		--shieldwall_cmd  = "shieldwall",
-		shieldwall_name = "Alerta de Muro de escudo",
-		shieldwall_desc = "Avisa para Muro de escudo",
-
-		--void_cmd = "void",
-		void_name = "Alerta de Zona de vacío",
-		void_desc = "Avisa cuando Lady Blaumeux lance Zona de vacío.",
-
-		--meteor_cmd = "meteor",
-		meteor_name = "Alerta de Meteoro",
-		meteor_desc = "Avisa cuando Thane lance Meteoro.",
-
-		--wrath_cmd = "wrath",
-		wrath_name = "Alerta de Cólera sagrada",
-		wrath_desc = "Avisa cuando Zeliek lance Cólera sagrada.",
-
-		markbar = "Marca de %d",
-		mark_warn = "¡Marca de %d!",
-		mark_warn_5 = "Marca de %d en 5 segundos",
-		marktrigger1 = "sufre de Marca de Zeliek",
-		marktrigger2 = "sufre de Marca de Korth'azz",
-		marktrigger3 = "sufre de Marca de Blaumeux",
-		marktrigger4 = "sufre de Marca de Mograine",
-
-		healeronerotate = "Healer 1 Rotate",
-		healertworotate = "Healer 2 Rotate",
-		healerthreerotate = "Healer 3 Rotate",
-
-		healeronerotate_cmd = "healeronerotate",
-		healeronerotate_name = "Healer 1 Alerts",
-		healeronerotate_desc = "Sound for Healer 1 rotate",
-
-		healertworotate_cmd = "healertworotate",
-		healertworotate_name = "Healer 2 Alerts",
-		healertworotate_desc = "Sound for Healer 2 rotate",
-
-		healerthreerotate_cmd = "healerthreerotate",
-		healerthreerotate_name = "Healer 3 Alerts",
-		healerthreerotate_desc = "Sound for Healer 3 rotate",
-
-		voidtrigger = "Lady Blaumeux lanza Zona de vacío.",
-		voidwarn = "Zona de vacío entrante",
-		voidbar = "Zona de vacío",
-
-		meteortrigger = "Meteoro de Thane Korth'azz golpea ",
-		meteortrigger2 = "I like my meat extra crispy!",
-		meteorwarn = "¡Meteoro!",
-		meteorbar = "Meteoro",
-
-		wrathtrigger = "Cólera sagrada de Sir Zeliek impacta ",
-		wrathtrigger2 = "I have no choice but to obey!",
-		wrathwarn = "¡Cólera sagrada!",
-		wrathbar = "Cólera sagrada",
-
-		startwarn = "Entrando en combate con Los Cuatro Caballoshombre! Marca en ~17 segundos",
-
-		shieldwallbar = "%s - Muro de escudo",
-		shieldwalltrigger = "(.*) gana Muro de escudo.",
-		shieldwall_warn = "%s - Muro de escudo por 20 segundos",
-		shieldwall_warn_over = "¡%s - Muro de escudo DESAPARECE!",
 	}
 end)
 

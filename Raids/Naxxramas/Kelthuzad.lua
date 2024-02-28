@@ -95,7 +95,7 @@ L:RegisterTranslations("enUS", function()
 
 		--Mortal Wound from Unstoppable Abomination, stacking, -10% healing, 15sec
 
-		trigger_engage = "Minions, servants, soldiers of the cold dark, obey the call of Kel'Thuzad!", --CHAT_MSG_MONSTER_YELL
+		trigger_engage = "Minions, servants, soldiers of the cold dark", --CHAT_MSG_MONSTER_YELL
 		bar_phase1 = "Phase 1",
 
 		trigger_phase2_1 = "Pray for mercy!", --CHAT_MSG_MONSTER_YELL

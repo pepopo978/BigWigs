@@ -27,6 +27,22 @@ RAID_CLASS_COLORS = {
 	["WARRIOR"] = { r = 0.78, g = 0.61, b = 0.43, colorStr = "ffc79c6e" },
 }
 
+-- AceConsole zone commands
+-- Wasn't working when I tried to use these
+BIGWIGS_ZONE_NAMES = {
+	["Karazhan"] = "1.Kara",
+	["Zul'Gurub"] = "2.ZG",
+	["Ruins of Ahn'Qiraj"] = "3.AQ20",
+	["Molten Core"] = "4.MC",
+	["Blackwing Lair"] = "5.BWL",
+	["Emerald Sanctum"] = "6.ES",
+	["Ahn'Qiraj"] = "7.AQ40",
+	["Naxxramas"] = "8.Naxxramas",
+	["Onyxia's Lair"] = "Onyxia",
+	["Silithus"] = "Silithus",
+	["Outdoor Raid Bosses"] = "Outdoor",
+	["Outdoor Raid Bosses Zone"] = "Outdoor",
+}
 ----------------------------
 --      Localization      --
 ----------------------------
@@ -396,6 +412,7 @@ end
 function BigWigs.modulePrototype:GetEngageSync()
 	return "BossEngaged"
 end
+
 function BigWigs.modulePrototype:SendEngageSync()
 	if self.bossSync then
 		--self:TriggerEvent("BigWigs_SendSync", "BossEngaged "..self:ToString())
@@ -841,7 +858,10 @@ function BigWigs:RegisterModule(name, module)
 		opts = {}
 		for _, v in pairs(module.toggleoptions) do
 			if v ~= -1 then
-				opts[v] = true
+				opts[v] = true -- default to true
+				if module.toggleoptionsdefaults and module.toggleoptionsdefaults[v] ~= nil then
+					opts[v] = module.toggleoptionsdefaults[v]
+				end
 			end
 			if module.defaultDB and module.defaultDB[v] ~= nil then
 				opts[v] = module.defaultDB[v]

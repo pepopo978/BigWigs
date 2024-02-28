@@ -71,7 +71,7 @@ local timer = {
 	firstDanceErruption = 4,
 	erruption = 0, -- will be changed during the encounter
 	erruptionSlow = 10,
-	erruptionFast = 3, -- was getting slightly out of sync with at 3
+	erruptionFast = 3.1, -- was getting slightly out of sync with it at 3, maybe only on vmangos?
 	dancingSoon = 10,
 }
 local icon = {

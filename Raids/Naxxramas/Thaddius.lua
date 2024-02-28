@@ -4,7 +4,7 @@ local stalagg = AceLibrary("Babble-Boss-2.2")["Stalagg"]
 
 module.revision = 30014
 module.enabletrigger = { module.translatedName, feugen, stalagg }
-module.toggleoptions = { "sounds", "bigicon", "enrage", "charge", "polarity", -1, "power", "magneticPull", "phase", "bosskill" }
+module.toggleoptions = { "sounds", "bigicon", "enrage", "charge", "polarity", -1, "power", "magneticPull", "phase", "throw", "bosskill" }
 
 L:RegisterTranslations("enUS", function()
 	return {
@@ -64,137 +64,39 @@ L:RegisterTranslations("enUS", function()
 		enrage_bar = "Enrage",
 
 		trigger_feugenDead1 = "Feugen dies.", --CHAT_MSG_COMBAT_HOSTILE_DEATH ok
-		trigger_feugenDead2 = "No... more... Feugen...", --CHAT_MSG_MONSTER_YELL cannot confirm if this exists, would be on feugen death
+		trigger_feugenDead2 = "No... more... Feugen", --CHAT_MSG_MONSTER_YELL cannot confirm if this exists, would be on feugen death
 		trigger_stalaggDead1 = "Stalagg dies.", --CHAT_MSG_COMBAT_HOSTILE_DEATH ok
-		trigger_stalaggDead2 = "Master save me...", --CHAT_MSG_MONSTER_YELL ok
+		trigger_stalaggDead2 = "save me", --CHAT_MSG_MONSTER_YELL ok
 
-		msg_phase2 = "Phase 2",
 		bar_phase2 = "Thaddius Active",
 		polarityPosition_warn = "----- Thaddius +++++",
 
 		trigger_3sec = "%s overloads!", --CHAT_MSG_RAID_BOSS_EMOTE
 
+		powerSurge_trigger = "Stalagg gains Power Surge.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+		powerSurge_warn = "Power Surge on Stalagg!",
+		powerSurge_bar = "Power Surge",
+
 		polarityShiftCast_trigger = "Thaddius begins to cast Polarity Shift", --?? CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 		polarityShiftCast_warn = "Polarity Shift inc!",
 		polarityShiftCast_bar = "Polarity Shift Cast",
 		polarityShiftCD_bar = "Polarity Shift CD",
 
-		polarityShift_trigger = "Now YOU feel pain!", --CHAT_MSG_MONSTER_YELL
+		polarityShift_trigger = "now you feel pain", --CHAT_MSG_MONSTER_YELL
 
-		nochange = "Your debuff did not change!",
 		positivetype = "Interface\\Icons\\Spell_ChargePositive",
 		poswarn = "You changed to a Positive Charge!",
 		negativetype = "Interface\\Icons\\Spell_ChargeNegative",
 		negwarn = "You changed to a Negative Charge!",
 		polaritytickbar = "Polarity tick",
 
-		powerSurge_trigger = "Stalagg gains Power Surge.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
-		powerSurge_warn = "Power Surge on Stalagg!",
-		powerSurge_bar = "Power Surge",
+        throwbar = "Throw",
+        throwwarn = "Throw in ~5 seconds!",
 
 		magneticPull_Bar = "Magnetic Pull",
 
 		trigger_manaBurn = "Feugen's Static Field hits you for", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 		trigger_manaBurn2 = "You absorb Feugen's Static Field.", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
-		msg_manaBurn = "Feugen Mana Burned You! 30 yards AoE",
-	}
-end)
-
-L:RegisterTranslations("esES", function()
-	return {
-		--cmd = "Thaddius",
-
-		--bigicon_cmd = "bigicon",
-		bigicon_name = "BigIcon Magnetic Pull Alert",
-		bigicon_desc = "Warns adds tanks to taunt for Magnetic Pull with a BigIcon",
-
-		--sounds_cmd = "sounds",
-		sounds_name = "Sound Alert for Magnetic Pull",
-		sounds_desc = "Warns adds tanks to taunt for Magnetic Pull with sound",
-
-		--enrage_cmd = "enrage",
-		enrage_name = "Enrage Alert",
-		enrage_desc = "Warn for Enrage",
-
-		--phase_cmd = "phase",
-		phase_name = "Phase Alerts",
-		phase_desc = "Warn for Phase transitions",
-
-		--polarity_cmd = "polarity",
-		polarity_name = "Polarity Shift Alert",
-		polarity_desc = "Warn for polarity shifts",
-
-		--power_cmd = "power",
-		power_name = "Power Surge Alert",
-		power_desc = "Warn for Stalagg's power surge",
-
-		--adddeath_cmd = "adddeath",
-		adddeath_name = "Add Death Alert",
-		adddeath_desc = "Alerts when an add dies.",
-
-		--charge_cmd = "charge",
-		charge_name = "Charge Alert",
-		charge_desc = "Warn about Positive/Negative charge for yourself only.",
-
-		--throw_cmd = "throw",
-		throw_name = "Alerta de Lanzar",
-		throw_desc = "Avisa para cambios de la tarima de los tanques.",
-
-		--magneticPull_cmd = "magneticPull",
-		magneticPull_name = "Magnetic Pull Alerts",
-		magneticPull_desc = "Warn about tank platform swaps.",
-
-		feugen = "Feugen",
-		stalagg = "Stalagg",
-
-		enrage_trigger = "%s goes into a berserker rage!",
-		enrage_warn = "Enrage!",
-		enrage60sec_warn = "Enrage in 60 seconds",
-		enrage30sec_warn = "Enrage in 30 seconds",
-		enrage10sec_warn = "Enrage in 10 seconds",
-		enrage_bar = "Enrage",
-
-		start_trigger = "Stalagg crush you!", --yell
-		start_trigger1 = "Feed you to master!", --yell
-
-		teslaOverload_trigger = "overloads!",
-
-		phase2_trigger1 = "EAT YOUR BONES", --yell
-		phase2_trigger2 = "BREAK YOU!", --yell
-		phase2_trigger3 = "KILL!", --yell
-
-		--stalaggDead_trigger = "Stalagg dies.", --"CHAT_MSG_COMBAT_HOSTILE_DEATH"
-		adddeath2 = "Master save me...",
-		--feugenDead_trigger = "Feugen dies.", --"CHAT_MSG_COMBAT_HOSTILE_DEATH"
-		adddeath = "No... more... Feugen...",
-		phase2_14sec_warn = "Thaddius in 14 seconds",
-
-		powerSurge_trigger = "Stalagg gains Power Surge.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
-		powerSurge_warn = "Power Surge on Stalagg!",
-		powerSurge_bar = "Power Surge",
-
-		magneticPull_trigger = "casts Magnetic Pull", --?? CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
-		magneticPull_warn = "Magnetic Pull in 5 seconds!",
-		magneticPull_Bar = "Magnetic Pull",
-
-		phase2_trigger = "overloads!", --emote
-		phase2_warn = "Phase 2, Thaddius in 4 seconds",
-		phase2_bar = "Phase 2",
-
-		polarityPosition_warn = "----- Thaddius +++++",
-		polarityShift_trigger = "Now YOU feel pain!", --yell
-
-		polarityShiftCast_trigger = "Thaddius begins to cast Polarity Shift", --?? CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
-		polarityShiftCast_warn = "Polarity Shift inc!",
-		polarityShiftCast_bar = "Polarity Shift Cast",
-		polarityShiftCD_bar = "Polarity Shift CD",
-
-		nochange = "Your debuff did not change!",
-		positivetype = "Interface\\Icons\\Spell_ChargePositive",
-		poswarn = "You changed to a Positive Charge!",
-		negativetype = "Interface\\Icons\\Spell_ChargeNegative",
-		negwarn = "You changed to a Negative Charge!",
-		polaritytickbar = "Polarity tick",
 	}
 end)
 
@@ -298,7 +200,7 @@ function module:OnEngage()
 	self:TriggerEvent("BigWigs_SetHPBar", self, L["stalagg"], 0)
 
 	self:Throw()
-	self:ScheduleRepeatingEvent("bwthaddiusthrow", self.Throw, timer.throw, self)
+	self:ScheduleRepeatingEvent("bwthaddiusThrow", self.Throw, timer.throw, self)
 
 	self:ScheduleRepeatingEvent("bwThaddiusAddCheck", self.CheckAddHP, 0.5, self)
 	if self.db.profile.magneticPull then
@@ -341,15 +243,15 @@ end
 function module:Event(msg)
 	if string.find(msg, L["enrage_trigger"]) then
 		self:Sync(syncName.enrage)
-	elseif msg == L["trigger_feugenDead1"] or msg == L["trigger_feugenDead2"] then
+	elseif string.find(msg, L["trigger_feugenDead1"]) or string.find(msg, L["trigger_feugenDead2"]) then
 		self:Sync(syncName.feugenDeath)
-	elseif msg == L["trigger_stalaggDead1"] or msg == L["trigger_stalaggDead2"] then
+	elseif string.find(msg, L["trigger_stalaggDead1"]) or string.find(msg, L["trigger_stalaggDead2"]) then
 		self:Sync(syncName.stalaggDeath)
 	elseif msg == L["trigger_3sec"] then
 		self:Sync(syncName.teslaOverload)
 	elseif string.find(msg, L["polarityShiftCast_trigger"]) then
 		self:Sync(syncName.polarityShiftCast)
-	elseif string.find(msg, L["polarityShift_trigger"]) then
+	elseif string.find(string.lower(msg), L["polarityShift_trigger"]) then
 		self:Sync(syncName.polarity)
 	elseif string.find(msg, L["powerSurge_trigger"]) then
 		self:Sync(syncName.powerSurge)
@@ -393,6 +295,13 @@ function module:Enrage()
 	self:WarningSign(icon.enrage, 0.7)
 end
 
+function module:Throw()
+    if self.db.profile.throw then
+        self:Bar(L["throwbar"], timer.throw, icon.throw)
+        self:DelayedMessage(timer.throw - 5, L["throwwarn"], "Urgent")
+    end
+end
+
 function module:FeugenDeath()
 	feugenDead = true
 	if stalaggDead == true then
@@ -415,6 +324,7 @@ function module:AddsDead()
 	--self:RemoveBar(L["stalagg"])
 	self:TriggerEvent("BigWigs_StopHPBar", self, L["feugen"])
 	self:TriggerEvent("BigWigs_StopHPBar", self, L["stalagg"])
+	self:CancelScheduledEvent("bwthaddiusThrow")
 	self:CancelScheduledEvent("bwThaddiusAddCheck")
 	self:CancelScheduledEvent("bwThaddiusMagneticPull")
 	self:RemoveBar(L["magneticPull_Bar"])
