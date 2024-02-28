@@ -6,7 +6,8 @@ local blaumeux = AceLibrary("Babble-Boss-2.2")["Lady Blaumeux"]
 
 module.revision = 20005
 module.enabletrigger = { thane, mograine, zeliek, blaumeux }
-module.toggleoptions = { "mark", "shieldwall", -1, "meteor", "void", "wrath", "bosskill", "healeronerotate",
+module.toggleoptions = { "mark", "shieldwall", -1, "meteor", "void", "wrath",
+                         "bosskill", "healeronerotate", "proximity",
                          "healertworotate", "healerthreerotate" }
 -- Proximity Plugin
 module.proximityCheck = function(unit)
@@ -50,6 +51,22 @@ L:RegisterTranslations("enUS", function()
 		marktrigger2 = "afflicted by Mark of Korth'azz",
 		marktrigger3 = "afflicted by Mark of Blaumeux",
 		marktrigger4 = "afflicted by Mark of Mograine",
+
+		healeronerotate = "Healer 1 Rotate",
+		healertworotate = "Healer 2 Rotate",
+		healerthreerotate = "Healer 3 Rotate",
+
+		healeronerotate_cmd = "healeronerotate",
+		healeronerotate_name = "Healer 1 Alerts",
+		healeronerotate_desc = "Sound for Healer 1 rotate",
+
+		healertworotate_cmd = "healertworotate",
+		healertworotate_name = "Healer 2 Alerts",
+		healertworotate_desc = "Sound for Healer 2 rotate",
+
+		healerthreerotate_cmd = "healerthreerotate",
+		healerthreerotate_name = "Healer 3 Alerts",
+		healerthreerotate_desc = "Sound for Healer 3 rotate",
 
 		voidtrigger = "Your life is mine!",
 		voidwarn = "Void Zone Incoming",
@@ -109,6 +126,22 @@ L:RegisterTranslations("esES", function()
 		marktrigger2 = "sufre de Marca de Korth'azz",
 		marktrigger3 = "sufre de Marca de Blaumeux",
 		marktrigger4 = "sufre de Marca de Mograine",
+
+		healeronerotate = "Healer 1 Rotate",
+		healertworotate = "Healer 2 Rotate",
+		healerthreerotate = "Healer 3 Rotate",
+
+		healeronerotate_cmd = "healeronerotate",
+		healeronerotate_name = "Healer 1 Alerts",
+		healeronerotate_desc = "Sound for Healer 1 rotate",
+
+		healertworotate_cmd = "healertworotate",
+		healertworotate_name = "Healer 2 Alerts",
+		healertworotate_desc = "Sound for Healer 2 rotate",
+
+		healerthreerotate_cmd = "healerthreerotate",
+		healerthreerotate_name = "Healer 3 Alerts",
+		healerthreerotate_desc = "Sound for Healer 3 rotate",
 
 		voidtrigger = "Lady Blaumeux lanza Zona de vacío.",
 		voidwarn = "Zona de vacío entrante",
