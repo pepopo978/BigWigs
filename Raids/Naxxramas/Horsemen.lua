@@ -7,7 +7,7 @@ local blaumeux = AceLibrary("Babble-Boss-2.2")["Lady Blaumeux"]
 module.revision = 20005
 module.enabletrigger = { thane, mograine, zeliek, blaumeux }
 module.toggleoptions = { "mark", "shieldwall", -1, "meteor", "void", "wrath",
-                         "bosskill", "healeronerotate", "proximity",
+                         "bosskill", "proximity", -1, "healeronerotate",
                          "healertworotate", "healerthreerotate" }
 -- Proximity Plugin
 module.proximityCheck = function(unit)
