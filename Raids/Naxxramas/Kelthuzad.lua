@@ -27,6 +27,9 @@ module.toggleoptions = {
 	"proximity",
 	"bosskill",
 }
+module.toggleoptionsdefaults = {
+	mcicon = false,
+}
 
 L:RegisterTranslations("enUS", function()
 	return {
