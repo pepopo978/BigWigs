@@ -3,7 +3,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Kel'Thuzad", "Naxxramas")
 
-module.revision = 30056
+module.revision = 30058
 module.enabletrigger = module.translatedName
 module.toggleoptions = {
 	"phase",
@@ -464,7 +464,7 @@ function module:MINIMAP_ZONE_CHANGED(msg)
 end
 
 function module:UNIT_HEALTH(msg)
-	if UnitName(msg) == self.translatedName then
+	if UnitName(msg) == module.translatedName then
 		local health = UnitHealth(msg)
 		if health > 40 and health <= 45 and p3warn == nil then
 			self:Sync(syncName.phase3soon)
@@ -780,6 +780,8 @@ end
 function module:McYell()
 	mcYellTime = GetTime()
 	
+	self:RemoveBar(L["bar_mcCd"])
+	
 	self:DelayedIntervalBar(timer.mcAfflic, L["bar_mcCd"], timer.mcCd[1], timer.mcCd[2], icon.mc, true, color.mc)
 	
 	if UnitClass("Player") == "Mage" or UnitClass("Player") == "Warlock" then
@@ -889,6 +891,8 @@ function module:FrostBlast(rest)
 end
 
 function module:Detonate(rest)
+	self:RemoveBar(L["bar_detonateCd"])
+	
 	if rest == UnitName("Player") then
 		SendChatMessage("Detonate on "..UnitName("Player").."!","YELL")
 	end
@@ -910,6 +914,8 @@ function module:Detonate(rest)
 end
 
 function module:DetonateFade(rest)
+	self:RemoveBar(rest..L["bar_detonateAfflic"])
+	
 	if IsRaidLeader() or IsRaidOfficer() then
 		for i=1,GetNumRaidMembers() do
 			if UnitName("raid"..i) == rest then
