@@ -485,7 +485,7 @@ function module:UNIT_HEALTH(msg)
 end
 
 function module:CHAT_MSG_MONSTER_YELL(msg)
-	if msg == L["trigger_engage"] then
+	if string.find(msg, L["trigger_engage"]) then
 		module:SendEngageSync()
 
 	elseif msg == L["trigger_phase2_1"] or msg == L["trigger_phase2_2"] or msg == L["trigger_phase2_3"] then
