@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Qiraji Brainwasher", "Ahn'Qiraj")
 
-module.revision = 30055
+module.revision = 30061
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"mc"}
 module.trashMod = true
@@ -44,7 +44,8 @@ local syncName = {
 }
 
 function module:OnEnable()
-	self:RegisterEvent("CHAT_MSG_SAY", "Events")--Debug
+	--self:RegisterEvent("CHAT_MSG_SAY", "Events")--Debug
+	
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE", "Events")--trigger_mcOther
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Events")--trigger_mcYou
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Events")--trigger_mcFade
