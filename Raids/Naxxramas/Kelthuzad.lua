@@ -3,14 +3,14 @@
 
 local module, L = BigWigs:ModuleDeclaration("Kel'Thuzad", "Naxxramas")
 
-module.revision = 30058
+module.revision = 30060
 module.enabletrigger = module.translatedName
 module.toggleoptions = {
 	"phase",
 	"p1adds",
 	-1,
 	"mc",
-	"mcicon",
+	--"mcicon",
 	"fissure",
 	"frostblast",
 	"frostblastframe",
@@ -43,9 +43,9 @@ L:RegisterTranslations("enUS", function() return {
 	mc_name = "Mind Control Alerts",
 	mc_desc = "Warn for Mind Controls.",
 
-	mcicon_cmd = "mcicon",
-	mcicon_name = "Raid Icon on Mind Control",
-	mcicon_desc = "Place a Raid Icon on the Mind Control Target.",
+	--mcicon_cmd = "mcicon",
+	--mcicon_name = "Raid Icon on Mind Control",
+	--mcicon_desc = "Place a Raid Icon on the Mind Control Target.",
 
 	fissure_cmd = "fissure",
 	fissure_name = "Shadow Fissure Alerts",
@@ -800,59 +800,59 @@ function module:Mc(rest)
 		mc1 = rest
 		self:Bar(rest..L["bar_mcAfflic"].. " >Click Me<", timer.mcAfflic, icon.mc, true, color.mc)
 		self:SetCandyBarOnClick("BigWigsBar "..rest..L["bar_mcAfflic"].. " >Click Me<", function(name, button, extra) TargetByName(extra, true) end, rest)
-		if (IsRaidLeader() or IsRaidOfficer()) and self.db.profile.mcicon then
+		--[[if (IsRaidLeader() or IsRaidOfficer()) and self.db.profile.mcicon then
 			for i=1,GetNumRaidMembers() do
 				if UnitName("raid"..i) == rest then
 					SetRaidTargetIcon("raid"..i, 1)
 				end
 			end
-		end
+		end]]--
 	elseif mc2 == nil then
 		mc2 = rest
 		self:Bar(rest..L["bar_mcAfflic"].. " >Click Me<", timer.mcAfflic, icon.mc, true, color.mc)
 		self:SetCandyBarOnClick("BigWigsBar "..rest..L["bar_mcAfflic"].. " >Click Me<", function(name, button, extra) TargetByName(extra, true) end, rest)
-		if (IsRaidLeader() or IsRaidOfficer()) and self.db.profile.mcicon then
+		--[[if (IsRaidLeader() or IsRaidOfficer()) and self.db.profile.mcicon then
 			for i=1,GetNumRaidMembers() do
 				if UnitName("raid"..i) == rest then
 					SetRaidTargetIcon("raid"..i, 2)
 				end
 			end
-		end
+		end]]--
 	elseif mc3 == nil then
 		mc3 = rest
 		self:Bar(rest..L["bar_mcAfflic"].. " >Click Me<", timer.mcAfflic, icon.mc, true, color.mc)
 		self:SetCandyBarOnClick("BigWigsBar "..rest..L["bar_mcAfflic"].. " >Click Me<", function(name, button, extra) TargetByName(extra, true) end, rest)
-		if (IsRaidLeader() or IsRaidOfficer()) and self.db.profile.mcicon then
+		--[[if (IsRaidLeader() or IsRaidOfficer()) and self.db.profile.mcicon then
 			for i=1,GetNumRaidMembers() do
 				if UnitName("raid"..i) == rest then
 					SetRaidTargetIcon("raid"..i, 3)
 				end
 			end
-		end
+		end]]--
 	elseif mc4 == nil then
 		mc4 = rest
 		self:Bar(rest..L["bar_mcAfflic"].. " >Click Me<", timer.mcAfflic, icon.mc, true, color.mc)
 		self:SetCandyBarOnClick("BigWigsBar "..rest..L["bar_mcAfflic"].. " >Click Me<", function(name, button, extra) TargetByName(extra, true) end, rest)
-		if (IsRaidLeader() or IsRaidOfficer()) and self.db.profile.mcicon then
+		--[[if (IsRaidLeader() or IsRaidOfficer()) and self.db.profile.mcicon then
 			for i=1,GetNumRaidMembers() do
 				if UnitName("raid"..i) == rest then
 					SetRaidTargetIcon("raid"..i, 4)
 				end
 			end
-		end
+		end]]--
 	end
 end
 
 function module:McFade(rest)
 	self:RemoveBar(rest..L["bar_mcAfflic"].. " >Click Me<")
 	
-	if IsRaidLeader() or IsRaidOfficer() then
+	--[[if IsRaidLeader() or IsRaidOfficer() then
 		for i=1,GetNumRaidMembers() do
 			if UnitName("raid"..i) == rest then
 				SetRaidTargetIcon("raid"..i, 0)
 			end
 		end
-	end
+	end]]--
 	
 	if mc1 ~= nil and mc2 ~= nil and mc3 ~= nil and mc4 ~= nil then
 		mc1 = nil
