@@ -239,7 +239,7 @@ BigWigs.cmdtable = {type = "group", handler = BigWigs, args = {
 }}
 BigWigs:RegisterChatCommand({"/bw", "/BigWigs"}, BigWigs.cmdtable)
 BigWigs.debugFrame = ChatFrame1
-BigWigs.revision = 30061
+BigWigs.revision = 30062
 
 
 function BigWigs:DebugMessage(msg, module)
@@ -327,7 +327,9 @@ function BigWigs.modulePrototype:Engage()
 	if self.bossSync and not self.engaged then
 		self.engaged = true
 		self:Message(string.format(L["%s engaged!"], self.translatedName), "Positive")
+
 		BigWigsBossRecords:StartBossfight(self)
+
 		self:OnEngage()
 	end
 end
@@ -358,6 +360,7 @@ function BigWigs.modulePrototype:Victory()
 		end
 
 		BigWigsBossRecords:EndBossfight(self)
+
 
 		self:DebugMessage("Boss dead, disabling module ["..self:ToString().."].")
 		self.core:DisableModule(self:ToString())

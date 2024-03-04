@@ -5,6 +5,7 @@ module.revision = 30041
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"fear", "knock", "thunderclap"}
 
+
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Berserker",
 	
@@ -63,6 +64,7 @@ local syncName = {
 
 function module:OnEnable()
 	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
+	
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")--trigger_fear1
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")--trigger_fear1
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")--trigger_fear1
