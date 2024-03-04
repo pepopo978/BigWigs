@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Mad Servant", "Zul'Gurub")
 
-module.revision = 30057
+module.revision = 30059
 module.enabletrigger = {}--module.translatedName
 module.toggleoptions = {"portal"}
 module.trashMod = true
@@ -41,6 +41,10 @@ local syncName = {
 local portalNum = 1
 local lastPortalTime = GetTime()
 
+function module:OnRegister()
+	self:RegisterEvent("MINIMAP_ZONE_CHANGED")
+end
+
 function module:OnEnable()
 	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
 	
@@ -58,6 +62,14 @@ function module:OnDisengage()
 end
 
 function module:CheckForWipe(event)
+end
+
+function module:MINIMAP_ZONE_CHANGED(msg)
+	if GetMinimapZoneText() ~= "Edge of Madness" or self.core:IsModuleActive(module.translatedName) then
+		return
+	elseif GetMinimapZoneText() == "Edge of Madness" then
+		self.core:EnableModule(module.translatedName)
+	end
 end
 
 function module:Event(msg)

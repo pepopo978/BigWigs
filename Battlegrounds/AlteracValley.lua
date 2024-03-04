@@ -1,12 +1,8 @@
 
 local module, L = BigWigs:ModuleDeclaration("Alterac Valley", "Alterac Valley")
 
-module.revision = 30050
-module.enabletrigger = {
-  --"Stormpike Herald",
-  --"Stormpike Owl",
-  --"Frostwolf Herald",
-}
+module.revision = 30062
+module.enabletrigger = {}
 module.toggleoptions = {"towers", "gy", "mine", "rez", "start", "captain", "korrak", "gameend", "lord", "boss"}
 
 L:RegisterTranslations("enUS", function() return {
@@ -54,12 +50,16 @@ L:RegisterTranslations("enUS", function() return {
 	
 	
 	--lord trigger
-	--rez trigger
 	
-	--does this work for mine too?
+	--rez trigger
+		--activate check on death -> scan for not dead, when not dead -> expect this to be the timer
+		--getting rez'd / corpse rez / canceling spirit rez / ankh etc
+	
 	trigger_gyUnderAttack = "(.+) is under attack! If left unchecked, the (.+) will capture it!", --CHAT_MSG_MONSTER_YELL
 	trigger_towerUnderAttack = "(.+) is under attack! If left unchecked, the (.+) will destroy it!", --CHAT_MSG_MONSTER_YELL
 	trigger_defend = "(.+) was taken by the (.+)!", --CHAT_MSG_MONSTER_YELL
+	
+	trigger_mine = "The (.+) has taken the (.+)! Its supplies will now be used for reinforcements!", --CHAT_MSG_MONSTER_YELL
 	
 	msg_DrekHp = "Drek'Thar HP: ",
 	msg_VannHp = "Vandarr HP: ",
@@ -68,11 +68,12 @@ L:RegisterTranslations("enUS", function() return {
 	msg_balindaDead = "Captain Balinda Stonehearth Died",
 	msg_korrakDead = "Korrak the Bloodrager Died",
 	
-	trigger_gameStart = "Game starts in (.+) seconds.",
+	trigger_gameStart = "(.+) (.+) until the battle for Alterac Valley begins.",
+	trigger_gameHasStarted = "The battle for Alterac Valley has begun!",
 	bar_gameStart = "Game Start",
 	
-	--is there a minute on and a second one? if so, do same method as commonAuras for server shutdown
-	trigger_gameEnd = "Game closing in (.+) seconds. Too few players.",
+	--msg to be confirmed once it gets below 2 minutes
+	trigger_gameEnd = "Not enough players. This game will close in (.+) (.+).",
 	bar_gameEnd = "Game Close",
     }
 end)
@@ -80,6 +81,7 @@ end)
 local timer = {
     towers = 60*5,
     graveyards = 60*5,
+	mines = 60*5, -- to be confirmed
 }
 local icon = {
     alliance = "inv_bannerpvp_02",
@@ -96,36 +98,51 @@ local color = {
 	gameEnd = "White",
 }
 local syncName = {
-    gy = "GraveYards"..module.revision,
-    tower = "Towers"..module.revision,
+    gy = "AV_GraveYards"..module.revision,
+    tower = "AV_Towers"..module.revision,
 	
-	drek50 = "Drek50"..module.revision,
-	drek40 = "Drek40"..module.revision,
-	drek30 = "Drek30"..module.revision,
-	drek20 = "Drek20"..module.revision,
-	drek10 = "Drek10"..module.revision,
+	drek50 = "AV_Drek50"..module.revision,
+	drek40 = "AV_Drek40"..module.revision,
+	drek30 = "AV_Drek30"..module.revision,
+	drek20 = "AV_Drek20"..module.revision,
+	drek10 = "AV_Drek10"..module.revision,
 	
-	vann50 = "Vann50"..module.revision,
-	vann40 = "Vann40"..module.revision,
-	vann30 = "Vann30"..module.revision,
-	vann20 = "Vann20"..module.revision,
-	vann10 = "Vann10"..module.revision,
+	vann50 = "AV_Vann50"..module.revision,
+	vann40 = "AV_Vann40"..module.revision,
+	vann30 = "AV_Vann30"..module.revision,
+	vann20 = "AV_Vann20"..module.revision,
+	vann10 = "AV_Vann10"..module.revision,
 	
-	galvDead = "GalvDead"..module.revision,
-	balindaDead = "BalindaDead"..module.revision,
-	korrakDead = "KorrakDead"..module.revision,
+	galvDead = "AV_GalvDead"..module.revision,
+	balindaDead = "AV_BalindaDead"..module.revision,
+	korrakDead = "AV_KorrakDead"..module.revision,
 	
-	gameStart = "GameStart"..module.revision,
-	gameEnd = "GameEnd"..module.revision,
+	gameStart = "AV_GameStart"..module.revision,
+	gameStarted = "AV_GameStarted"..module.revision,
+	
+	gameEnd = "AV_GameEnd"..module.revision,
+	countPlayers = "AV_CountPlayers"..module.revision,
 }
 
 function module:OnRegister()
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+	self:RegisterEvent("MINIMAP_ZONE_CHANGED")
 end
 
 function module:OnEnable()
-    self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
+    --self:RegisterEvent("CHAT_MSG_SAY") --debug
+	
+	
+	self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
 	self:RegisterEvent("CHAT_MSG_SYSTEM")
+	self:RegisterEvent("CHAT_MSG_BG_SYSTEM_NEUTRAL")
+	
+	--self:RegisterEvent("CHAT_MSG_BATTLEGROUND")
+	--self:RegisterEvent("CHAT_MSG_BG_SYSTEM_HORDE")
+	--self:RegisterEvent("CHAT_MSG_BG_SYSTEM_ALLIANCE")
+	
+	
+	self:RegisterEvent("UNIT_HEALTH")
 	
     self:ThrottleSync(8, syncName.gy)
     self:ThrottleSync(8, syncName.tower)
@@ -147,7 +164,10 @@ function module:OnEnable()
 	self:ThrottleSync(8, syncName.korrakDead)
 	
 	self:ThrottleSync(8, syncName.gameStart)
+	self:ThrottleSync(8, syncName.gameStarted)
+	
 	self:ThrottleSync(8, syncName.gameEnd)
+	self:ThrottleSync(4, syncName.countPlayers)
 end
 
 function module:OnSetup()
@@ -169,6 +189,19 @@ function module:ZONE_CHANGED_NEW_AREA(msg)
 	end
 
 	self.core:EnableModule(module.translatedName)
+end
+
+function module:MINIMAP_ZONE_CHANGED(msg)
+	self:ZONE_CHANGED_NEW_AREA()
+end
+
+function module:CHAT_MSG_SAY(msg)
+	--debug
+	if UnitName("Player") == "Dreadsome" then
+		if msg == "test" then
+			self:Sync(syncName.gameEnd .. " " .. 68)
+		end
+	end
 end
 
 function module:CHAT_MSG_MONSTER_YELL(msg)
@@ -203,18 +236,46 @@ function module:CHAT_MSG_MONSTER_YELL(msg)
 		if obj then 
 			self:RemoveBar(obj)
 		end
+		
+	elseif string.find(msg, L["trigger_mine"]) then
+		local _, _, faction, mine = string.find(msg, L["trigger_mine"])
+		if mine and faction then
+			
+			self:RemoveBar(mine)
+			
+			if faction == "Alliance" then
+				self:Bar(mine, timer.mines, icon.alliance, true, color.alliance)
+			elseif faction == "Horde" then
+				self:Bar(mine, timer.mines, icon.horde, true, color.horde)
+			end
+		end
 	end
 end
 
-function module:CHAT_MSG_SYSTEM(msg)
-	if UnitName("Player") == "Dreadsome" then DEFAULT_CHAT_FRAME:AddMessage(msg) end
-	
+function module:CHAT_MSG_BG_SYSTEM_NEUTRAL(msg)
 	if string.find(msg, L["trigger_gameStart"]) then
-		local _, _, startTime, _ = string.find(msg, L["trigger_gameStart"])
+		local _, _, startTime, minSec = string.find(msg, L["trigger_gameStart"])
+		if minSec == "minute" then
+			startTime = (tonumber(startTime) * 60)
+		elseif minSec == "seconds" then
+			startTime = tonumber(startTime)
+		end
 		self:Sync(syncName.gameStart .. " " .. startTime)
-		
-	elseif string.find(msg, L["trigger_gameEnd"]) then
-		local _, _, endTime, _ = string.find(msg, L["trigger_gameEnd"])
+	
+	elseif msg == L["trigger_gameHasStarted"] then
+		self:Sync(syncName.gameStarted)
+	end
+end
+
+
+function module:CHAT_MSG_SYSTEM(msg)
+	if string.find(msg, L["trigger_gameEnd"]) then
+		local _, _, endTime, minSec = string.find(msg, L["trigger_gameEnd"])
+		if minSec == "mins" then
+			endTime = (tonumber(endTime) * 60)
+		elseif minSec == "secs" then
+			endTime = tonumber(endTime)
+		end
 		self:Sync(syncName.gameEnd .. " " .. endTime)
 	end
 end
@@ -291,8 +352,13 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		
 	elseif sync == syncName.gameStart and rest and self.db.profile.start then
 		self:GameStart(rest)
+	elseif sync == syncName.gameStarted and rest and self.db.profile.start then
+		self:GameStarted()
+	
 	elseif sync == syncName.gameEnd and rest and self.db.profile.gameend then
 		self:GameEnd(rest)
+	elseif sync == syncName.countPlayers and self.db.profile.gameend then
+		self:CountPlayers()
 	end
 end
 
@@ -318,10 +384,44 @@ end
 
 function module:GameStart(rest)
 	local startTime = tonumber(rest)
-	self:Bar(L["bar_gameStart"]..startTime, startTime, icon.gameStart, true, color.gameStart)
+	self:Bar(L["bar_gameStart"], startTime, icon.gameStart, true, color.gameStart)
+end
+
+function module:GameStarted()
+	self:RemoveBar(L["bar_gameStart"])
+	self:Sound("BikeHorn")
 end
 
 function module:GameEnd(rest)
 	local endTime = tonumber(rest)
-	self:Bar(L["bar_gameEnd"]..endTime, endTime, icon.gameEnd, true, color.gameEnd)
+	self:Bar(L["bar_gameEnd"], endTime, icon.gameEnd, true, color.gameEnd)
+	
+	self:CancelDelayedSync(syncName.countPlayers)
+	self:DelayedSync(5, syncName.countPlayers)
+end
+
+function module:CountPlayers()
+	--this updates the data from scoreboard without opening it
+	RequestBattlefieldScoreData()
+	
+	local numScores = GetNumBattlefieldScores()
+	local numHorde = 0
+	local numAlliance = 0
+	for i=1, numScores do
+		name, killingBlows, honorableKills, deaths, honorGained, faction, rank, race, class = GetBattlefieldScore(i);
+		if ( faction ) then
+			if ( faction == 0 ) then
+				numHorde = numHorde + 1
+			else
+				numAlliance = numAlliance + 1
+			end
+		end
+	end
+	
+	if numHorde >= 15 and numAlliance >= 15 then
+		self:RemoveBar(L["bar_gameEnd"])
+	else
+		self:DelayedSync(5, syncName.countPlayers)
+	end
+	--DEFAULT_CHAT_FRAME:AddMessage("Horde Players: "..numHorde.." // Alliance Players: "..numAlliance)
 end

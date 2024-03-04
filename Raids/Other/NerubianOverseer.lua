@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Nerubian Overseer", "Eastern Plaguelands")
 
-module.revision = 30047
+module.revision = 30058
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"shadowshock", "venomspit", "poisoncloud", "corrosivepoison", "necroticpoison", "webspray", "explode", "bosskill"}
 module.zonename = {
@@ -116,7 +116,7 @@ local syncName = {
 }
 
 function module:OnEnable()
-	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
+	self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
 	
 	self:RegisterEvent("CHAT_MSG_RAID_BOSS_EMOTE")--trigger_explode, trigger_explodeYou
 		
@@ -138,7 +138,7 @@ function module:OnEnable()
 	self:ThrottleSync(0, syncName.corrosivePoisonFade)
 	self:ThrottleSync(1, syncName.necroticPoison)
 	self:ThrottleSync(0, syncName.necroticPoisonFade)
-	self:ThrottleSync(3, syncName.webSprayCd)
+	self:ThrottleSync(2, syncName.webSprayCd)
 	self:ThrottleSync(3, syncName.webSprayAfflic)
 	self:ThrottleSync(3, syncName.explode)
 end
@@ -158,7 +158,7 @@ function module:OnEngage()
 	
 	if self.db.profile.webspray then
 		self:Bar(L["bar_webSprayCd"], timer.firstWebSprayCd, icon.webSprayCd, true, color.webSprayCd)
-		self:ScheduleRepeatingEvent("webSprayCdBar", self.WebSprayCdBar, timer.firstWebSprayCd, self)
+		self:DelayedSync(timer.firstWebSprayCd, syncName.webSprayCd)
 	end
 end
 
@@ -177,6 +177,13 @@ function module:CHAT_MSG_RAID_BOSS_EMOTE(msg, sender)
 end
 
 function module:Event(msg)
+	if msg == "test" then
+		module:SendEngageSync()
+	end
+	--debug
+	
+	
+	
 	if string.find(msg, L["trigger_shadowShock"]) then
 		self:Sync(syncName.shadowShock)
 		
@@ -194,7 +201,7 @@ function module:Event(msg)
 		local _,_, corrosivePlayer, _ = string.find(msg, L["trigger_corrosivePoison"])
 		self:Sync(syncName.corrosivePoison .. " " .. corrosivePlayer)
 		
-	elseif string.find(msg, L["trigger_corrosivePoisonYou"]) then
+	elseif msg == L["trigger_corrosivePoisonYou"] then
 		self:Sync(syncName.corrosivePoison .. " " .. UnitName("Player"))
 		
 	elseif string.find(msg, L["trigger_corrosivePoisonFade"]) then
@@ -210,7 +217,7 @@ function module:Event(msg)
 			self:Sync(syncName.necroticPoison .. " " .. necroticPlayer)
 		end
 		
-	elseif string.find(msg, L["trigger_necroticPoisonYou"]) then
+	elseif msg == L["trigger_necroticPoisonYou"] then
 		if UnitName("Target") == "Nerubian Overseer" and UnitName("TargetTarget") == UnitName("Player") then
 			self:Sync(syncName.necroticPoison .. " " .. UnitName("Player"))
 		end
@@ -226,7 +233,7 @@ function module:Event(msg)
 		local _,_, webSprayPlayer, _ = string.find(msg, L["trigger_webSpray"])
 		self:Sync(syncName.webSprayAfflic .. " " .. webSprayPlayer)
 		
-	elseif string.find(msg, L["trigger_webSprayYou"]) then
+	elseif msg == L["trigger_webSprayYou"] then
 		self:Sync(syncName.webSprayAfflic .. " " .. UnitName("Player"))
 	end
 end

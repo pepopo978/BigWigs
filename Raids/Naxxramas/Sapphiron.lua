@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Sapphiron", "Naxxramas")
 
-module.revision = 30055
+module.revision = 30058
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"frostbreath", "lifedrain", "block", "enrage", "blizzard", "tailsweep", "phase", -1, "proximity", -1, "parry", "bosskill"}
 
@@ -107,7 +107,7 @@ local timer = {
 	tailSweep = 1,
 	
 	firstGroundPhase = 40,
-	groundPhase = 70,
+	groundPhase = 61, --70 was 8.7-9sec too long
 	airPhase = 30,
 }
 local icon = {
@@ -141,8 +141,6 @@ local syncName = {
 local lastLifeDrainTime = nil
 local airPhaseTime = nil
 local remainingLifeDrainTimer = nil
-
-local iceboltResync = nil
 
 local lowHp = nil
 local phase = "ground"
@@ -180,7 +178,7 @@ function module:OnEnable()
 	self:ThrottleSync(3, syncName.enrage)
 	self:ThrottleSync(3, syncName.groundPhase)
 	self:ThrottleSync(3, syncName.airPhase)
-	self:ThrottleSync(70, syncName.iceboltHits)
+	self:ThrottleSync(30, syncName.iceboltHits)
 	self:ThrottleSync(10, syncName.lowHp)
 end
 
@@ -192,8 +190,6 @@ function module:OnEngage()
 	lastLifeDrainTime = GetTime()
 	airPhaseTime = GetTime()
 	remainingLifeDrainTimer = 60
-	
-	iceboltResync = nil
 	
 	lowHp = nil
 	phase = "ground"
@@ -231,7 +227,7 @@ function module:MINIMAP_ZONE_CHANGED(msg)
 end
 
 function module:UNIT_HEALTH(msg)
-	if UnitName(msg) == self.translatedName then
+	if UnitName(msg) == module.translatedName then
 		local health = UnitHealth(msg)
 		if health >= 10 and lowHp ~= nil then
 			lowHp = nil
@@ -282,7 +278,7 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		self:FrostBreath()
 	elseif sync == syncName.lifeDrain and self.db.profile.lifedrain then
 		self:LifeDrain()
-	elseif sync == syncName.iceboltHits and iceboltResync == nil then
+	elseif sync == syncName.iceboltHits then
 		self:IceboltHits()
 	elseif sync == syncName.iceBlock and rest then
 		self:IceBlock(rest)
@@ -305,7 +301,6 @@ function module:FrostBreath()
 	self:RemoveBar(L["bar_iceBlock4"])
 	self:RemoveBar(L["bar_iceBlock5"])
 	
-	self:CancelDelayedBar(L["bar_iceBlock2"])
 	self:CancelDelayedBar(L["bar_iceBlock3"])
 	self:CancelDelayedBar(L["bar_iceBlock4"])
 	self:CancelDelayedBar(L["bar_iceBlock5"])
@@ -357,17 +352,10 @@ end
 
 function module:IceboltHits()
 	self:RemoveBar(L["bar_timeToGroundPhase"])
+	self:RemoveBar(L["bar_lifeDrain"])
+	self:RemoveBar(L["bar_timeToAirPhase"])
 	
 	self:RemoveBar(L["bar_iceBlock1"])
-	self:RemoveBar(L["bar_iceBlock2"])
-	self:RemoveBar(L["bar_iceBlock3"])
-	self:RemoveBar(L["bar_iceBlock4"])
-	self:RemoveBar(L["bar_iceBlock5"])
-	
-	self:CancelDelayedBar(L["bar_iceBlock2"])
-	self:CancelDelayedBar(L["bar_iceBlock3"])
-	self:CancelDelayedBar(L["bar_iceBlock4"])
-	self:CancelDelayedBar(L["bar_iceBlock5"])
 	
 	if self.db.profile.phase then
 		self:Bar(L["bar_timeToGroundPhase"], timer.airPhase - timer.iceBlock1, icon.phase, true, color.phase)
@@ -379,8 +367,6 @@ function module:IceboltHits()
 		self:DelayedBar(timer.iceBlock2 + timer.iceBlock3, L["bar_iceBlock4"], timer.iceBlock4, icon.iceBlock, true, color.iceBlock)
 		self:DelayedBar(timer.iceBlock2 + timer.iceBlock3 + timer.iceBlock4, L["bar_iceBlock5"], timer.iceBlock5, icon.iceBlock, true, color.iceBlock)
 	end
-	
-	iceboltResync = true
 end
 
 function module:Blizzard()
@@ -456,10 +442,6 @@ function module:AirPhase()
 	
 	if self.db.profile.block then
 		self:Bar(L["bar_iceBlock1"], timer.iceBlock1, icon.iceBlock, true, color.iceBlock)
-		self:DelayedBar(timer.iceBlock1, L["bar_iceBlock2"], timer.iceBlock2, icon.iceBlock, true, color.iceBlock)
-		self:DelayedBar(timer.iceBlock1 + timer.iceBlock2, L["bar_iceBlock3"], timer.iceBlock3, icon.iceBlock, true, color.iceBlock)
-		self:DelayedBar(timer.iceBlock1 + timer.iceBlock2 + timer.iceBlock3, L["bar_iceBlock4"], timer.iceBlock4, icon.iceBlock, true, color.iceBlock)
-		self:DelayedBar(timer.iceBlock1 + timer.iceBlock2 + timer.iceBlock3 + timer.iceBlock4, L["bar_iceBlock5"], timer.iceBlock5, icon.iceBlock, true, color.iceBlock)
 	end
 end
 

@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Ouro", "Ahn'Qiraj")
 
-module.revision = 30041
+module.revision = 30058
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"popcorn", "sounds", "bigicon", "sweep", "sandblast", -1, "emerge", "submerge", -1, "berserk", "bosskill"}
 
@@ -276,12 +276,12 @@ function module:OuroTarget()
 	end
 end
 
-function module:UNIT_HEALTH( msg )
-	if UnitName(msg) == boss then
+function module:UNIT_HEALTH(msg)
+	if UnitName(msg) == module.translatedName then
 		local health = UnitHealth(msg)
 		if health > 20 and health <= 23 and not berserkannounced then
 			if self.db.profile.berserk then
-				self:Message(L["berserksoonwarn"], "Important")
+				self:Message(L["berserksoonwarn"], "Important", false, nil, false)
 			end
 			berserkannounced = true
 		elseif health > 30 and berserkannounced then

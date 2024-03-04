@@ -15,34 +15,6 @@ surface:Register("Glaze", "Interface\\AddOns\\BigWigs\\Textures\\glaze")
 surface:Register("Charcoal", "Interface\\AddOns\\BigWigs\\Textures\\Charcoal")
 surface:Register("BantoBar", "Interface\\AddOns\\BigWigs\\Textures\\default")
 
-RAID_CLASS_COLORS = {
-	["HUNTER"] = { r = 0.67, g = 0.83, b = 0.45, colorStr = "ffabd473" },
-	["WARLOCK"] = { r = 0.53, g = 0.53, b = 0.93, colorStr = "ff8788ee" },
-	["PRIEST"] = { r = 1.0, g = 1.0, b = 1.0, colorStr = "ffffffff" },
-	["PALADIN"] = { r = 0.96, g = 0.55, b = 0.73, colorStr = "fff58cba" },
-	["MAGE"] = { r = 0.25, g = 0.78, b = 0.92, colorStr = "ff3fc7eb" },
-	["ROGUE"] = { r = 1.0, g = 0.96, b = 0.41, colorStr = "fffff569" },
-	["DRUID"] = { r = 1.0, g = 0.49, b = 0.04, colorStr = "ffff7d0a" },
-	["SHAMAN"] = { r = 0.0, g = 0.44, b = 0.87, colorStr = "ff0070de" },
-	["WARRIOR"] = { r = 0.78, g = 0.61, b = 0.43, colorStr = "ffc79c6e" },
-}
-
--- AceConsole zone commands
--- Wasn't working when I tried to use these
-BIGWIGS_ZONE_NAMES = {
-	["Karazhan"] = "1.Kara",
-	["Zul'Gurub"] = "2.ZG",
-	["Ruins of Ahn'Qiraj"] = "3.AQ20",
-	["Molten Core"] = "4.MC",
-	["Blackwing Lair"] = "5.BWL",
-	["Emerald Sanctum"] = "6.ES",
-	["Ahn'Qiraj"] = "7.AQ40",
-	["Naxxramas"] = "8.Naxxramas",
-	["Onyxia's Lair"] = "Onyxia",
-	["Silithus"] = "Silithus",
-	["Outdoor Raid Bosses"] = "Outdoor",
-	["Outdoor Raid Bosses Zone"] = "Outdoor",
-}
 ----------------------------
 --      Localization      --
 ----------------------------
@@ -278,7 +250,7 @@ BigWigs.cmdtable = { type = "group", handler = BigWigs, args = {
 } }
 BigWigs:RegisterChatCommand({ "/bw", "/BigWigs" }, BigWigs.cmdtable)
 BigWigs.debugFrame = ChatFrame1
-BigWigs.revision = 30057
+BigWigs.revision = 30062
 
 function BigWigs:DebugMessage(msg, module)
 	if not msg then
@@ -367,7 +339,9 @@ function BigWigs.modulePrototype:Engage()
 	if self.bossSync and not self.engaged then
 		self.engaged = true
 		self:Message(string.format(L["%s engaged!"], self.translatedName), "Positive")
+
 		BigWigsBossRecords:StartBossfight(self)
+
 		self:OnEngage()
 	end
 end
