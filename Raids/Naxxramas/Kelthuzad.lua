@@ -996,11 +996,11 @@ function module:Shackle(rest)
 
 	if previousShackleCount > shackleCount then
 		self:Sound("ShackleBroke")
-	elseif shacklecount < 2 then
+	elseif shackleCount < 2 then
 		self:Sound("ShackleOne")
-	elseif shacklecount == 2 then
+	elseif shackleCount == 2 then
 		self:Sound("ShackleTwo")
-	elseif shacklecount > 2 then
+	elseif shackleCount > 2 then
 		self:Sound("ShackleThree")
 	end
 
