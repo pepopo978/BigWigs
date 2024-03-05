@@ -49,7 +49,7 @@ L:RegisterTranslations("enUS", function()
 
 		mcicon_cmd = "mcicon",
 		mcicon_name = "Raid Icon on Mind Control",
-		mcicon_desc = "Place a Raid Icon on the Mind Control Target.",
+		mcicon_desc = "Places star|circle|diamond|triangle marks on mc'ed targets",
 
 		fissure_cmd = "fissure",
 		fissure_name = "Shadow Fissure Alerts",
