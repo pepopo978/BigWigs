@@ -283,6 +283,7 @@ end
 function module:UNIT_HEALTH(msg)
 	if UnitName(msg) == "Drek'Thar" then
 		local health = UnitHealth(msg)
+		if UnitName("Player") == "Dreadsome" then DEFAULT_CHAT_FRAME:AddMessage("Drek'Thar: "..health) end
 		if health >= 48 and health <= 52 then
 			self:Sync(syncName.drek50)
 		elseif health >= 38 and health <= 42 then
@@ -296,6 +297,7 @@ function module:UNIT_HEALTH(msg)
 		end
 	elseif UnitName(msg) == "Vanndar Stormpike" then
 		local health = UnitHealth(msg)
+		if UnitName("Player") == "Dreadsome" then DEFAULT_CHAT_FRAME:AddMessage("Vanndar Stormpike: "..health) end
 		if health >= 48 and health <= 52 then
 			self:Sync(syncName.vann50)
 		elseif health >= 38 and health <= 42 then

@@ -45,6 +45,8 @@ local syncName = {
 }
 
 function module:OnEnable()
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
+	
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event")--trigger_reflect
 	
 	self:ThrottleSync(1, syncName.reflect)
