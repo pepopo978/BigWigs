@@ -718,6 +718,9 @@ function BigWigsMageTools:BigWigs_RecvSync(sync, arg1, arg2)
 		if arg1 == self.target then
 			local timeleft = self:GetTargetScorchTimeLeft(arg1)
 			self:StartScorchBar(arg1, timeleft, self.scorchStacks[arg1])
+			self:ScheduleEvent("ScorchYellowUpdate", self.ScorchYellowUpdate, 20 - scorchSyncSpeed, self, arg1)
+			self:ScheduleEvent("ScorchRedUpdate", self.ScorchRedUpdate, 25 - scorchSyncSpeed, self, arg1)
+
 			if self.db.profile.scorchsound then
 				self:ScheduleEvent(warningSoundEvent, self.ScorchSoundWarning, 25 - scorchSyncSpeed, self, arg1)
 			end
@@ -739,6 +742,20 @@ function BigWigsMageTools:BigWigs_RecvSync(sync, arg1, arg2)
 			self:Bar(arg1 .. " has requested pyro!!!", 1, "spell_fire_fireball02", false, "Red")
 			self:Sound("Pyro")
 		end
+	end
+end
+
+function BigWigsMageTools:ScorchYellowUpdate(arg1)
+	if arg1 == self.target then
+		local id = scorchBarPrefix .. arg1
+		candybar:SetCandyBarColor(id, "yellow", 1)
+	end
+end
+
+function BigWigsMageTools:ScorchRedUpdate(arg1)
+	if arg1 == self.target then
+		local id = scorchBarPrefix .. arg1
+		candybar:SetCandyBarColor(id, "red", 1)
 	end
 end
 
@@ -1048,7 +1065,6 @@ function BigWigsMageTools:StartScorchBar(text, timeleft, stacks)
 		candybar:SetText(id, text)
 	end
 
-	candybar:SetTimeLeft(id, timeleft)
 	candybar:SetCandyBarTexture(id, surface:Fetch(self.db.profile.texture))
 	candybar:SetIconText(id, stacks or "")
 
@@ -1060,9 +1076,9 @@ function BigWigsMageTools:StartScorchBar(text, timeleft, stacks)
 	end
 
 	candybar:SetCandyBarFade(id, .5)
-	if timeleft < 5 then
+	if timeleft <= 5 then
 		candybar:SetCandyBarColor(id, "red", 1)
-	elseif timeleft < 10 then
+	elseif timeleft <= 10 then
 		candybar:SetCandyBarColor(id, "yellow", 1)
 	else
 		candybar:SetCandyBarColor(id, "green", 1)
@@ -1072,6 +1088,7 @@ function BigWigsMageTools:StartScorchBar(text, timeleft, stacks)
 	if not candybar:IsRunning(id) then
 		candybar:StartCandyBar(id, true)
 	end
+	candybar:SetTimeLeft(id, timeleft)
 	tinsert(barCache, id)
 end
 
@@ -1098,7 +1115,6 @@ function BigWigsMageTools:StartIgniteBar(text, timeleft, stacks, igniteHasScorch
 		candybar:SetText(id, text)
 	end
 
-	candybar:SetTimeLeft(id, timeleft)
 	candybar:SetCandyBarTexture(id, surface:Fetch(self.db.profile.texture))
 	candybar:SetIconText(id, stacks or "")
 
@@ -1131,7 +1147,7 @@ function BigWigsMageTools:StartIgniteBar(text, timeleft, stacks, igniteHasScorch
 	if not candybar:IsRunning(id) then
 		candybar:StartCandyBar(id, true)
 	end
-
+	candybar:SetTimeLeft(id, timeleft)
 	if not self.db.profile.ignitetimermode then
 		candybar:Pause(id, true)
 	end
