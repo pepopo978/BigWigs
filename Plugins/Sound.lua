@@ -69,6 +69,11 @@ local sounds = {
 	DispelPoison = "Interface\\AddOns\\BigWigs\\Sounds\\DispelPoison.mp3",
 
 	Dance = "Interface\\AddOns\\BigWigs\\Sounds\\Dance.mp3",
+
+	Scorch = "Interface\\AddOns\\BigWigs\\Sounds\\Scorch.mp3",
+	stopcasting = "Interface\\AddOns\\BigWigs\\Sounds\\stopcasting.mp3",
+	IgniteDanger = "Interface\\AddOns\\BigWigs\\Sounds\\IgniteDanger.mp3",
+	Pyro = "Interface\\AddOns\\BigWigs\\Sounds\\Pyro.mp3",
 }
 
 
