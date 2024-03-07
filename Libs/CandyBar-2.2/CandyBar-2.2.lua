@@ -181,12 +181,12 @@ function CandyBar:Start(name, fireforget)
 	CandyBar.var.handlers[name].fading = nil
 	CandyBar:AcquireBarFrame(name) -- this will reset the barframe incase we were fading out when it was restarted
 	CandyBar.var.handlers[name].frame:Show()
+	CandyBar.var.handlers[name].frame.timertext:Show()
 	if CandyBar.var.handlers[name].group then
 		CandyBar:UpdateGroup(CandyBar.var.handlers[name].group)
 	end -- update the group
 	CandyBar.var.frame:Show()
 	return true
-
 end
 
 -- Stop a bar

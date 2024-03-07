@@ -586,7 +586,7 @@ function BigWigsMageTools:IgniteEvent(msg)
 				-- refresh timer
 				local timeLeft = self:GetTargetIgniteTimeLeft(critTarget)
 				-- if more than 4 seconds, this won't change the timer
-				if timeLeft <= 4 then
+				if timeLeft < 4 then
 					-- otherwise add 4 seconds + time before next tick to the timer
 					if timeLeft > 2 then
 						self.igniteTimers[afflictedTarget] = GetTime() + (timeLeft - 2) + 4
