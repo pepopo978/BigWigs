@@ -710,6 +710,10 @@ function BigWigsMageTools:PLAYER_TARGET_CHANGED(msg)
 end
 
 function BigWigsMageTools:BigWigs_RecvSync(sync, arg1, arg2)
+	if not self.target then
+		self.target = UnitName("target")
+	end
+
 	if sync == syncName.scorch then
 		if arg1 == self.target then
 			local timeleft = self:GetTargetScorchTimeLeft(arg1)
