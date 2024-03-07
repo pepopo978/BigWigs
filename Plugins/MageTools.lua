@@ -16,7 +16,7 @@ local surface = AceLibrary("Surface-1.0")
 local timer = {
 	scorch = 30,
 	ignite = 4,
-	igniteFirstTickDelay = 2,
+	igniteFirstTickDelay = 2.0,
 }
 local syncName = {
 	scorch = "ScorchHit",
@@ -526,6 +526,7 @@ function BigWigsMageTools:ScorchEvent(msg)
 			self.scorchStacks[afflictedTarget] = 1
 		end
 
+		self.scorchTimers[afflictedTarget] = GetTime()
 		self:Sync(syncName.scorchSpace .. afflictedTarget)
 
 		return true, false, afflictedTarget  -- handled, crit, target
@@ -535,6 +536,7 @@ function BigWigsMageTools:ScorchEvent(msg)
 		-- only need to update bars if at 5 stacks, otherwise afflicted by message will handle it
 		if scorchTarget then
 			if self.scorchStacks[scorchTarget] == 5 then
+				self.scorchTimers[scorchTarget] = GetTime()
 				self:Sync(syncName.scorchSpace .. scorchTarget)
 			end
 			--check if scorch crit got into the ignite
@@ -569,8 +571,10 @@ function BigWigsMageTools:IgniteEvent(msg)
 		local _, _, stacks = string.find(stackInfo, "(%d+)")
 		if stacks then
 			self.igniteStacks[afflictedTarget] = tonumber(stacks)
+			self.igniteTimers[afflictedTarget] = GetTime()
 		else
 			self.igniteStacks[afflictedTarget] = 1
+			self.igniteTimers[afflictedTarget] = GetTime() + timer.igniteFirstTickDelay
 		end
 		self:Sync(syncName.igniteSpace .. afflictedTarget)
 		return true, false, afflictedTarget  -- handled, crit, target
@@ -578,12 +582,26 @@ function BigWigsMageTools:IgniteEvent(msg)
 		-- check for ignite crits
 		local _, _, spellName, critTarget = string.find(msg, L["ignite_crit_test"])
 		if critTarget and self.IsMageFireSpell(spellName) then
-			self:Sync(syncName.igniteSpace .. critTarget)
+			if self.igniteStacks[critTarget] and self.igniteStacks[critTarget] == 5 then
+				-- refresh timer
+				local timeLeft = self:GetTargetIgniteTimeLeft(critTarget)
+				-- if more than 4 seconds, this won't change the timer
+				if timeLeft < 4 then
+					-- otherwise add 4 seconds to the timer
+					if timeLeft > 2 then
+						self.igniteTimers[afflictedTarget] = GetTime() + (timeLeft - 2) + 4
+						self:Sync(syncName.igniteSpace .. critTarget)
+					else
+						self.igniteTimers[afflictedTarget] = GetTime() + timeLeft + 4
+						self:Sync(syncName.igniteSpace .. critTarget)
+					end
+				end
+			end
 			return true, true, critTarget  -- handled, crit, target
 		end
 	end
 
-	-- check for ignite damage
+	-- check for ignite tick damage
 	local _, _, igniteTickTarget, igniteDmg, igniteOwner = string.find(msg, L["ignite_dmg"])
 	if igniteTickTarget then
 		self.igniteDamage[igniteTickTarget] = tonumber(igniteDmg)
@@ -670,9 +688,15 @@ function BigWigsMageTools:RecheckTargetChange()
 		self.scorchStacks[target] = scorchStacks
 		self.igniteStacks[target] = igniteStacks
 
-		-- sync
-		self:Sync(syncName.scorchSpace .. target)
-		self:Sync(syncName.igniteSpace .. target)
+		local timeleft = self:GetTargetScorchTimeLeft(target)
+		if scorchStacks and timeleft then
+			self:StartScorchBar(target, timeleft, self.scorchStacks[target])
+		end
+
+		timeleft = self:GetTargetIgniteTimeLeft(target)
+		if igniteStacks and timeleft then
+			self:StartIgniteBar(self:GetTargetIgniteText(target), timeleft, self.igniteStacks[target], self.igniteHasScorch[target])
+		end
 	else
 		self:StopAllBars()
 	end
@@ -687,9 +711,8 @@ end
 
 function BigWigsMageTools:BigWigs_RecvSync(sync, arg1, arg2)
 	if sync == syncName.scorch then
-		self.scorchTimers[arg1] = GetTime()
 		if arg1 == self.target then
-			local timeleft = timer.scorch - syncSpeed
+			local timeleft = self:GetTargetScorchTimeLeft(arg1)
 			self:StartScorchBar(arg1, timeleft, self.scorchStacks[arg1])
 			if self.db.profile.scorchsound then
 				self:ScheduleEvent(warningSoundEvent, self.ScorchSoundWarning, 25 - syncSpeed, self, arg1)
@@ -699,9 +722,8 @@ function BigWigsMageTools:BigWigs_RecvSync(sync, arg1, arg2)
 			end
 		end
 	elseif sync == syncName.ignite then
-		self.igniteTimers[arg1] = GetTime()
 		if arg1 == self.target then
-			local timeleft = timer.ignite - syncSpeed
+			local timeleft = self:GetTargetIgniteTimeLeft(arg1)
 			self:StartIgniteBar(self:GetTargetIgniteText(arg1), timeleft, self.igniteStacks[arg1], self.igniteHasScorch[arg1])
 		end
 	elseif sync == syncName.ignitePlayerWarning then
@@ -731,24 +753,24 @@ end
 -----------------------------------------------------------------------
 --      Util
 -----------------------------------------------------------------------
-function BigWigsMageTools:GetTargetScorchInfo(target)
+function BigWigsMageTools:GetTargetScorchTimeLeft(target)
 	if self.scorchTimers[target] then
-		local timeleft = timer.scorch - (GetTime() - self.scorchTimers[target]) - syncSpeed
+		local timeleft = timer.scorch - (GetTime() - self.scorchTimers[target])
 		if timeleft > 0 then
 			return timeleft
 		end
 	end
-	return false
+	return 0
 end
 
-function BigWigsMageTools:GetTargetIgniteInfo(target)
+function BigWigsMageTools:GetTargetIgniteTimeLeft(target)
 	if self.igniteTimers[target] then
-		local timeleft = timer.ignite - (GetTime() - self.igniteTimers[target]) - syncSpeed
+		local timeleft = timer.ignite - (GetTime() - self.igniteTimers[target])
 		if timeleft > 0 then
 			return timeleft
 		end
 	end
-	return false
+	return 0
 end
 
 function BigWigsMageTools:GetTargetIgniteText(target)
