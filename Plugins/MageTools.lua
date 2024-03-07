@@ -16,7 +16,6 @@ local surface = AceLibrary("Surface-1.0")
 local timer = {
 	scorch = 30,
 	ignite = 4,
-	igniteFirstTickDelay = 2.0,
 }
 local syncName = {
 	scorch = "ScorchHit",
@@ -43,7 +42,9 @@ local warningSoundEvent = "warningSoundEvent"
 local warningSignEvent = "warningSignEvent"
 local targetChangeEvent = "targetChangeEvent"
 
-local syncSpeed = 0.2
+local scorchSyncSpeed = 0.2
+local igniteSyncSpeed = 0
+local warningSyncSpeed = 5
 
 -----------------------------------------------------------------------
 --      Localization
@@ -96,7 +97,7 @@ L:RegisterTranslations("enUS", function()
 		["IgniteThreatThreshold"] = "Ignite threat threshold",
 		["IgniteThreatThresholdDesc"] = "Percentage of top threat at which to warn about ignite",
 		["IgniteBarWidth"] = "Ignite bar width",
-		["IgniteBarWidthDesc"] = "Sets the width of the ignite bar",
+		["IgniteBarWidthDesc"] = "Sets the width of the ignite bar at 5 stacks",
 		["IgniteBarHeight"] = "Ignite bar height",
 		["IgniteBarHeightDesc"] = "Sets the height of the ignite bar",
 
@@ -146,7 +147,7 @@ BigWigsMageTools.defaultDB = {
 	scorchheight = 15,
 
 	igniteenable = true,
-	ignitetimermode = true,
+	ignitetimermode = false,
 	ignitethreatthreshold = 85,
 	igniteplayerwarning = true,
 	ignitepyrorequest = true,
@@ -430,8 +431,8 @@ BigWigsMageTools.consoleOptions = {
 				},
 				ignitepyrotrigger = {
 					type = "execute",
-					name = L["IgnitePyroRequest"],
-					desc = L["IgnitePyroRequestDesc"],
+					name = L["IgnitePyroRequestTrigger"],
+					desc = L["IgnitePyroRequestTriggerDesc"],
 					order = 11,
 					func = function()
 						BigWigsMageTools:Sync(syncName.ignitePyroRequestSpace .. BigWigsMageTools.playerName)
@@ -490,10 +491,10 @@ function BigWigsMageTools:OnEnable()
 	end
 
 	self.target = UnitName("target")
-	self:ThrottleSync(syncSpeed, syncName.scorch)
-	self:ThrottleSync(syncSpeed, syncName.ignite)
-	self:ThrottleSync(5, syncName.ignitePlayerWarning)
-	self:ThrottleSync(5, syncName.ignitePyroRequest)
+	self:ThrottleSync(scorchSyncSpeed, syncName.scorch)
+	self:ThrottleSync(igniteSyncSpeed, syncName.ignite)
+	self:ThrottleSync(warningSyncSpeed, syncName.ignitePlayerWarning)
+	self:ThrottleSync(warningSyncSpeed, syncName.ignitePyroRequest)
 end
 
 function BigWigsMageTools:OnDisable()
@@ -540,7 +541,7 @@ function BigWigsMageTools:ScorchEvent(msg)
 				self:Sync(syncName.scorchSpace .. scorchTarget)
 			end
 			--check if scorch crit got into the ignite
-			if hitType == "crit" and self.igniteStacks[scorchTarget] or 5 < 5 then
+			if hitType == "crit" and self.igniteStacks[scorchTarget] or 1 < 5 then
 				self.igniteHasScorch[scorchTarget] = true
 			end
 
@@ -571,11 +572,10 @@ function BigWigsMageTools:IgniteEvent(msg)
 		local _, _, stacks = string.find(stackInfo, "(%d+)")
 		if stacks then
 			self.igniteStacks[afflictedTarget] = tonumber(stacks)
-			self.igniteTimers[afflictedTarget] = GetTime()
 		else
 			self.igniteStacks[afflictedTarget] = 1
-			self.igniteTimers[afflictedTarget] = GetTime() + timer.igniteFirstTickDelay
 		end
+		self.igniteTimers[afflictedTarget] = GetTime()
 		self:Sync(syncName.igniteSpace .. afflictedTarget)
 		return true, false, afflictedTarget  -- handled, crit, target
 	else
@@ -586,8 +586,8 @@ function BigWigsMageTools:IgniteEvent(msg)
 				-- refresh timer
 				local timeLeft = self:GetTargetIgniteTimeLeft(critTarget)
 				-- if more than 4 seconds, this won't change the timer
-				if timeLeft < 4 then
-					-- otherwise add 4 seconds to the timer
+				if timeLeft <= 4 then
+					-- otherwise add 4 seconds + time before next tick to the timer
 					if timeLeft > 2 then
 						self.igniteTimers[afflictedTarget] = GetTime() + (timeLeft - 2) + 4
 						self:Sync(syncName.igniteSpace .. critTarget)
@@ -719,10 +719,10 @@ function BigWigsMageTools:BigWigs_RecvSync(sync, arg1, arg2)
 			local timeleft = self:GetTargetScorchTimeLeft(arg1)
 			self:StartScorchBar(arg1, timeleft, self.scorchStacks[arg1])
 			if self.db.profile.scorchsound then
-				self:ScheduleEvent(warningSoundEvent, self.ScorchSoundWarning, 25 - syncSpeed, self, arg1)
+				self:ScheduleEvent(warningSoundEvent, self.ScorchSoundWarning, 25 - scorchSyncSpeed, self, arg1)
 			end
 			if self.db.profile.scorchwarningsign then
-				self:ScheduleEvent(warningSignEvent, self.ScorchSignWarning, 25 - syncSpeed, self, arg1)
+				self:ScheduleEvent(warningSignEvent, self.ScorchSignWarning, 25 - scorchSyncSpeed, self, arg1)
 			end
 		end
 	elseif sync == syncName.ignite then
@@ -800,8 +800,8 @@ end
 function BigWigsMageTools:Test()
 	self:StopAllBars()
 
-	--self:StartThreatBar("Pepopo 90%", 4)  TODO
-	self:StartIgniteBar("2222 Pepopo", 4, 3, true)
+	--self:StartThreatBar("Pepopo 90%")  TODO
+	self:StartIgniteBar("2222 Pepopo", timer.ignite, true)
 	self:StartScorchBar("Thaddius", timer.scorch, 5)
 
 	--	 schedule cancel in 10 sec
@@ -1025,8 +1025,8 @@ local barCache = {
 	-- [i] = {id}
 }
 
-function BigWigsMageTools:StartScorchBar(text, time, stacks)
-	if not text or not time or not stacks or not self.db.profile.scorchenable then
+function BigWigsMageTools:StartScorchBar(text, timeleft, stacks)
+	if not text or not timeleft or not stacks or not self.db.profile.scorchenable then
 		return
 	end
 	local id = scorchBarPrefix .. text
@@ -1034,9 +1034,21 @@ function BigWigsMageTools:StartScorchBar(text, time, stacks)
 		self:SetupFrames()
 	end
 
+	local maxTime = timer.scorch
+	if timeleft > maxTime then
+		maxTime = timeleft
+	end
+
 	local groupId = self.frames.anchor.candyBarGroupId
-	candybar:RegisterCandyBar(id, time, text, scorchIcon)
-	candybar:RegisterCandyBarWithGroup(id, groupId)
+	-- check if bar already exists
+	if not candybar:IsRegistered(id) then
+		candybar:RegisterCandyBar(id, maxTime, text, scorchIcon)
+		candybar:RegisterCandyBarWithGroup(id, groupId)
+	else
+		candybar:SetText(id, text)
+	end
+
+	candybar:SetTimeLeft(id, timeleft)
 	candybar:SetCandyBarTexture(id, surface:Fetch(self.db.profile.texture))
 	candybar:SetIconText(id, stacks or "")
 
@@ -1048,20 +1060,23 @@ function BigWigsMageTools:StartScorchBar(text, time, stacks)
 	end
 
 	candybar:SetCandyBarFade(id, .5)
-	if time < 5 then
+	if timeleft < 5 then
 		candybar:SetCandyBarColor(id, "red", 1)
-	elseif time < 10 then
+	elseif timeleft < 10 then
 		candybar:SetCandyBarColor(id, "yellow", 1)
 	else
 		candybar:SetCandyBarColor(id, "green", 1)
 	end
 
-	candybar:StartCandyBar(id, true)
+	-- check if running
+	if not candybar:IsRunning(id) then
+		candybar:StartCandyBar(id, true)
+	end
 	tinsert(barCache, id)
 end
 
-function BigWigsMageTools:StartIgniteBar(text, time, stacks, igniteHasScorch)
-	if not text or not time or not stacks or not self.db.profile.igniteenable then
+function BigWigsMageTools:StartIgniteBar(text, timeleft, stacks, igniteHasScorch)
+	if not text or not timeleft or not stacks or not self.db.profile.igniteenable then
 		return
 	end
 	local id = igniteBarPrefix
@@ -1069,16 +1084,34 @@ function BigWigsMageTools:StartIgniteBar(text, time, stacks, igniteHasScorch)
 		self:SetupFrames()
 	end
 
+	local maxTime = timer.ignite
+	if timeleft > maxTime then
+		maxTime = timeleft
+	end
+
 	local groupId = self.frames.anchor.candyBarGroupId
-	candybar:RegisterCandyBar(id, time, text, igniteIcon)
-	candybar:RegisterCandyBarWithGroup(id, groupId)
+	-- check if bar already exists
+	if not candybar:IsRegistered(id) then
+		candybar:RegisterCandyBar(id, maxTime, text, igniteIcon)
+		candybar:RegisterCandyBarWithGroup(id, groupId)
+	else
+		candybar:SetText(id, text)
+	end
+
+	candybar:SetTimeLeft(id, timeleft)
 	candybar:SetCandyBarTexture(id, surface:Fetch(self.db.profile.texture))
 	candybar:SetIconText(id, stacks or "")
 
 	if type(self.db.profile.ignitewidth) == "number" then
-		local width = self.db.profile.ignitewidth / 5
-		if stacks and stacks > 1 then
-			width = width * stacks -- don't let bar get too small
+		local width = self.db.profile.ignitewidth
+
+		-- check for timer mode
+		if not self.db.profile.ignitetimermode then
+			local minwidth = self.db.profile.ignitewidth / 2
+			local stackwidth = minwidth / 5
+			if stacks and stacks >= 1 then
+				width = minwidth + stackwidth * stacks -- don't let bar get too small
+			end
 		end
 		candybar:SetCandyBarWidth(id, width)
 	end
@@ -1095,14 +1128,19 @@ function BigWigsMageTools:StartIgniteBar(text, time, stacks, igniteHasScorch)
 
 	candybar:SetCandyBarFade(id, .5)
 
-	candybar:StartCandyBar(id, true)
-	candybar:Pause(id, true)
+	if not candybar:IsRunning(id) then
+		candybar:StartCandyBar(id, true)
+	end
+
+	if not self.db.profile.ignitetimermode then
+		candybar:Pause(id, true)
+	end
 
 	tinsert(barCache, id)
 end
 
-function BigWigsMageTools:StartThreatBar(text, time)
-	if not text or not time or not self.db.profile.threatenable then
+function BigWigsMageTools:StartThreatBar(text)
+	if not text or not self.db.profile.threatenable then
 		return
 	end
 	local id = threatBarPrefix .. text
@@ -1111,8 +1149,14 @@ function BigWigsMageTools:StartThreatBar(text, time)
 	end
 
 	local groupId = self.frames.anchor.candyBarGroupId
-	candybar:RegisterCandyBar(id, time, text, threatIcon)
-	candybar:RegisterCandyBarWithGroup(id, groupId)
+	-- check if bar already exists
+	if not candybar:IsRegistered(id) then
+		candybar:RegisterCandyBar(id, 1, text, threatIcon)
+		candybar:RegisterCandyBarWithGroup(id, groupId)
+	else
+		candybar:SetText(id, text)
+	end
+
 	candybar:SetCandyBarTexture(id, surface:Fetch(self.db.profile.texture))
 	candybar:SetIconText(id, "")
 
@@ -1127,7 +1171,9 @@ function BigWigsMageTools:StartThreatBar(text, time)
 	candybar:SetCandyBarFade(id, .5)
 	candybar:SetCandyBarColor(id, "red", 1)
 
-	candybar:StartCandyBar(id, true)
+	if not candybar:IsRunning(id) then
+		candybar:StartCandyBar(id, true)
+	end
 	candybar:Pause(id, true)
 
 	tinsert(barCache, id)

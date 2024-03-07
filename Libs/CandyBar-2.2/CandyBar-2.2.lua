@@ -259,6 +259,15 @@ function CandyBar:Status(name)
 	return true, CandyBar.var.handlers[name].time, CandyBar.var.handlers[name].elapsed, CandyBar.var.handlers[name].running, CandyBar.var.handlers[name].paused
 end
 
+function CandyBar:IsRunning(name)
+	CandyBar:argCheck(name, 2, "string")
+	if not CandyBar.var.handlers[name] then
+		return
+	end
+
+	return CandyBar.var.handlers[name].running
+end
+
 
 -- Set the time for a bar.
 -- Args: name - the candybar name
@@ -292,8 +301,13 @@ function CandyBar:SetTimeLeft(name, time)
 		return
 	end
 
+	local elapsed = 0
+	if CandyBar.var.handlers[name].elapsed then
+		elapsed = CandyBar.var.handlers[name].elapsed
+	end
+
 	local e = CandyBar.var.handlers[name].time - time
-	local d = CandyBar.var.handlers[name].elapsed - e
+	local d = elapsed - e
 	if CandyBar.var.handlers[name].starttime and CandyBar.var.handlers[name].endtime then
 		CandyBar.var.handlers[name].starttime = CandyBar.var.handlers[name].starttime + d
 		CandyBar.var.handlers[name].endtime = CandyBar.var.handlers[name].endtime + d
