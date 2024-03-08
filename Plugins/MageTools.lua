@@ -818,7 +818,7 @@ function BigWigsMageTools:Test()
 	self:StopAllBars()
 
 	--self:StartThreatBar("Pepopo 90%")  TODO
-	self:StartIgniteBar("2222 Pepopo", timer.ignite, true)
+	self:StartIgniteBar("2222 Pepopo", timer.ignite, 5, true)
 	self:StartScorchBar("Thaddius", timer.scorch, 5)
 
 	--	 schedule cancel in 10 sec
