@@ -1,4 +1,3 @@
-
 ------------------------------
 --      Are you local?      --
 ------------------------------
@@ -9,68 +8,74 @@ local L = AceLibrary("AceLocale-2.2"):new("BigWigsTest")
 --      Localization      --
 ----------------------------
 
-L:RegisterTranslations("enUS", function() return {
-	["test"] = true,
-	["Test"] = true,
-	["Test Bar"] = true,
-	["Test Bar 2"] = true,
-	["Test Bar 3"] = true,
-	["Test Bar 4"] = true,
-	["Testing"] = true,
-	["OMG Bear!"] = true,
-	["*RAWR*"] = true,
-	["Victory!"] = true,
-	["Options for testing."] = true,
-	["local"] = true,
-	["Local test"] = true,
-	["Perform a local test of BigWigs."] = true,
-	["sync"] = true,
-	["Sync test"] = true,
-	["Perform a sync test of BigWigs."] = true,
-	["Testing Sync"] = true,
-} end)
+L:RegisterTranslations("enUS", function()
+	return {
+		["test"] = true,
+		["Test"] = true,
+		["Test Bar"] = true,
+		["Test Bar 2"] = true,
+		["Test Bar 3"] = true,
+		["Test Bar 4"] = true,
+		["Testing"] = true,
+		["OMG Bear!"] = true,
+		["*RAWR*"] = true,
+		["Victory!"] = true,
+		["Options for testing."] = true,
+		["local"] = true,
+		["Local test"] = true,
+		["Perform a local test of BigWigs."] = true,
+		["sync"] = true,
+		["Sync test"] = true,
+		["Perform a sync test of BigWigs."] = true,
+		["Testing Sync"] = true,
+	}
+end)
 
-L:RegisterTranslations("esES", function() return {
-	--["test"] = true,
-	["Test"] = "Probar",
-	["Test Bar"] = "Barra de Prueba",
-	["Test Bar 2"] = "Barra de Prueba 2",
-	["Test Bar 3"] = "Barra de Prueba 3",
-	["Test Bar 4"] = "Barra de Prueba 4",
-	["Testing"] = "Probando",
-	["OMG Bear!"] = "¡Dios mío OSO!",
-	["*RAWR*"] = "*RAWR*",
-	["Victory!"] = "¡Victoria!",
-	["Options for testing."] = "Opciones para probar",
-	["local"] = "local",
-	["Local test"] = "Prueba local",
-	["Perform a local test of BigWigs."] = "Hace una prueba local de BigWigs",
-	["sync"] = "sincronización",
-	["Sync test"] = "Prueba de sincronización",
-	["Perform a sync test of BigWigs."] = "Hace una prueba de sincronización de BigWigs",
-	["Testing Sync"] = "Probando la sincronización",
-} end)
+L:RegisterTranslations("esES", function()
+	return {
+		--["test"] = true,
+		["Test"] = "Probar",
+		["Test Bar"] = "Barra de Prueba",
+		["Test Bar 2"] = "Barra de Prueba 2",
+		["Test Bar 3"] = "Barra de Prueba 3",
+		["Test Bar 4"] = "Barra de Prueba 4",
+		["Testing"] = "Probando",
+		["OMG Bear!"] = "¡Dios mío OSO!",
+		["*RAWR*"] = "*RAWR*",
+		["Victory!"] = "¡Victoria!",
+		["Options for testing."] = "Opciones para probar",
+		["local"] = "local",
+		["Local test"] = "Prueba local",
+		["Perform a local test of BigWigs."] = "Hace una prueba local de BigWigs",
+		["sync"] = "sincronización",
+		["Sync test"] = "Prueba de sincronización",
+		["Perform a sync test of BigWigs."] = "Hace una prueba de sincronización de BigWigs",
+		["Testing Sync"] = "Probando la sincronización",
+	}
+end)
 
-L:RegisterTranslations("deDE", function() return {
-	-- ["test"] = true,
-	--["Test"] = "Test",
-	["Test Bar"] = "Test Balken",
-	["Test Bar 2"] = "Test Balken 2",
-	["Test Bar 3"] = "Test Balken 3",
-	["Test Bar 4"] = "Test Balken 4",
-	["Testing"] = "Teste",
-	["OMG Bear!"] = "OMG Bär!",
-	["*RAWR*"] = "RAWR",
-	["Victory!"] = "Sieg!",
-	["Options for testing."] = "Optionen für den Test von BigWigs.",
-	["local"] = "Lokal",
-	["Local test"] = "Lokaler Test",
-	["Perform a local test of BigWigs."] = "Lokalen Test durchführen.",
-	--["sync"] = "sync",
-	["Sync test"] = "Synchronisations-Test",
-	["Perform a sync test of BigWigs."] = "Sychronisations-Test durchführen.",
-	["Testing Sync"] = "Synchronisation testen",
-} end)
+L:RegisterTranslations("deDE", function()
+	return {
+		-- ["test"] = true,
+		--["Test"] = "Test",
+		["Test Bar"] = "Test Balken",
+		["Test Bar 2"] = "Test Balken 2",
+		["Test Bar 3"] = "Test Balken 3",
+		["Test Bar 4"] = "Test Balken 4",
+		["Testing"] = "Teste",
+		["OMG Bear!"] = "OMG Bär!",
+		["*RAWR*"] = "RAWR",
+		["Victory!"] = "Sieg!",
+		["Options for testing."] = "Optionen für den Test von BigWigs.",
+		["local"] = "Lokal",
+		["Local test"] = "Lokaler Test",
+		["Perform a local test of BigWigs."] = "Lokalen Test durchführen.",
+		--["sync"] = "sync",
+		["Sync test"] = "Synchronisations-Test",
+		["Perform a sync test of BigWigs."] = "Sychronisations-Test durchführen.",
+		["Testing Sync"] = "Synchronisation testen",
+	}
+end)
 
 ----------------------------------
 --      Module Declaration      --
@@ -84,19 +89,25 @@ BigWigsTest.consoleOptions = {
 	type = "group",
 	name = L["Test"],
 	desc = L["Options for testing."],
-	args   = {
+	args = {
 		[L["local"]] = {
 			type = "execute",
 			name = L["Local test"],
 			desc = L["Perform a local test of BigWigs."],
-			func = function() BigWigsTest:TriggerEvent("BigWigs_Test") end,
+			func = function()
+				BigWigsTest:TriggerEvent("BigWigs_Test")
+			end,
 		},
 		[L["sync"]] = {
 			type = "execute",
 			name = L["Sync test"],
 			desc = L["Perform a sync test of BigWigs."],
-			func = function() BigWigsTest:TriggerEvent("BigWigs_SyncTest") end,
-			disabled = function() return ( not IsRaidLeader() and not IsRaidOfficer() ) end,
+			func = function()
+				BigWigsTest:TriggerEvent("BigWigs_SyncTest")
+			end,
+			disabled = function()
+				return (not IsRaidLeader() and not IsRaidOfficer())
+			end,
 		},
 	}
 }
@@ -108,11 +119,9 @@ function BigWigsTest:OnEnable()
 	self:RegisterEvent("BigWigs_SyncTest")
 end
 
-
 function BigWigsTest:BigWigs_SyncTest()
 	self:TriggerEvent("BigWigs_SendSync", "TestSync")
 end
-
 
 function BigWigsTest:BigWigs_RecvSync(sync, rest, nick)
 	if sync == "TestSync" then
@@ -122,11 +131,10 @@ function BigWigsTest:BigWigs_RecvSync(sync, rest, nick)
 		--SendChat(rest)
 		rest = tonumber(rest)
 		if type(rest) == "number" then
-		--SendChat(rest * 2)
+			--SendChat(rest * 2)
 		end
 	end
 end
-
 
 function BigWigsTest:BigWigs_Test()
 	self:Message(L["Testing"], "Attention", true, "Long")
@@ -138,7 +146,6 @@ function BigWigsTest:BigWigs_Test()
 
 	self:DelayedMessage(5, L["OMG Bear!"], "Important", true, "Alert")
 	self:DelayedMessage(10, L["*RAWR*"], "Urgent", true, "Alarm")
-	self:DelayedMessage(20, L["Victory!"], "Bosskill", true, "Victory")
 
 	self:Sync("TestNumber 5")
 
@@ -148,14 +155,7 @@ function BigWigsTest:BigWigs_Test()
 		BigWigs:RemoveProximity()
 	end
 
-	self:ScheduleEvent("BigWigsTestOver", deactivate, 20, self)
-
-	--self:Sync("BossEngaged "..self:ToString())
-
-
-
-	--self:TriggerEvent("BigWigs_StartCounterBar", self, "CounterBar Test", 10, "Spell_Shadow_Charm")
-	--self:TriggerEvent("BigWigs_StartCounterBar", self, "CounterBar Test2", 30, "Spell_Shadow_Charm", true, "red")
+	self:ScheduleEvent("BigWigsTestOver", deactivate, 12, self)
 end
 
 --function BigWigsTest:TestCounter()
