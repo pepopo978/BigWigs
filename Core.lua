@@ -833,6 +833,8 @@ function BigWigs:RegisterModule(name, module)
 		for _, v in pairs(module.toggleoptions) do
 			if module.defaultDB and module.defaultDB[v] ~= nil then
 				opts[v] = module.defaultDB[v]
+			elseif v ~= -1 then
+				opts[v] = true
 			end
 		end
 	end
