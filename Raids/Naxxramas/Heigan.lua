@@ -2,7 +2,10 @@ local module, L = BigWigs:ModuleDeclaration("Heigan the Unclean", "Naxxramas")
 
 module.revision = 30038
 module.enabletrigger = module.translatedName
-module.toggleoptions = { "disease", "manaBurn", "teleport", "erruption", -1, "bosskill" }
+module.toggleoptions = { "fundance", "disease", "manaBurn", "teleport", "eruption", -1, "bosskill" }
+module.defaultDB = {
+	fundance = false,
+}
 
 L:RegisterTranslations("enUS", function()
 	return {
@@ -20,9 +23,9 @@ L:RegisterTranslations("enUS", function()
 		teleport_name = "Teleport Alert",
 		teleport_desc = "Warn for Teleports.",
 
-		erruption_cmd = "erruption",
-		erruption_name = "Erruption Alert",
-		erruption_desc = "Warn for Erruption",
+		eruption_cmd = "eruption",
+		eruption_name = "Eruption Alert",
+		eruption_desc = "Warn for Eruption",
 
 		trigger_engage1 = "You are mine now!", --CHAT_MSG_MONSTER_YELL
 		trigger_engage2 = "You...are next!", --CHAT_MSG_MONSTER_YELL
@@ -48,7 +51,7 @@ L:RegisterTranslations("enUS", function()
 		msg_fightStart = "Fight!",
 		bar_fighting = "Dancing Starts",
 
-		bar_erruption = "Erruption",
+		bar_eruption = "Eruption",
 
 		["Eye Stalk"] = true,
 		["Rotting Maggot"] = true,
@@ -66,12 +69,12 @@ local timer = {
 
 	fightDuration = 90,
 	danceDuration = 45,
- 
-	firstErruption = 15,
-	firstDanceErruption = 4,
-	erruption = 0, -- will be changed during the encounter
-	erruptionSlow = 10,
-	erruptionFast = 3.1, -- was getting slightly out of sync with it at 3, maybe only on vmangos?
+
+	firstEruption = 15,
+	firstDanceEruption = 4,
+	eruption = 0, -- will be changed during the encounter
+	eruptionSlow = 10,
+	eruptionFast = 3.1, -- was getting slightly out of sync with it at 3, maybe only on vmangos?
 	dancingSoon = 10,
 }
 local icon = {
@@ -79,7 +82,7 @@ local icon = {
 	manaBurn = "Spell_Shadow_ManaBurn",
 	fightDuration = "Spell_Magic_LesserInvisibilty",
 	danceDuration = "Spell_Arcane_Blink",
-	erruption = "spell_fire_selfdestruct",
+	eruption = "spell_fire_selfdestruct",
 	dancing = "INV_Gizmo_RocketBoot_01",
 }
 local syncName = {
@@ -133,10 +136,10 @@ function module:OnEngage()
 
 	eruption_count = 1
 	eruption_dir = 1
-	timer.erruption = timer.erruptionSlow
-	self:ScheduleEvent("HeiganErruption", self.Erruption, timer.firstErruption, self)
-	if self.db.profile.erruption then
-		self:Bar(L["bar_erruption"] .. eruption_help(eruption_count), timer.firstErruption, icon.erruption, true, "Red")
+	timer.eruption = timer.eruptionSlow
+	self:ScheduleEvent("HeiganEruption", self.Eruption, timer.firstEruption, self)
+	if self.db.profile.eruption then
+		self:Bar(L["bar_eruption"] .. eruption_help(eruption_count), timer.firstEruption, icon.eruption, true, "Red")
 	end
 end
 
@@ -194,35 +197,39 @@ function module:ManaBurn()
 end
 
 function module:DanceStart()
-	self:CancelScheduledEvent("HeiganErruption")
+	self:CancelScheduledEvent("HeiganEruption")
 	self:RemoveBar(L["bar_disease"])
 	self:RemoveBar(L["bar_manaBurn"])
 	self:RemoveBar(L["bar_fighting"])
 	self:RemoveBar(L["bar_dancingSoon"])
 
 	eruption_count = 1
-	timer.erruption = timer.erruptionFast
+	timer.eruption = timer.eruptionFast
 
-	self:ScheduleEvent("HeiganErruption", self.Erruption, timer.firstDanceErruption, self)
+	self:ScheduleEvent("HeiganEruption", self.Eruption, timer.firstDanceEruption, self)
 	self:ScheduleEvent("bwHeiganToFloor", self.FightStart, timer.danceDuration, self)
 
 	if self.db.profile.teleport then
 		self:Message(string.format(L["msg_danceStart"], timer.danceDuration), "Attention")
 		self:Bar(L["bar_dancing"], timer.danceDuration, icon.danceDuration, true, "White")
-		self:Sound("Dance")
+		if self.db.profile.fundance then
+			BigWigsSound:BigWigs_Sound("FunDance")
+		else
+			BigWigsSound:BigWigs_Sound("Dance")
+		end
 	end
-	if self.db.profile.erruption then
-		self:Bar(L["bar_erruption"] .. eruption_help(eruption_count), timer.firstDanceErruption, icon.erruption, true, "Red")
+	if self.db.profile.eruption then
+		self:Bar(L["bar_eruption"] .. eruption_help(eruption_count), timer.firstDanceEruption, icon.eruption, true, "Red")
 	end
 end
 
 function module:FightStart()
 	self:CancelScheduledEvent("bwHeiganToFloor")
-	self:CancelScheduledEvent("HeiganErruption")
+	self:CancelScheduledEvent("HeiganEruption")
 
 	eruption_count = 1
-	timer.erruption = timer.erruptionSlow
-	self:ScheduleEvent("HeiganErruption", self.Erruption, timer.erruption, self)
+	timer.eruption = timer.eruptionSlow
+	self:ScheduleEvent("HeiganEruption", self.Eruption, timer.eruption, self)
 
 	if self.db.profile.teleport then
 		self:Message(L["msg_fightStart"], "Attention")
@@ -235,12 +242,12 @@ function module:FightStart()
 	if self.db.profile.manaBurn then
 		self:Bar(L["bar_manaBurn"], timer.firstManaBurnAfterDanceCD, icon.manaBurn, true, "Blue")
 	end
-	if self.db.profile.erruption then
-		self:Bar(L["bar_erruption"] .. eruption_help(eruption_count), timer.erruption, icon.erruption, true, "Red")
+	if self.db.profile.eruption then
+		self:Bar(L["bar_eruption"] .. eruption_help(eruption_count), timer.eruption, icon.eruption, true, "Red")
 	end
 end
 
-function module:Erruption()
+function module:Eruption()
 	eruption_count = eruption_count + 1 * eruption_dir
 	if eruption_count == 4 then
 		eruption_dir = -1
@@ -252,11 +259,11 @@ function module:Erruption()
 	local registered, time, elapsed = self:BarStatus(L["bar_fighting"])
 	if registered and timer and elapsed then
 		local remaining = time - elapsed
-		if timer.erruption + 1 < remaining then
-			if self.db.profile.erruption then
-				self:Bar(L["bar_erruption"] .. eruption_help(eruption_count), timer.erruption, icon.erruption, true, "Red")
+		if timer.eruption + 1 < remaining then
+			if self.db.profile.eruption then
+				self:Bar(L["bar_eruption"] .. eruption_help(eruption_count), timer.eruption, icon.eruption, true, "Red")
 			end
-			self:ScheduleEvent("HeiganErruption", self.Erruption, timer.erruption, self)
+			self:ScheduleEvent("HeiganEruption", self.Eruption, timer.eruption, self)
 		else
 			if self.db.profile.teleport then
 				self:Sound("Beware")
@@ -264,13 +271,13 @@ function module:Erruption()
 			end
 		end
 	else
-		if self.db.profile.erruption then
-			self:Bar(L["bar_erruption"] .. eruption_help(eruption_count), timer.erruption, icon.erruption, true, "Red")
+		if self.db.profile.eruption then
+			self:Bar(L["bar_eruption"] .. eruption_help(eruption_count), timer.eruption, icon.eruption, true, "Red")
 			if UnitName("Player") == "Relar" then
 				DEFAULT_CHAT_FRAME:AddMessage("debugHeigan, here")
 			end
 		end
-		self:ScheduleEvent("HeiganErruption", self.Erruption, timer.erruption, self)
+		self:ScheduleEvent("HeiganEruption", self.Eruption, timer.eruption, self)
 	end
 end
 
