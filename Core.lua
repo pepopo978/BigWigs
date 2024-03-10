@@ -224,6 +224,7 @@ BigWigs.cmdtable = { type = "group", handler = BigWigs, args = {
 		type = "group",
 		name = L["Bosses"],
 		desc = L["Options for boss modules."],
+		order = 1,
 		args = {},
 		disabled = function()
 			return not BigWigs:IsActive()
@@ -233,6 +234,7 @@ BigWigs.cmdtable = { type = "group", handler = BigWigs, args = {
 		type = "group",
 		name = L["Plugins"],
 		desc = L["Options for plugins."],
+		order = 2,
 		args = {},
 		disabled = function()
 			return not BigWigs:IsActive()
@@ -242,15 +244,40 @@ BigWigs.cmdtable = { type = "group", handler = BigWigs, args = {
 		type = "group",
 		name = L["Extras"],
 		desc = L["Options for extras."],
+		order = 3,
 		args = {},
 		disabled = function()
 			return not BigWigs:IsActive()
 		end,
 	},
+	["editlayout"] = {
+		type = "execute",
+		name = "Edit Layout",
+		order = 4,
+		desc = "Edit frame layout and alert sizes",
+		func = function()
+			BigWigs:EditLayout()
+		end,
+		disabled = function()
+			return not BigWigs:IsActive()
+		end,
+	}
 } }
 BigWigs:RegisterChatCommand({ "/bw", "/BigWigs" }, BigWigs.cmdtable)
 BigWigs.debugFrame = ChatFrame1
 BigWigs.revision = 30062
+
+function BigWigs:EditLayout()
+	BigWigsBars:BigWigs_ShowAnchors()
+	BigWigsMessages:BigWigs_ShowAnchors()
+	BigWigsWarningSign:ShowAnchor()
+
+	-- if mage show mage tools anchor
+	local _, englishClass = UnitClass("player");
+	if englishClass == "MAGE" then
+		BigWigsMageTools:ShowAnchors()
+	end
+end
 
 function BigWigs:DebugMessage(msg, module)
 	if not msg then
@@ -570,6 +597,7 @@ function BigWigs:CheckForBossDeath(msg, module)
 		end
 	end
 end
+
 function BigWigs.modulePrototype:CheckForBossDeath(msg)
 	BigWigs:CheckForBossDeath(msg, self)
 end
@@ -640,12 +668,14 @@ end
 function BigWigs.modulePrototype:Sound(sound)
 	self:TriggerEvent("BigWigs_Sound", sound)
 end
+
 function BigWigs.modulePrototype:DelayedSound(delay, sound, id)
 	if not id then
 		id = "_"
 	end
 	return self:ScheduleEvent(delayPrefix .. "Sound" .. self:ToString() .. sound .. id, "BigWigs_Sound", delay, sound)
 end
+
 function BigWigs.modulePrototype:CancelDelayedSound(sound, id)
 	if not id then
 		id = "_"

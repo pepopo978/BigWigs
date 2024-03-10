@@ -61,7 +61,7 @@ L:RegisterTranslations("enUS", function()
 		["Scale is set to %2$s"] = true,
 		["Up"] = true,
 		["Down"] = true,
-		["Test"] = true,
+		["Test"] = "Start/Stop Test",
 		["Close"] = true,
 		["Texture"] = true,
 		["Set the texture for the timerbars."] = true,
@@ -102,7 +102,7 @@ L:RegisterTranslations("deDE", function()
 		["Scale is set to %2$s"] = "Skalierung jetzt: %2$s",
 		["Up"] = "oben",
 		["Down"] = "unten",
-		["Test"] = "Test",
+		["Test"] = "Start/Stop Test",
 		["Close"] = "Schlie\195\159en",
 		["Texture"] = "Textur",
 		["Set the texture for the timerbars."] = "Textur der Anzeigebalken wählen.",
@@ -141,7 +141,7 @@ L:RegisterTranslations("esES", function()
 		["Scale is set to %2$s"] = "Escala define a %2$s",
 		["Up"] = "Arriba",
 		["Down"] = "Abajo",
-		["Test"] = "Probar",
+		["Test"] = "Start/Stop Test",
 		["Close"] = "Cerrar",
 		["Texture"] = "Textura",
 		["Set the texture for the timerbars."] = "Define la textura para las barras temporizadoras",
@@ -1013,16 +1013,12 @@ function BigWigsBars:SetupFrames(emphasize)
 
 	f, _, _ = GameFontNormal:GetFont()
 
-	--self.frames = {}
-
 	local frame = CreateFrame("Frame", emphasize and "BigWigsEmphasizedBarAnchor" or "BigWigsBarAnchor", UIParent)
-
-	--DEFAULT_CHAT_FRAME:AddMessage(frame:GetAttribute("name"))
 
 	frame.owner = self
 	frame:Hide()
 
-	frame:SetWidth(175)
+	frame:SetWidth(170)
 	frame:SetHeight(75)
 	frame:SetBackdrop({
 		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
@@ -1047,19 +1043,10 @@ function BigWigsBars:SetupFrames(emphasize)
 		this.owner:SavePosition()
 	end)
 
-	local cfade = frame:CreateTexture(nil, "BORDER")
-	cfade:SetWidth(169)
-	cfade:SetHeight(25)
-	cfade:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
-	cfade:SetPoint("TOP", frame, "TOP", 0, -4)
-	cfade:SetBlendMode("ADD")
-	cfade:SetGradientAlpha("VERTICAL", .1, .1, .1, 0, .25, .25, .25, 1)
-	frame.cfade = cfade
-
 	local cheader = frame:CreateFontString(nil, "OVERLAY")
 	cheader:SetFont(f, 14)
 	cheader:SetWidth(150)
-	cheader:SetText(L["Bars"])
+	cheader:SetText("Plugins -> Bars")
 	cheader:SetTextColor(1, .8, 0)
 	cheader:ClearAllPoints()
 	cheader:SetPoint("TOP", frame, "TOP", 0, -10)
@@ -1070,7 +1057,7 @@ function BigWigsBars:SetupFrames(emphasize)
 	leftbutton.owner = self
 	leftbutton:SetWidth(40)
 	leftbutton:SetHeight(25)
-	leftbutton:SetPoint("RIGHT", frame, "CENTER", -10, -15)
+	leftbutton:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 10, 10)
 	leftbutton:SetScript("OnClick", function()
 		self:TriggerEvent("BigWigs_Test")
 	end)
@@ -1099,14 +1086,48 @@ function BigWigsBars:SetupFrames(emphasize)
 	leftbuttontext:SetFontObject(GameFontHighlight)
 	leftbuttontext:SetText(L["Test"])
 	leftbuttontext:SetAllPoints(leftbutton)
-
 	frame.leftbutton = leftbutton
+
+	local middlebutton = CreateFrame("Button", nil, frame)
+	middlebutton.owner = self
+	middlebutton:SetWidth(40)
+	middlebutton:SetHeight(25)
+	middlebutton:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 65, 10)
+	middlebutton:SetScript("OnClick", function()
+		BigWigsOptions:OpenMenu(middlebutton)
+	end)
+
+	t = middlebutton:CreateTexture()
+	t:SetWidth(50)
+	t:SetHeight(32)
+	t:SetPoint("CENTER", middlebutton, "CENTER")
+	t:SetTexture("Interface\\Buttons\\UI-Panel-Button-Up")
+	t:SetTexCoord(0, 0.625, 0, 0.6875)
+	middlebutton:SetNormalTexture(t)
+
+	t = middlebutton:CreateTexture(nil, "BACKGROUND")
+	t:SetTexture("Interface\\Buttons\\UI-Panel-Button-Down")
+	t:SetTexCoord(0, 0.625, 0, 0.6875)
+	t:SetAllPoints(middlebutton)
+	middlebutton:SetPushedTexture(t)
+
+	t = middlebutton:CreateTexture()
+	t:SetTexture("Interface\\Buttons\\UI-Panel-Button-Highlight")
+	t:SetTexCoord(0, 0.625, 0, 0.6875)
+	t:SetAllPoints(middlebutton)
+	t:SetBlendMode("ADD")
+	middlebutton:SetHighlightTexture(t)
+	middlebuttontext = middlebutton:CreateFontString(nil, "OVERLAY")
+	middlebuttontext:SetFontObject(GameFontHighlight)
+	middlebuttontext:SetText("Edit")
+	middlebuttontext:SetAllPoints(middlebutton)
+	frame.middlebutton = middlebutton
 
 	local rightbutton = CreateFrame("Button", nil, frame)
 	rightbutton.owner = self
 	rightbutton:SetWidth(40)
 	rightbutton:SetHeight(25)
-	rightbutton:SetPoint("LEFT", frame, "CENTER", 10, -15)
+	rightbutton:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 120, 10)
 	rightbutton:SetScript("OnClick", function()
 		self:BigWigs_HideAnchors()
 	end)
@@ -1140,7 +1161,7 @@ function BigWigsBars:SetupFrames(emphasize)
 
 	if emphasize then
 		self.frames.emphasizeAnchor = frame
-		self.frames.emphasizeAnchor.cheader:SetText(L["Emphasize Bars"])
+		self.frames.emphasizeAnchor.cheader:SetText("Plugins -> Bars -> Emphasize")
 
 		local x = self.db.profile.emphasizePosX
 		local y = self.db.profile.emphasizePosY

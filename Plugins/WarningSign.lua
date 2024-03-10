@@ -35,7 +35,7 @@ L:RegisterTranslations("enUS", function() return {
 	["Show the anchor frame."] = true,
 	["Reset"] = true,
 	["Reset the frame."] = true,
-	["Test"] = true,
+	["Test"] = "Start/Stop Test",
 	["Close"] = true,
 
 	["Disabled"] = true,
@@ -300,7 +300,7 @@ function BigWigsWarningSign:CreateAnchor()
 	self.frames.anchor.owner = self
 	self.frames.anchor:Hide()
 
-	self.frames.anchor:SetWidth(175)
+	self.frames.anchor:SetWidth(170)
 	self.frames.anchor:SetHeight(75)
 	self.frames.anchor:SetBackdrop({
 		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background", tile = true, tileSize = 16,
@@ -317,20 +317,10 @@ function BigWigsWarningSign:CreateAnchor()
 	self.frames.anchor:SetScript("OnDragStart", function() this:StartMoving() end)
 	self.frames.anchor:SetScript("OnDragStop", function() this:StopMovingOrSizing() this.owner:SavePosition() end)
 
-
-	self.frames.cfade = self.frames.anchor:CreateTexture(nil, "BORDER")
-	self.frames.cfade:SetWidth(169)
-	self.frames.cfade:SetHeight(25)
-	self.frames.cfade:SetTexture("Interface\\ChatFrame\\ChatFrameBackground")
-	self.frames.cfade:SetPoint("TOP", self.frames.anchor, "TOP", 0, -4)
-	self.frames.cfade:SetBlendMode("ADD")
-	self.frames.cfade:SetGradientAlpha("VERTICAL", .1, .1, .1, 0, .25, .25, .25, 1)
-	self.frames.anchor.Fade = self.frames.fade
-
 	self.frames.cheader = self.frames.anchor:CreateFontString(nil,"OVERLAY")
 	self.frames.cheader:SetFont(f, 14)
 	self.frames.cheader:SetWidth(150)
-	self.frames.cheader:SetText(L["Warning Sign"])
+	self.frames.cheader:SetText("Plugins -> Warning Sign")
 	self.frames.cheader:SetTextColor(1, .8, 0)
 	self.frames.cheader:ClearAllPoints()
 	self.frames.cheader:SetPoint("TOP", self.frames.anchor, "TOP", 0, -10)
@@ -339,9 +329,10 @@ function BigWigsWarningSign:CreateAnchor()
 	self.frames.leftbutton.owner = self
 	self.frames.leftbutton:SetWidth(40)
 	self.frames.leftbutton:SetHeight(25)
-	self.frames.leftbutton:SetPoint("RIGHT", self.frames.anchor, "CENTER", -10, -15)
-	self.frames.leftbutton:SetScript("OnClick", function()  self:TriggerEvent("BigWigs_Test") end)
-
+	self.frames.leftbutton:SetPoint("BOTTOMLEFT", self.frames.anchor, "BOTTOMLEFT", 10, 10)
+	self.frames.leftbutton:SetScript("OnClick", function()
+		self:TriggerEvent("BigWigs_Test")
+	end)
 
 	t = self.frames.leftbutton:CreateTexture()
 	t:SetWidth(50)
@@ -363,18 +354,53 @@ function BigWigsWarningSign:CreateAnchor()
 	t:SetAllPoints(self.frames.leftbutton)
 	t:SetBlendMode("ADD")
 	self.frames.leftbutton:SetHighlightTexture(t)
-	self.frames.leftbuttontext = self.frames.leftbutton:CreateFontString(nil,"OVERLAY")
+	self.frames.leftbuttontext = self.frames.leftbutton:CreateFontString(nil, "OVERLAY")
 	self.frames.leftbuttontext:SetFontObject(GameFontHighlight)
 	self.frames.leftbuttontext:SetText(L["Test"])
 	self.frames.leftbuttontext:SetAllPoints(self.frames.leftbutton)
+
+	self.frames.middlebutton = CreateFrame("Button", nil, self.frames.anchor)
+	self.frames.middlebutton.owner = self
+	self.frames.middlebutton:SetWidth(40)
+	self.frames.middlebutton:SetHeight(25)
+	self.frames.middlebutton:SetPoint("BOTTOMLEFT", self.frames.anchor, "BOTTOMLEFT", 65, 10)
+	self.frames.middlebutton:SetScript("OnClick", function()
+		BigWigsOptions:OpenMenu(self.frames.middlebutton)
+	end)
+
+	t = self.frames.middlebutton:CreateTexture()
+	t:SetWidth(50)
+	t:SetHeight(32)
+	t:SetPoint("CENTER", self.frames.middlebutton, "CENTER")
+	t:SetTexture("Interface\\Buttons\\UI-Panel-Button-Up")
+	t:SetTexCoord(0, 0.625, 0, 0.6875)
+	self.frames.middlebutton:SetNormalTexture(t)
+
+	t = self.frames.middlebutton:CreateTexture(nil, "BACKGROUND")
+	t:SetTexture("Interface\\Buttons\\UI-Panel-Button-Down")
+	t:SetTexCoord(0, 0.625, 0, 0.6875)
+	t:SetAllPoints(self.frames.middlebutton)
+	self.frames.middlebutton:SetPushedTexture(t)
+
+	t = self.frames.middlebutton:CreateTexture()
+	t:SetTexture("Interface\\Buttons\\UI-Panel-Button-Highlight")
+	t:SetTexCoord(0, 0.625, 0, 0.6875)
+	t:SetAllPoints(self.frames.middlebutton)
+	t:SetBlendMode("ADD")
+	self.frames.middlebutton:SetHighlightTexture(t)
+	self.frames.middlebuttontext = self.frames.middlebutton:CreateFontString(nil, "OVERLAY")
+	self.frames.middlebuttontext:SetFontObject(GameFontHighlight)
+	self.frames.middlebuttontext:SetText("Edit")
+	self.frames.middlebuttontext:SetAllPoints(self.frames.middlebutton)
 
 	self.frames.rightbutton = CreateFrame("Button", nil, self.frames.anchor)
 	self.frames.rightbutton.owner = self
 	self.frames.rightbutton:SetWidth(40)
 	self.frames.rightbutton:SetHeight(25)
-	self.frames.rightbutton:SetPoint("LEFT", self.frames.anchor, "CENTER", 10, -15)
-	self.frames.rightbutton:SetScript( "OnClick", function() self:HideAnchor() end )
-
+	self.frames.rightbutton:SetPoint("BOTTOMLEFT", self.frames.anchor, "BOTTOMLEFT", 120, 10)
+	self.frames.rightbutton:SetScript("OnClick", function()
+		self:HideAnchor()
+	end)
 
 	t = self.frames.rightbutton:CreateTexture()
 	t:SetWidth(50)
@@ -396,7 +422,7 @@ function BigWigsWarningSign:CreateAnchor()
 	t:SetAllPoints(self.frames.rightbutton)
 	t:SetBlendMode("ADD")
 	self.frames.rightbutton:SetHighlightTexture(t)
-	self.frames.rightbuttontext = self.frames.rightbutton:CreateFontString(nil,"OVERLAY")
+	self.frames.rightbuttontext = self.frames.rightbutton:CreateFontString(nil, "OVERLAY")
 	self.frames.rightbuttontext:SetFontObject(GameFontHighlight)
 	self.frames.rightbuttontext:SetText(L["Close"])
 	self.frames.rightbuttontext:SetAllPoints(self.frames.rightbutton)

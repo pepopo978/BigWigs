@@ -277,9 +277,6 @@ function module:Eruption()
 	else
 		if self.db.profile.eruption then
 			self:Bar(L["bar_eruption"] .. eruption_help(eruption_count), timer.eruption, icon.eruption, true, "Red")
-			if UnitName("Player") == "Relar" then
-				DEFAULT_CHAT_FRAME:AddMessage("debugHeigan, here")
-			end
 		end
 		self:ScheduleEvent("HeiganEruption", self.Eruption, timer.eruption, self)
 	end

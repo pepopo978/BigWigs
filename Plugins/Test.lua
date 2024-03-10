@@ -112,8 +112,11 @@ BigWigsTest.consoleOptions = {
 	}
 }
 
+BigWigsTest.testRunning = false
+
 function BigWigsTest:OnEnable()
 	self:RegisterEvent("BigWigs_Test")
+	self:RegisterEvent("BigWigs_StopTest")
 	self:RegisterEvent("BigWigs_RecvSync")
 	self:TriggerEvent("BigWigs_ThrottleSync", "TestSync", 5)
 	self:RegisterEvent("BigWigs_SyncTest")
@@ -137,27 +140,35 @@ function BigWigsTest:BigWigs_RecvSync(sync, rest, nick)
 end
 
 function BigWigsTest:BigWigs_Test()
-	self:Message(L["Testing"], "Attention", true, "Long")
-	self:Bar(L["Test Bar 4"], 3, "Spell_Nature_ResistNature", true, "black")
-	self:Bar(L["Test Bar 3"], 5, "Spell_Nature_ResistNature", true, "red")
-	self:Bar(L["Test Bar 2"], 25, "Inv_Hammer_Unique_Sulfuras")
-	self:Bar(L["Test Bar"], 30, "Spell_Nature_ResistNature")
-	self:WarningSign("Inv_Hammer_Unique_Sulfuras", 10, true, "Test text")
-
-	self:DelayedMessage(5, L["OMG Bear!"], "Important", true, "Alert")
-	self:DelayedMessage(10, L["*RAWR*"], "Urgent", true, "Alarm")
-
-	self:Sync("TestNumber 5")
-
-	BigWigs:Proximity()
-
-	local function deactivate()
-		BigWigs:RemoveProximity()
+	if not self.testRunning then
+		self:BigWigs_StartTest()
+	else
+		self:BigWigs_StopTest()
 	end
-
-	self:ScheduleEvent("BigWigsTestOver", deactivate, 12, self)
 end
 
---function BigWigsTest:TestCounter()
---    self:TriggerEvent("BigWigs_SetCounterBar", self, "CounterBar Test", 5, true)
---end
+function BigWigsTest:BigWigs_StartTest()
+		self.testRunning = true
+		self:Message("Attention", "Attention", true, "Long")
+		self:Message("Important", "Important", false, nil, false)
+		self:Message("Urgent", "Urgent", true, nil, false)
+
+		self:Bar(L["Test Bar 4"], 12, "Spell_Nature_ResistNature", true, "black")
+		self:Bar(L["Test Bar 3"], 15, "Spell_Nature_ResistNature", true, "red")
+		self:Bar(L["Test Bar 2"], 45, "Inv_Hammer_Unique_Sulfuras")
+		self:Bar(L["Test Bar"], 55, "Spell_Nature_ResistNature")
+		self:WarningSign("Inv_Hammer_Unique_Sulfuras", 20, true, "Test text")
+
+		self:DelayedMessage(10, L["OMG Bear!"], "Important", true, "Alert")
+		self:DelayedMessage(15, L["*RAWR*"], "Urgent", true, "Alarm")
+
+		self:Sync("TestNumber 5")
+
+		BigWigs:Proximity()
+end
+
+function BigWigsTest:BigWigs_StopTest()
+	BigWigs:RemoveProximity()
+	self:Disengage()
+	self.testRunning = false
+end

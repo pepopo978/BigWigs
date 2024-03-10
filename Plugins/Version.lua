@@ -16,120 +16,47 @@ local isInitialQuery = true
 --      Localization           --
 ---------------------------------
 
-L:RegisterTranslations("enUS", function() return {
-	["versionquery"] = true,
-	["Version Query"] = true,
-	["Commands for querying the raid for Big Wigs versions."] = true,
-	["Query already running, please wait 5 seconds before trying again."] = true,
-	["Querying versions for "] = true,
-	["Big Wigs Version Query"] = true,
-	["Close window"] = true, -- I know, it's really a Tablet.
-	["Showing version for "] = true,
-	["Green versions are newer than yours, red are older, and white are the same."] = true,
-	["Player"] = true,
-	["Version"] = true,
-	["Current zone"] = true,
-	["<zone>"] = true,
-	["Version query done."] = true,
-	["Runs a version query on your current zone."] = true,
-	["Closes the version query window."] = true,
-	["current"] = true,
-	["Runs a version query on the given zone."] = true,
-	["Zone"] = true,
-	["zone"] = true,
-	["N/A"] = true,
-	["BigWigs"] = true,
-	["Runs a version query on the BigWigs core."] = true,
-	["Nr Replies"] = true,
-	["Ancient"] = true,
+L:RegisterTranslations("enUS", function()
+	return {
+		["versionquery"] = true,
+		["Version Query"] = true,
+		["Commands for querying the raid for Big Wigs versions."] = true,
+		["Query already running, please wait 5 seconds before trying again."] = true,
+		["Querying versions for "] = true,
+		["Big Wigs Version Query"] = true,
+		["Close window"] = true, -- I know, it's really a Tablet.
+		["Showing version for "] = true,
+		["Green versions are newer than yours, red are older, and white are the same."] = true,
+		["Player"] = true,
+		["Version"] = true,
+		["Current zone"] = true,
+		["<zone>"] = true,
+		["Version query done."] = true,
+		["Runs a version query on your current zone."] = true,
+		["Closes the version query window."] = true,
+		["current"] = true,
+		["Runs a version query on the given zone."] = true,
+		["Zone"] = true,
+		["zone"] = true,
+		["N/A"] = true,
+		["BigWigs"] = true,
+		["Runs a version query on the BigWigs core."] = true,
+		["Nr Replies"] = true,
+		["Ancient"] = true,
 
-	["Your version of Big Wigs Turtle-WoW is out of date!\nPlease visit github.com/madScripting/BigWigs-TurtleWoW to get the latest version."] = true,
-	["Close"] = true,
-	["Cancel"] = true,
+		["OutOfDate"] = "Your version of Big Wigs might be out of date!\nPlease use the github addons manager or visit https://github.com/pepopo978/BigWigs to get the latest version.",
+		["Close"] = true,
+		["Cancel"] = true,
 
-	["People with outdated BigWigs:"] = true,
-	["Notify old versions"] = true,
-	["List people with old versions to raid chat."] = true,
-	["Download newest version from github.com/madScripting/BigWigs-TurtleWoW"] = true,
+		["People with outdated BigWigs:"] = true,
+		["Notify old versions"] = true,
+		["List people with old versions to raid chat."] = true,
+		["Download newest version from https://github.com/pepopo978/BigWigs"] = true,
 
-	["Show popup"] = true,
-	["Show popup warning on out of date version"] = true,
-
-} end )
-
-L:RegisterTranslations("esES", function() return {
-	--["versionquery"] = true,
-	["Version Query"] = "Consulta de Versión",
-	["Commands for querying the raid for Big Wigs versions."] = "Comando para consultar la versión de Big Wigs de la banda.",
-	["Query already running, please wait 5 seconds before trying again."] = "Ya está consultando, por favor espera 5 segundos antes de probarlo de nuevo.",
-	["Querying versions for "] = "Consultando las versiones para ",
-	["Big Wigs Version Query"] = "Consulta de Versión de Big Wigs",
-	["Close window"] = "Cerrar ventana", -- I know, it's really a Tablet.
-	["Showing version for "] = "Mostrando la versión para ",
-	["Green versions are newer than yours, red are older, and white are the same."] = "Verde es una versión más nueva que la tuya, si es roja es más antigua, y si es blanca es la última actualizada hasta el momento",
-	["Player"] = "Jugador",
-	["Version"] = "Versión",
-	["Current zone"] = "Zona actual",
-	["<zone>"] = "<zona>",
-	["Version query done."] = "Consulta de versión completa",
-	["Runs a version query on your current zone."] = "Hace una consulta de versión para tu zona actual",
-	["Closes the version query window."] = "Cerra la ventana de consulta de versión",
-	["current"] = "actual",
-	["Runs a version query on the given zone."] = "Hace una consulta de versión en la zona dada",
-	["Zone"] = "Zona",
-	--["zone"] = true,
-	["N/A"] = "N/A",
-	["BigWigs"] = "BigWigs",
-	["Runs a version query on the BigWigs core."] = "Hace una consulta de versión al núcleo de BigWigs",
-	["Nr Replies"] = "Nr repuesta",
-	["Ancient"] = "Anciano",
-
-	["Your version of Big Wigs Turtle-WoW is out of date!\nPlease visit github.com/madScripting/BigWigs-TurtleWoW to get the latest version."] = "¡Tu versión de Big Wigs es anticuada!\n Por favor visite github.com/madScripting/BigWigs-TurtleWoW para descargar la última versión.",
-	["Close"] = "Cerrar",
-	["Cancel"] = "Cancelar",
-
-	["People with outdated BigWigs:"] = "Personas con BigWigs anticuado:",
-	["Notify old versions"] = "Notificar de versiones anticuadas",
-	["List people with old versions to raid chat."] = "Enumera las personas con versiones anticuadas al chat de la banda",
-	["Download newest version from github.com/madScripting/BigWigs-TurtleWoW"] = "Descarga la última versión en github.com/madScripting/BigWigs-TurtleWoW",
-
-	["Show popup"] = "Mostrar Ventana Emergente",
-	["Show popup warning on out of date version"] = "Muesta la ventana emergente para versiones anticuadas",
-
-} end )
-
-L:RegisterTranslations("deDE", function() return {
-	["versionquery"] = "Versionsabfrage",
-	["Version Query"] = "Versionsabfrage",
-	["Commands for querying the raid for Big Wigs versions."] = "Kommandos um den Schlachtzug nach verwendeten BigWigs Versionen abzufragen.",
-	["Query already running, please wait 5 seconds before trying again."] = "Abfrage l\195\164uft bereits, bitte 5 Sekunden warten bis zum n\195\164chsten Versuch.",
-	["Querying versions for "] = "Frage Versionen ab f\195\188r ",
-	["Big Wigs Version Query"] = "BigWigs Versionsabfrage",
-	["Close window"] = "Schlie\195\159e Fenster", -- I know, it's really a Tablet.
-	["Showing version for "] = "Zeige Version f\195\188r ",
-	["Green versions are newer than yours, red are older, and white are the same."] = "Gr\195\188ne Versionen sind neuer, rote sind \195\164lter, wei\195\159e sind gleich.",
-	["Player"] = "Spieler",
-	["Version"] = "Version",
-	["Current zone"] = "Momentane Zone",
-	["<zone>"] = "<zone>",
-	["Version query done."] = "Versionsabfrage beendet.",
-	["Runs a version query on your current zone."] = "Versionsabfrage f\195\188r die momentane Zone starten.",
-	["Closes the version query window."] = "Schlie\195\159t das Versionsabfrage-Fenster.",
-	["current"] = "gegenw\195\164rtig",
-	["Runs a version query on the given zone."] = "Versionsabfrage in f\195\188r eine gegebene Zone starten.",
-	["Zone"] = "Zone",
-	["zone"] = "Zone",
-	["N/A"] = "N/A",
-	["BigWigs"] = "BigWigs",
-	["Runs a version query on the BigWigs core."] = "Versionsabfrage f\195\188r die BigWigs Kernkomponente starten.",
-	["Nr Replies"] = "Anzahl der Antworten",
-	["Ancient"] = "Alt",
-
-	["Your version of Big Wigs Turtle-WoW is out of date!\nPlease visit github.com/madScripting/BigWigs-TurtleWoW to get the latest version."] = "Deine Version von Big Wigs Turtle-WoW ist veraltet! Bitte downloade die neuste Version von github.com/madScripting/BigWigs-TurtleWoW",
-	["Close"] = "Schliessen",
-	["Cancel"] = "Abbrechen",
-} end )
-
+		["Show popup"] = true,
+		["Show popup warning on out of date version"] = true,
+	}
+end)
 
 ---------------------------------
 --      Addon Declaration      --
@@ -138,7 +65,8 @@ L:RegisterTranslations("deDE", function() return {
 BigWigsVersionQuery = BigWigs:NewModule("Version Query")
 
 BigWigsVersionQuery.defaultDB = {
-	popup = false,
+	versionpopup = false,
+	showfirsttimepopup = true,
 }
 BigWigsVersionQuery.consoleCmd = L["versionquery"]
 BigWigsVersionQuery.consoleOptions = {
@@ -151,14 +79,18 @@ BigWigsVersionQuery.consoleOptions = {
 			name = L["BigWigs"],
 			order = 1,
 			desc = L["Runs a version query on the BigWigs core."],
-			func = function() BigWigsVersionQuery:QueryVersion("BigWigs") end,
+			func = function()
+				BigWigsVersionQuery:QueryVersion("BigWigs")
+			end,
 		},
 		[L["current"]] = {
 			type = "execute",
 			name = L["Current zone"],
 			order = 2,
 			desc = L["Runs a version query on your current zone."],
-			func = function() BigWigsVersionQuery:QueryVersion() end,
+			func = function()
+				BigWigsVersionQuery:QueryVersion()
+			end,
 		},
 		[L["zone"]] = {
 			type = "text",
@@ -167,20 +99,26 @@ BigWigsVersionQuery.consoleOptions = {
 			desc = L["Runs a version query on the given zone."],
 			usage = L["<zone>"],
 			get = false,
-			set = function(zone) BigWigsVersionQuery:QueryVersion(zone) end,
+			set = function(zone)
+				BigWigsVersionQuery:QueryVersion(zone)
+			end,
 		},
 		spacer = {
 			type = "header",
 			name = " ",
 			order = 10,
 		},
-		popup = {
+		versionpopup = {
 			type = "toggle",
 			name = L["Show popup"],
 			desc = L["Show popup warning on out of date version"],
 			order = 12,
-			get = function() return BigWigsVersionQuery.db.profile.popup end,
-			set = function(v) BigWigsVersionQuery.db.profile.popup = v end,
+			get = function()
+				return BigWigsVersionQuery.db.profile.versionpopup
+			end,
+			set = function(v)
+				BigWigsVersionQuery.db.profile.versionpopup = v
+			end,
 		},
 	}
 }
@@ -207,8 +145,12 @@ function BigWigsVersionQuery:OnEnable()
 	self:TriggerEvent("BigWigs_ThrottleSync", "BWVQ", 0)
 	self:TriggerEvent("BigWigs_ThrottleSync", "BWVR", 0)
 
-	--BigWigsVersionQuery:QueryVersion("BigWigs")
 	self:ScheduleEvent("versionquerytest", BigWigsVersionQuery.Test, 1, self) -- check version in 1s
+
+	if self.db.profile.showfirsttimepopup then
+		self.db.profile.showfirsttimepopup = false
+		self:ShowFirstTimePopup()
+	end
 end
 
 function BigWigsVersionQuery:PopulateRevisions()
@@ -237,34 +179,45 @@ end
 function BigWigsVersionQuery:UpdateTablet()
 	if not tablet:IsRegistered("BigWigs_VersionQuery") then
 		tablet:Register("BigWigs_VersionQuery",
-			"children", function() tablet:SetTitle(L["Big Wigs Version Query"])
-				self:OnTooltipUpdate() end,
-			"clickable", true,
-			"showTitleWhenDetached", true,
-			"showHintWhenDetached", true,
-			"cantAttach", true,
-			"menu", function()
-				dewdrop:AddLine(
-					"text", L["BigWigs"],
-					"tooltipTitle", L["BigWigs"],
-					"tooltipText", L["Runs a version query on the BigWigs core."],
-					"func", function() self:QueryVersion("BigWigs") end)
-				dewdrop:AddLine(
-					"text", L["Current zone"],
-					"tooltipTitle", L["Current zone"],
-					"tooltipText", L["Runs a version query on your current zone."],
-					"func", function() self:QueryVersion() end)
-				dewdrop:AddLine(
-					"text", L["Notify old versions"],
-					"tooltipTitle", L["Notify old versions"],
-					"tooltipText", L["List people with old versions to raid chat."],
-					"func", function() self:NotifyOldVersions() end)
-				dewdrop:AddLine(
-					"text", L["Close window"],
-					"tooltipTitle", L["Close window"],
-					"tooltipText", L["Closes the version query window."],
-					"func", function() tablet:Attach("BigWigs_VersionQuery"); dewdrop:Close() end)
-			end
+				"children", function()
+					tablet:SetTitle(L["Big Wigs Version Query"])
+					self:OnTooltipUpdate()
+				end,
+				"clickable", true,
+				"showTitleWhenDetached", true,
+				"showHintWhenDetached", true,
+				"cantAttach", true,
+				"menu", function()
+					dewdrop:AddLine(
+							"text", L["BigWigs"],
+							"tooltipTitle", L["BigWigs"],
+							"tooltipText", L["Runs a version query on the BigWigs core."],
+							"func", function()
+								self:QueryVersion("BigWigs")
+							end)
+					dewdrop:AddLine(
+							"text", L["Current zone"],
+							"tooltipTitle", L["Current zone"],
+							"tooltipText", L["Runs a version query on your current zone."],
+							"func", function()
+								self:QueryVersion()
+							end)
+					dewdrop:AddLine(
+							"text", L["Notify old versions"],
+							"tooltipTitle", L["Notify old versions"],
+							"tooltipText", L["List people with old versions to raid chat."],
+							"func", function()
+								self:NotifyOldVersions()
+							end)
+					dewdrop:AddLine(
+							"text", L["Close window"],
+							"tooltipTitle", L["Close window"],
+							"tooltipText", L["Closes the version query window."],
+							"func", function()
+								tablet:Attach("BigWigs_VersionQuery");
+								dewdrop:Close()
+							end)
+				end
 		)
 	end
 	if tablet:IsAttached("BigWigs_VersionQuery") then
@@ -276,7 +229,9 @@ end
 
 function BigWigsVersionQuery:UpdateVersions()
 	for name, version in pairs(self.responseTable) do
-		if not self.zoneRevisions then return end
+		if not self.zoneRevisions then
+			return
+		end
 		if version > 20000 and version < 40000 then
 			if self.zoneRevisions[self.currentZone] and version > self.zoneRevisions[self.currentZone] then
 				self:IsOutOfDate()
@@ -292,28 +247,28 @@ end
 function BigWigsVersionQuery:IsOutOfDate()
 	if not self.OutOfDateShown then
 		self.OutOfDateShown = true
-		BigWigs:Print(L["Your version of Big Wigs Turtle-WoW is out of date!\nPlease visit github.com/madScripting/BigWigs-TurtleWoW to get the latest version."])
+		BigWigs:Print(L["OutOfDate"])
 
-		if self.db.profile.popup then
+		if self.db.profile.versionpopup then
 			local dialog = nil
 			StaticPopupDialogs["BigWigsOutOfDateDialog"] = {
-				text = L["Your version of Big Wigs Turtle-WoW is out of date!\nPlease visit github.com/madScripting/BigWigs-TurtleWoW to get the latest version."],
+				text = L["OutOfDate"],
 				button1 = L["Close"],
 				button2 = L["Cancel"],
 				OnAccept = function()
-					StaticPopup_Hide ("BigWigsOutOfDateDialog")
+					StaticPopup_Hide("BigWigsOutOfDateDialog")
 				end,
 				OnCancel = function()
-					StaticPopup_Hide ("BigWigsOutOfDateDialog")
+					StaticPopup_Hide("BigWigsOutOfDateDialog")
 				end,
-				OnShow = function (self, data)
-					local editbox = getglobal(this:GetName().."WideEditBox")
-					editbox:SetText("github.com/madScripting/BigWigs-TurtleWoW")
+				OnShow = function(self, data)
+					local editbox = getglobal(this:GetName() .. "WideEditBox")
+					editbox:SetText("https://github.com/pepopo978/BigWigs")
 					editbox:SetWidth(250)
 					editbox:ClearFocus()
 					editbox:HighlightText()
 					--self.editBox:SetText("Some text goes here")
-					getglobal(this:GetName().."Button2"):Hide()
+					getglobal(this:GetName() .. "Button2"):Hide()
 				end,
 				hasEditBox = true,
 				hasWideEditBox = true,
@@ -322,11 +277,32 @@ function BigWigsVersionQuery:IsOutOfDate()
 				timeout = 0,
 				whileDead = true,
 				hideOnEscape = true,
-				preferredIndex = 3,  -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
+				preferredIndex = 3, -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
 			}
-			local dialog = StaticPopup_Show ("BigWigsOutOfDateDialog")
+			local dialog = StaticPopup_Show("BigWigsOutOfDateDialog")
 		end
 	end
+end
+
+function BigWigsVersionQuery:ShowFirstTimePopup()
+	local dialog = nil
+	StaticPopupDialogs["BigWigsFirstTimeDialog"] = {
+		text = "Pepo's Bigwigs is now enabled!  \n\n I recommend editing your alert positions and sizes to your liking by clicking 'Edit Layout'. If you don't want to do it now, you can always do it later right clicking the BigWigs minimap icon and choosing 'Edit Layout'.",
+		button1 = "Edit Layout",
+		button2 = L["Close"],
+		OnAccept = function()
+			StaticPopup_Hide("BigWigsFirstTimeDialog")
+			BigWigs:EditLayout()
+		end,
+		OnCancel = function()
+			StaticPopup_Hide("BigWigsFirstTimeDialog")
+		end,
+		timeout = 0,
+		whileDead = true,
+		hideOnEscape = true,
+		preferredIndex = 3, -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
+	}
+	local dialog = StaticPopup_Show("BigWigsFirstTimeDialog")
 end
 
 function BigWigsVersionQuery:NotifyOldVersions()
@@ -336,40 +312,42 @@ function BigWigsVersionQuery:NotifyOldVersions()
 			if line == "" then
 				line = name
 			else
-				line = line.." "..name
+				line = line .. " " .. name
 			end
 		end
 	end
-	SendChatMessage(L["People with outdated BigWigs:"],"RAID")
-	SendChatMessage(line,"RAID")
-	SendChatMessage("Download newest version from github.com/madScripting/BigWigs-TurtleWoW", "RAID")
+	SendChatMessage(L["People with outdated BigWigs:"], "RAID")
+	SendChatMessage(line, "RAID")
+	SendChatMessage("Download newest version from https://github.com/pepopo978/BigWigs", "RAID")
 end
 
 function BigWigsVersionQuery:OnTooltipUpdate()
 	local zoneCat = tablet:AddCategory(
-		"columns", 1,
-		"text", L["Zone"],
-		"child_justify1", "LEFT"
+			"columns", 1,
+			"text", L["Zone"],
+			"child_justify1", "LEFT"
 	)
 	zoneCat:AddLine("text", self.currentZone)
 	local playerscat = tablet:AddCategory(
-		"columns", 1,
-		"text", L["Nr Replies"],
-		"child_justify1", "LEFT"
+			"columns", 1,
+			"text", L["Nr Replies"],
+			"child_justify1", "LEFT"
 	)
 	playerscat:AddLine("text", self.responses)
 	local cat = tablet:AddCategory(
-		"columns", 2,
-		"text", L["Player"],
-		"text2", L["Version"],
-		"child_justify1", "LEFT",
-		"child_justify2", "RIGHT"
+			"columns", 2,
+			"text", L["Player"],
+			"text2", L["Version"],
+			"child_justify1", "LEFT",
+			"child_justify2", "RIGHT"
 	)
 	for name, version in pairs(self.responseTable) do
 		if version == -1 then
-			cat:AddLine("text", name, "text2", "|cff"..COLOR_RED..L["N/A"].."|r")
+			cat:AddLine("text", name, "text2", "|cff" .. COLOR_RED .. L["N/A"] .. "|r")
 		else
-			if not self.zoneRevisions then self:PopulateRevisions() end
+			if not self.zoneRevisions then
+				self:PopulateRevisions()
+			end
 			local color = COLOR_WHITE
 			if self.zoneRevisions[self.currentZone] and version > self.zoneRevisions[self.currentZone] then
 				color = COLOR_RED
@@ -380,7 +358,7 @@ function BigWigsVersionQuery:OnTooltipUpdate()
 			elseif self.zoneRevisions[self.currentZone] and version < self.zoneRevisions[self.currentZone] then
 				color = COLOR_RED
 			end
-			cat:AddLine("text", name, "text2", "|cff"..color..version.."|r")
+			cat:AddLine("text", name, "text2", "|cff" .. color .. version .. "|r")
 		end
 	end
 
@@ -396,11 +374,15 @@ function BigWigsVersionQuery:QueryVersion(zone)
 		self.core:Print(L["Query already running, please wait 5 seconds before trying again."])
 		return
 	end
-	if not zone or zone == "" or type(zone) ~= "string" then zone = GetRealZoneText() end
+	if not zone or zone == "" or type(zone) ~= "string" then
+		zone = GetRealZoneText()
+	end
 	-- If this is a shorthand zone, convert it to enUS full.
 	-- Also, if this is a shorthand, we can't really know if the user is enUS or not.
 
-	if not BWL then BWL = AceLibrary("AceLocale-2.2"):new("BigWigs") end
+	if not BWL then
+		BWL = AceLibrary("AceLocale-2.2"):new("BigWigs")
+	end
 	if BWL ~= nil and zone ~= nil and type(zone) == "string" and BWL:HasReverseTranslation(zone) then
 		zone = BWL:GetReverseTranslation(zone)
 		-- If there is a translation for this to GetLocale(), get it, so we can
@@ -417,16 +399,18 @@ function BigWigsVersionQuery:QueryVersion(zone)
 
 	-- ZZZ |zone| should be translated here.
 	if not isInitialQuery then
-		self.core:Print(L["Querying versions for "].."|cff"..COLOR_GREEN..zone.."|r.")
+		self.core:Print(L["Querying versions for "] .. "|cff" .. COLOR_GREEN .. zone .. "|r.")
 	end
 
 	-- If this is a non-enUS zone, convert it to enUS.
-	if BZ:HasReverseTranslation(zone) then zone = BZ:GetReverseTranslation(zone) end
+	if BZ:HasReverseTranslation(zone) then
+		zone = BZ:GetReverseTranslation(zone)
+	end
 
 	self.currentZone = zone
 
 	self.queryRunning = true
-	self:ScheduleEvent(	function()
+	self:ScheduleEvent(function()
 		self.queryRunning = nil
 		if not isInitialQuery then
 			self.core:Print(L["Version query done."])
@@ -450,21 +434,25 @@ function BigWigsVersionQuery:QueryVersion(zone)
 		end
 	end
 
-	if not self.zoneRevisions then self:PopulateRevisions() end
+	if not self.zoneRevisions then
+		self:PopulateRevisions()
+	end
 	if not self.zoneRevisions[zone] then
 		self.responseTable[UnitName("player")] = -1
 	else
 		self.responseTable[UnitName("player")] = self.zoneRevisions[zone]
 	end
 	self.responses = 1
-	self:TriggerEvent("BigWigs_SendSync", "BWVQ "..zone)
+	self:TriggerEvent("BigWigs_SendSync", "BWVQ " .. zone)
 end
 
 --[[ Parses the new style reply, which is "1111 <nick>" ]]
 function BigWigsVersionQuery:ParseReply2(reply)
 	-- If there's no space, it's just a version number we got.
 	local first, last = string.find(reply, " ")
-	if not first or not last then return reply, nil end
+	if not first or not last then
+		return reply, nil
+	end
 
 	local rev = string.sub(reply, 1, first)
 	local nick = string.sub(reply, last + 1, string.len(reply))
@@ -479,15 +467,21 @@ end
 
 --[[ Parses the old style reply, which was MC:REV BWL:REV, etc. ]]
 function BigWigsVersionQuery:ParseReply(reply)
-	if not string.find(reply, ":") then return -1 end
+	if not string.find(reply, ":") then
+		return -1
+	end
 	local zone = BWL:HasTranslation(self.currentZone) and BWL:GetTranslation(self.currentZone) or self.currentZone
 
 	local zoneIndex, zoneEnd = string.find(reply, zone)
-	if not zoneIndex then return -1 end
+	if not zoneIndex then
+		return -1
+	end
 
 	local revision = string.sub(reply, zoneEnd + 2, zoneEnd + 6)
 	local convertedRev = tonumber(revision)
-	if revision and convertedRev ~= nil then return convertedRev end
+	if revision and convertedRev ~= nil then
+		return convertedRev
+	end
 
 	return -1
 end
@@ -505,7 +499,7 @@ function BigWigsVersionQuery:BigWigs_RecvSync(sync, rest, nick)
 			self:PopulateRevisions()
 		end
 		if not self.zoneRevisions[rest] then
-			self:TriggerEvent("BigWigs_SendSync", "BWVR -1 "..nick)
+			self:TriggerEvent("BigWigs_SendSync", "BWVR -1 " .. nick)
 		else
 			self:TriggerEvent("BigWigs_SendSync", "BWVR " .. self.zoneRevisions[rest] .. " " .. nick)
 		end

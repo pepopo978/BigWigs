@@ -27,8 +27,28 @@ module.toggleoptions = {
 	"proximity",
 	"bosskill",
 }
+
+local isPriest = UnitClass("Player") == "Priest"
+local isWarrior = UnitClass("Player") == "Warrior"
+
+local isHealer = false
+if UnitClass("Player") == "Druid" or UnitClass("Player") == "Paladin" or isPriest or UnitClass("Player") == "Shaman" then
+	isHealer = true
+end
+
+local isInterrupter = false
+if UnitClass("Player") == "Rogue" or isWarrior then
+	isInterrupter = true
+end
+
 module.defaultDB = {
 	mcicon = false,
+	detonateicon = false,
+	frostblastframe = isHealer,
+	volley = isHealer,
+	frostbolt = isInterrupter,
+	guardian = isPriest or isWarrior, -- only show for priests and tanks by default
+	shackle = isPriest or isWarrior, -- only show for priests and tanks by default
 }
 
 L:RegisterTranslations("enUS", function()
@@ -147,7 +167,6 @@ L:RegisterTranslations("enUS", function()
 		trigger_detonateOther = "(.+) is afflicted by Detonate Mana.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
 		trigger_detonateFade = "Detonate Mana fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_detonateAfflic = " Detonate",
-		bar_detonateCd = "Detonate CD",
 		msg_detonate = "Detonate Mana on ",
 
 		trigger_frostbolt = "Kel'Thuzad begins to cast Frostbolt.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
@@ -594,7 +613,6 @@ function module:Event(msg)
 			self:Sync(syncName.volley)
 		end
 
-
 	elseif string.find(msg, L["trigger_shackle"]) then
 		shackleCount = shackleCount + 1
 		self:Sync(syncName.shackle .. " " .. shackleCount)
@@ -703,10 +721,6 @@ function module:Phase2()
 
 	if self.db.profile.mc then
 		self:DelayedBar(timer.phase2, L["bar_mcCd"], timer.firstMc, icon.mc, true, color.mc)
-	end
-
-	if self.db.profile.detonate then
-		self:DelayedBar(timer.phase2, L["bar_detonateCd"], timer.firstDetonate, icon.detonate, true, color.detonate)
 	end
 
 	if self.db.profile.frostblast then
@@ -891,10 +905,12 @@ end
 function module:FrostBlastYell()
 	frostBlastYellTime = GetTime()
 
-	self:Bar(L["bar_frostBlastAfflic"], timer.frostBlastAfflic, icon.frostBlast, true, color.frostBlast)
-	self:DelayedIntervalBar(timer.frostBlastAfflic, L["bar_frostBlastCd"], timer.frostBlastCd[1], timer.frostBlastCd[2], icon.frostBlast, true, color.frostBlast)
+	if self.db.profile.frostblast then
+		self:Bar(L["bar_frostBlastAfflic"], timer.frostBlastAfflic, icon.frostBlast, true, color.frostBlast)
+		self:DelayedIntervalBar(timer.frostBlastAfflic, L["bar_frostBlastCd"], timer.frostBlastCd[1], timer.frostBlastCd[2], icon.frostBlast, true, color.frostBlast)
+	end
 
-	if UnitClass("Player") == "Shaman" or UnitClass("Player") == "Paladin" or UnitClass("Player") == "Priest" or UnitClass("Player") == "Druid" then
+	if self.db.profile.frostblastframe then
 		self:Message(L["msg_frostBlast"], "Urgent", false, nil, false)
 		self:WarningSign(icon.frostBlast, 1)
 		self:Sound("FrostBlast")
@@ -910,8 +926,6 @@ function module:FrostBlast(rest)
 end
 
 function module:Detonate(rest)
-	self:RemoveBar(L["bar_detonateCd"])
-
 	if rest == UnitName("Player") then
 		SendChatMessage("Detonate on " .. UnitName("Player") .. "!", "YELL")
 	end
@@ -928,7 +942,6 @@ function module:Detonate(rest)
 		self:Message(L["msg_detonate"] .. rest, "Attention", false, nil, false)
 
 		self:Bar(rest .. L["bar_detonateAfflic"], timer.detonateAfflic, icon.detonate, true, color.detonate)
-		self:DelayedIntervalBar(timer.detonateAfflic, L["bar_detonateCd"], timer.detonateCd[1], timer.detonateCd[2], icon.detonate, true, color.detonate)
 	end
 end
 
@@ -947,12 +960,10 @@ end
 function module:Frostbolt()
 	castingFrostbolt = true
 
-	if UnitClass("Player") == "Rogue" or UnitClass("Player") == "Warrior" or UnitClass("Player") == "Shaman" or UnitClass("Player") == "Mage" then
-		self:Bar(L["bar_frostbolt"], timer.frostbolt, icon.frostbolt, true, color.frostbolt)
-		self:WarningSign(icon.frostbolt, timer.frostbolt)
-		self:Message(L["msg_frostbolt"], "Personal", false, nil, false)
-		self:Sound("Info")
-	end
+	self:Bar(L["bar_frostbolt"], timer.frostbolt, icon.frostbolt, true, color.frostbolt)
+	self:WarningSign(icon.frostbolt, timer.frostbolt)
+	self:Message(L["msg_frostbolt"], "Personal", false, nil, false)
+	self:Sound("Info")
 end
 
 function module:FrostboltOver()

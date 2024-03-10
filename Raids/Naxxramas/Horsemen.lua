@@ -185,7 +185,6 @@ local fh_alert = CreateFrame('Frame')
 fh_alert:Hide()
 function fh_alert_marks(message)
 	fhAlert.text:SetText(message);
-	DEFAULT_CHAT_FRAME:AddMessage(message)
 	fh_alert:Show()
 end
 

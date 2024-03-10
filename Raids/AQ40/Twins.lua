@@ -36,7 +36,6 @@ L:RegisterTranslations("enUS", function()
 		targeticon_name = "Twins' targets raid icon",
 		targeticon_desc = "Puts a star on the caster twin's target and a skull on the melee twin's target",
 
-
 		trigger_tp = "gains Twin Teleport.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
 		bar_tpCd = "Teleport CD",
 		bar_tpOffCd = "Teleport Ready...",
