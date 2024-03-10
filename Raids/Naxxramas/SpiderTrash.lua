@@ -89,7 +89,6 @@ function module:Event(msg)
 			else
 				self:IntervalBar(L["charge_bar"] .. chargeNumber, timer.charge[1], timer.charge[2], icon.charge, true, "red")
 			end
-			self:Message(L["poison_charge_warn"], "Personal", true, "DispelPoison")
 		end
 	elseif self.db.profile.charge and string.find(msg, L["chargeself_trigger"]) then
 		poisonsOnSelf = poisonsOnSelf + 1
