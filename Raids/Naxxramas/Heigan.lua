@@ -11,6 +11,10 @@ L:RegisterTranslations("enUS", function()
 	return {
 		cmd = "Heigan",
 
+		fundance_cmd = "fundance",
+		fundance_name = "Safety Dance",
+		fundance_desc = "You can dance if you want to!",
+
 		disease_cmd = "disease",
 		disease_name = "Decrepit Fever Alert",
 		disease_desc = "Warn for Decrepit Fever",
