@@ -138,7 +138,7 @@ L:RegisterTranslations("deDE", function() return {
 BigWigsVersionQuery = BigWigs:NewModule("Version Query")
 
 BigWigsVersionQuery.defaultDB = {
-	popup = true,
+	popup = false,
 }
 BigWigsVersionQuery.consoleCmd = L["versionquery"]
 BigWigsVersionQuery.consoleOptions = {

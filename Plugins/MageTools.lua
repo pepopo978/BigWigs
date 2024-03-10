@@ -42,8 +42,6 @@ local warningSoundEvent = "warningSoundEvent"
 local warningSignEvent = "warningSignEvent"
 local targetChangeEvent = "targetChangeEvent"
 
-local scorchSyncSpeed = 0.2
-local igniteSyncSpeed = 0
 local warningSyncSpeed = 5
 
 -----------------------------------------------------------------------
@@ -491,8 +489,6 @@ function BigWigsMageTools:OnEnable()
 	end
 
 	self.target = UnitName("target")
-	self:ThrottleSync(scorchSyncSpeed, syncName.scorch)
-	self:ThrottleSync(igniteSyncSpeed, syncName.ignite)
 	self:ThrottleSync(warningSyncSpeed, syncName.ignitePlayerWarning)
 	self:ThrottleSync(warningSyncSpeed, syncName.ignitePyroRequest)
 end
@@ -528,7 +524,7 @@ function BigWigsMageTools:ScorchEvent(msg)
 		end
 
 		self.scorchTimers[afflictedTarget] = GetTime()
-		self:Sync(syncName.scorchSpace .. afflictedTarget)
+		self:Scorch(afflictedTarget)
 
 		return true, false, afflictedTarget  -- handled, crit, target
 	else
@@ -538,7 +534,12 @@ function BigWigsMageTools:ScorchEvent(msg)
 		if scorchTarget then
 			if self.scorchStacks[scorchTarget] == 5 then
 				self.scorchTimers[scorchTarget] = GetTime()
-				self:Sync(syncName.scorchSpace .. scorchTarget)
+				self:Scorch(scorchTarget)
+			elseif not self.scorchStacks[scorchTarget] then
+				-- may have missed afflicted msg, resync stacks
+				self:ResyncStacks()
+				self.scorchTimers[scorchTarget] = GetTime()
+				self:Scorch(scorchTarget)
 			end
 			--check if scorch crit got into the ignite
 			if hitType == "crit" and self.igniteStacks[scorchTarget] or 1 < 5 then
@@ -576,27 +577,19 @@ function BigWigsMageTools:IgniteEvent(msg)
 			self.igniteStacks[afflictedTarget] = 1
 		end
 		self.igniteTimers[afflictedTarget] = GetTime()
-		self:Sync(syncName.igniteSpace .. afflictedTarget)
+		self:Ignite(afflictedTarget)
 		return true, false, afflictedTarget  -- handled, crit, target
 	else
 		-- check for ignite crits
 		local _, _, spellName, critTarget = string.find(msg, L["ignite_crit_test"])
 		if critTarget and self.IsMageFireSpell(spellName) then
-			if self.igniteStacks[critTarget] and self.igniteStacks[critTarget] == 5 then
-				-- refresh timer
-				local timeLeft = self:GetTargetIgniteTimeLeft(critTarget)
-				-- if more than 4 seconds, this won't change the timer
-				if timeLeft < 4 then
-					-- otherwise add 4 seconds + time before next tick to the timer
-					if timeLeft > 2 then
-						self.igniteTimers[afflictedTarget] = GetTime() + (timeLeft - 2) + 4
-						self:Sync(syncName.igniteSpace .. critTarget)
-					else
-						self.igniteTimers[afflictedTarget] = GetTime() + timeLeft + 4
-						self:Sync(syncName.igniteSpace .. critTarget)
-					end
-				end
+			local timeleft = self:GetTargetIgniteTimeLeft(critTarget)
+			if not self.igniteStacks[critTarget] then
+				-- may have missed msg, resync stacks
+				self:ResyncStacks()
 			end
+			self.igniteTimers[critTarget] = GetTime()
+			self:Ignite(critTarget)
 			return true, true, critTarget  -- handled, crit, target
 		end
 	end
@@ -613,7 +606,8 @@ function BigWigsMageTools:IgniteEvent(msg)
 				self.igniteOwners[igniteTickTarget] = string.gsub(igniteOwner, "'s", "")
 			end
 		end
-		self:Sync(syncName.igniteSpace .. igniteTickTarget)
+		self:ResyncStacks()
+		self:Ignite(igniteTickTarget)
 		return true, false, igniteTickTarget  -- handled, crit, target
 	end
 end
@@ -666,35 +660,40 @@ function BigWigsMageTools:CHARACTER_POINTS_CHANGED()
 	self.impScorch = self:CheckTalents()
 end
 
+function BigWigsMageTools:ResyncStacks()
+	local target = UnitName("target")
+	self.target = target
+
+	if target then
+		for i = 1, 24 do
+			local texture, stacks = UnitDebuff("target", i)
+			if (texture and stacks) then
+				if texture == scorchIcon then
+					self.scorchStacks[target] = tonumber(stacks)
+				elseif texture == igniteIcon then
+					self.igniteStacks[target] = tonumber(stacks)
+				end
+			end
+		end
+	end
+end
+
 function BigWigsMageTools:RecheckTargetChange()
 	local target = UnitName("target")
 	self.target = target
 
 	-- if this target has been scorched, query current stacks
-	if self.scorchTimers[target] or self.igniteStacks[target] then
-		-- loop through debuff slots looking for scorch
-		local scorchStacks = nil
-		local igniteStacks = nil
-		for i = 1, 24 do
-			local texture, stacks, _ = UnitDebuff("target", i)
-			if (texture and stacks) then
-				if texture == scorchIcon then
-					scorchStacks = tonumber(stacks)
-				elseif texture == igniteIcon then
-					igniteStacks = tonumber(stacks)
-				end
-			end
-		end
-		self.scorchStacks[target] = scorchStacks
-		self.igniteStacks[target] = igniteStacks
+	if target and self.scorchTimers[target] or self.igniteStacks[target] then
+		-- resync stacks
+		self:ResyncStacks()
 
 		local timeleft = self:GetTargetScorchTimeLeft(target)
-		if scorchStacks and timeleft then
+		if self.scorchStacks[target] and timeleft then
 			self:StartScorchBar(target, timeleft, self.scorchStacks[target])
 		end
 
 		timeleft = self:GetTargetIgniteTimeLeft(target)
-		if igniteStacks and timeleft then
+		if self.igniteStacks[target] and timeleft then
 			self:StartIgniteBar(self:GetTargetIgniteText(target), timeleft, self.igniteStacks[target], self.igniteHasScorch[target])
 		end
 	else
@@ -709,38 +708,47 @@ function BigWigsMageTools:PLAYER_TARGET_CHANGED(msg)
 	end
 end
 
-function BigWigsMageTools:BigWigs_RecvSync(sync, arg1, arg2)
+function BigWigsMageTools:Scorch(target)
 	if not self.target then
 		self.target = UnitName("target")
 	end
 
-	if sync == syncName.scorch then
-		if arg1 == self.target then
-			local timeleft = self:GetTargetScorchTimeLeft(arg1)
-			self:StartScorchBar(arg1, timeleft, self.scorchStacks[arg1])
-			self:ScheduleEvent("ScorchYellowUpdate", self.ScorchYellowUpdate, 20 - scorchSyncSpeed, self, arg1)
-			self:ScheduleEvent("ScorchRedUpdate", self.ScorchRedUpdate, 25 - scorchSyncSpeed, self, arg1)
+	if target == self.target then
+		local timeleft = self:GetTargetScorchTimeLeft(target)
+		self:StartScorchBar(target, timeleft, self.scorchStacks[target])
+		self:ScheduleEvent("ScorchYellowUpdate", self.ScorchYellowUpdate, 20, self, target)
+		self:ScheduleEvent("ScorchRedUpdate", self.ScorchRedUpdate, 25, self, target)
 
-			if self.db.profile.scorchsound then
-				self:ScheduleEvent(warningSoundEvent, self.ScorchSoundWarning, 25 - scorchSyncSpeed, self, arg1)
-			end
-			if self.db.profile.scorchwarningsign then
-				self:ScheduleEvent(warningSignEvent, self.ScorchSignWarning, 25 - scorchSyncSpeed, self, arg1)
-			end
+		if self.db.profile.scorchsound then
+			self:ScheduleEvent(warningSoundEvent, self.ScorchSoundWarning, 25, self, target)
 		end
-	elseif sync == syncName.ignite then
-		if arg1 == self.target then
-			local timeleft = self:GetTargetIgniteTimeLeft(arg1)
-			self:StartIgniteBar(self:GetTargetIgniteText(arg1), timeleft, self.igniteStacks[arg1], self.igniteHasScorch[arg1])
+		if self.db.profile.scorchwarningsign then
+			self:ScheduleEvent(warningSignEvent, self.ScorchSignWarning, 25, self, target)
 		end
-	elseif sync == syncName.ignitePlayerWarning then
+	end
+end
+
+function BigWigsMageTools:Ignite(target)
+	if not self.target then
+		self.target = UnitName("target")
+	end
+
+	if target == self.target then
+		local timeleft = self:GetTargetIgniteTimeLeft(target)
+		self:StartIgniteBar(self:GetTargetIgniteText(target), timeleft, self.igniteStacks[target], self.igniteHasScorch[target])
+	end
+end
+
+function BigWigsMageTools:BigWigs_RecvSync(sync, arg1, arg2)
+	if sync == syncName.ignitePlayerWarning then
 		if self.db.profile.igniteplayerwarning then
-			self:Message(arg1 .. " says stop casting!!!", "Urgent", true, "stopcasting")
+			self:Bar(arg1 .. " says stop casting!!!", 5, "inv_misc_bone_orcskull_01", false, "Red")
+			BigWigsSound:BigWigs_Sound("stopcasting")
 		end
 	elseif sync == syncName.ignitePyroRequest then
 		if self.db.profile.ignitepyrorequest then
-			self:Bar(arg1 .. " has requested pyro!!!", 1, "spell_fire_fireball02", false, "Red")
-			self:Sound("Pyro")
+			self:Bar(arg1 .. " has requested pyro!!!", 3, "spell_fire_fireball02", false, "Red")
+			BigWigsSound:BigWigs_Sound("Pyro")
 		end
 	end
 end

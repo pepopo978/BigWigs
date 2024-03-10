@@ -14,7 +14,7 @@ module.proximityCheck = function(unit)
 	return CheckInteractDistance(unit, 2)
 end
 module.proximitySilent = true
-module.toggleoptionsdefaults = {
+module.defaultDB = {
 	healeronerotate = false,
 	healertworotate = false,
 	healerthreerotate = false,

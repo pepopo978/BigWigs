@@ -30,10 +30,6 @@ local sounds = {
 
 	Murloc = "Sound\\Creature\\Murloc\\mMurlocAggroOld.wav",
 	Pain = "Sound\\Creature\\Thaddius\\THAD_NAXX_ELECT.wav",
-	Shakira = "Interface\\AddOns\\BigWigs\\Sounds\\Shakira.mp3",
-
-	BikeHorn = "Interface\\AddOns\\BigWigs\\Sounds\\BikeHorn.ogg",
-	AirHorn = "Interface\\AddOns\\BigWigs\\Sounds\\AirHorn.ogg",
 
 	ShackleBroke = "Interface\\AddOns\\BigWigs\\Sounds\\ShackleBroke.mp3",
 	ShackleOne = "Interface\\AddOns\\BigWigs\\Sounds\\ShackleOne.mp3",
@@ -69,6 +65,7 @@ local sounds = {
 	DispelPoison = "Interface\\AddOns\\BigWigs\\Sounds\\DispelPoison.mp3",
 
 	Dance = "Interface\\AddOns\\BigWigs\\Sounds\\Dance.mp3",
+	FunDance = "Interface\\AddOns\\BigWigs\\Sounds\\FunDance.mp3",
 
 	Scorch = "Interface\\AddOns\\BigWigs\\Sounds\\Scorch.mp3",
 	stopcasting = "Interface\\AddOns\\BigWigs\\Sounds\\stopcasting.mp3",

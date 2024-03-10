@@ -392,14 +392,18 @@ function module:NewPolarity(chargeType)
 	if self.db.profile.charge then
 		if self.previousCharge and self.previousCharge ~= chargeType then
 			if chargeType == L["positivetype"] then
-				self:Message(L["poswarn"], "Positive", true, "PositiveSwitchSides")
+				self:Message(L["poswarn"], "Positive", true, nil, false)
+				BigWigsSound:BigWigs_Sound("PositiveSwitchSides")
 			elseif chargeType == L["negativetype"] then
-				self:Message(L["negwarn"], "Important", true, "NegativeSwitchSides")
+				self:Message(L["negwarn"], "Important", true, nil, false)
+				BigWigsSound:BigWigs_Sound("NegativeSwitchSides")
 			end
 		elseif chargeType == L["positivetype"] then
-			self:Message(L["poswarn"], "Positive", true, "Positive")
+			self:Message(L["poswarn"], "Positive", true, nil, false)
+			BigWigsSound:BigWigs_Sound("Positive")
 		elseif chargeType == L["negativetype"] then
-			self:Message(L["negwarn"], "Important", true, "Negative")
+			self:Message(L["negwarn"], "Important", true, nil, false)
+			BigWigsSound:BigWigs_Sound("Negative")
 		end
 		self:WarningSign(chargeType, 5)
 

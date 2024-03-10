@@ -27,7 +27,7 @@ module.toggleoptions = {
 	"proximity",
 	"bosskill",
 }
-module.toggleoptionsdefaults = {
+module.defaultDB = {
 	mcicon = false,
 }
 

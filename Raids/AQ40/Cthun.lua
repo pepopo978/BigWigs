@@ -361,10 +361,7 @@ function module:CThunStart()
 		secondTentacleLowWarn = nil
 
 		self:Message(L["startwarn"], "Attention", false, false)
-		--self:Sound("Shakira")
 		self:Bar(L["barStartRandomBeams"], timer.p1RandomEyeBeams, icon.giantEye, true, "Green")
-		--self:Bar("Claw Tentacle", 8, icon.giantClaw)
-
 
 		self:P1ClawTentacle()
 

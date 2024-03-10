@@ -76,7 +76,6 @@ Plugins\BossRecords.lua
 Plugins\RaidOfficer.lua
 Plugins\AutoReply.lua
 Plugins\Proximity.lua
-Plugins\Ignite.lua
 Plugins\WorldBuffTimers.lua
 Plugins\MageTools.lua
 Plugins\FRBuffMacro.lua
