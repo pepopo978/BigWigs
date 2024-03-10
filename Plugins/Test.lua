@@ -148,23 +148,28 @@ function BigWigsTest:BigWigs_Test()
 end
 
 function BigWigsTest:BigWigs_StartTest()
-		self.testRunning = true
-		self:Message("Attention", "Attention", true, "Long")
-		self:Message("Important", "Important", false, nil, false)
-		self:Message("Urgent", "Urgent", true, nil, false)
+	-- check if bigwigs enabled and warn
+	if not BigWigs:IsActive() then
+		DEFAULT_CHAT_FRAME:AddMessage("BigWigs is not active, click on it in your minimap icons.")
+	end
 
-		self:Bar(L["Test Bar 4"], 12, "Spell_Nature_ResistNature", true, "black")
-		self:Bar(L["Test Bar 3"], 15, "Spell_Nature_ResistNature", true, "red")
-		self:Bar(L["Test Bar 2"], 45, "Inv_Hammer_Unique_Sulfuras")
-		self:Bar(L["Test Bar"], 55, "Spell_Nature_ResistNature")
-		self:WarningSign("Inv_Hammer_Unique_Sulfuras", 20, true, "Test text")
+	self.testRunning = true
+	self:Message("Attention", "Attention", true, "Long")
+	self:Message("Important", "Important", false, nil, false)
+	self:Message("Urgent", "Urgent", true, nil, false)
 
-		self:DelayedMessage(10, L["OMG Bear!"], "Important", true, "Alert")
-		self:DelayedMessage(15, L["*RAWR*"], "Urgent", true, "Alarm")
+	self:Bar(L["Test Bar 4"], 12, "Spell_Nature_ResistNature", true, "black")
+	self:Bar(L["Test Bar 3"], 15, "Spell_Nature_ResistNature", true, "red")
+	self:Bar(L["Test Bar 2"], 45, "Inv_Hammer_Unique_Sulfuras")
+	self:Bar(L["Test Bar"], 55, "Spell_Nature_ResistNature")
+	self:WarningSign("Inv_Hammer_Unique_Sulfuras", 20, true, "Test text")
 
-		self:Sync("TestNumber 5")
+	self:DelayedMessage(10, L["OMG Bear!"], "Important", true, "Alert")
+	self:DelayedMessage(15, L["*RAWR*"], "Urgent", true, "Alarm")
 
-		BigWigs:Proximity()
+	self:Sync("TestNumber 5")
+
+	BigWigs:Proximity()
 end
 
 function BigWigsTest:BigWigs_StopTest()

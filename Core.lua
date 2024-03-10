@@ -847,11 +847,6 @@ function BigWigs:ModuleDeclaration(bossName, zoneName)
 end
 
 function BigWigs:RegisterModule(name, module)
-	--[[if module:IsRegistered() then
-	error(string.format("%q is already registered.", name))
-	return
-	end]]
-
 	if module:IsBossModule() then
 		self:ToggleModuleActive(module, false)
 	end
