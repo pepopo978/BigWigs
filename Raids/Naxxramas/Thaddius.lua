@@ -3,7 +3,7 @@ local module, L = BigWigs:ModuleDeclaration("Thaddius", "Naxxramas")
 local feugen = AceLibrary("Babble-Boss-2.2")["Feugen"]
 local stalagg = AceLibrary("Babble-Boss-2.2")["Stalagg"]
 
-module.revision = 30014
+module.revision = 30066
 module.enabletrigger = {module.translatedName, feugen, stalagg}
 module.toggleoptions = {"sounds", "bigicon", "enrage", "charge", "polarity", -1, "power", "magneticPull", "phase", "bosskill"}
 
@@ -95,98 +95,6 @@ L:RegisterTranslations("enUS", function() return {
 	msg_manaBurn = "Feugen Mana Burned You! 30 yards AoE",
 } end )
 
-L:RegisterTranslations("esES", function() return {
-	--cmd = "Thaddius",
-	
-	--bigicon_cmd = "bigicon",
-	bigicon_name = "BigIcon Magnetic Pull Alert",
-	bigicon_desc = "Warns adds tanks to taunt for Magnetic Pull with a BigIcon",
-	
-	--sounds_cmd = "sounds",
-	sounds_name = "Sound Alert for Magnetic Pull",
-	sounds_desc = "Warns adds tanks to taunt for Magnetic Pull with sound",
-	
-	--enrage_cmd = "enrage",
-	enrage_name = "Enrage Alert",
-	enrage_desc = "Warn for Enrage",
-
-	--phase_cmd = "phase",
-	phase_name = "Phase Alerts",
-	phase_desc = "Warn for Phase transitions",
-
-	--polarity_cmd = "polarity",
-	polarity_name = "Polarity Shift Alert",
-	polarity_desc = "Warn for polarity shifts",
-
-	--power_cmd = "power",
-	power_name = "Power Surge Alert",
-	power_desc = "Warn for Stalagg's power surge",
-
-	--adddeath_cmd = "adddeath",
-	adddeath_name = "Add Death Alert",
-	adddeath_desc = "Alerts when an add dies.",
-
-	--charge_cmd = "charge",
-	charge_name = "Charge Alert",
-	charge_desc = "Warn about Positive/Negative charge for yourself only.",
-
-	--magneticPull_cmd = "magneticPull",
-	magneticPull_name = "Magnetic Pull Alerts",
-	magneticPull_desc = "Warn about tank platform swaps.",
-	
-	feugen = "Feugen",
-	stalagg = "Stalagg",
-	
-	enrage_trigger = "%s goes into a berserker rage!",
-	enrage_warn = "Enrage!",
-	enrage60sec_warn = "Enrage in 60 seconds",
-	enrage30sec_warn = "Enrage in 30 seconds",
-	enrage10sec_warn = "Enrage in 10 seconds",
-	enrage_bar = "Enrage",
-	
-	start_trigger = "Stalagg crush you!", --yell
-	start_trigger1 = "Feed you to master!", --yell
-	
-	teslaOverload_trigger = "overloads!",
-	
-	phase2_trigger1 = "EAT YOUR BONES", --yell
-	phase2_trigger2 = "BREAK YOU!", --yell
-	phase2_trigger3 = "KILL!", --yell
-
-	--stalaggDead_trigger = "Stalagg dies.", --"CHAT_MSG_COMBAT_HOSTILE_DEATH"
-	adddeath2 = "Master save me...",
-	--feugenDead_trigger = "Feugen dies.", --"CHAT_MSG_COMBAT_HOSTILE_DEATH"
-	adddeath = "No... more... Feugen...",
-	phase2_14sec_warn = "Thaddius in 14 seconds",
-	
-	powerSurge_trigger = "Stalagg gains Power Surge.",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
-	powerSurge_warn = "Power Surge on Stalagg!",
-	powerSurge_bar = "Power Surge",
-
-	magneticPull_trigger = "casts Magnetic Pull", --?? CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
-	magneticPull_warn = "Magnetic Pull in 5 seconds!",
-	magneticPull_Bar = "Magnetic Pull",
-	
-	phase2_trigger = "overloads!", --emote
-	phase2_warn = "Phase 2, Thaddius in 4 seconds",
-	phase2_bar = "Phase 2",
-	
-	polarityPosition_warn = "----- Thaddius +++++",
-	polarityShift_trigger = "Now YOU feel pain!", --yell
-	
-	polarityShiftCast_trigger = "Thaddius begins to cast Polarity Shift", --?? CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
-	polarityShiftCast_warn = "Polarity Shift inc!",
-	polarityShiftCast_bar = "Polarity Shift Cast",
-	polarityShiftCD_bar = "Polarity Shift CD",
-
-	nochange = "Your debuff did not change!",
-	positivetype = "Interface\\Icons\\Spell_ChargePositive",
-	poswarn = "You changed to a Positive Charge!",
-	negativetype = "Interface\\Icons\\Spell_ChargeNegative",
-	negwarn = "You changed to a Negative Charge!",
-	polaritytickbar = "Polarity tick",
-} end )
-
 local timer = {
 	enrage = 300,
 	phase2 = 14,
@@ -198,7 +106,7 @@ local timer = {
 	firstPolarity = {11.6,14.2},--11.6, 14.2
 	polarityShiftCD = 30,--{25,35},
 	polarityShiftCast = 3,
-	polarityTick = 6,
+	polarityTick = 5,
 }
 local icon = {
 	powerSurge = "Spell_Shadow_UnholyFrenzy",
@@ -341,8 +249,6 @@ function module:Event(msg)
 end
 
 
-
-
 function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.enrage and self.db.profile.enrage then
 		self:Enrage()
@@ -366,8 +272,6 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		self:PowerSurge()
 	end
 end
-
-
 
 
 function module:Enrage()
@@ -428,6 +332,7 @@ function module:ThreeSec()
 		
 		if self.db.profile.polarity then
 			self:DelayedIntervalBar(3, L["polarityShiftCD_bar"], timer.firstPolarity[1], timer.firstPolarity[2], icon.polarityShift, true, "green")
+			self:DelayedMessage(15, L["polarityPosition_warn"], nil, nil)
 		end
 	end
 end

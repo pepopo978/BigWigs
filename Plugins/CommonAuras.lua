@@ -39,7 +39,10 @@ L:RegisterTranslations("enUS", function() return {
 	
 	msg_challengingRoar = " Challenging Roar",
 	bar_challengingRoar = " Challenging Roar",
-
+	
+	msg_divineIntervention = "Divine Intervention on ",
+	bar_divineIntervention = " Divine Intervention",
+	
 	portal_regexp = ".*: (.*)",
 	
 	trigger_wormhole = "just opened a wormhole.",--CHAT_MSG_MONSTER_EMOTE
@@ -84,6 +87,7 @@ BigWigsCommonAuras.defaultDB = {
 	lifegivinggem = true,
 	challengingshout = true,
 	challengingroar = true,
+	di = true,
 	portal = true,
 	wormhole = true,
 	orange = true,
@@ -92,7 +96,7 @@ BigWigsCommonAuras.defaultDB = {
 	broadcast = false,
 }
 BigWigsCommonAuras.consoleCmd = L["commonauras"]
-BigWigsCommonAuras.revision = 30052
+BigWigsCommonAuras.revision = 30066
 BigWigsCommonAuras.external = true
 BigWigsCommonAuras.consoleOptions = {
 	type = "group",
@@ -140,6 +144,13 @@ BigWigsCommonAuras.consoleOptions = {
 			desc = string.format(L["Toggle %s display."], BS["Challenging Roar"]),
 			get = function() return BigWigsCommonAuras.db.profile.challengingroar end,
 			set = function(v) BigWigsCommonAuras.db.profile.challengingroar = v end,
+		},
+		["di"] = {
+			type = "toggle",
+			name = BS["Divine Intervention"],
+			desc = string.format(L["Toggle %s display."], BS["Divine Intervention"]),
+			get = function() return BigWigsCommonAuras.db.profile.di end,
+			set = function(v) BigWigsCommonAuras.db.profile.di = v end,
 		},
 		["portal"] = {
 			type = "toggle",
@@ -191,6 +202,7 @@ local timer = {
 	laststand = 20,
 	lifegivingGem = 20,
 	challenging = 6,
+	di = 60,
 	portal = 60,
 	wormhole = 8,
 	orange = 60,
@@ -203,6 +215,7 @@ local icon = {
 	lifegivingGem = L["iconPrefix"].."inv_misc_gem_pearl_05",
 	challengingShout = L["iconPrefix"].."ability_bullrush",
 	challengingRoar = L["iconPrefix"].."ability_druid_challangingroar",
+	di = L["iconPrefix"].."spell_nature_timestop",
 	wormhole = L["iconPrefix"].."Inv_Misc_EngGizmos_12",
 	orange = L["iconPrefix"].."inv_misc_food_41",
 	soulwell = L["iconPrefix"].."inv_stone_04",
@@ -215,6 +228,7 @@ local color = {
 	lifegivingGem = "Red",
 	challengingShout = "Red",
 	challengingRoar = "Red",
+	di = "Blue",
 	wormhole = "Cyan",
 	orange = "Green",
 	soulwell = "Green",
@@ -227,9 +241,10 @@ function BigWigsCommonAuras:OnEnable()
 	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")--trigger_wormhole, trigger_orange, trigger_soulwell
 	self:RegisterEvent("CHAT_MSG_SYSTEM")--trigger_shutdown, trigger_restart
 	
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS")
+	
 	if UnitClass("player") == "Warrior" or UnitClass("player") == "Druid" then
 		self:RegisterEvent("SpellStatus_SpellCastInstant")
-		self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS")
 	
 	elseif UnitClass("player") == "Priest" and UnitRace("player") == "Dwarf" then
 		self:RegisterEvent("SpellStatus_SpellCastInstant")
@@ -292,8 +307,10 @@ function BigWigsCommonAuras:SpellStatus_SpellCastInstant(sId, sName, sRank, sFul
 end
 
 function BigWigsCommonAuras:CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS(msg)
-	if string.find(msg, BS["Gift of Life"]) then
+	if string.find(msg, BS["Gift of Life"]) and (UnitClass("Player") == "Warrior" or UnitClass("Player") == "Druid" or UnitClass("Player") == "Paladin" ) then
 		self:TriggerEvent("BigWigs_SendSync", "BWCALG")
+	elseif msg == "You gain Divine Intervention." then
+		self:TriggerEvent("BigWigs_SendSync", "BWCADI")
 	end
 end
 
@@ -448,6 +465,10 @@ function BigWigsCommonAuras:BigWigs_RecvSync( sync, rest, nick )
 		self:TriggerEvent("BigWigs_StartBar", self, nick..L["bar_challengingRoar"], timer.challenging, icon.challengingRoar, true, color.challengingRoar)
 		self:SetCandyBarOnClick("BigWigsBar "..nick..L["bar_challengingRoar"], function(name, button, extra) TargetByName(extra, true) end, nick )
 	
+	elseif self.db.profile.di and sync == "BWCADI" then
+		self:TriggerEvent("BigWigs_Message", L["msg_divineIntervention"]..nick, "Urgent", false, nil, false)
+		self:TriggerEvent("BigWigs_StartBar", self, nick..L["bar_divineIntervention"], timer.di, icon.di, true, color.di)
+		self:SetCandyBarOnClick("BigWigsBar "..nick..L["bar_divineIntervention"], function(name, button, extra) TargetByName(extra, true) end, nick )
 	
 	elseif self.db.profile.portal and sync == "BWCAP" and rest then
 		rest = BS:HasTranslation(rest) and BS:GetTranslation(rest) or rest
