@@ -66,7 +66,6 @@ BigWigsVersionQuery = BigWigs:NewModule("Version Query")
 
 BigWigsVersionQuery.defaultDB = {
 	versionpopup = false,
-	showfirsttimepopup = true,
 }
 BigWigsVersionQuery.consoleCmd = L["versionquery"]
 BigWigsVersionQuery.consoleOptions = {
@@ -146,11 +145,6 @@ function BigWigsVersionQuery:OnEnable()
 	self:TriggerEvent("BigWigs_ThrottleSync", "BWVR", 0)
 
 	self:ScheduleEvent("versionquerytest", BigWigsVersionQuery.Test, 1, self) -- check version in 1s
-
-	if self.db.profile.showfirsttimepopup then
-		self.db.profile.showfirsttimepopup = false
-		self:ShowFirstTimePopup()
-	end
 end
 
 function BigWigsVersionQuery:PopulateRevisions()
@@ -282,27 +276,6 @@ function BigWigsVersionQuery:IsOutOfDate()
 			local dialog = StaticPopup_Show("BigWigsOutOfDateDialog")
 		end
 	end
-end
-
-function BigWigsVersionQuery:ShowFirstTimePopup()
-	local dialog = nil
-	StaticPopupDialogs["BigWigsFirstTimeDialog"] = {
-		text = "Pepo's Bigwigs is now enabled!  \n\n I recommend editing your alert positions and sizes to your liking by clicking 'Edit Layout'. If you don't want to do it now, you can always do it later right clicking the BigWigs minimap icon and choosing 'Edit Layout'.",
-		button1 = "Edit Layout",
-		button2 = L["Close"],
-		OnAccept = function()
-			StaticPopup_Hide("BigWigsFirstTimeDialog")
-			BigWigs:EditLayout()
-		end,
-		OnCancel = function()
-			StaticPopup_Hide("BigWigsFirstTimeDialog")
-		end,
-		timeout = 0,
-		whileDead = true,
-		hideOnEscape = true,
-		preferredIndex = 3, -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
-	}
-	local dialog = StaticPopup_Show("BigWigsFirstTimeDialog")
 end
 
 function BigWigsVersionQuery:NotifyOldVersions()

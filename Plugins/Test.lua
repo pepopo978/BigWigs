@@ -149,7 +149,7 @@ end
 
 function BigWigsTest:BigWigs_StartTest()
 	BigWigs:ToggleActive(true) -- make sure bigwigs active
-	
+
 	self.testRunning = true
 	self:Message("Attention", "Attention", true, "Long")
 	self:Message("Important", "Important", false, nil, false)

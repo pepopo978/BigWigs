@@ -777,13 +777,36 @@ function BigWigs:AceEvent_FullyInitialized()
 		self:RegisterEvent("BigWigs_RebootModule")
 
 		self:RegisterEvent("BigWigs_RecvSync")
-
-		--self:RegisterEvent("AceEvent_FullyInitialized", function() self:TriggerEvent("BigWigs_ThrottleSync", "BossEngaged", 5) end )
-
 	else
 		self:ToggleActive(false)
 	end
 	self.loading = nil
+
+	if self.db.profile.showfirsttimepopup == nil then
+		self.db.profile.showfirsttimepopup = false
+		self:ToggleActive(true)
+		BigWigs:ShowFirstTimePopup()
+	end
+end
+
+function BigWigs:ShowFirstTimePopup()
+	StaticPopupDialogs["BigWigsFirstTimeDialog"] = {
+		text = "Pepo's Bigwigs is now enabled!  \n\n I recommend editing your alert positions and sizes to your liking by clicking 'Edit Layout'. If you don't want to do it now, you can always do it later right clicking the BigWigs minimap icon and choosing 'Edit Layout'.",
+		button1 = "Edit Layout",
+		button2 = "Close",
+		OnAccept = function()
+			StaticPopup_Hide("BigWigsFirstTimeDialog")
+			BigWigs:EditLayout()
+		end,
+		OnCancel = function()
+			StaticPopup_Hide("BigWigsFirstTimeDialog")
+		end,
+		timeout = 0,
+		whileDead = true,
+		hideOnEscape = true,
+		preferredIndex = 3, -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
+	}
+	StaticPopup_Show("BigWigsFirstTimeDialog")
 end
 
 function BigWigs:OnDisable()
