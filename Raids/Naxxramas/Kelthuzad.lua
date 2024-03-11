@@ -3,7 +3,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Kel'Thuzad", "Naxxramas")
 
-module.revision = 30064
+module.revision = 30065
 module.enabletrigger = module.translatedName
 module.toggleoptions = {
 	"phase",
@@ -497,7 +497,8 @@ function module:RefreshP1()
 		self:ScheduleEvent("weaver11", self.WeaverSpawns, 271, self, "11")
 		self:ScheduleEvent("weaver12", self.WeaverSpawns, 285, self, "12")
 		self:ScheduleEvent("weaver13", self.WeaverSpawns, 294, self, "13")
-		self:ScheduleEvent("w
+		self:ScheduleEvent("weaver14", self.WeaverSpawns, 300, self, "14")
+	end
 end
 
 function module:OnDisengage()
