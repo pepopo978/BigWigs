@@ -3,7 +3,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Kel'Thuzad", "Naxxramas")
 
-module.revision = 30060
+module.revision = 30064
 module.enabletrigger = module.translatedName
 module.toggleoptions = {
 	"phase",
@@ -445,6 +445,61 @@ function module:OnEngage()
 	end
 end
 
+function module:RefreshP1()
+	p3warn = nil
+	mcYellTime = GetTime()
+	frostBlastYellTime = GetTime()
+	mc1 = nil
+	mc2 = nil
+	mc3 = nil
+	mc4 = nil
+	castingFrostbolt = nil
+	shackleCount = 0
+	shackleCounter = 0
+	phase = "p1"
+	numAbomDead = 0
+	numWeaverDead = 0
+	bloodTapCounter = 0
+	
+	if self.db.profile.phase then
+		self:Bar(L["bar_phase1"], timer.phase1, icon.phase, true, color.phase)
+	end
+	
+	if self.db.profile.p1adds then
+		self:Bar(numAbomDead..L["bar_abom"], timer.p1adds, icon.abomination, true, color.abomination)
+		self:Bar(numWeaverDead..L["bar_weaver"], timer.p1adds, icon.soulWeaver, true, color.soulWeaver)
+		
+		self:ScheduleEvent("abom1", self.AbominationSpawns, 44, self, "1")
+		self:ScheduleEvent("abom2", self.AbominationSpawns, 72, self, "2")
+		self:ScheduleEvent("abom3", self.AbominationSpawns, 100, self, "3")
+		self:ScheduleEvent("abom4", self.AbominationSpawns, 130, self, "4")
+		self:ScheduleEvent("abom5", self.AbominationSpawns, 153, self, "5")
+		self:ScheduleEvent("abom6", self.AbominationSpawns, 176, self, "6")
+		self:ScheduleEvent("abom7", self.AbominationSpawns, 193, self, "7")
+		self:ScheduleEvent("abom8", self.AbominationSpawns, 212, self, "8")
+		self:ScheduleEvent("abom9", self.AbominationSpawns, 232, self, "9")
+		self:ScheduleEvent("abom10", self.AbominationSpawns, 252, self, "10")
+		self:ScheduleEvent("abom11", self.AbominationSpawns, 268, self, "11")
+		self:ScheduleEvent("abom12", self.AbominationSpawns, 285, self, "12")
+		self:ScheduleEvent("abom13", self.AbominationSpawns, 300, self, "13")
+		self:ScheduleEvent("abom14", self.AbominationSpawns, 318, self, "14")
+		
+		self:ScheduleEvent("weaver1", self.WeaverSpawns, 44, self, "1")
+		self:ScheduleEvent("weaver2", self.WeaverSpawns, 68, self, "2")
+		self:ScheduleEvent("weaver3", self.WeaverSpawns, 97, self, "3")
+		self:ScheduleEvent("weaver4", self.WeaverSpawns, 130, self, "4")
+		self:ScheduleEvent("weaver5", self.WeaverSpawns, 155, self, "5")
+		self:ScheduleEvent("weaver6", self.WeaverSpawns, 170, self, "6")
+		self:ScheduleEvent("weaver7", self.WeaverSpawns, 190, self, "7")
+		self:ScheduleEvent("weaver8", self.WeaverSpawns, 213, self, "8")
+		self:ScheduleEvent("weaver9", self.WeaverSpawns, 235, self, "9")
+		self:ScheduleEvent("weaver10", self.WeaverSpawns, 256, self, "10")
+		self:ScheduleEvent("weaver11", self.WeaverSpawns, 271, self, "11")
+		self:ScheduleEvent("weaver12", self.WeaverSpawns, 285, self, "12")
+		self:ScheduleEvent("weaver13", self.WeaverSpawns, 294, self, "13")
+		self:ScheduleEvent("w
+end
+
 function module:OnDisengage()
 	if self.db.profile.proximity then
 		self:RemoveProximity()
@@ -479,6 +534,9 @@ end
 function module:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L["trigger_engage"] then
 		module:SendEngageSync()
+		if phase ~= "p1" then
+			self:RefreshP1()
+		end
 	
 	elseif msg == L["trigger_phase2_1"] or msg == L["trigger_phase2_2"] or msg == L["trigger_phase2_3"] then
 		self:Sync(syncName.phase2)

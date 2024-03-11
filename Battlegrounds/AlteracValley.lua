@@ -184,6 +184,7 @@ function module:CheckForWipe(event)
 end
 
 function module:ZONE_CHANGED_NEW_AREA(msg)
+	--if UnitName("Player") == "Dreadsome" then DEFAULT_CHAT_FRAME:AddMessage("here") end
 	if GetZoneText() ~= "Alterac Valley" or self.core:IsModuleActive(module.translatedName) then
 		return
 	end

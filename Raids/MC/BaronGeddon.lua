@@ -155,6 +155,7 @@ function module:Event(msg)
 	elseif msg == L["trigger_inferno"] then
 		self:Sync(syncName.inferno)
 	elseif msg == L["trigger_infernoFade"] then
+		if UnitName("Player") == "Dreadsome" then DEFAULT_CHAT_FRAME:AddMessage("    trigger_infernoFade    Found!") end
 		self:Sync(syncName.infernoFade)
 	elseif string.find(msg, L["trigger_infernoYou"]) then
 		self:InfernoYou()
