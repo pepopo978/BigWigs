@@ -148,11 +148,8 @@ function BigWigsTest:BigWigs_Test()
 end
 
 function BigWigsTest:BigWigs_StartTest()
-	-- check if bigwigs enabled and warn
-	if not BigWigs:IsActive() then
-		DEFAULT_CHAT_FRAME:AddMessage("BigWigs is not active, click on it in your minimap icons.")
-	end
-
+	BigWigs:ToggleActive(true) -- make sure bigwigs active
+	
 	self.testRunning = true
 	self:Message("Attention", "Attention", true, "Long")
 	self:Message("Important", "Important", false, nil, false)
