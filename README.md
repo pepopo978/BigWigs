@@ -15,5 +15,5 @@ Currently, only english clients are supported. In general, the Addon can work wi
 The adjustments were originally made by <a href="https://github.com/MOUZU"><b>LYQ</b></a> and <a href="https://github.com/xorann/BigWigs"><b>Dorann</b></a><br>
 Adjustments for Elysium made by <b>Hosq</b>.<br>
 Adjustments for Turtle-WoW made by <b>CosminPOP</b>.<br>
-Modifications for Turtle-WoW made by <b>Relar</b>.
+Modifications for Turtle-WoW made by <b>Relar/Balake/Pepopo</b>.
 <br>

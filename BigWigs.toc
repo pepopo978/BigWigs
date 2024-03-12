@@ -1,6 +1,6 @@
 ## Interface: 11200
 
-## Title: |cFFFF8080Relar|r Big Wigs |cff7fff7f30062|r |cffabd473Turtle-WoW|r
+## Title: |cFFFF8080Pepopo|r Big Wigs |cff7fff7f30062|r |cffabd473Turtle-WoW|r
 ## Title-zhCN: |cffabd473Turtle-WoW|r Big Wigs
 ## Notes: Boss Mods with Timer bars.
 ## Notes-esES: Módulos para Jefes con barras temporizadoras.
@@ -46,7 +46,7 @@ Libs\Surface-1.0\Surface-1.0.lua
 Libs\Deformat-2.0\Deformat-2.0.lua
 Libs\Gratuity-2.0\Gratuity-2.0.lua
 Libs\SpellCache-1.0\SpellCache-1.0.lua
-Libs\SpellStatus-1.0\SpellStatus-1.0.lua
+Libs\SpellStatusV2-2.0\SpellStatusV2-2.0.lua
 Libs\SpecialEvents-Aura-2.0\SpecialEvents-Aura-2.0.lua
 Libs\RosterLib-2.0\RosterLib-2.0.lua
 

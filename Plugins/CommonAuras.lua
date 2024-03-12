@@ -277,18 +277,18 @@ function BigWigsCommonAuras:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SYSTEM")--trigger_shutdown, trigger_restart
 
 	if UnitClass("player") == "Warrior" or UnitClass("player") == "Druid" then
-		self:RegisterEvent("SpellStatus_SpellCastInstant")
+		self:RegisterEvent("SpellStatusV2_SpellCastInstant")
 		self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS")
 
 	elseif UnitClass("player") == "Priest" and UnitRace("player") == "Dwarf" then
-		self:RegisterEvent("SpellStatus_SpellCastInstant")
+		self:RegisterEvent("SpellStatusV2_SpellCastInstant")
 
 	elseif UnitClass("player") == "Mage" then
 		if not spellStatus then
-			spellStatus = AceLibrary("SpellStatus-1.0")
+			spellStatus = AceLibrary("SpellStatusV2-2.0")
 		end
-		self:RegisterEvent("SpellStatus_SpellCastCastingFinish")
-		self:RegisterEvent("SpellStatus_SpellCastFailure")
+		self:RegisterEvent("SpellStatusV2_SpellCastCastingFinish")
+		self:RegisterEvent("SpellStatusV2_SpellCastFailure")
 	end
 
 	self:RegisterEvent("BigWigs_RecvSync")
@@ -306,7 +306,7 @@ function BigWigsCommonAuras:OnEnable()
 	self:TriggerEvent("BigWigs_ThrottleSync", "BWCAWL", .4) -- Soulwell
 end
 
-function BigWigsCommonAuras:SpellStatus_SpellCastInstant(sId, sName, sRank, sFullName, sCastTime)
+function BigWigsCommonAuras:SpellStatusV2_SpellCastInstant(sId, sName, sRank, sFullName, sCastTime)
 	if sName == BS["Fear Ward"] then
 		local targetName = nil
 		if spellTarget then
@@ -347,7 +347,7 @@ function BigWigsCommonAuras:CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS(msg)
 	end
 end
 
-function BigWigsCommonAuras:SpellStatus_SpellCastCastingFinish(sId, sName, sRank, sFullName, sCastTime)
+function BigWigsCommonAuras:SpellStatusV2_SpellCastCastingFinish(sId, sName, sRank, sFullName, sCastTime)
 	if not string.find(sName, L["Portal"]) then
 		return
 	end
@@ -355,7 +355,7 @@ function BigWigsCommonAuras:SpellStatus_SpellCastCastingFinish(sId, sName, sRank
 	self:ScheduleEvent("bwcaspellcast", self.SpellCast, 0.3, self, name)
 end
 
-function BigWigsCommonAuras:SpellStatus_SpellCastFailure(sId, sName, sRank, sFullName, isActiveSpell, UIEM_Message, CMSFLP_SpellName, CMSFLP_Message)
+function BigWigsCommonAuras:SpellStatusV2_SpellCastFailure(sId, sName, sRank, sFullName, isActiveSpell, UIEM_Message, CMSFLP_SpellName, CMSFLP_Message)
 	-- do nothing if we are casting a spell but the error doesn't consern that spell, thanks Iceroth.
 	if (spellStatus:IsCastingOrChanneling() and not spellStatus:IsActiveSpell(sId, sName)) then
 		return
@@ -371,12 +371,6 @@ end
 
 function BigWigsCommonAuras:CHAT_MSG_MONSTER_EMOTE(msg, sender)
 	if string.find(msg, L["trigger_wormhole"]) then
-
-		--Debug
-		if UnitName("Player") == "Relar" or UnitName("Player") == "Dreadsome" then
-			DEFAULT_CHAT_FRAME:AddMessage("sender: " .. sender)
-		end
-
 		whZone = nil
 		if GetNumRaidMembers() > 0 then
 			for i = 1, GetNumRaidMembers() do

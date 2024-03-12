@@ -90,6 +90,9 @@ L:RegisterTranslations("enUS", function()
 		negwarn = "You changed to a Negative Charge!",
 		polaritytickbar = "Polarity tick",
 
+		stayedpos = "You stayed Positive, don't move!",
+		stayedneg = "You stayed Negative, don't move!",
+
 		throwbar = "Throw",
 		throwwarn = "Throw in ~5 seconds!",
 
@@ -279,7 +282,6 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 	elseif sync == syncName.polarityShiftCast and self.db.profile.polarity then
 		self:PolarityShiftCast()
 
-
 	elseif sync == syncName.powerSurge and self.db.profile.power then
 		self:PowerSurge()
 	end
@@ -332,6 +334,8 @@ function module:AddsDead()
 	self:CancelDelayedWarningSign(icon.taunt)
 	self:CancelDelayedSound("Info")
 
+	self:RegisterEvent("PLAYER_AURAS_CHANGED")
+
 	self:Bar(L["bar_phase2"], timer.phase2, icon.phase2, true, "black")
 	self:Message(L["polarityPosition_warn"], nil, nil)
 end
@@ -359,32 +363,37 @@ function module:PolarityShiftCast()
 	self:RemoveBar(L["polarityShiftCD_bar"])
 	self:Message(L["polarityShiftCast_warn"], "Important")
 	self:Bar(L["polarityShiftCast_bar"], timer.polarityShiftCast, icon.polarityShift, true, "green")
+	self.checkAuras = true
 end
 
 function module:PolarityShift()
-	self:RegisterEvent("PLAYER_AURAS_CHANGED")
 	self:Bar(L["polarityShiftCD_bar"], timer.polarityShiftCD, icon.polarityShift, true, "green")
+
+	-- if buff doesn't change, player aura change won't always happen
+	self:ScheduleEvent("RecheckAuras", self.PLAYER_AURAS_CHANGED, 0.5, self)
 end
 
 function module:PLAYER_AURAS_CHANGED(msg)
-	local chargetype = nil
-	local iIterator = 1
-	while UnitDebuff("player", iIterator) do
-		local texture, applications = UnitDebuff("player", iIterator)
-		if texture == L["positivetype"] or texture == L["negativetype"] then
-			if applications > 1 then
-				return
+	if self.checkAuras then
+		self.checkAuras = false
+		local chargetype = nil
+		local iIterator = 1
+		while UnitDebuff("player", iIterator) do
+			local texture, applications = UnitDebuff("player", iIterator)
+			if texture == L["positivetype"] or texture == L["negativetype"] then
+				if applications > 1 then
+					return
+				end
+				chargetype = texture
 			end
-			chargetype = texture
+			iIterator = iIterator + 1
 		end
-		iIterator = iIterator + 1
-	end
-	if not chargetype then
-		return
-	end
-	self:UnregisterEvent("PLAYER_AURAS_CHANGED")
-	if self.db.profile.charge then
-		self:NewPolarity(chargetype)
+		if not chargetype then
+			return
+		end
+		if self.db.profile.charge then
+			self:NewPolarity(chargetype)
+		end
 	end
 end
 
@@ -399,10 +408,18 @@ function module:NewPolarity(chargeType)
 				BigWigsSound:BigWigs_Sound("NegativeSwitchSides")
 			end
 		elseif chargeType == L["positivetype"] then
-			self:Message(L["poswarn"], "Positive", true, nil, false)
+			if self.previousCharge then
+				self:Message(L["stayedpos"], "Positive", true, nil, false)
+			else
+				self:Message(L["poswarn"], "Positive", true, nil, false)
+			end
 			BigWigsSound:BigWigs_Sound("Positive")
 		elseif chargeType == L["negativetype"] then
-			self:Message(L["negwarn"], "Important", true, nil, false)
+			if self.previousCharge then
+				self:Message(L["stayedneg"], "Important", true, nil, false)
+			else
+				self:Message(L["negwarn"], "Important", true, nil, false)
+			end
 			BigWigsSound:BigWigs_Sound("Negative")
 		end
 		self:WarningSign(chargeType, 5)

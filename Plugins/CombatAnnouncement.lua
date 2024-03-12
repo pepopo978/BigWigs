@@ -15,7 +15,7 @@ local name = "Combat Announcement"
 local L = AceLibrary("AceLocale-2.2"):new("BigWigs" .. name)
 local BS = AceLibrary("Babble-Spell-2.2")
 
-local spellStatus = AceLibrary("SpellStatus-1.0")
+local spellStatus = AceLibrary("SpellStatusV2-2.0")
 local _, class = UnitClass("player")
 
 ------------------------------
@@ -1006,7 +1006,7 @@ BigWigsCombatAnnouncement.external = true
 ------------------------------
 
 function BigWigsCombatAnnouncement:OnEnable()
-	self:RegisterEvent("SpellStatus_SpellCastInstant")
+	self:RegisterEvent("SpellStatusV2_SpellCastInstant")
 end
 
 ------------------------------
@@ -1038,7 +1038,7 @@ end
 --         Events           --
 ------------------------------
 
-function BigWigsCombatAnnouncement:SpellStatus_SpellCastInstant(id, name, rank, fullname, caststart, caststop, castduration, castdelay, activetarget)
+function BigWigsCombatAnnouncement:SpellStatusV2_SpellCastInstant(id, name, rank, fullname, caststart, caststop, castduration, castdelay, activetarget)
 	if not BigWigsCombatAnnouncement:IsBroadcasting() then
 		return
 	end

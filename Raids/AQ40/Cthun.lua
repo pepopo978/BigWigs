@@ -584,7 +584,7 @@ function UpdateCthunMap()
 			CthunMapUnitIcon(i)
 			if MouseIsOver(cthunmap.map.unit[i]) and GetRaidRosterInfo(i) ~= UnitName("player") then
 				if GetRaidTargetIndex("raid" .. i) then
-					tooltipText = tooltipText .. GetRaidRosterInfo(i) .. SpellstatusIndexToIcon[GetRaidTargetIndex("raid" .. i)] .. "\n"
+					tooltipText = tooltipText .. GetRaidRosterInfo(i) .. SpellstatusV2IndexToIcon[GetRaidTargetIndex("raid" .. i)] .. "\n"
 				else
 					tooltipText = tooltipText .. GetRaidRosterInfo(i) .. "\n"
 				end
