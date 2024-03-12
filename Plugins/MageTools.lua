@@ -231,7 +231,7 @@ BigWigsMageTools.consoleOptions = {
 						BigWigsMageTools.db.profile.barspacing)
 			end,
 		},
-		scorchbar= {
+		scorchbar = {
 			type = "group",
 			name = L["ScorchBarOptions"],
 			desc = L["ScorchBarOptions"],
@@ -1272,7 +1272,7 @@ function BigWigsMageTools:StartThreatBar(owner, percent)
 		self:SetupFrames()
 	end
 
-	local text = owner .. " - " .. percent .. "%"
+	local text = owner .. " " .. string.format("%2.f", percent) .. "%"
 	local groupId = self.frames.anchor.candyBarGroupId
 	-- check if bar already exists
 	if not candybar:IsRegistered(id) then
