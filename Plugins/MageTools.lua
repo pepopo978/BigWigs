@@ -74,7 +74,7 @@ L:RegisterTranslations("enUS", function()
 		["Close"] = "Close",
 
 		-- scorch settings
-		["ScorchOptions"] = "Scorch Options",
+		["ScorchBarOptions"] = "Scorch Bar Options",
 		["ScorchEnable"] = "Enable",
 		["ScorchEnableTimer"] = "Enable scorch timer",
 		["ScorchEnableTimerDesc"] = "Displays a timer for Scorch Fire Vulnerability.",
@@ -88,16 +88,24 @@ L:RegisterTranslations("enUS", function()
 		["ScorchBarHeightDesc"] = "Sets the height of the scorch bar",
 
 		-- ignite settings
-		["IgniteOptions"] = "Ignite Options",
+		["IgniteBarOptions"] = "Ignite Bar Options",
 		["IgniteEnable"] = "Enable",
 		["IgniteTimerMode"] = "Ignite timer mode",
 		["IgniteTimerModeDesc"] = "In timer mode bar size will indicate remaining time in ignite window.  Otherwise bar will grow with ignite stacks.",
-		["IgniteThreatThreshold"] = "Ignite threat threshold",
-		["IgniteThreatThresholdDesc"] = "Percentage of top threat at which to warn about ignite",
 		["IgniteBarWidth"] = "Ignite bar width",
 		["IgniteBarWidthDesc"] = "Sets the width of the ignite bar at 5 stacks",
 		["IgniteBarHeight"] = "Ignite bar height",
 		["IgniteBarHeightDesc"] = "Sets the height of the ignite bar",
+
+		["IgniteThreatBarOptions"] = "Ignite Threat Bar Options",
+		["IgniteThreatEnable"] = "Show ignite threat bar",
+		["IgniteThreatEnableDesc"] = "Show the ignite owner's percent threat",
+		["IgniteThreatThreshold"] = "Ignite threat threshold",
+		["IgniteThreatThresholdDesc"] = "Percentage of top threat at which to turn red",
+		["IgniteThreatBarWidth"] = "Ignite threat bar width",
+		["IgniteThreatBarWidthDesc"] = "Sets the width of the ignite threat bar at 100% threat",
+		["IgniteThreatBarHeight"] = "Ignite threat bar height",
+		["IgniteThreatBarHeightDesc"] = "Sets the height of the ignite threat bar",
 
 		["IgnitePlayerWarning"] = "Ignite player warnings",
 		["IgnitePlayerWarningDesc"] = "Whether to display + play sounds for manual player warnings",
@@ -146,14 +154,15 @@ BigWigsMageTools.defaultDB = {
 
 	igniteenable = true,
 	ignitetimermode = false,
-	ignitethreatthreshold = 85,
-	igniteplayerwarning = true,
-	ignitepyrorequest = true,
 	ignitewidth = 200,
 	igniteheight = 20,
 
-	threatwidth = 200,
-	threatheight = 20,
+	ignitethreatenable = true,
+	ignitethreatthreshold = 80,
+	ignitethreatwidth = 180,
+	ignitethreatheight = 30,
+	igniteplayerwarning = true,
+	ignitepyrorequest = true,
 }
 
 BigWigsMageTools.consoleCmd = L["MageToolsCmd"]
@@ -222,10 +231,10 @@ BigWigsMageTools.consoleOptions = {
 						BigWigsMageTools.db.profile.barspacing)
 			end,
 		},
-		scorch = {
+		scorchbar= {
 			type = "group",
-			name = L["ScorchOptions"],
-			desc = L["ScorchOptions"],
+			name = L["ScorchBarOptions"],
+			desc = L["ScorchBarOptions"],
 			order = 6,
 			args = {
 				scorchenable = {
@@ -297,7 +306,7 @@ BigWigsMageTools.consoleOptions = {
 					desc = L["ScorchBarHeightDesc"],
 					order = 6,
 					min = 10,
-					max = 30,
+					max = 40,
 					step = 1,
 					get = function()
 						return BigWigsMageTools.db.profile.scorchheight
@@ -308,10 +317,10 @@ BigWigsMageTools.consoleOptions = {
 				},
 			}
 		},
-		ignite = {
+		ignitebar = {
 			type = "group",
-			name = L["IgniteOptions"],
-			desc = L["IgniteOptions"],
+			name = L["IgniteBarOptions"],
+			desc = L["IgniteBarOptions"],
 			order = 7,
 			args = {
 				igniteenable = {
@@ -330,7 +339,7 @@ BigWigsMageTools.consoleOptions = {
 					type = "toggle",
 					name = L["IgniteTimerMode"],
 					desc = L["IgniteTimerModeDesc"],
-					order = 2,
+					order = 3,
 					get = function()
 						return BigWigsMageTools.db.profile.ignitetimermode
 					end,
@@ -342,7 +351,7 @@ BigWigsMageTools.consoleOptions = {
 					type = "range",
 					name = L["IgniteBarWidth"],
 					desc = L["IgniteBarWidthDesc"],
-					order = 3,
+					order = 5,
 					min = 100,
 					max = 300,
 					step = 5,
@@ -357,9 +366,9 @@ BigWigsMageTools.consoleOptions = {
 					type = "range",
 					name = L["IgniteBarHeight"],
 					desc = L["IgniteBarHeightDesc"],
-					order = 4,
+					order = 7,
 					min = 10,
-					max = 30,
+					max = 40,
 					step = 1,
 					get = function()
 						return BigWigsMageTools.db.profile.igniteheight
@@ -367,77 +376,126 @@ BigWigsMageTools.consoleOptions = {
 					set = function(v)
 						BigWigsMageTools.db.profile.igniteheight = v
 					end,
-				},
-				spacer = {
-					type = "header",
-					name = " ",
-					order = 5,
-				},
-				-- TODO readd once I get threat working
-				--ignitethreatthreshold = {
-				--	type = "range",
-				--	name = L["IgniteThreatThreshold"],
-				--	desc = L["IgniteThreatThresholdDesc"],
-				--	order = 6,
-				--	min = 0,
-				--	max = 100,
-				--	step = 1,
-				--	get = function()
-				--		return BigWigsMageTools.db.profile.ignitethreatthreshold
-				--	end,
-				--	set = function(v)
-				--		BigWigsMageTools.db.profile.ignitethreatthreshold = v
-				--	end,
-				--},
-				igniteplayerwarning = {
-					type = "toggle",
-					name = L["IgnitePlayerWarning"],
-					desc = L["IgnitePlayerWarningDesc"],
-					order = 7,
-					get = function()
-						return BigWigsMageTools.db.profile.igniteplayerwarning
-					end,
-					set = function(v)
-						BigWigsMageTools.db.profile.igniteplayerwarning = v
-					end,
-				},
-				ignitepyrorequest = {
-					type = "toggle",
-					name = L["IgnitePyroRequest"],
-					desc = L["IgnitePyroRequestDesc"],
-					order = 8,
-					get = function()
-						return BigWigsMageTools.db.profile.ignitepyrorequest
-					end,
-					set = function(v)
-						BigWigsMageTools.db.profile.ignitepyrorequest = v
-					end,
-				},
-				spacer = {
-					type = "header",
-					name = " ",
-					order = 9,
-				},
-				ignitewarningtrigger = {
-					type = "execute",
-					name = L["IgnitePlayerWarningTrigger"],
-					desc = L["IgnitePlayerWarningTriggerDesc"],
-					order = 10,
-					func = function()
-						BigWigsMageTools:Sync(syncName.ignitePlayerWarningSpace .. BigWigsMageTools.playerName)
-					end,
-				},
-				ignitepyrotrigger = {
-					type = "execute",
-					name = L["IgnitePyroRequestTrigger"],
-					desc = L["IgnitePyroRequestTriggerDesc"],
-					order = 11,
-					func = function()
-						BigWigsMageTools:Sync(syncName.ignitePyroRequestSpace .. BigWigsMageTools.playerName)
-					end,
-				},
+				}
 			}
-		}
+		},
+		ignitethreatbar = {
+			type = "group",
+			name = L["IgniteThreatBarOptions"],
+			desc = L["IgniteThreatBarOptions"],
+			order = 9,
+			args = {
+				ignitethreatenable = {
+					type = "toggle",
+					name = L["IgniteThreatEnable"],
+					desc = L["IgniteThreatEnableDesc"],
+					order = 1,
+					get = function()
+						return BigWigsMageTools.db.profile.ignitethreatenable
+					end,
+					set = function(v)
+						BigWigsMageTools.db.profile.ignitethreatenable = v
+					end,
+				},
+				ignitethreatthreshold = {
+					type = "range",
+					name = L["IgniteThreatThreshold"],
+					desc = L["IgniteThreatThresholdDesc"],
+					order = 2,
+					min = 0,
+					max = 100,
+					step = 1,
+					get = function()
+						return BigWigsMageTools.db.profile.ignitethreatthreshold
+					end,
+					set = function(v)
+						BigWigsMageTools.db.profile.ignitethreatthreshold = v
+					end,
+				},
+				ignitethreatwidth = {
+					type = "range",
+					name = L["IgniteThreatBarWidth"],
+					desc = L["IgniteThreatBarWidthDesc"],
+					order = 3,
+					min = 100,
+					max = 300,
+					step = 5,
+					get = function()
+						return BigWigsMageTools.db.profile.ignitethreatwidth
+					end,
+					set = function(v)
+						BigWigsMageTools.db.profile.ignitethreatwidth = v
+					end,
+				},
+				ignitethreatheight = {
+					type = "range",
+					name = L["IgniteThreatBarHeight"],
+					desc = L["IgniteThreatBarHeightDesc"],
+					order = 5,
+					min = 10,
+					max = 40,
+					step = 1,
+					get = function()
+						return BigWigsMageTools.db.profile.ignitethreatheight
+					end,
+					set = function(v)
+						BigWigsMageTools.db.profile.ignitethreatheight = v
+					end,
+				}
+			}
+		},
+		spacer = {
+			type = "header",
+			name = " ",
+			order = 11,
+		},
+		igniteplayerwarning = {
+			type = "toggle",
+			name = L["IgnitePlayerWarning"],
+			desc = L["IgnitePlayerWarningDesc"],
+			order = 13,
+			get = function()
+				return BigWigsMageTools.db.profile.igniteplayerwarning
+			end,
+			set = function(v)
+				BigWigsMageTools.db.profile.igniteplayerwarning = v
+			end,
+		},
+		ignitepyrorequest = {
+			type = "toggle",
+			name = L["IgnitePyroRequest"],
+			desc = L["IgnitePyroRequestDesc"],
+			order = 15,
+			get = function()
+				return BigWigsMageTools.db.profile.ignitepyrorequest
+			end,
+			set = function(v)
+				BigWigsMageTools.db.profile.ignitepyrorequest = v
+			end,
+		},
+		spacer = {
+			type = "header",
+			name = " ",
+			order = 17,
+		},
+		ignitewarningtrigger = {
+			type = "execute",
+			name = L["IgnitePlayerWarningTrigger"],
+			desc = L["IgnitePlayerWarningTriggerDesc"],
+			order = 19,
+			func = function()
+				BigWigsMageTools:Sync(syncName.ignitePlayerWarningSpace .. BigWigsMageTools.playerName)
+			end,
+		},
+		ignitepyrotrigger = {
+			type = "execute",
+			name = L["IgnitePyroRequestTrigger"],
+			desc = L["IgnitePyroRequestTriggerDesc"],
+			order = 21,
+			func = function()
+				BigWigsMageTools:Sync(syncName.ignitePyroRequestSpace .. BigWigsMageTools.playerName)
+			end,
+		},
 	}
 }
 
@@ -602,8 +660,9 @@ function BigWigsMageTools:IgniteEvent(msg)
 			if igniteOwner == "your" then
 				self.igniteOwners[igniteTickTarget] = self.playerName        -- add ignite owner if it's not already set
 			else
-				--	strip the 's
-				self.igniteOwners[igniteTickTarget] = string.gsub(igniteOwner, "'s", "")
+				--	strip the 's and the space that is currently inserted after the player name
+				igniteOwner = string.gsub(igniteOwner, " 's", "")
+				self.igniteOwners[igniteTickTarget] = igniteOwner
 			end
 		end
 		self:ResyncStacks()
@@ -629,6 +688,8 @@ function BigWigsMageTools:AuraFadeEvents(msg)
 		self.igniteOwners[igniteTarget] = nil
 		self.igniteDamage[igniteTarget] = nil
 		self:StopBar(igniteBarPrefix)
+		self:StopBar(threatBarPrefix)
+		BigWigsThreat:StopListening()
 	end
 end
 
@@ -736,6 +797,15 @@ function BigWigsMageTools:Ignite(target)
 	if target == self.target then
 		local timeleft = self:GetTargetIgniteTimeLeft(target)
 		self:StartIgniteBar(self:GetTargetIgniteText(target), timeleft, self.igniteStacks[target], self.igniteHasScorch[target])
+
+		--	if there's an ignite owner and we have threat data, start a threat bar as well
+		if self.igniteOwners[target] then
+			local owner = self.igniteOwners[target]
+			local threatData = BigWigsThreat:GetPlayerInfo(owner)
+			if threatData['perc'] then
+				self:StartThreatBar(owner, threatData['perc'])
+			end
+		end
 	end
 end
 
@@ -825,6 +895,7 @@ end
 function BigWigsMageTools:Test()
 	self:StopAllBars()
 
+	self:StartThreatBar("Pepopo", 55)
 	self:StartIgniteBar("2222 Pepopo", timer.ignite, 5, true)
 	self:StartScorchBar("Thaddius", timer.scorch, 5)
 
@@ -1093,7 +1164,7 @@ function BigWigsMageTools:StartScorchBar(text, timeleft, stacks)
 	-- check if bar already exists
 	if not candybar:IsRegistered(id) then
 		candybar:RegisterCandyBar(id, maxTime, text, scorchIcon)
-		candybar:RegisterCandyBarWithGroup(id, groupId)
+		candybar:RegisterCandyBarWithGroup(id, groupId, 1)
 	else
 		candybar:SetText(id, text)
 	end
@@ -1129,6 +1200,10 @@ function BigWigsMageTools:StartIgniteBar(text, timeleft, stacks, igniteHasScorch
 	if not text or not timeleft or not stacks or not self.db.profile.igniteenable then
 		return
 	end
+
+	-- start listening to threat events
+	BigWigsThreat:StartListening()
+
 	local id = igniteBarPrefix
 	if not self.frames.anchor then
 		self:SetupFrames()
@@ -1143,7 +1218,7 @@ function BigWigsMageTools:StartIgniteBar(text, timeleft, stacks, igniteHasScorch
 	-- check if bar already exists
 	if not candybar:IsRegistered(id) then
 		candybar:RegisterCandyBar(id, maxTime, text, igniteIcon)
-		candybar:RegisterCandyBarWithGroup(id, groupId)
+		candybar:RegisterCandyBarWithGroup(id, groupId, 2)
 	else
 		candybar:SetText(id, text)
 	end
@@ -1188,20 +1263,21 @@ function BigWigsMageTools:StartIgniteBar(text, timeleft, stacks, igniteHasScorch
 	tinsert(barCache, id)
 end
 
-function BigWigsMageTools:StartThreatBar(text)
-	if not text or not self.db.profile.threatenable then
+function BigWigsMageTools:StartThreatBar(owner, percent)
+	if not owner or not self.db.profile.ignitethreatenable then
 		return
 	end
-	local id = threatBarPrefix .. text
+	local id = threatBarPrefix
 	if not self.frames.anchor then
 		self:SetupFrames()
 	end
 
+	local text = owner .. " - " .. percent .. "%"
 	local groupId = self.frames.anchor.candyBarGroupId
 	-- check if bar already exists
 	if not candybar:IsRegistered(id) then
 		candybar:RegisterCandyBar(id, 1, text, threatIcon)
-		candybar:RegisterCandyBarWithGroup(id, groupId)
+		candybar:RegisterCandyBarWithGroup(id, groupId, 3)
 	else
 		candybar:SetText(id, text)
 	end
@@ -1209,16 +1285,24 @@ function BigWigsMageTools:StartThreatBar(text)
 	candybar:SetCandyBarTexture(id, surface:Fetch(self.db.profile.texture))
 	candybar:SetIconText(id, "")
 
-	if type(self.db.profile.threatwidth) == "number" then
-		candybar:SetCandyBarWidth(id, self.db.profile.threatwidth)
+	if type(self.db.profile.ignitethreatwidth) == "number" then
+		local minwidth = self.db.profile.ignitethreatwidth / 2
+		local width = minwidth + minwidth * percent / 100
+		candybar:SetCandyBarWidth(id, width)
 	end
 
-	if type(self.db.profile.threatheight) == "number" then
-		candybar:SetCandyBarHeight(id, self.db.profile.threatheight * 1.5)
+	if type(self.db.profile.ignitethreatheight) == "number" then
+		candybar:SetCandyBarHeight(id, self.db.profile.ignitethreatheight)
 	end
 
 	candybar:SetCandyBarFade(id, .5)
-	candybar:SetCandyBarColor(id, "red", 1)
+	if percent >= self.db.profile.ignitethreatthreshold then
+		candybar:SetCandyBarColor(id, "red", 1)
+	elseif percent >= 50 then
+		candybar:SetCandyBarColor(id, "yellow", 0.75)
+	else
+		candybar:SetCandyBarColor(id, "green", 0.5)
+	end
 
 	if not candybar:IsRunning(id) then
 		candybar:StartCandyBar(id, true)

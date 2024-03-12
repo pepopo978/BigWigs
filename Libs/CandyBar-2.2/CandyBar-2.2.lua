@@ -984,7 +984,7 @@ end
 -- args: name - name of the candybar
 --       group - group to register the bar with
 -- returns true when succesful
-function CandyBar:RegisterWithGroup(name, group)
+function CandyBar:RegisterWithGroup(name, group, order)
 	CandyBar:argCheck(name, 2, "string")
 	CandyBar:argCheck(group, 3, "string")
 
@@ -999,6 +999,7 @@ function CandyBar:RegisterWithGroup(name, group)
 
 	-- CandyBar.var.groups[group].bars[name] = name
 	CandyBar.var.handlers[name].group = group
+	CandyBar.var.handlers[name].order = order or 1
 	CandyBar:UpdateGroup(group)
 
 	return true
@@ -1187,10 +1188,10 @@ function CandyBar:SortGroup(name)
 				end
 		)
 	else
-		-- sort by bar starttime
+		-- sort by bar name
 		table.sort(CandyBar.var.groups[name].bars,
 				function(a, b)
-					return a > b
+					return CandyBar.var.handlers[a].order < CandyBar.var.handlers[b].order
 				end
 		)
 	end

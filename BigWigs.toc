@@ -67,6 +67,7 @@ Plugins\Range.lua
 Plugins\CommonAuras.lua
 Plugins\Version.lua
 Plugins\Test.lua
+Plugins\Threat.lua
 Plugins\CustomBar.lua
 Plugins\Tranq.lua
 Plugins\ZombieFood.lua
