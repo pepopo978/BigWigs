@@ -559,7 +559,6 @@ end
 --      Event Handlers
 -----------------------------------------------------------------------
 function BigWigsMageTools:PlayerDamageEvents(msg)
-	-- check for scorch being enabled
 	local eventHandled, crit, _ = self:ScorchEvent(msg)
 	if not eventHandled or crit then
 		self:IgniteEvent(msg)

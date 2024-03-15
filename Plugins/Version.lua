@@ -9,6 +9,7 @@ local dewdrop = AceLibrary("Dewdrop-2.0")
 local COLOR_GREEN = "00ff00"
 local COLOR_RED = "ff0000"
 local COLOR_WHITE = "ffffff"
+local COLOR_GREY = "808080"
 
 local isInitialQuery = true
 
@@ -133,6 +134,7 @@ end
 function BigWigsVersionQuery:OnEnable()
 	self.queryRunning = nil
 	self.responseTable = {}
+	self.pepoResponseTable = {}
 	self.zoneRevisions = nil
 	self.currentZone = ""
 	self.OutOfDateShown = false
@@ -143,6 +145,7 @@ function BigWigsVersionQuery:OnEnable()
 	self:RegisterEvent("BigWigs_RecvSync")
 	self:TriggerEvent("BigWigs_ThrottleSync", "BWVQ", 0)
 	self:TriggerEvent("BigWigs_ThrottleSync", "BWVR", 0)
+	self:TriggerEvent("BigWigs_ThrottleSync", "PEPO_BWVR", 0)
 
 	self:ScheduleEvent("versionquerytest", BigWigsVersionQuery.Test, 1, self) -- check version in 1s
 end
@@ -226,7 +229,7 @@ function BigWigsVersionQuery:UpdateVersions()
 		if not self.zoneRevisions then
 			return
 		end
-		if version > 20000 and version < 40000 then
+		if version > 20000 and version < 40000 and self.pepoResponseTable[name] then
 			if self.zoneRevisions[self.currentZone] and version > self.zoneRevisions[self.currentZone] then
 				self:IsOutOfDate()
 			end
@@ -280,7 +283,7 @@ end
 
 function BigWigsVersionQuery:NotifyOldVersions()
 	local line = ""
-	for name, version in pairs(self.responseTable) do
+	for name, version in pairs(self.pepoResponseTable) do
 		if self.zoneRevisions[self.currentZone] and version < self.zoneRevisions[self.currentZone] then
 			if line == "" then
 				line = name
@@ -289,7 +292,7 @@ function BigWigsVersionQuery:NotifyOldVersions()
 			end
 		end
 	end
-	SendChatMessage(L["People with outdated BigWigs:"], "RAID")
+	SendChatMessage(L["People with outdated Pepo BigWigs:"], "RAID")
 	SendChatMessage(line, "RAID")
 	SendChatMessage("Download newest version from https://github.com/pepopo978/BigWigs", "RAID")
 end
@@ -321,17 +324,25 @@ function BigWigsVersionQuery:OnTooltipUpdate()
 			if not self.zoneRevisions then
 				self:PopulateRevisions()
 			end
-			local color = COLOR_WHITE
-			if self.zoneRevisions[self.currentZone] and version > self.zoneRevisions[self.currentZone] then
-				color = COLOR_RED
-				if version > 20000 and version < 40000 then
-					self:IsOutOfDate()
-					color = COLOR_GREEN
+			local color = COLOR_GREY
+
+			-- check if they are using pepo version
+			if self.pepoResponseTable[name] then
+				color = COLOR_WHITE
+				if self.zoneRevisions[self.currentZone] and version > self.zoneRevisions[self.currentZone] then
+					color = COLOR_RED
+					if version > 20000 and version < 40000 then
+						self:IsOutOfDate()
+						color = COLOR_GREEN
+					end
+				elseif self.zoneRevisions[self.currentZone] and version < self.zoneRevisions[self.currentZone] then
+					color = COLOR_RED
 				end
-			elseif self.zoneRevisions[self.currentZone] and version < self.zoneRevisions[self.currentZone] then
-				color = COLOR_RED
+
+				cat:AddLine("text", name, "text2", "|cff" .. color .. "Pepo " .. version .. "|r")
+			else
+				cat:AddLine("text", name, "text2", "|cff" .. color .. version .. "|r")
 			end
-			cat:AddLine("text", name, "text2", "|cff" .. color .. version .. "|r")
 		end
 	end
 
@@ -392,6 +403,7 @@ function BigWigsVersionQuery:QueryVersion(zone)
 	end, 5)
 
 	self.responseTable = {}
+	self.pepoResponseTable = {}
 
 	if GetNumRaidMembers() > 0 then
 		for i = 0, GetNumRaidMembers() do
@@ -412,8 +424,10 @@ function BigWigsVersionQuery:QueryVersion(zone)
 	end
 	if not self.zoneRevisions[zone] then
 		self.responseTable[UnitName("player")] = -1
+		self.pepoResponseTable[UnitName("player")] = -1
 	else
 		self.responseTable[UnitName("player")] = self.zoneRevisions[zone]
+		self.pepoResponseTable[UnitName("player")] = self.zoneRevisions[zone]
 	end
 	self.responses = 1
 	self:TriggerEvent("BigWigs_SendSync", "BWVQ " .. zone)
@@ -472,11 +486,11 @@ function BigWigsVersionQuery:BigWigs_RecvSync(sync, rest, nick)
 			self:PopulateRevisions()
 		end
 		if not self.zoneRevisions[rest] then
-			self:TriggerEvent("BigWigs_SendSync", "BWVR -1 " .. nick)
+			self:TriggerEvent("BigWigs_SendSync", "PEPO_BWVR -1 " .. nick)
 		else
-			self:TriggerEvent("BigWigs_SendSync", "BWVR " .. self.zoneRevisions[rest] .. " " .. nick)
+			self:TriggerEvent("BigWigs_SendSync", "PEPO_BWVR " .. self.zoneRevisions[rest] .. " " .. nick)
 		end
-	elseif sync == "BWVR" and self.queryRunning and nick and rest then
+	elseif string.find(sync, "BWVR") and self.queryRunning and nick and rest then
 		-- Means it's either a old style or new style reply.
 		-- The "working style" is just the number, which was the second type of
 		-- version reply we had.
@@ -488,6 +502,11 @@ function BigWigsVersionQuery:BigWigs_RecvSync(sync, rest, nick)
 		end
 		if queryNick == nil or queryNick == UnitName("player") then
 			self.responseTable[nick] = tonumber(revision)
+			-- if pepo response add to that table as well
+			if sync == "PEPO_BWVR" then
+				self.pepoResponseTable[nick] = tonumber(revision)
+			end
+
 			self.responses = self.responses + 1
 			self:UpdateVersions()
 		end
