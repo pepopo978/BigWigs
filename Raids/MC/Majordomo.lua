@@ -222,8 +222,6 @@ function module:CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS(msg)
 end
 
 function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
-	BigWigs:CheckForBossDeath(msg, self)
-
 	if string.find(msg, L["healdead"]) then
 		self:Sync(syncName.healerDead .. " " .. tostring(self.hdead + 1))
 	elseif string.find(msg, L["elitedead"]) then
@@ -245,6 +243,10 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 				self:TriggerEvent("BigWigs_Message", string.format(L["hdeadmsg"], self.hdead), "Positive")
 				--self:TriggerEvent("BigWigs_SetCounterBar", self, "Priests dead", (4 - self.hdead))
 			end
+
+			if self.hdead == 4 and self.edead == 4 then
+				self:SendBossDeathSync()
+			end
 		end
 	elseif sync == "DomoEliteDead" and rest and rest ~= "" then
 		rest = tonumber(rest)
@@ -253,6 +255,10 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 			if self.db.profile.adds then
 				self:TriggerEvent("BigWigs_Message", string.format(L["edeadmsg"], self.edead), "Positive")
 				--self:TriggerEvent("BigWigs_SetCounterBar", self, "Elites dead", (4 - self.edead))
+			end
+
+			if self.hdead == 4 and self.edead == 4 then
+				self:SendBossDeathSync()
 			end
 		end
 	elseif sync == syncName.magic then
