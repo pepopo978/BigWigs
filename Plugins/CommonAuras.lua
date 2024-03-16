@@ -60,6 +60,9 @@ L:RegisterTranslations("enUS", function()
 		trigger_shutdownMinSec = "Restart in (.+) Minutes (.+) Seconds.", --CHAT_MSG_SYSTEM
 		bar_shutDown = "Server Shutdown/Restart",
 
+		msg_divineIntervention = "Divine Intervention on ",
+		bar_divineIntervention = " Divine Intervention",
+
 		["Toggle %s display."] = true,
 		["Wormhole"] = true,
 		["Orange"] = true,
@@ -85,6 +88,7 @@ BigWigsCommonAuras.defaultDB = {
 	lifegivinggem = true,
 	challengingshout = true,
 	challengingroar = true,
+	di = true,
 	portal = true,
 	wormhole = true,
 	orange = true,
@@ -93,7 +97,7 @@ BigWigsCommonAuras.defaultDB = {
 	broadcast = false,
 }
 BigWigsCommonAuras.consoleCmd = L["commonauras"]
-BigWigsCommonAuras.revision = 30052
+BigWigsCommonAuras.revision = 30063
 BigWigsCommonAuras.external = true
 BigWigsCommonAuras.consoleOptions = {
 	type = "group",
@@ -164,6 +168,17 @@ BigWigsCommonAuras.consoleOptions = {
 			end,
 			set = function(v)
 				BigWigsCommonAuras.db.profile.challengingroar = v
+			end,
+		},
+		["di"] = {
+			type = "toggle",
+			name = BS["Divine Intervention"],
+			desc = string.format(L["Toggle %s display."], BS["Divine Intervention"]),
+			get = function()
+				return BigWigsCommonAuras.db.profile.di
+			end,
+			set = function(v)
+				BigWigsCommonAuras.db.profile.di = v
 			end,
 		},
 		["portal"] = {
@@ -240,6 +255,7 @@ local timer = {
 	laststand = 20,
 	lifegivingGem = 20,
 	challenging = 6,
+	di = 60,
 	portal = 60,
 	wormhole = 8,
 	orange = 60,
@@ -252,6 +268,7 @@ local icon = {
 	lifegivingGem = L["iconPrefix"] .. "inv_misc_gem_pearl_05",
 	challengingShout = L["iconPrefix"] .. "ability_bullrush",
 	challengingRoar = L["iconPrefix"] .. "ability_druid_challangingroar",
+	di = L["iconPrefix"] .. "spell_nature_timestop",
 	wormhole = L["iconPrefix"] .. "Inv_Misc_EngGizmos_12",
 	orange = L["iconPrefix"] .. "inv_misc_food_41",
 	soulwell = L["iconPrefix"] .. "inv_stone_04",
@@ -264,6 +281,7 @@ local color = {
 	lifegivingGem = "Red",
 	challengingShout = "Red",
 	challengingRoar = "Red",
+	di = "Blue",
 	wormhole = "Cyan",
 	orange = "Green",
 	soulwell = "Green",
@@ -275,10 +293,10 @@ function BigWigsCommonAuras:OnEnable()
 
 	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")--trigger_wormhole, trigger_orange, trigger_soulwell
 	self:RegisterEvent("CHAT_MSG_SYSTEM")--trigger_shutdown, trigger_restart
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS")
 
 	if UnitClass("player") == "Warrior" or UnitClass("player") == "Druid" then
 		self:RegisterEvent("SpellStatusV2_SpellCastInstant")
-		self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS")
 
 	elseif UnitClass("player") == "Priest" and UnitRace("player") == "Dwarf" then
 		self:RegisterEvent("SpellStatusV2_SpellCastInstant")
@@ -342,8 +360,10 @@ function BigWigsCommonAuras:SpellStatusV2_SpellCastInstant(sId, sName, sRank, sF
 end
 
 function BigWigsCommonAuras:CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS(msg)
-	if string.find(msg, BS["Gift of Life"]) then
+	if string.find(msg, BS["Gift of Life"]) and (UnitClass("Player") == "Warrior" or UnitClass("Player") == "Druid" or UnitClass("Player") == "Paladin") then
 		self:TriggerEvent("BigWigs_SendSync", "BWCALG")
+	elseif msg == "You gain Divine Intervention." then
+		self:TriggerEvent("BigWigs_SendSync", "BWCADI")
 	end
 end
 
@@ -514,6 +534,12 @@ function BigWigsCommonAuras:BigWigs_RecvSync(sync, rest, nick)
 			TargetByName(extra, true)
 		end, nick)
 
+	elseif self.db.profile.di and sync == "BWCADI" then
+		self:TriggerEvent("BigWigs_Message", L["msg_divineIntervention"] .. nick, "Urgent", false, nil, false)
+		self:TriggerEvent("BigWigs_StartBar", self, nick .. L["bar_divineIntervention"], timer.di, icon.di, true, color.di)
+		self:SetCandyBarOnClick("BigWigsBar " .. nick .. L["bar_divineIntervention"], function(name, button, extra)
+			TargetByName(extra, true)
+		end, nick)
 
 	elseif self.db.profile.portal and sync == "BWCAP" and rest then
 		rest = BS:HasTranslation(rest) and BS:GetTranslation(rest) or rest

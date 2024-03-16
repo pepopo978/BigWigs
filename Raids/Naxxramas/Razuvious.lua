@@ -47,44 +47,6 @@ L:RegisterTranslations("enUS", function() return {
 	mcLocked_bar = "Can't MC ",
 } end )
 
-L:RegisterTranslations("esES", function() return {
-	--cmd = "Razuvious",
-
-	--shout_cmd = "shout",
-	shout_name = "Alerta de Grito perturbador",
-	shout_desc = "Avisa para Grito perturbador",
-
-	--unbalance_cmd = "unbalancing",
-	unbalance_name = "Alerta de Golpe desequilibrante",
-	unbalance_desc = "Avisa para Golpe desequilibrante",
-
-	--shieldwall_cmd = "shieldwall",
-	shieldwall_name = "Temporizador de Muro de escudo",
-	shieldwall_desc = "Muestra un temporizador para Muro de escudo",
-
-	startwarn = "¡Entrando en combate con Instructor Razuvious! 15 segundos hasta Grito, 30 segundos hasta Golpe desequilibrante!",
-
-	starttrigger1 = "Stand and fight!",
-	starttrigger2 = "Show me what you've got!",
-	starttrigger3 = "Hah hah, I'm just getting warmed up!",
-	--starttrigger4 = "Stand and fight!",
-
-	shouttrigger = "Grito perturbador",
-	shout7secwarn = "7 segundos hasta Grito perturbador",
-	shout3secwarn = "¡3 segundos hasta Grito perturbador!",
-	shoutwarn = "¡Grito perturbador! El próximo en 25 segundos",
-	noshoutwarn = "¡No hay grito! El próximo en 20 segundos",
-	shoutbar = "Grito perturbado",
-
-	unbalance_trigger = "sufre de Golpe desequilibrante",
-	unbalancesoonwarn = "¡Golpe desequilibrante pronto!",
-	unbalancewarn = "¡Golpe desequilibrante! El próximo en ~30 segundos",
-	unbalancebar = "Golpe desequilibrante",
-
-	shieldwalltrigger   = "Caballero de la Muerte suplente gana Muro de escudo.",
-	shieldwallbar       = "Muro de escudo",
-} end )
-
 local timer = {
 	firstShout = 14.5,
 	shout = 25,

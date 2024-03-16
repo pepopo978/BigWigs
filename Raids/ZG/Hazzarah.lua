@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Hazza'rah", "Zul'Gurub")
 
-module.revision = 30060
+module.revision = 30063
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"adds", "sleep", "chainburn", "bosskill"}
 
@@ -38,10 +38,10 @@ L:RegisterTranslations("enUS", function() return {
 } end )
 
 local timer = {
-	firstAdds = 20,
+	firstAdds = 21,
 	adds = 24,
 	
-	firstSleepCd = 12,
+	firstSleepCd = 10,
 	sleepCd = 18, --24 - 6sec afflic
 	sleepAfflic = 6,
 	
@@ -77,7 +77,16 @@ local addDeadCounter = 0
 function module:OnEnable()
 	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
 	
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF", "Event") --
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF", "Event") --trigger_addsSpawn
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event") --trigger_sleep
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event") --trigger_sleep
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event") --trigger_sleep
+
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event") --trigger_chainBurn
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event") --trigger_chainBurn
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event") --trigger_chainBurn
+
 
 	self:ThrottleSync(5, syncName.addsSpawn)
 	self:ThrottleSync(5, syncName.addsDead)
