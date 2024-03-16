@@ -13,13 +13,13 @@ a situation where it would be needed to display more than one.
 --      Are you local?      --
 ------------------------------
 local name = "WarningSign"
-local L = AceLibrary("AceLocale-2.2"):new("BigWigs"..name)
+local L = AceLibrary("AceLocale-2.2"):new("BigWigs" .. name)
 
 local c = {
 	-- currently displayed icon
-	texture = "",       -- contains the texturePath
-	endTime = 0,        -- to hide it appropriately
-	force   = false,    -- will prevent it from being overwritten
+	texture = "", -- contains the texturePath
+	endTime = 0, -- to hide it appropriately
+	force = false, -- will prevent it from being overwritten
 }
 
 
@@ -27,62 +27,68 @@ local c = {
 --      Localization      --
 ----------------------------
 
-L:RegisterTranslations("enUS", function() return {
-	["WarningSign"] = true, -- console cmd
-	["Warning Sign"] = true, -- module name
-	["Options for the Warning Sign."] = true,
-	["Show anchor"] = true,
-	["Show the anchor frame."] = true,
-	["Reset"] = true,
-	["Reset the frame."] = true,
-	["Test"] = "Start/Stop Test",
-	["Close"] = true,
+L:RegisterTranslations("enUS", function()
+	return {
+		["WarningSign"] = true, -- console cmd
+		["Warning Sign"] = true, -- module name
+		["Options for the Warning Sign."] = true,
+		["Show anchor"] = true,
+		["Show the anchor frame."] = true,
+		["Reset"] = true,
+		["Reset the frame."] = true,
+		["Test"] = "Start/Stop Test",
+		["Close"] = true,
 
-	["Disabled"] = true,
-	["Disable the warning signs for all modules that use it."] = true,
-	["Scale"] = true,
-	["Set the warning sign scale."] = true,
-	["Transparency"] = true,
-	["Set the warning sign alpha value (0.1 to 1.0: transparent to opaque)."] = true,
-} end)
+		["Disabled"] = true,
+		["Disable the warning signs for all modules that use it."] = true,
+		["Scale"] = true,
+		["Set the warning sign scale."] = true,
+		["Transparency"] = true,
+		["Set the warning sign alpha value (0.1 to 1.0: transparent to opaque)."] = true,
+	}
+end)
 
-L:RegisterTranslations("esES", function() return {
-	--["WarningSign"] = true, -- console cmd
-	["Warning Sign"] = "Señal de Advertencia", -- module name
-	["Options for the Warning Sign."] = "Opciones para el Señal de Advertencia",
-	["Show anchor"] = "Mostrar ancla",
-	["Show the anchor frame."] = "Muestra el marco de la ancla",
-	["Reset"] = "Restablecer",
-	["Reset the frame."] = "Restablece el marco",
-	["Test"] = "Probar",
-	["Close"] = "Cerrar",
+L:RegisterTranslations("esES", function()
+	return {
+		--["WarningSign"] = true, -- console cmd
+		["Warning Sign"] = "Señal de Advertencia", -- module name
+		["Options for the Warning Sign."] = "Opciones para el Señal de Advertencia",
+		["Show anchor"] = "Mostrar ancla",
+		["Show the anchor frame."] = "Muestra el marco de la ancla",
+		["Reset"] = "Restablecer",
+		["Reset the frame."] = "Restablece el marco",
+		["Test"] = "Probar",
+		["Close"] = "Cerrar",
 
-	["Disabled"] = "Desactivado",
-	["Disable the warning signs for all modules that use it."] = "Desactiva los señales de advertencia para todos los módulos que lo usan",
-	["Scale"] = "Escala",
-	["Set the warning sign scale."] = "Define la escala del señal de advertencia",
-	["Transparency"] = "Transparencia",
-	["Set the warning sign alpha value (0.1 to 1.0: transparent to opaque)."] = "Define el valor alfa del señal de advertencia (0.1 a 1.0: transparente a opaco",
-} end)
+		["Disabled"] = "Desactivado",
+		["Disable the warning signs for all modules that use it."] = "Desactiva los señales de advertencia para todos los módulos que lo usan",
+		["Scale"] = "Escala",
+		["Set the warning sign scale."] = "Define la escala del señal de advertencia",
+		["Transparency"] = "Transparencia",
+		["Set the warning sign alpha value (0.1 to 1.0: transparent to opaque)."] = "Define el valor alfa del señal de advertencia (0.1 a 1.0: transparente a opaco",
+	}
+end)
 
-L:RegisterTranslations("deDE", function() return {
-	["WarningSign"] = "warnzeichen", -- console cmd
-	["Warning Sign"] = "Warnzeichen", -- module name
-	["Options for the Warning Sign."] = "Optionen für das Warnzeichen.",
-	["Show anchor"] = "Verankerung anzeigen",
-	["Show the anchor frame."] = "Zeige das Verankerungsfenster des Warnzeichens um dessen Position zu verändern.",
-	["Reset"] = "Zurücksetzen",
-	["Reset the frame."] = "Die Einstellungen des Warnzeichens zurücksetzen.",
-	["Test"] = "Test",
-	["Close"] = "Schlie\195\159en",
+L:RegisterTranslations("deDE", function()
+	return {
+		["WarningSign"] = "warnzeichen", -- console cmd
+		["Warning Sign"] = "Warnzeichen", -- module name
+		["Options for the Warning Sign."] = "Optionen für das Warnzeichen.",
+		["Show anchor"] = "Verankerung anzeigen",
+		["Show the anchor frame."] = "Zeige das Verankerungsfenster des Warnzeichens um dessen Position zu verändern.",
+		["Reset"] = "Zurücksetzen",
+		["Reset the frame."] = "Die Einstellungen des Warnzeichens zurücksetzen.",
+		["Test"] = "Test",
+		["Close"] = "Schlie\195\159en",
 
-	["Disabled"] = "Deaktivieren",
-	["Disable the warning signs for all modules that use it."] = "Deaktiviert die Anzeige der Warnzeichen für alle Module die sie benutzen.",
-	["Scale"] = "Skalierung",
-	["Set the warning sign scale."] = "Skalierung des Warnzeichen",
-	["Transparency"] = "Transparenz",
-	["Set the warning sign alpha value (0.1 to 1.0: transparent to opaque)."] = "Den Alphawert des Warnzeichen definieren (0.1 bis 1.0: transparent bis deckend).",
-} end)
+		["Disabled"] = "Deaktivieren",
+		["Disable the warning signs for all modules that use it."] = "Deaktiviert die Anzeige der Warnzeichen für alle Module die sie benutzen.",
+		["Scale"] = "Skalierung",
+		["Set the warning sign scale."] = "Skalierung des Warnzeichen",
+		["Transparency"] = "Transparenz",
+		["Set the warning sign alpha value (0.1 to 1.0: transparent to opaque)."] = "Den Alphawert des Warnzeichen definieren (0.1 bis 1.0: transparent bis deckend).",
+	}
+end)
 
 ----------------------------------
 --      Module Declaration      --
@@ -94,7 +100,7 @@ BigWigsWarningSign.defaultDB = {
 	posy = nil,
 	isVisible = nil,
 	disabled = false,
-	scale = 1.0,
+	scale = 0.8,
 	alpha = 0.8,
 }
 BigWigsWarningSign.consoleCmd = L["WarningSign"]
@@ -116,7 +122,9 @@ BigWigsWarningSign.consoleOptions = {
 			name = L["Show anchor"],
 			desc = L["Show the anchor frame."],
 			order = 100,
-			get = function() return BigWigsWarningSign.db.profile.isVisible end,
+			get = function()
+				return BigWigsWarningSign.db.profile.isVisible
+			end,
 			set = function(v)
 				BigWigsWarningSign:ShowAnchor()
 			end,
@@ -129,7 +137,9 @@ BigWigsWarningSign.consoleOptions = {
 			min = 0.2,
 			max = 2.0,
 			step = 0.1,
-			get = function() return BigWigsWarningSign.db.profile.scale end,
+			get = function()
+				return BigWigsWarningSign.db.profile.scale
+			end,
 			set = function(v)
 				BigWigsWarningSign.db.profile.scale = v
 				if BigWigsWarningSign.frames then
@@ -145,7 +155,9 @@ BigWigsWarningSign.consoleOptions = {
 			min = 0.1,
 			max = 1.0,
 			step = 0.05,
-			get = function() return BigWigsWarningSign.db.profile.alpha end,
+			get = function()
+				return BigWigsWarningSign.db.profile.alpha
+			end,
 			set = function(v)
 				BigWigsWarningSign.db.profile.alpha = v
 				if BigWigsWarningSign.frames then
@@ -175,7 +187,9 @@ BigWigsWarningSign.consoleOptions = {
 			name = L["Disabled"],
 			desc = L["Disable the warning signs for all modules that use it."],
 			order = 104,
-			get = function() return BigWigsWarningSign.db.profile.disabled end,
+			get = function()
+				return BigWigsWarningSign.db.profile.disabled
+			end,
 			set = function(v)
 				BigWigsWarningSign.db.profile.disabled = v
 				if v then
@@ -184,11 +198,11 @@ BigWigsWarningSign.consoleOptions = {
 				end
 			end,
 		},
-	--[[spacer = {
-	type = "header",
-	name = " ",
-	order = 103,
-	},]]
+		--[[spacer = {
+		type = "header",
+		name = " ",
+		order = 103,
+		},]]
 	}
 }
 
@@ -226,12 +240,16 @@ function BigWigsWarningSign:BigWigs_ShowWarningSign(texturePath, duration, force
 	-- check if there is currently an icon displayed or if the force flags allow to overwrite
 	-- addition: if texturePath is the same as currently displayed then reset the timer to duration
 	if c.texture == "" or (force and not c.force) or c.texture == texturePath then
-		c.texture   = texturePath;
-		c.endTime   = GetTime() + duration;
-		c.force     = force;
+		c.texture = texturePath;
+		c.endTime = GetTime() + duration;
+		c.force = force;
 
 		self.texture:SetTexture(texturePath)
-		if type(text) =="string" then self.text:SetText(text) else self.text:SetText("") end
+		if type(text) == "string" then
+			self.text:SetText(text)
+		else
+			self.text:SetText("")
+		end
 
 		self.frames.sign:Show()
 		self.db.profile.isVisible = true
@@ -239,7 +257,7 @@ function BigWigsWarningSign:BigWigs_ShowWarningSign(texturePath, duration, force
 		-- initialize the OnUpdate
 		self.frames.sign:SetScript('OnUpdate', function()
 			if GetTime() > c.endTime then
-				c.texture   = "";
+				c.texture = "";
 				self.frames.sign:Hide()
 				self.db.profile.isVisible = false
 				self.frames.sign:SetScript('OnUpdate', nil)
@@ -252,7 +270,7 @@ function BigWigsWarningSign:BigWigs_HideWarningSign(texturePath, forceHide)
 	-- will only work if texturePath is still the icon displayed, this might not be the case when an icon gets forced
 	-- forceHide is used upon BossDeath to hide no matter what is being displayed
 	if forceHide or c.texture == texturePath then
-		c.texture   = "";
+		c.texture = "";
 
 		if self.frames and self.frames.sign then
 			self.frames.sign:Hide()
@@ -305,19 +323,24 @@ function BigWigsWarningSign:CreateAnchor()
 	self.frames.anchor:SetBackdrop({
 		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background", tile = true, tileSize = 16,
 		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 16,
-		insets = {left = 4, right = 4, top = 4, bottom = 4},
+		insets = { left = 4, right = 4, top = 4, bottom = 4 },
 	})
 	self.frames.anchor:SetBackdropBorderColor(.5, .5, .5)
-	self.frames.anchor:SetBackdropColor(0,0,0)
+	self.frames.anchor:SetBackdropColor(0, 0, 0)
 	self.frames.anchor:ClearAllPoints()
 	self.frames.anchor:SetPoint("CENTER", UIParent, "CENTER", 0, 100)
 	self.frames.anchor:EnableMouse(true)
 	self.frames.anchor:RegisterForDrag("LeftButton")
 	self.frames.anchor:SetMovable(true)
-	self.frames.anchor:SetScript("OnDragStart", function() this:StartMoving() end)
-	self.frames.anchor:SetScript("OnDragStop", function() this:StopMovingOrSizing() this.owner:SavePosition() end)
+	self.frames.anchor:SetScript("OnDragStart", function()
+		this:StartMoving()
+	end)
+	self.frames.anchor:SetScript("OnDragStop", function()
+		this:StopMovingOrSizing()
+		this.owner:SavePosition()
+	end)
 
-	self.frames.cheader = self.frames.anchor:CreateFontString(nil,"OVERLAY")
+	self.frames.cheader = self.frames.anchor:CreateFontString(nil, "OVERLAY")
 	self.frames.cheader:SetFont(f, 14)
 	self.frames.cheader:SetWidth(150)
 	self.frames.cheader:SetText("Plugins -> Warning Sign")
