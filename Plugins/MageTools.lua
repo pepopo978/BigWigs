@@ -41,6 +41,7 @@ local threatBarPrefix = "ThreatBar"
 local warningSoundEvent = "warningSoundEvent"
 local warningSignEvent = "warningSignEvent"
 local targetChangeEvent = "targetChangeEvent"
+local scorchTimerUpdateEvent = "scorchTimerUpdateEvent"
 
 local warningSyncSpeed = 5
 
@@ -81,6 +82,8 @@ L:RegisterTranslations("enUS", function()
 		["ScorchEnableTimerDesc"] = "Displays a timer for Scorch Fire Vulnerability.",
 		["ScorchWarningSound"] = "Warning Sound",
 		["ScorchWarningSoundDesc"] = "Says 'Scorch' when there are 5 seconds left before it falls off",
+		["ScorchResistSound"] = "Resist Sound",
+		["ScorchResistSoundDesc"] = "Says 'Scorch Resist' if any Scorch or Fire Vulnerability gets resisted",
 		["ScorchWarningSign"] = "Warning Sign",
 		["ScorchWarningSignDesc"] = "Show a warning sign when there are 5 seconds left before it falls off",
 		["ScorchBarWidth"] = "Scorch bar width",
@@ -118,14 +121,22 @@ L:RegisterTranslations("enUS", function()
 		["IgnitePyroRequestTrigger"] = "Trigger pyro request",
 		["IgnitePyroRequestTriggerDesc"] = "/bw extra magetools ignite ignitepyrotrigger",
 
-		scorch_afflict_test = "^(.+) is afflicted by Fire Vulnerability(.*)", -- for stacks 2-5 will be "Fire Vulnerability (2)".  Use this to detect resists
+		scorch_afflict_test = "^(.+) is afflicted by Fire Vulnerability(.*)", -- for stacks 2-5 will be "Fire Vulnerability (2)".
+		scorch_gains_test = "^(.+) gains Fire Vulnerability(.*)", -- for stacks 2-5 will be "Fire Vulnerability (2)".
 		scorch_test = ".+ Scorch (.+)s (.+) for",
 		scorch_fades_test = "Fire Vulnerability fades from (.+).",
+		scorch_resist_test = "(.+) Scorch was resisted by (.+).",
+		fire_vuln_resist_test = "(.+) Fire Vulnerability was resisted by (.+).", -- Scorch can hit but fire vulnerability can resist independently
 
-		ignite_afflict_test = "^(.+) is afflicted by Ignite(.*)", -- for stacks 2-5 will be "Ignite (2)".  Use this to detect resists
+		ignite_afflict_test = "^(.+) is afflicted by Ignite(.*)", -- for stacks 2-5 will be "Ignite (2)".
+		ignite_gains_test = "^(.+) gains Ignite(.*)", -- for stacks 2-5 will be "Ignite (2)".
 		ignite_crit_test = "^.+ (.+) crits (.+) for .+ Fire damage",
 		ignite_dmg = "^(.+) suffers (.+) Fire damage from (.+) Ignite",
 		ignite_fades_test = "Ignite fades from (.+).",
+
+		slain_test = "(.+) is slain by (.+)",
+		self_slain_test = "You have slain (.+)",
+		death_test = "(.+) dies.",
 	}
 end)
 
@@ -151,6 +162,7 @@ BigWigsMageTools.defaultDB = {
 	scorchtimer = true,
 	scorchsound = false,
 	scorchwarningsign = false,
+	scorchresistsound = false,
 	scorchwidth = 200,
 	scorchheight = 15,
 
@@ -297,6 +309,18 @@ BigWigsMageTools.consoleOptions = {
 					end,
 					set = function(v)
 						BigWigsMageTools.db.profile.scorchwarningsign = v
+					end,
+				},
+				scorchresistsound = {
+					type = "toggle",
+					name = L["ScorchResistSound"],
+					desc = L["ScorchResistSoundDesc"],
+					order = 4,
+					get = function()
+						return BigWigsMageTools.db.profile.scorchresistsound
+					end,
+					set = function(v)
+						BigWigsMageTools.db.profile.scorchresistsound = v
 					end,
 				},
 				scorchbarwidth = {
@@ -513,7 +537,7 @@ BigWigsMageTools.consoleOptions = {
 	}
 }
 
-BigWigsMageTools.revision = 20001
+BigWigsMageTools.revision = 30064
 BigWigsMageTools.external = true
 
 BigWigsMageTools.target = nil
@@ -529,13 +553,6 @@ BigWigsMageTools.igniteDamage = {}
 --      Initialization
 -----------------------------------------------------------------------
 
-function BigWigsMageTools:OnRegister()
-	self.consoleOptions.args.texture.validate = surface:List()
-	self:RegisterEvent("Surface_Registered", function()
-		self.consoleOptions.args.texture.validate = surface:List()
-	end)
-end
-
 function BigWigsMageTools:OnEnable()
 	self.playerName = UnitName("player")
 	if not self.db.profile.texture then
@@ -544,13 +561,22 @@ function BigWigsMageTools:OnEnable()
 	self.frames = {}
 	self:SetupFrames()
 	self:RegisterEvent("BigWigs_RecvSync")
-	self:RegisterEvent("PLAYER_REGEN_ENABLED")
-	self:RegisterEvent("PLAYER_TARGET_CHANGED")
 	if isMage then
-		self:RegisterEvent("CHARACTER_POINTS_CHANGED")
+		-- start listening to threat events
+		BigWigsThreat:StartListening()
+
+		self:RegisterEvent("PLAYER_REGEN_ENABLED")
+		self:RegisterEvent("PLAYER_TARGET_CHANGED")
+		self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
+
 		self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "AuraFadeEvents")
+
+		self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "PlayerDamageEvents")
 		self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE", "PlayerDamageEvents")
+		self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE", "PlayerDamageEvents")
 		self:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE", "PlayerDamageEvents")
+		self:RegisterEvent("CHAT_MSG_SPELL_PARTY_DAMAGE", "PlayerDamageEvents")
+		self:RegisterEvent("CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE", "PlayerDamageEvents")
 		self:RegisterEvent("CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF", "PlayerDamageEvents")
 	end
 
@@ -561,6 +587,7 @@ function BigWigsMageTools:OnEnable()
 	end
 
 	self.target = UnitName("target")
+	self:Debug("|" .. tostring(target) .. "|")
 	self:ThrottleSync(warningSyncSpeed, syncName.ignitePlayerWarning)
 	self:ThrottleSync(warningSyncSpeed, syncName.ignitePyroRequest)
 end
@@ -592,6 +619,11 @@ function BigWigsMageTools:ScorchEvent(msg)
 
 	-- check for afflicted by messages first
 	local _, _, afflictedTarget, stackInfo = string.find(msg, L["scorch_afflict_test"])
+	if not afflictedTarget then
+		-- check for gains messages (shouldn't happen but just to be safe)
+		_, _, afflictedTarget, stackInfo = string.find(msg, L["scorch_gains_test"])
+	end
+
 	if afflictedTarget then
 		self:Debug(msg)
 		local _, _, stacks = string.find(stackInfo, "(%d+)")
@@ -605,30 +637,53 @@ function BigWigsMageTools:ScorchEvent(msg)
 		self:Scorch(afflictedTarget)
 
 		return true, false, afflictedTarget  -- handled, crit, target
-	else
-		-- otherwise check for scorch hits
-		local _, _, hitType, scorchTarget = string.find(msg, L["scorch_test"])
-		-- only need to update bars if at 5 stacks, otherwise afflicted by message will handle it
-		if scorchTarget then
-			self:Debug(msg)
-			if self.scorchStacks[scorchTarget] == 5 then
-				self.scorchTimers[scorchTarget] = GetTime()
-				self:Scorch(scorchTarget)
-			elseif not self.scorchStacks[scorchTarget] then
-				-- may have missed afflicted msg, resync stacks
-				self:ResyncStacks()
-				self.scorchTimers[scorchTarget] = GetTime()
-				self:Scorch(scorchTarget)
-			end
-			--check if scorch crit got into the ignite
-			if hitType == "crit" and self.igniteStacks[scorchTarget] or 1 < 5 then
-				self.igniteHasScorch[scorchTarget] = true
-			end
-
-			return true, hitType == "crit", scorchTarget  -- handled, crit, target
-		end
 	end
+
+	-- otherwise check for scorch hits
+	local _, _, hitType, scorchTarget = string.find(msg, L["scorch_test"])
+	-- only need to update bars if at 5 stacks, otherwise afflicted by message will handle it
+	if scorchTarget then
+		self:Debug(msg)
+		if not self.scorchStacks[scorchTarget] then
+			-- may have missed afflicted msg, resync stacks
+			self:ResyncStacks()
+		end
+
+		-- update scorch timer after a half second to give time to check if fire vulnerability was resisted
+		self:ScheduleEvent(scorchTimerUpdateEvent .. scorchTarget, self.UpdateScorchTimer, 0.2, self, scorchTarget, GetTime())
+
+		--check if scorch crit got into the ignite
+		if hitType == "crit" and self.igniteStacks[scorchTarget] or 1 < 5 then
+			self.igniteHasScorch[scorchTarget] = true
+		end
+
+		return true, hitType == "crit", scorchTarget  -- handled, crit, target
+	end
+
+	-- otherwise check for scorch resists
+	local _, _, caster, resistTarget = string.find(msg, L["scorch_resist_test"])
+	if not resistTarget then
+		_, _, caster, resistTarget = string.find(msg, L["fire_vuln_resist_test"])
+	end
+	if resistTarget then
+		self:Debug(msg)
+		-- cancel timer update
+		if self:IsEventScheduled(scorchTimerUpdateEvent .. resistTarget) then
+			self:CancelScheduledEvent(scorchTimerUpdateEvent .. resistTarget)
+		end
+		self:Message(resistTarget .. " resisted " .. caster .. " scorch", "Attention", false)
+		if self.db.profile.scorchresistsound then
+			self:Sound("ScorchResist")
+		end
+		return true, false, resistTarget  -- handled, crit, target
+	end
+
 	return false, false, nil
+end
+
+function BigWigsMageTools:UpdateScorchTimer(target, time)
+	self.scorchTimers[target] = time
+	self:Scorch(target)
 end
 
 function BigWigsMageTools:IsMageFireSpell(spellName)
@@ -648,6 +703,11 @@ function BigWigsMageTools:IgniteEvent(msg)
 
 	-- check for afflicted by messages first
 	local _, _, afflictedTarget, stackInfo = string.find(msg, L["ignite_afflict_test"])
+	if not afflictedTarget then
+		-- check for gains messages (seems to happen for ignite)
+		_, _, afflictedTarget, stackInfo = string.find(msg, L["ignite_gains_test"])
+	end
+
 	if afflictedTarget then
 		self:Debug(msg)
 		local _, _, stacks = string.find(stackInfo, "(%d+)")
@@ -695,6 +755,32 @@ function BigWigsMageTools:IgniteEvent(msg)
 	end
 end
 
+-- reset data if your target dies
+function BigWigsMageTools:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
+	self:Debug(msg)
+	local _, _, deadTarget, _ = string.find(msg, L["slain_test"])
+	if not deadTarget then
+		_, _, deadTarget = string.find(msg, L["self_slain_test"])
+	end
+	if not deadTarget then
+		_, _, deadTarget = string.find(msg, L["death_test"])
+	end
+	if deadTarget then
+		-- reset everything for that target
+		self.scorchTimers[deadTarget] = nil
+		self.scorchStacks[deadTarget] = nil
+		self:StopBar(scorchBarPrefix .. deadTarget)
+
+		self.igniteHasScorch[deadTarget] = nil
+		self.igniteTimers[deadTarget] = nil
+		self.igniteStacks[deadTarget] = nil
+		self.igniteOwners[deadTarget] = nil
+		self.igniteDamage[deadTarget] = nil
+		self:StopBar(igniteBarPrefix .. deadTarget)
+		self:StopBar(threatBarPrefix .. deadTarget)
+	end
+end
+
 function BigWigsMageTools:AuraFadeEvents(msg)
 	local _, _, scorchTarget = string.find(msg, L["scorch_fades_test"])
 	if scorchTarget then
@@ -715,7 +801,6 @@ function BigWigsMageTools:AuraFadeEvents(msg)
 		self.igniteDamage[igniteTarget] = nil
 		self:StopBar(igniteBarPrefix .. igniteTarget)
 		self:StopBar(threatBarPrefix .. igniteTarget)
-		BigWigsThreat:StopListening()
 	end
 end
 
@@ -743,22 +828,36 @@ function BigWigsMageTools:PLAYER_REGEN_ENABLED()
 	end
 end
 
-function BigWigsMageTools:CHARACTER_POINTS_CHANGED()
-	self.impScorch = self:CheckTalents()
-end
-
 function BigWigsMageTools:ResyncStacks()
 	local target = UnitName("target")
 	self.target = target
 
 	if target then
+		local foundScorch = false
+		local foundIgnite = false
+		-- check debuffs
 		for i = 1, 24 do
 			local texture, stacks = UnitDebuff("target", i)
 			if (texture and stacks) then
 				if texture == scorchIcon then
 					self.scorchStacks[target] = tonumber(stacks)
+					foundScorch = true
 				elseif texture == igniteIcon then
 					self.igniteStacks[target] = tonumber(stacks)
+					foundIgnite = true
+				end
+			end
+		end
+		-- if we didn't find it check buffs as well
+		if not foundScorch or not foundIgnite then
+			for i = 1, 24 do
+				local texture, stacks = UnitBuff("target", i)
+				if (texture and stacks) then
+					if texture == scorchIcon then
+						self.scorchStacks[target] = tonumber(stacks)
+					elseif texture == igniteIcon then
+						self.igniteStacks[target] = tonumber(stacks)
+					end
 				end
 			end
 		end
@@ -768,6 +867,7 @@ end
 function BigWigsMageTools:RecheckTargetChange()
 	local target = UnitName("target")
 	self.target = target
+	self:Debug("|" .. tostring(target) .. "|")
 
 	-- if this target has been scorched, query current stacks
 	if target and self.scorchTimers[target] or self.igniteStacks[target] then
@@ -798,6 +898,7 @@ end
 function BigWigsMageTools:Scorch(target)
 	if not self.target then
 		self.target = UnitName("target")
+		self:Debug("|" .. tostring(target) .. "|")
 	end
 
 	if target == self.target then
@@ -818,6 +919,7 @@ end
 function BigWigsMageTools:Ignite(target)
 	if not self.target then
 		self.target = UnitName("target")
+		self:Debug("|" .. tostring(target) .. "|")
 	end
 
 	if target == self.target then
@@ -1233,9 +1335,6 @@ function BigWigsMageTools:StartIgniteBar(target, text, timeleft, stacks, igniteH
 		self:Debug("ignite bar " .. tostring(target) .. " " .. tostring(text) .. " " .. tostring(timeleft) .. " " .. tostring(stacks))
 	end
 
-	-- start listening to threat events
-	BigWigsThreat:StartListening()
-
 	local id = igniteBarPrefix .. target
 	if not self.frames.anchor then
 		self:SetupFrames()
@@ -1365,40 +1464,62 @@ end
 function BigWigsMageTools:Test()
 	-- /run local m=BigWigs:GetModule("MageTools");m:Test()
 	local function scorch1()
-		self:PlayerDamageEvents("Pepopo 's Scorch hits Expert Training Dummy for 743 Fire damage.")
-		self:PlayerDamageEvents("Expert Training Dummy is afflicted by Fire Vulnerability")
+		self:PlayerDamageEvents("Pepopo 's Scorch hits Heroic Training Dummy for 743 Fire damage.")
+		self:PlayerDamageEvents("Heroic Training Dummy is afflicted by Fire Vulnerability")
+		self:PlayerDamageEvents("Tiergwaedd 's Fireball crits Heroic Training Dummy for 1743 Fire damage.")
+		self:PlayerDamageEvents("Heroic Training Dummy is afflicted by Ignite.")
 	end
 	local function scorch2()
-		self:PlayerDamageEvents("Tiergwaedd 's Scorch hits Expert Training Dummy for 743 Fire damage.")
-		self:PlayerDamageEvents("Expert Training Dummy is afflicted by Fire Vulnerability (2)")
+		self:PlayerDamageEvents("Tiergwaedd 's Scorch hits Heroic Training Dummy for 743 Fire damage.")
+		self:PlayerDamageEvents("Heroic Training Dummy is afflicted by Fire Vulnerability (2)")
+		self:PlayerDamageEvents("Scarletrage 's Fireball crits Heroic Training Dummy for 1743 Fire damage.")
+		self:PlayerDamageEvents("Heroic Training Dummy is afflicted by Ignite (2).")
 	end
 	local function scorch3()
-		self:PlayerDamageEvents("Pepopo 's Scorch hits Expert Training Dummy for 743 Fire damage.")
-		self:PlayerDamageEvents("Expert Training Dummy is afflicted by Fire Vulnerability (3)")
+		self:PlayerDamageEvents("Pepopo 's Scorch hits Heroic Training Dummy for 743 Fire damage.")
+		self:PlayerDamageEvents("Heroic Training Dummy is afflicted by Fire Vulnerability (3)")
+		self:PlayerDamageEvents("Scarletrage 's Fireball crits Heroic Training Dummy for 1743 Fire damage.")
+		self:PlayerDamageEvents("Heroic Training Dummy is afflicted by Ignite (3).")
+
 	end
 	local function scorch4()
-		self:PlayerDamageEvents("Pepopo 's Scorch hits Expert Training Dummy for 743 Fire damage.")
-		self:PlayerDamageEvents("Expert Training Dummy is afflicted by Fire Vulnerability (4)")
+		self:PlayerDamageEvents("Pepopo 's Scorch hits Heroic Training Dummy for 743 Fire damage.")
+		self:PlayerDamageEvents("Heroic Training Dummy is afflicted by Fire Vulnerability (4)")
+		self:PlayerDamageEvents("Pepopo 's Fireball crits Heroic Training Dummy for 1743 Fire damage.")
+		self:PlayerDamageEvents("Heroic Training Dummy is afflicted by Ignite (4).")
+
 	end
 	local function scorch5()
-		self:PlayerDamageEvents("Scarletrage 's Scorch hits Expert Training Dummy for 743 Fire damage.")
-		self:PlayerDamageEvents("Expert Training Dummy is afflicted by Fire Vulnerability (5)")
+		self:PlayerDamageEvents("Scarletrage 's Scorch hits Heroic Training Dummy for 743 Fire damage.")
+		self:PlayerDamageEvents("Heroic Training Dummy is afflicted by Fire Vulnerability (5)")
+		self:PlayerDamageEvents("Pepopo 's Fireball crits Heroic Training Dummy for 1743 Fire damage.")
+		self:PlayerDamageEvents("Heroic Training Dummy is afflicted by Ignite (5).")
+
 	end
 	local function scorch()
-		self:PlayerDamageEvents("Pepopo 's Scorch hits Expert Training Dummy for 743 Fire damage.")
+		self:PlayerDamageEvents("Pepopo 's Scorch hits Heroic Training Dummy for 743 Fire damage.")
+		self:PlayerDamageEvents("Pepopo 's Fireball crits Heroic Training Dummy for 1743 Fire damage.")
+
 	end
 
 	-- sweep after 5s
 	-- loop 10 times
-	for i = 1, 10 do
-		self:ScheduleEvent(self:ToString() .. "1" .. i, scorch1, 1, self)
-		self:ScheduleEvent(self:ToString() .. "2" .. i, scorch2, 2, self)
-		self:ScheduleEvent(self:ToString() .. "3" .. i, scorch3, 3, self)
-		self:ScheduleEvent(self:ToString() .. "4" .. i, scorch4, 4, self)
-		self:ScheduleEvent(self:ToString() .. "5" .. i, scorch5, 5, self)
-		self:ScheduleEvent(self:ToString() .. "6" .. i, scorch, 6, self)
-		self:ScheduleEvent(self:ToString() .. "7" .. i, scorch, 7, self)
-		self:ScheduleEvent(self:ToString() .. "8" .. i, scorch, 8, self)
+	for i = 1, 22 do
+		for j = 1, 22 do
+			self:ScheduleEvent(self:ToString() .. "1" .. i .. "it" .. j, scorch1, 1, self)
+			self:ScheduleEvent(self:ToString() .. "2" .. i .. "it" .. j, scorch2, 2, self)
+			self:ScheduleEvent(self:ToString() .. "3" .. i .. "it" .. j, scorch3, 3, self)
+			self:ScheduleEvent(self:ToString() .. "4" .. i .. "it" .. j, scorch4, 4, self)
+			self:ScheduleEvent(self:ToString() .. "5" .. i .. "it" .. j, scorch5, 5, self)
+			self:ScheduleEvent(self:ToString() .. "6" .. i .. "it" .. j, scorch, 6, self)
+			self:ScheduleEvent(self:ToString() .. "7" .. i .. "it" .. j, scorch, 7, self)
+			self:ScheduleEvent(self:ToString() .. "8" .. i .. "it" .. j, scorch, 8, self)
+			self:ScheduleEvent(self:ToString() .. "10" .. i .. "it" .. j, scorch, 8, self)
+			self:ScheduleEvent(self:ToString() .. "12" .. i .. "it" .. j, scorch, 8, self)
+			self:ScheduleEvent(self:ToString() .. "15" .. i .. "it" .. j, scorch, 8, self)
+			self:ScheduleEvent(self:ToString() .. "17" .. i .. "it" .. j, scorch, 8, self)
+			self:ScheduleEvent(self:ToString() .. "19" .. i .. "it" .. j, scorch, 8, self)
+		end
 	end
 
 end

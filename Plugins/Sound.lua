@@ -68,6 +68,7 @@ local sounds = {
 	FunDance = "Interface\\AddOns\\BigWigs\\Sounds\\FunDance.mp3",
 
 	Scorch = "Interface\\AddOns\\BigWigs\\Sounds\\Scorch.mp3",
+	ScorchResist = "Interface\\AddOns\\BigWigs\\Sounds\\ScorchResist.mp3",
 	stopcasting = "Interface\\AddOns\\BigWigs\\Sounds\\stopcasting.mp3",
 	IgniteDanger = "Interface\\AddOns\\BigWigs\\Sounds\\IgniteDanger.mp3",
 	Pyro = "Interface\\AddOns\\BigWigs\\Sounds\\Pyro.mp3",
