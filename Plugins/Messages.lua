@@ -313,6 +313,15 @@ function BigWigsMessages:BigWigs_Message(text, color, noraidsay, sound, broadcas
 	if self.db.profile.display == L["RaidWarning frame"] then
 		RaidWarningFrame:AddMessage(text, r, g, b, 1, UIERRORS_HOLD_TIME)
 	elseif MikSBT and self.db.profile.display == L["Mik's Scrolling Battle Text"] then
+		if r == nil then
+			r = 1
+		end
+		if g == nil then
+			g = 1
+		end
+		if b == nil then
+			b = 1
+		end
 		MikSBT.DisplayMessage(text, MikSBT.DISPLAYTYPE_NOTIFICATION, false, r * 255, g * 255, b * 255)
 	elseif SCT_Display_Message and self.db.profile.display == L["Scrolling Combat Text"] then
 		-- SCT 4.x

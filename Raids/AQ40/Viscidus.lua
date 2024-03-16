@@ -56,11 +56,11 @@ L:RegisterTranslations("enUS", function()
 		trigger_crack = " begins to crack!", --CHAT_MSG_RAID_BOSS_EMOTE
 		trigger_shatter = " looks ready to shatter!", --CHAT_MSG_RAID_BOSS_EMOTE
 
-		msg_slow = "Freeze Count: 100 out of 200",
-		msg_freezing = "Freeze Count: 150 out of 200",
-		msg_frozen = "Freeze Count: 200 out of 200 - Frozen, poke him!",
-		msg_crack = "Poke Count: 50 out of 150",
-		msg_shatter = "Poke Count: 100 out of 150",
+		msg_slow = "Freeze Count: 100 / 200",
+		msg_freezing = "Freeze Count: 150 / 200",
+		msg_frozen = "Freeze Count: 200 / 200 - Frozen, poke him!",
+		msg_crack = "Poke Count: 50 / 150",
+		msg_shatter = "Poke Count: 100 / 150",
 
 		bar_glob = "Globs remaining",
 	}
@@ -292,13 +292,13 @@ function module:Slow()
 	globDeathCount = 0
 
 	if self.db.profile.freezestages then
-		self:Message(L["msg_slow"], "Atention", false, nil, false)
+		self:Message(L["msg_slow"], "Attention", false, nil, false)
 	end
 end
 
 function module:Freezing()
 	if self.db.profile.freezestages then
-		self:Message(L["msg_freezing"], "Atention", false, nil, false)
+		self:Message(L["msg_freezing"], "Attention", false, nil, false)
 	end
 end
 
@@ -316,20 +316,20 @@ function module:Frozen()
 	end
 
 	if self.db.profile.freezestages then
-		self:Message(L["msg_frozen"], "Atention", false, nil, false)
+		self:Message(L["msg_frozen"], "Attention", false, nil, false)
 		self:WarningSign(icon.poke, 0.7)
 	end
 end
 
 function module:Crack()
 	if self.db.profile.freezestages then
-		self:Message(L["msg_crack"], "Atention", false, nil, false)
+		self:Message(L["msg_crack"], "Attention", false, nil, false)
 	end
 end
 
 function module:Shatter()
 	if self.db.profile.freezestages then
-		self:Message(L["msg_shatter"], "Atention", false, nil, false)
+		self:Message(L["msg_shatter"], "Attention", false, nil, false)
 	end
 end
 

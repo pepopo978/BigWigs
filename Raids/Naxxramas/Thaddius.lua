@@ -404,11 +404,11 @@ function module:NewPolarity(chargeType)
 	if self.db.profile.charge then
 		if self.previousCharge and self.previousCharge ~= chargeType then
 			if chargeType == L["positivetype"] then
-				self:WarningSign("spell_chargepositive", 3, L["posicontext"])
+				self:WarningSign("spell_chargepositive", 3, false, L["posicontext"])
 				self:Message(L["poswarn"], "Positive", true, nil, false)
 				self:Sound("PositiveSwitchSides")
 			elseif chargeType == L["negativetype"] then
-				self:WarningSign("spell_chargenegative", 3, L["negicontext"])
+				self:WarningSign("spell_chargenegative", 3, false, L["negicontext"])
 				self:Message(L["negwarn"], "Important", true, nil, false)
 				self:Sound("NegativeSwitchSides")
 			end
@@ -418,7 +418,7 @@ function module:NewPolarity(chargeType)
 			else
 				self:Message(L["poswarn"], "Positive", true, nil, false)
 			end
-			self:WarningSign("spell_chargepositive", 3, L["posicontext"])
+			self:WarningSign("spell_chargepositive", 3, false, L["posicontext"])
 			self:Sound("Positive")
 		elseif chargeType == L["negativetype"] then
 			if self.previousCharge then
@@ -426,10 +426,9 @@ function module:NewPolarity(chargeType)
 			else
 				self:Message(L["negwarn"], "Important", true, nil, false)
 			end
-			self:WarningSign("spell_chargenegative", 3, L["negicontext"])
+			self:WarningSign("spell_chargenegative", 3, false, L["negicontext"])
 			self:Sound("Negative")
 		end
-		self:WarningSign(chargeType, 5)
 
 		if chargeType == L["positivetype"] then
 			self:Bar(L["polaritytickbar"], timer.polarityTick, icon.positive, true, "blue")
