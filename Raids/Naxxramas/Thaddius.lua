@@ -84,6 +84,9 @@ L:RegisterTranslations("enUS", function()
 
 		polarityShift_trigger = "now you feel pain", --CHAT_MSG_MONSTER_YELL
 
+		posicontext = "Positive",
+		negicontext = "Negative",
+
 		positivetype = "Interface\\Icons\\Spell_ChargePositive",
 		poswarn = "You changed to a Positive Charge!",
 		negativetype = "Interface\\Icons\\Spell_ChargeNegative",
@@ -370,7 +373,7 @@ function module:PolarityShift()
 	self:Bar(L["polarityShiftCD_bar"], timer.polarityShiftCD, icon.polarityShift, true, "green")
 
 	-- if buff doesn't change, player aura change won't always happen
-	self:ScheduleEvent("RecheckAuras", self.PLAYER_AURAS_CHANGED, 0.5, self)
+	self:ScheduleEvent("RecheckAuras", self.PLAYER_AURAS_CHANGED, 1, self)
 end
 
 function module:PLAYER_AURAS_CHANGED(msg)
@@ -401,11 +404,13 @@ function module:NewPolarity(chargeType)
 	if self.db.profile.charge then
 		if self.previousCharge and self.previousCharge ~= chargeType then
 			if chargeType == L["positivetype"] then
+				self:WarningSign("spell_chargepositive", 3, L["posicontext"])
 				self:Message(L["poswarn"], "Positive", true, nil, false)
-				BigWigsSound:BigWigs_Sound("PositiveSwitchSides")
+				self:Sound("PositiveSwitchSides")
 			elseif chargeType == L["negativetype"] then
+				self:WarningSign("spell_chargenegative", 3, L["negicontext"])
 				self:Message(L["negwarn"], "Important", true, nil, false)
-				BigWigsSound:BigWigs_Sound("NegativeSwitchSides")
+				self:Sound("NegativeSwitchSides")
 			end
 		elseif chargeType == L["positivetype"] then
 			if self.previousCharge then
@@ -413,14 +418,16 @@ function module:NewPolarity(chargeType)
 			else
 				self:Message(L["poswarn"], "Positive", true, nil, false)
 			end
-			BigWigsSound:BigWigs_Sound("Positive")
+			self:WarningSign("spell_chargepositive", 3, L["posicontext"])
+			self:Sound("Positive")
 		elseif chargeType == L["negativetype"] then
 			if self.previousCharge then
 				self:Message(L["stayedneg"], "Important", true, nil, false)
 			else
 				self:Message(L["negwarn"], "Important", true, nil, false)
 			end
-			BigWigsSound:BigWigs_Sound("Negative")
+			self:WarningSign("spell_chargenegative", 3, L["negicontext"])
+			self:Sound("Negative")
 		end
 		self:WarningSign(chargeType, 5)
 
