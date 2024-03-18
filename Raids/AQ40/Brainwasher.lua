@@ -1,10 +1,13 @@
 
 local module, L = BigWigs:ModuleDeclaration("Qiraji Brainwasher", "Ahn'Qiraj")
 
-module.revision = 30061
+module.revision = 30067
 module.enabletrigger = module.translatedName
-module.toggleoptions = {"mc"}
+module.toggleoptions = {"mc", "mindflay"}
 module.trashMod = true
+module.defaultDB = {
+	bosskill = nil,
+}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "BrainWasher",
@@ -13,47 +16,61 @@ L:RegisterTranslations("enUS", function() return {
 	mc_name = "Mind Control Alert",
 	mc_desc = "Warn for Mind Control",
 	
-	trigger_mcYou = "You are afflicted by Cause Insanity.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE          --To be confirmed
+	mindflay_cmd = "mindflay",
+	mindflay_name = "Mind Flay Alert",
+	mindflay_desc = "Warn for Mind Flay",
+	
+	
+	trigger_mcYou = "You are afflicted by Cause Insanity.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 	trigger_mcOther = "(.+) is afflicted by Cause Insanity.",--CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
 	trigger_mcFade = "Cause Insanity fades from (.+).",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 	bar_mc = " MC",
 	
-	["You have slain %s!"] = true,
+	trigger_mindFlayYou = "You are afflicted by Mind Flay.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_mindFlayOther = "(.+) is afflicted by Mind Flay.",--CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
+	trigger_mindFlayFade = "Mind Flay fades from (.+).",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_mindFlay = " Mind Flay",
 	
+	["You have slain %s!"] = true,
 } end )
-
-module.defaultDB = {
-	bosskill = nil,
-}
 
 local timer = {
 	mc = 10,
+	mindFlay = 8,
 }
-
 local icon = {
 	mc = "spell_shadow_shadowworddominate",
+	mindFlay = "spell_shadow_siphonmana",
 }
-
 local color = {
 	mc = "Black",
+	mindFlay = "Blue",
 }
-
 local syncName = {
 	mc = "BrainwasherMc"..module.revision,
 	mcFade = "BrainwasherMcFade"..module.revision,
+	mindFlay = "BrainwasherMindFlay"..module.revision,
+	mindFlayFade = "BrainwasherMindFlayFade"..module.revision,
 }
 
 function module:OnEnable()
 	--self:RegisterEvent("CHAT_MSG_SAY", "Events")--Debug
 	
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE", "Events")--trigger_mcOther
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Events")--trigger_mcYou
-	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Events")--trigger_mcFade
-	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Events")--trigger_mcFade
-	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Events")--trigger_mcFade
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE", "Events")--trigger_mcOther, trigger_mindFlayOther
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Events")--trigger_mcYou, trigger_mindFlayYou
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Events")--trigger_mcYou, trigger_mindFlayOther
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Events")--trigger_mcYou, trigger_mindFlayOther
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Events")--trigger_mcFade, trigger_mindFlayFade
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Events")--trigger_mcFade, trigger_mindFlayFade
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Events")--trigger_mcFade, trigger_mindFlayFade
+	
 	
 	self:ThrottleSync(1, syncName.mc)
-	self:ThrottleSync(1, syncName.mcFade)
+	self:ThrottleSync(0.2, syncName.mcFade)
+	self:ThrottleSync(1, syncName.mindFlay)
+	self:ThrottleSync(0.2, syncName.mindFlayFade)
 end
 
 function module:OnSetup()
@@ -116,6 +133,19 @@ function module:Events(msg)
 		local _,_, mcFadePerson, _ = string.find(msg, L["trigger_mcFade"])
 		if mcFadePerson == "you" then mcFadePerson = UnitName("Player") end
 		self:Sync(syncName.mcFade .. " " .. mcFadePerson)
+		
+		
+	elseif msg == L["trigger_mindFlayYou"] then
+		self:Sync(syncName.mindFlay .. " " .. UnitName("Player"))
+		
+	elseif string.find(msg, L["trigger_mindFlayOther"]) then
+		local _,_, mindFlayPerson, _ = string.find(msg, L["trigger_mindFlayOther"])
+		self:Sync(syncName.mindFlay .. " " .. mindFlayPerson)
+		
+	elseif string.find(msg, L["trigger_mindFlayFade"]) then
+		local _,_, mindFlayFadePerson, _ = string.find(msg, L["trigger_mindFlayFade"])
+		if mindFlayFadePerson == "you" then mindFlayFadePerson = UnitName("Player") end
+		self:Sync(syncName.mindFlayFade .. " " .. mindFlayFadePerson)
 	end
 end
 
@@ -125,12 +155,19 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		self:Mc(rest)
 	elseif sync == syncName.mcFade and rest and self.db.profile.mc then
 		self:McFade(rest)
+		
+	elseif sync == syncName.mindFlay and rest and self.db.profile.mindflay then
+		self:MindFlay(rest)
+	elseif sync == syncName.mindFlayFade and rest and self.db.profile.mindflay then
+		self:MindFlayFade(rest)
 	end
 end
 
 
 function module:Mc(rest)
-	self:Bar(rest..L["bar_mc"], timer.mc, icon.mc, true, color.mc)
+	self:Bar(rest..L["bar_mc"].. " >Click Me<", timer.mc, icon.mc, true, color.mc)
+	self:SetCandyBarOnClick("BigWigsBar "..rest..L["bar_mc"].. " >Click Me<", function(name, button, extra) TargetByName(extra, true) end, rest)
+	
 	
 	if IsRaidLeader() or IsRaidOfficer() then
 		for i=1,GetNumRaidMembers() do
@@ -142,7 +179,7 @@ function module:Mc(rest)
 end
 
 function module:McFade(rest)
-	self:RemoveBar(rest..L["bar_mc"])
+	self:RemoveBar(rest..L["bar_mc"].. " >Click Me<")
 	
 	if IsRaidLeader() or IsRaidOfficer() then
 		for i=1,GetNumRaidMembers() do
@@ -151,4 +188,12 @@ function module:McFade(rest)
 			end
 		end
 	end
+end
+
+function module:MindFlay(rest)
+	self:Bar(rest..L["bar_mindFlay"], timer.mindFlay, icon.mindFlay, true, color.mindFlay)
+end
+
+function module:MindFlayFade(rest)
+	self:RemoveBar(rest..L["bar_mindFlay"])
 end

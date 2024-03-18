@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Sapphiron", "Naxxramas")
 
-module.revision = 30058
+module.revision = 30067
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"frostbreath", "lifedrain", "block", "enrage", "blizzard", "tailsweep", "phase", -1, "proximity", -1, "parry", "bosskill"}
 
@@ -62,7 +62,7 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_iceboltFade = "Icebolt fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 	
 	trigger_iceboltHits = "Icebolt hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
-	bar_iceBlock1 = "Ice Block 1",
+	--bar_iceBlock1 = "Ice Block 1",
 	bar_iceBlock2 = "Ice Block 2",
 	bar_iceBlock3 = "Ice Block 3",
 	bar_iceBlock4 = "Ice Block 4",
@@ -80,8 +80,9 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_tailSweepYou = "Sapphiron's Tail Sweep hits you", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 	msg_tailSweep = "Tail Sweep hits behind the boss for 30 yards.",
 	
-	bar_timeToAirPhase = "Next Air Phase",
-	msg_airPhase = "Air Phase - Spread out!",
+	bar_timeToAirPhase = "Next Air Phase CD",
+	--msg_airPhase = "Air Phase - Spread out!",
+	msg_airPhaseSoon = "Air Phase Soon - Prepare to Spread Out!",
 	bar_timeToGroundPhase = "Next Ground Phase",
 	msg_groundPhase = "Ground Phase!",
 	
@@ -133,9 +134,10 @@ local syncName = {
 	iceBlock = "SapphironIceBlock"..module.revision,
 	enrage = "SapphironEnrage"..module.revision,
 	groundPhase = "SapphironGroundPhase"..module.revision,
-	airPhase = "SapphironAirPhase"..module.revision,
+	--airPhase = "SapphironAirPhase"..module.revision,
 	iceboltHits = "SapphironIceboltHits"..module.revision,
 	lowHp = "SapphironLowHp"..module.revision,
+	enableProximity = "SapphironEnableProximity"..module.revision,
 }
 
 local lastLifeDrainTime = nil
@@ -177,9 +179,10 @@ function module:OnEnable()
 	self:ThrottleSync(3, syncName.iceBlock)
 	self:ThrottleSync(3, syncName.enrage)
 	self:ThrottleSync(3, syncName.groundPhase)
-	self:ThrottleSync(3, syncName.airPhase)
+	--self:ThrottleSync(3, syncName.airPhase)
 	self:ThrottleSync(30, syncName.iceboltHits)
 	self:ThrottleSync(10, syncName.lowHp)
+	self:ThrottleSync(10, syncName.enableProximity)
 end
 
 function module:OnSetup()
@@ -206,30 +209,33 @@ function module:OnEngage()
 	
 	if self.db.profile.phase then
 		self:Bar(L["bar_timeToAirPhase"], timer.firstGroundPhase, icon.phase, true, color.phase)
+		self:DelayedMessage(timer.firstGroundPhase, L["msg_airPhaseSoon"], "Important", false, nil, false)
 	end
 	
-	self:DelayedSync(timer.firstGroundPhase, syncName.airPhase)	
+	self:DelayedSync(timer.firstGroundPhase, syncName.enableProximity)
 end
 
 function module:OnDisengage()
+	self:CancelDelayedSync(syncName.enableProximity)
+	self:CancelDelayedSync(syncName.groundPhase)
 	self:RemoveProximity()
 end
 
 function module:MINIMAP_ZONE_CHANGED(msg)
-	if GetMinimapZoneText() ~= "Sapphiron's Lair" or self.core:IsModuleActive(module.translatedName) then
-		return
-	elseif GetMinimapZoneText() == "Kel'Thuzad Chamber" and self.core:IsModuleActive(module.translatedName) then
+	if GetMinimapZoneText() == "Kel'Thuzad Chamber" and self.core:IsModuleActive(module.translatedName) then
 		self.core:DisableModule(module.translatedName)
-		return
-	elseif GetMinimapZoneText() == "Sapphiron's Lair" then
+	elseif GetMinimapZoneText() == "Plaguewood" and self.core:IsModuleActive(module.translatedName) then
+		self.core:DisableModule(module.translatedName)
+	
+	elseif GetMinimapZoneText() == "Sapphiron's Lair" and not self.core:IsModuleActive(module.translatedName) then
 		self.core:EnableModule(module.translatedName)
 	end
 end
 
 function module:UNIT_HEALTH(msg)
 	if UnitName(msg) == module.translatedName then
-		local health = UnitHealth(msg)
-		if health >= 10 and lowHp ~= nil then
+		local healthPct = UnitHealth(msg) * 100 / UnitHealthMax(msg)
+		if healthPct >= 10 and lowHp ~= nil then
 			lowHp = nil
 		elseif health < 10 and lowHp == nil then
 			self:Sync(syncName.lowHp)
@@ -249,7 +255,7 @@ function module:Event(msg)
 		self:Sync(syncName.iceboltHits)
 	
 	elseif msg == L["trigger_iceboltYou"] then
-		self:Sync(syncName.iceBlock.." "..UnitName("player"))
+		self:Sync(syncName.iceBlock.." "..UnitName("Player"))
 	
 	elseif string.find(msg, L["trigger_iceboltOther"]) then
 		local _,_, iceBlockPerson, _ = string.find(msg, L["trigger_iceboltOther"])
@@ -284,10 +290,12 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		self:IceBlock(rest)
 	elseif sync == syncName.groundPhase then
 		self:GroundPhase()
-	elseif sync == syncName.airPhase then
-		self:AirPhase()
+	--elseif sync == syncName.airPhase then
+	--	self:AirPhase()
 	elseif sync == syncName.lowHp and lowHp == nil then
 		self:LowHp()
+	elseif sync == syncName.enableProximity and self.db.profile.proximity then
+		self:EnableProximity()
 	end
 end
 
@@ -295,7 +303,7 @@ end
 function module:FrostBreath()
 	self:RemoveBar(L["bar_timeToGroundPhase"])
 	
-	self:RemoveBar(L["bar_iceBlock1"])
+	--self:RemoveBar(L["bar_iceBlock1"])
 	self:RemoveBar(L["bar_iceBlock2"])
 	self:RemoveBar(L["bar_iceBlock3"])
 	self:RemoveBar(L["bar_iceBlock4"])
@@ -351,11 +359,17 @@ function module:Enrage()
 end
 
 function module:IceboltHits()
+	if phase == "ground" then
+		--self:Sync(syncName.airPhase)
+		phase = "air"
+		airPhaseTime = GetTime() - 7
+	end
+	
 	self:RemoveBar(L["bar_timeToGroundPhase"])
 	self:RemoveBar(L["bar_lifeDrain"])
 	self:RemoveBar(L["bar_timeToAirPhase"])
 	
-	self:RemoveBar(L["bar_iceBlock1"])
+	--self:RemoveBar(L["bar_iceBlock1"])
 	
 	if self.db.profile.phase then
 		self:Bar(L["bar_timeToGroundPhase"], timer.airPhase - timer.iceBlock1, icon.phase, true, color.phase)
@@ -388,7 +402,7 @@ function module:GroundPhase()
 	
 	self:RemoveBar(L["bar_timeToGroundPhase"])
 	
-	self:RemoveBar(L["bar_iceBlock1"])
+	--self:RemoveBar(L["bar_iceBlock1"])
 	self:RemoveBar(L["bar_iceBlock2"])
 	self:RemoveBar(L["bar_iceBlock3"])
 	self:RemoveBar(L["bar_iceBlock4"])
@@ -422,35 +436,37 @@ function module:GroundPhase()
 	end
 end
 
-function module:AirPhase()
-	phase = "air"
-	
-	airPhaseTime = GetTime()
-	
-	self:RemoveBar(L["bar_lifeDrain"])
-	self:RemoveBar(L["bar_timeToAirPhase"])
-	self:CancelDelayedSync(syncName.airPhase)
-	
-	if self.db.profile.proximity then
-		self:Proximity()
-	end
-	
-	if self.db.profile.phase then
-		self:Bar(L["bar_timeToGroundPhase"], timer.airPhase, icon.phase, true, color.phase)
-		self:Message(L["msg_airPhase"], "Important", false, nil, false)
-	end
-	
-	if self.db.profile.block then
-		self:Bar(L["bar_iceBlock1"], timer.iceBlock1, icon.iceBlock, true, color.iceBlock)
-	end
+function module:EnableProximity()
+	self:Proximity()
 end
+
+--function module:AirPhase()
+	--phase = "air"
+	
+	--self:RemoveBar(L["bar_lifeDrain"])
+	--self:RemoveBar(L["bar_timeToAirPhase"])
+	--self:CancelDelayedSync(syncName.airPhase)
+	
+	--if self.db.profile.proximity then
+	--	self:Proximity()
+	--end
+	
+	--if self.db.profile.phase then
+		--self:Bar(L["bar_timeToGroundPhase"], timer.airPhase, icon.phase, true, color.phase)
+		--self:Message(L["msg_airPhase"], "Important", false, nil, false)
+	--end
+	
+	--if self.db.profile.block then
+	--	self:Bar(L["bar_iceBlock1"], timer.iceBlock1, icon.iceBlock, true, color.iceBlock)
+	--end
+--end
 
 function module:LowHp()
 	lowHp = true
 	
 	if phase == "ground" then
 		self:RemoveBar(L["bar_timeToAirPhase"])
-		self:CancelDelayedSync(syncName.airPhase)
+		--self:CancelDelayedSync(syncName.airPhase)
 	end
 	
 	self:Message(L["msg_lowHp"], "Important", false, nil, false)

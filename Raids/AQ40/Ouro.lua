@@ -1,338 +1,237 @@
 
 local module, L = BigWigs:ModuleDeclaration("Ouro", "Ahn'Qiraj")
 
-module.revision = 30058
+module.revision = 30067
 module.enabletrigger = module.translatedName
-module.toggleoptions = {"popcorn", "sounds", "bigicon", "sweep", "sandblast", -1, "emerge", "submerge", -1, "berserk", "bosskill"}
+module.toggleoptions = {"sweep", "sandblast", "popcorn", "emerge", "berserk", -1, "targeticon", "bosskill"}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Ouro",
-
-	OUROCHAMBERLOCALIZEDLOLHAX = "Ouro's Chamber",
 
 	sweep_cmd = "sweep",
 	sweep_name = "Sweep Alert",
 	sweep_desc = "Warn for Sweeps",
 	
+	sandblast_cmd = "sandblast",
+	sandblast_name = "Sand Blast Alert",
+	sandblast_desc = "Warn for Sand Blast",
+	
 	popcorn_cmd = "popcorn",
 	popcorn_name = "Popcorn Alert",
 	popcorn_desc = "Warns when you take damage from Popcorn",
 	
-	bigicon_cmd = "bigicon",
-	bigicon_name = "BigIcon Alerts",
-	bigicon_desc = "BigIcon Alert for Sweep, Submerge, Emerge, Popcorn",
-	
-	sounds_cmd = "sounds",
-	sounds_name = "Sound Alerts",
-	sounds_desc = "Sound Alert for Sweep, Submerge, Emerge, Popcorn",
-	
-	sandblast_cmd = "sandblast",
-	sandblast_name = "Sandblast Alert",
-	sandblast_desc = "Warn for Sandblasts",
-
 	emerge_cmd = "emerge",
-	emerge_name = "Emerge Alert",
-	emerge_desc = "Warn for Emerge",
-
-	submerge_cmd = "submerge",
-	submerge_name = "Submerge Alert",
-	submerge_desc = "Warn for Submerge",
-
+	emerge_name = "Emerge / Submerge Alert",
+	emerge_desc = "Warn for Emerge / Submerge",
+	
 	berserk_cmd = "berserk",
-	berserk_name = "Berserk",
-	berserk_desc = "Warn for when Ouro goes berserk",
+	berserk_name = "Berserk Alert",
+	berserk_desc = "Warn for when Ouro goes Berserk",
+	
+	targeticon_cmd = "targeticon",
+	targeticon_name = "Skull Icon on Ouro's Target",
+	targeticon_desc = "Put a Skull Raid Icon on Ouro's Target",
+	
+	
+	trigger_engage = "Ouro begins to cast Birth.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF
+	
+	trigger_sweep = "Ouro begins to cast Sweep.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_sweepCd = "Sweep CD",
+	bar_sweepCast = "Sweep!",
+	msg_sweep = "Casting Sweep!",
+	
+	trigger_sandBlast = "Ouro begins to perform Sand Blast.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_sandBlastCd = "Sand Blast CD",
+	bar_sandBlastCast = "Sand Blast!",
+	msg_sandBlast = "Casting Sand Blast!",
 
-	sweeptrigger = "Ouro begins to cast Sweep",
-	sweepannounce = "Sweep!",
-	sweepwarn = "5 seconds until Sweep!",
-	sweepbartext = "Sweep",
+	trigger_emerge = "Ground Rupture", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_submergePossible = "Possible Submerge",
+	msg_emerge = "Ouro has Emerged!",
+	
+	--there is no trigger_submerge
+	bar_submergeDuration = "Ouro Emerge",
+	msg_submerge = "Ouro has Submerged!",
+	msg_collapse = "Ouro Emerges in 10 seconds - Collapse towards the middle!",
+	
+	trigger_berserk = "Ouro gains Berserk.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	msg_berserk = "Ouro is Berserk - No Submerges",
+	msg_berserkSoon = "Berserk Soon - Get Ready!",
+	
+	bar_berserkPopcorn = "New Popcorn Spawns", --10sec after enrage, should be 1 per 10sec afterwards
 
-	sandblasttrigger = "Ouro begins to perform Sand Blast",
-	sandblastannounce = "Incoming Sand Blast!",
-	sandblastwarn = "5 seconds until Sand Blast!",
-	sandblastbartext = "Possible Sand Blast",
-
-	engage_message = "Ouro engaged! Possible Submerge in 90sec!",
-	possible_submerge_bar = "Possible submerge",
-
-	--emergetrigger = "Dirt Mound casts Summon Ouro Scarabs.",
-	emergetrigger = "Ground Rupture",
-
-	emergeannounce = "Ouro has emerged!",
-	emergewarn = "15 sec to possible submerge!",
-	emergebartext = "Ouro submerge",
-
-	--submergetrigger = "Ouro casts Summon Ouro Mounds.",
-	submergetrigger = "submerge",
-	submergeannounce = "Ouro has submerged!",
-	submergewarn = "5 seconds until Ouro Emerges!",
-	submergebartext = "Ouro Emerge",
-
-	berserktrigger = "Ouro gains Berserk.",
-	berserkannounce = "Berserk - Berserk!",
-	berserksoonwarn = "Berserk Soon - Get Ready!",
-
-	popcorn_trigger = "Dirt Mound's Quake hits you for",
-} end )
-
-L:RegisterTranslations("esES", function() return {
-	--cmd = "Ouro",
-
-	--sweep_cmd = "sweep",
-	sweep_name = "Alerta de Barrido",
-	sweep_desc = "Avisa para Barrido",
-
-	--sandblast_cmd = "sandblast",
-	sandblast_name = "Alerta de Explosión de arena",
-	sandblast_desc = "Avisa para Explosión de arena",
-
-	--emerge_cmd = "emerge",
-	emerge_name = "Alerta de Emersión",
-	emerge_desc = "Alerta para Emersión",
-
-	--submerge_cmd = "submerge",
-	submerge_name = "Alerta de Sumersión",
-	submerge_desc = "Avisa para Sumersión",
-
-	--berserk_cmd = "berserk",
-	berserk_name = "Rabia",
-	berserk_desc = "Avisa para Rabia",
-
-	sweeptrigger = "Ouro comienza a lanzar Barrido",
-	sweepannounce = "¡Barrido!",
-	sweepwarn = "¡5 segundos hasta Barrido!",
-	sweepbartext = "Barrido",
-
-	sandblasttrigger = "Ouro comienza a hacer Explosión de arena",
-	sandblastannounce = "¡Explosión de arena entrante!",
-	sandblastwarn = "¡5 segundos hasta Explosión de arena!",
-	sandblastbartext = "Explosión de arena Posible",
-
-	engage_message = "¡Entrando en combate con Ouro! Sumersión Posible en 90 segundos!",
-	possible_submerge_bar = "Sumersión Posible",
-
-	--emergetrigger = "Dirt Mound casts Summon Ouro Scarabs.",
-	emergetrigger = "Ruptura terrenal",
-
-	emergeannounce = "¡Ouro se ha emergido!",
-	emergewarn = "¡15 segundos hasta Sumersión posible!",
-	emergebartext = "Ouro Sumersión",
-
-	--submergetrigger = "Ouro casts Summon Ouro Mounds.",
-	submergetrigger = "sumerge",
-	submergeannounce = "¡Ouro se ha sumergido!",
-	submergewarn = "¡5 hasta que Ouro Emerge!",
-	submergebartext = "Ouro Emerge",
-
-	berserktrigger = "Ouro gana Rabia.",
-	berserkannounce = "¡Rabia!",
-	berserksoonwarn = "¡Rabia pronto - Prepárate!",
-
-
-} end )
-
-L:RegisterTranslations("deDE", function() return {
-	sweep_name = "Feger",
-	sweep_desc = "Warnung, wenn Ouro Feger wirkt.",
-
-	sandblast_name = "Sandsto\195\159",
-	sandblast_desc = "Warnung, wenn Ouro Sandsto\195\159 wirkt.",
-
-	emerge_name = "Auftauchen",
-	emerge_desc = "Warnung, wenn Ouro auftaucht.",
-
-	submerge_name = "Untertauchen",
-	submerge_desc = "Warnung, wenn Ouro untertaucht.",
-
-	berserk_name = "Berserk",
-	berserk_desc = "Warnung, wenn Ouro Berserkerwut bekommt.",
-
-	sweeptrigger = "Ouro beginnt Feger zu wirken.", -- ?
-	sweepannounce = "Feger!",
-	sweepwarn = "5 Sekunden bis Feger!",
-	sweepbartext = "Feger",
-
-	sandblasttrigger = "Ouro beginnt Sandstoß auszuführen.", -- ?
-	sandblastannounce = "Sandsto\195\159 in K\195\188rze!",
-	sandblastwarn = "5 Sekunden bis Sandsto\195\159!",
-	sandblastbartext = "Möglicher Sandsto\195\159",
-
-	engage_message = "Ouro angegriffen! Mögliches Untertauchen in 90sek!",
-	possible_submerge_bar = "Mögliches Untertauchen",
-
-	--emergetrigger = "Dirt Mound casts Summon Ouro Scarabs.",
-	emergetrigger = "Erdhaufen stirbt.", -- ?
-	emergeannounce = "Ouro ist aufgetaucht!",
-	emergewarn = "15 sek bis mögliches Untertauchen!",
-	emergebartext = "Untertauchen",
-
-	submergetrigger = "Ouro casts Summon Ouro Mounds.", -- ?
-	submergeannounce = "Ouro ist aufgetaucht!",
-	submergewarn = "5 Sekunden bis Ouro auftaucht!",
-	submergebartext = "Auftauchen",
-
-	berserktrigger = "Ouro bekommt 'Berserker'.",
-	berserkannounce = "Berserk - Berserk!",
-	berserksoonwarn = "Berserkerwut in K\195\188rze - Bereit machen!",
+	trigger_popcornHitsYou = "Dirt Mound's Quake hits you for", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 } end )
 
 local timer = {
+	firstSweep = {30,40},
+	sweepCd = 15,
+	sweepCast = 1.5,
+	
+	firstSandBlast = {30,45},
+	sandBlastCd = {12,17},
+	sandBlastCast = 2,
+	
+	berserkPopcorn = 10,
+	
 	nextSubmerge = 89,
-	
-	sweep = 1.5,
-	earliestFirstSweep = 30,
-	latestFirstSweep = 40,
-	sweepInterval = 15,
-	
-	earliestFirstSandblast = 30,
-	latestFirstSandblast = 45,
-	
-	earliestSandblastInterval = 12,
-	latestSandblastInterval = 17,
-	sandblast = 2,
-	
 	nextEmerge = 27,
 }
 local icon = {
 	sweep = "Spell_Nature_Thorns",
-	sandblast = "Spell_Nature_Cyclone",
-	submerge = "Spell_Nature_Earthquake",
+	sandBlast = "Spell_Nature_Cyclone",
 	popcorn = "Spell_Nature_Earthquake",
+	
+	submerge = "inv_misc_shovel_01",
 	collapse = "Ability_Marksmanship",
-	enrage = "ability_druid_challangingroar",
-	ouroTarget = "spell_shadow_charm",
+	
+	enrage = "spell_shadow_unholyfrenzy",
+}
+local color = {
+	sweep = "Blue",
+	sandBlast = "Red",
+	popcorn = "Cyan",
+	submerge = "White"
 }
 local syncName = {
 	sweep = "OuroSweep"..module.revision,
-	sandblast = "OuroSandblast"..module.revision,
+	sandBlast = "OuroSandblast"..module.revision,
 	emerge = "OuroEmerge"..module.revision,
 	submerge = "OuroSubmerge"..module.revision,
 	berserk = "OuroBerserk"..module.revision,
 }
 
-local berserkannounced = nil
+local berserkAnnounced = nil
+local ouroCurrentTarget = nil
+local phase = nil
 
 function module:OnEnable()
-	self:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLYPLAYER_HITS", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")
+	self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
 	
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event")
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF", "Event") --trigger_engage
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event") --trigger_sweep, trigger_sandBlast, trigger_emerge
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event") --trigger_berserk
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event") --trigger_popcornHitsYou
 
-	self:RegisterEvent("UNIT_HEALTH")
-	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")
+	self:RegisterEvent("UNIT_HEALTH") --warn for enrage soon
+
 
 	self:ThrottleSync(10, syncName.sweep)
-	self:ThrottleSync(10, syncName.sandblast)
+	self:ThrottleSync(10, syncName.sandBlast)
 	self:ThrottleSync(10, syncName.emerge)
 	self:ThrottleSync(10, syncName.submerge)
 	self:ThrottleSync(10, syncName.berserk)
-
-	self:ScheduleRepeatingEvent("bwouroengagecheck", self.EngageCheck, 0.5, self)
-	
-	ouroCurrentTarget = nil
 end
 
 function module:OnSetup()
-	berserkannounced = nil
 	self.started = nil
-	self.phase = nil
 end
 
 function module:OnEngage()
-
-	self.phase = "emerged"
-	self:ScheduleEvent("bwourosubmergecheck", self.DoSubmergeCheck, 5, self)
-
-	if self.db.profile.emerge then
-		self:Message(L["engage_message"], "Attention")
-		self:PossibleSubmerge()
-	end
-	if self.db.profile.sandblast then
-		self:DelayedMessage(timer.earliestFirstSandblast - 5, L["sandblastwarn"], "Important", nil, nil, true)
-		self:IntervalBar(L["sandblastbartext"], timer.earliestFirstSandblast, timer.latestFirstSandblast, icon.sandblast, true, "Red")
-	end
+	berserkAnnounced = nil
+	ouroCurrentTarget = nil
+	phase = "emerged"
+	
 	if self.db.profile.sweep then
-		self:DelayedMessage(timer.earliestFirstSweep - 5, L["sweepwarn"], "Important", nil, nil, true)
-		self:IntervalBar(L["sweepbartext"], timer.earliestFirstSweep, timer.latestFirstSweep, icon.sweep, true, "Blue")
-		if self.db.profile.bigicon then
-			self:DelayedWarningSign(timer.earliestFirstSweep - 5, icon.sweep, 0.7)
-		end
+		self:IntervalBar(L["bar_sweepCd"], timer.firstSweep[1], timer.firstSweep[2], icon.sweep, true, color.sweep)
+		self:DelayedWarningSign(timer.firstSweep[1] - 3, icon.sweep, 0.7)
 	end
 	
-	ouroCurrentTarget = nil
-	self:ScheduleRepeatingEvent("ouroTargetCheck", self.OuroTarget, 0.5, self)
+	if self.db.profile.sandblast then
+		self:IntervalBar(L["bar_sandBlastCd"], timer.firstSandBlast[1], timer.firstSandBlast[2], icon.sandBlast, true, color.sandBlast)
+	end
+	
+	if self.db.profile.emerge then
+		self:PossibleSubmerge()
+	end
+	
+	self:ScheduleEvent("OuroSubmergeCheck", self.StartSubmergeCheck, 5, self)
+	self:ScheduleRepeatingEvent("OuroTargetCheck", self.OuroTarget, 0.5, self)
 end
 
 function module:OnDisengage()
+	self:CancelScheduledEvent("OuroSubmergeCheck")
+	self:CancelScheduledEvent("OuroTargetCheck")
+	self:CancelScheduledEvent("OuroBerserkPopcorn")
+end
+
+function module:IsOuroVisible()
+	if UnitName("PlayerTarget") == self.translatedName then
+		return true
+	else
+		for i = 1, GetNumRaidMembers(), 1 do
+			if UnitName("Raid"..i.."Target") == self.translatedName then
+				return true
+			end
+		end
+	end
+
+	return false
+end
+
+function module:StartSubmergeCheck()
+	if self:IsOuroVisible() then
+		self:ScheduleRepeatingEvent("OuroSubmergeCheck", self.SubmergeCheck, 0.5, self)
+	end
+end
+
+function module:SubmergeCheck()
+	if phase == "emerged" and not UnitIsDeadOrGhost("Player") and not self:IsOuroVisible() then
+		self:Sync(syncName.submerge)
+	end
 end
 
 function module:OuroTarget()
-	if UnitName("target") ~= nil and UnitName("targettarget") ~= nil and (IsRaidLeader() or IsRaidOfficer()) then
-		if UnitName("target") == "Ouro" then
-			SetRaidTarget("targettarget",8)
+	if UnitName("Target") ~= nil and UnitName("TargetTarget") ~= nil and (IsRaidLeader() or IsRaidOfficer()) then
+		if UnitName("Target") == "Ouro" then
+			SetRaidTarget("TargetTarget",8)
 		end
 	end
 end
 
 function module:UNIT_HEALTH(msg)
 	if UnitName(msg) == module.translatedName then
-		local health = UnitHealth(msg)
-		if health > 20 and health <= 23 and not berserkannounced then
+		local healthPct = UnitHealth(msg) * 100 / UnitHealthMax(msg)
+		if healthPct > 20 and healthPct <= 23 and not berserkAnnounced then
 			if self.db.profile.berserk then
-				self:Message(L["berserksoonwarn"], "Important", false, nil, false)
+				self:Message(L["msg_berserkSoon"], "Important", false, nil, false)
 			end
-			berserkannounced = true
-		elseif health > 30 and berserkannounced then
-			berserkannounced = nil
+			berserkAnnounced = true
+		elseif health > 30 and berserkAnnounced then
+			berserkAnnounced = nil
 		end
 	end
 end
 
--- there is no emote ...
-function module:CHAT_MSG_MONSTER_EMOTE( msg )
-	if msg == L["berserktrigger"] then
-		self:Sync(syncName.berserk)
-	end
-end
-
 function module:Event(msg)
-	if msg == L["berserktrigger"] then
+	if msg == L["trigger_engage"] then
+		module:SendEngageSync()
+		
+	elseif msg == L["trigger_sweep"] then
+		self:Sync(syncName.sweep)
+	
+	elseif msg == L["trigger_sandBlast"] then
+		self:Sync(syncName.sandBlast)
+		
+	elseif string.find(msg, L["trigger_popcornHitsYou"]) and self.db.profile.popcorn then
+		self:Popcorn()
+	
+	elseif string.find(msg, L["trigger_emerge"]) then
+		self:Sync(syncName.emerge)
+		
+	elseif msg == L["trigger_berserk"] then
 		self:Sync(syncName.berserk)
 	end
-	if string.find(msg, L["emergetrigger"]) then
-		self:Sync(syncName.emerge)
-		self:DebugMessage("OuroEmerge")
-	end
-	if string.find(msg, L["sweeptrigger"]) then
-		self:DebugMessage("sweep dmg")
-		self:Sync(syncName.sweep)
-	end
-	if string.find(msg, L["sandblasttrigger"]) then
-		self:Sync(syncName.sandblast)
-	end
-	if string.find(msg, L["popcorn_trigger"]) and self.db.profile.popcorn then
-		self:Popcorn()
-	end
 end
 
-
-function module:Popcorn()
-	if self.db.profile.bigicon then
-		self:WarningSign(icon.popcorn, 0.7)
-	end
-	if self.db.profile.sounds then
-		self:Sound("Info")
-	end
-end
 
 function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.sweep and self.db.profile.sweep then
 		self:Sweep()
-	elseif sync == syncName.sandblast and self.db.profile.sandblast then
-		self:Sandblast()
-	elseif sync == syncName.emerge then
+	elseif sync == syncName.sandBlast and self.db.profile.sandblast then
+		self:SandBlast()
+	elseif sync == syncName.emerge and phase ~= "berserk" then
 		self:Emerge()
 	elseif sync == syncName.submerge then
 		self:Submerge()
@@ -341,150 +240,103 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 	end
 end
 
+
 function module:Sweep()
-	if self.db.profile.sweep then
-		self:RemoveBar(L["sweepbartext"]) -- remove timer bar
-		self:Bar(L["sweepannounce"], timer.sweep, icon.sweep, true, "Blue") -- show cast bar
-		self:Message(L["sweepannounce"], "Important", true, "Alarm")
-		self:DelayedMessage(timer.sweepInterval - 5, L["sweepwarn"], "Important", nil, nil, true)
-		self:DelayedBar(timer.sweep, L["sweepbartext"], timer.sweepInterval-timer.sweep, icon.sweep, true, "Blue") -- delayed timer bar
-		if self.db.profile.bigicon then
-			self:DelayedWarningSign(timer.sweepInterval - 5, icon.sweep, 0.7)
-		end
-	end
+	self:RemoveBar(L["bar_sweepCd"])
+	
+	self:Bar(L["bar_sweepCast"], timer.sweepCast, icon.sweep, true, color.sweep)
+	self:Message(L["msg_sweep"], "Important", false, nil, false)
+	self:Sound("Alarm")
+	
+	self:DelayedBar(timer.sweepCast, L["bar_sweepCd"], timer.sweepCd - timer.sweepCast, icon.sweep, true, color.sweep)
+	self:DelayedWarningSign(timer.sweepCast + timer.sweepCd - timer.sweepCast - 3, icon.sweep, 0.7)
 end
 
-function module:Sandblast()
-	if self.db.profile.sandblast then
-		self:RemoveBar(L["sandblastbartext"]) -- remove timer bar
-		self:Bar(L["sandblastannounce"], timer.sandblast, icon.sandblast, true, "Red") -- show cast bar
-		self:Message(L["sandblastannounce"], "Important", true, "Alert")
-		self:DelayedMessage(timer.earliestSandblastInterval - 5, L["sandblastwarn"], "Important", nil, nil, true)
-		self:DelayedIntervalBar(timer.sandblast, L["sandblastbartext"], timer.earliestSandblastInterval-timer.sandblast, timer.latestSandblastInterval-timer.sandblast, icon.sandblast, true, "Red") -- delayed timer bar
-	end
+function module:SandBlast()
+	self:RemoveBar(L["bar_sandBlastCd"])
+	
+	self:Bar(L["bar_sandBlastCast"], timer.sandBlastCast, icon.sandBlast, true, color.sandBlast)
+	self:Message(L["msg_sandBlast"], "Important", false, nil, false)
+	self:Sound("Alert")
+	
+	self:DelayedIntervalBar(timer.sandBlastCast, L["bar_sandBlastCd"], timer.sandBlastCd[1] - timer.sandBlastCast, timer.sandBlastCd[2] - timer.sandBlastCast, icon.sandBlast, true, color.sandBlast)
 end
 
-function module:DoSubmergeCheck()
-	if self:IsOuroVisible() then
-		self:ScheduleRepeatingEvent("bwourosubmergecheck", self.SubmergeCheck, 0.5, self)
-	end
+function module:Popcorn()
+	self:WarningSign(icon.popcorn, 0.7)
+	self:Sound("Info")
 end
 
 function module:Emerge()
-	if self.phase ~= "berserk" then
-		self.phase = "emerged"
-		self:DebugMessage("emerged module")
-		self:CancelScheduledEvent("bwourosubmergecheck")
-		self:ScheduleEvent("bwourosubmergecheck", self.DoSubmergeCheck, 5, self)
-
-		self:CancelScheduledEvent("bwsubmergewarn")
-		self:RemoveBar(L["submergebartext"])
-
-		if self.db.profile.emerge then
-			self:Message(L["emergeannounce"], "Important", false, "Beware")
-			self:PossibleSubmerge()
-		end
-
-		if self.db.profile.sweep then
-			self:DelayedMessage(timer.sweepInterval - 5, L["sweepwarn"], "Important", nil, nil, true)
-			self:Bar(L["sweepbartext"], timer.sweepInterval, icon.sweep, true, "Blue")
-			if self.db.profile.bigicon then
-				self:DelayedWarningSign(timer.sweepInterval - 5, icon.sweep, 0.7)
-			end
-		end
-
-		if self.db.profile.sandblast then
-			self:DelayedMessage(timer.earliestSandblastInterval - 5, L["sandblastwarn"], "Important", nil, nil, true)
-			self:IntervalBar(L["sandblastbartext"], timer.earliestSandblastInterval, timer.latestSandblastInterval, icon.sandblast, true, "Red")
-		end
-	end
-end
-
-function module:Submerge()
-	self:CancelDelayedWarningSign(icon.sweep)
+	phase = "emerged"
 	
-	self:CancelDelayedMessage(L["sweepwarn"])
-	self:CancelDelayedMessage(L["sandblastwarn"])
-	self:CancelDelayedMessage(L["emergewarn"])
+	self:CancelScheduledEvent("OuroSubmergeCheck")
+	self:ScheduleEvent("OuroSubmergeCheck", self.StartSubmergeCheck, 5, self)
 
-	self:RemoveBar(L["sweepbartext"])
-	self:RemoveBar(L["sandblastbartext"])
-	self:RemoveBar(L["emergebartext"])
-	self:RemoveBar(L["possible_submerge_bar"])
+	self:CancelDelayedMessage("msg_collapse")
+	self:RemoveBar(L["bar_submergeDuration"])
 
-	self.phase = "submerged"
-
-	if self.db.profile.submerge then
-		self:Message(L["submergeannounce"], "Important")
-		self:ScheduleEvent("bwsubmergewarn", "BigWigs_Message", timer.nextEmerge - 5, L["submergewarn"], "Important" )
-		self:Bar(L["submergebartext"], timer.nextEmerge, icon.submerge, true, "White")
-		if self.db.profile.bigicon then
-			self:DelayedWarningSign(timer.nextEmerge-10, icon.collapse, 0.7)
-		end
+	if self.db.profile.sweep then
+		self:Bar(L["bar_sweepCd"], timer.sweepCd, icon.sweep, true, color.sweep)
+		self:DelayedWarningSign(timer.sweepCd - 3, icon.sweep, 0.7)
 	end
-end
 
-function module:Berserk()
-	self.phase = "berserk"
-
-	self:CancelDelayedMessage(L["emergewarn"])
-	self:RemoveBar(L["emergebartext"])
-	self:RemoveBar(L["possible_submerge_bar"])
-	self:CancelDelayedWarningSign(icon.submerge)
-	self:CancelDelayedSound("RunAway")
+	if self.db.profile.sandblast then
+		self:IntervalBar(L["bar_sandBlastCd"], timer.sandBlastCd[1], timer.sandBlastCd[2], icon.sandBlast, true, color.sandBlast)
+	end
 	
-	if self.db.profile.berserk then
-		self:Message(L["berserkannounce"], "Important", true, "Beware")
-		if self.db.profile.bigicon then
-			self:WarningSign(icon.enrage, 0.7)
-		end
+	if self.db.profile.emerge then
+		self:Message(L["msg_emerge"], "Important", false, nil, false)
+		self:Sound("Beware")
+		self:PossibleSubmerge()
 	end
 end
 
 function module:PossibleSubmerge()
+	self:Bar(L["bar_submergePossible"], timer.nextSubmerge, icon.submerge, true, color.submerge)
+	self:DelayedWarningSign(timer.nextSubmerge - 3, icon.submerge, 0.7)
+	self:DelayedSound(timer.nextSubmerge - 3, "RunAway")
+end
+
+function module:Submerge()
+	phase = "submerged"
+	
+	self:CancelDelayedWarningSign(icon.sweep)
+
+	self:RemoveBar(L["bar_sweepCd"])
+	self:RemoveBar(L["bar_sandBlastCd"])
+	self:RemoveBar(L["bar_submergePossible"])
+
 	if self.db.profile.emerge then
-		self:DelayedMessage(timer.nextSubmerge -15, L["emergewarn"], "Important", nil, nil, true)
-		self:Bar(L["possible_submerge_bar"], timer.nextSubmerge, icon.submerge, true, "White")
-		if self.db.profile.bigicon then
-			self:DelayedWarningSign(timer.nextSubmerge-8, icon.submerge, 0.7)
-		end
-		if self.db.profile.sounds then
-			self:DelayedSound(timer.nextSubmerge-8, "RunAway")
-		end
+		self:Bar(L["bar_submergeDuration"], timer.nextEmerge, icon.submerge, true, color.submerge)
+		self:Message(L["msg_submerge"], "Important", false, nil, false)
+		self:Sound("RunAway")
+		
+		self:DelayedWarningSign(timer.nextEmerge - 10, icon.collapse, 0.7)
+		self:DelayedMessage(timer.nextEmerge - 10, L["msg_collapse"], "Urgent", false, nil, false)
 	end
 end
 
-function module:SubmergeCheck()
-	if self.phase == "emerged" then
-		if not UnitIsDeadOrGhost("player") and not self:IsOuroVisible() then
-			self:DebugMessage("OuroSubmerge")
-			self:Sync(syncName.submerge)
-		end
+function module:Berserk()
+	phase = "berserk"
+	
+	self:CancelScheduledEvent("OuroSubmergeCheck")
+	
+	self:RemoveBar(L["bar_submergePossible"])
+	self:CancelDelayedWarningSign(icon.submerge)
+	self:CancelDelayedSound("RunAway")
+	
+	if self.db.profile.berserk then
+		self:Message(L["msg_berserk"], "Urgent", false, nil, false)
+		self:Sound("Beware")
+		self:WarningSign(icon.enrage, 0.7)
+	end
+	if self.db.profile.popcorn then
+		self:BerserkPopcorn()
+		self:ScheduleRepeatingEvent("OuroBerserkPopcorn", self.BerserkPopcorn, timer.berserkPopcorn, self)
 	end
 end
 
-function module:EngageCheck()
-	if not self.engaged then
-		if self:IsOuroVisible() then
-			module:CancelScheduledEvent("bwouroengagecheck")
-
-			module:SendEngageSync()
-		end
-	else
-		module:CancelScheduledEvent("bwouroengagecheck")
-	end
-end
-
-function module:IsOuroVisible()
-	if UnitName("playertarget") == self.translatedName then
-		return true
-	else
-		for i = 1, GetNumRaidMembers(), 1 do
-			if UnitName("Raid"..i.."target") == self.translatedName then
-				return true
-			end
-		end
-	end
-
-	return false
+function module:BerserkPopcorn()
+	self:Bar(L["bar_berserkPopcorn"], timer.berserkPopcorn, icon.popcorn, true, color.popcorn)
 end

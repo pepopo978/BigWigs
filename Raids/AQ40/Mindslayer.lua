@@ -1,9 +1,13 @@
+
 local module, L = BigWigs:ModuleDeclaration("Qiraji Mindslayer", "Ahn'Qiraj")
 
-module.revision = 20046
+module.revision = 30067
 module.enabletrigger = module.translatedName
-module.toggleoptions = {"mc", "mindflay"}
+module.toggleoptions = {"mc", "mindflay", "disorient"}
 module.trashMod = true
+module.defaultDB = {
+	bosskill = false,
+}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Mindslayer",
@@ -15,157 +19,199 @@ L:RegisterTranslations("enUS", function() return {
 	mindflay_cmd = "mindflay",
 	mindflay_name = "Mind Flay Alert",
 	mindflay_desc = "Warn for Mind Flay",
-
-	mcplayer = "You are afflicted by Cause Insanity",
-	mcplayerother = "(.*) is afflicted by Cause Insanity",
-	mcplayeryouend = "Cause Insanity fades from you.",
-	mcplayerotherend = "Cause Insanity fades from (.*).",
-	mcplayer_message = "You are mindcontrolled!",
-	mcplayerother_message = "%s is mindcontrolled!",
-	mindcontrol_bar = "MC: %s",
-	deathyou_trigger = "You die.",
-    deathother_trigger = "(.*) dies.",
-
-	mindflayplayer = "You are afflicted by Mind Flay",
-	mindflayplayerother = "(.*) is afflicted by Mind Flay",
-	mindflayplayeryouend = "Mind Flay fades from you.",
-	mindflayplayerotherend = "Mind Flay fades from (.*).",
-	mindflayplayer_message = "You are Mind Flayed!",
-	mindflayplayerother_message = "%s is Mind Flayed!",
-	mindflay_bar = "Mind Flay: %s",
 	
-	mobdead = "Qiraji Mindslayer dies",
+	disorient_cmd = "disorient",
+	disorient_name = "Mana Burn Disorient Alert",
+	disorient_desc = "Warn for Mana Burn Disorient",
+	
+	
+	trigger_mcYou = "You are afflicted by Cause Insanity.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_mcOther = "(.+) is afflicted by Cause Insanity.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
+	trigger_mcFade = "Cause Insanity fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_mc = " MC",
+	msg_mc = "MC on ",
+
+	trigger_mindFlayYou = "You are afflicted by Mind Flay.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_mindFlayOther = "(.*) is afflicted by Mind Flay.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
+	trigger_mindFlayFade = "Mind Flay fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_mindFlay = " Mind Flay",
+	
+	trigger_disorient = "afflicted by Mana Burn.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
+	bar_disorient = "Mana Burn & Disorient",
+	msg_disorientSoon = "Qiraji Mindslayer < 20% HP - 30 Yards Mana Burn & Disorient Soon!",
 } end )
 
 local timer = {
 	mc = 9.5,
-	mindflay = 8,
+	mindFlay = 8,
+	disorient = 8,
 }
-
 local icon = {
 	mc = "Spell_Shadow_Charm",
-	mindflay = "spell_shadow_siphonmana",
+	mindFlay = "spell_shadow_siphonmana",
+	disorient = "spell_shadow_manaburn",
 }
-
+local color = {
+	mc = "Red",
+	mindFlay = "Black",
+	disorient = "Cyan",
+}
 local syncName = {
 	mc = "MindslayerMC"..module.revision,
-	mcOver = "MindslayerMCEnd"..module.revision,
-	mindflay = "Mindslayermindflay"..module.revision,
-	mindflayOver = "MindslayermindflayEnd"..module.revision,
+	mcFade = "MindslayerMCEnd"..module.revision,
+	mindFlay = "MindslayerMindFlay"..module.revision,
+	mindFlayFade = "MindslayerMindFlayEnd"..module.revision,
+	disorient = "MindslayerDisorient"..module.revision,
+	disorientSoon = "MindslayerDisorientSoon"..module.revision,
 }
 
+local disorientSoonCheck = nil
+
 function module:OnEnable()
+	if self.core:IsModuleActive("Qiraji Brainwasher", "Ahn'Qiraj") then self.core:DisableModule("Qiraji Brainwasher", "Ahn'Qiraj") end
+	if self.core:IsModuleActive("The Prophet Skeram", "Ahn'Qiraj") then self.core:DisableModule("The Prophet Skeram", "Ahn'Qiraj") end
+	
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event") --debug
+	
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event")
+	
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")
+	
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE", "Event")
+	
 	self:RegisterEvent("UNIT_HEALTH")
-	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH", "Event")
+	
+	
+	self:ThrottleSync(1, syncName.mc)
+	self:ThrottleSync(1, syncName.mcFade)
+	self:ThrottleSync(1, syncName.mindFlay)
+	self:ThrottleSync(1, syncName.mindFlayFade)
+	self:ThrottleSync(1, syncName.disorient)
+	self:ThrottleSync(5, syncName.disorientSoon)
 end
 
 function module:OnSetup()
 	self.started = nil
+	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH", "Event")
 end
 
 function module:OnEngage()
-	diesoon = false
+	disorientSoonCheck = true
 end
 
 function module:OnDisengage()
-end
-
-
-function module:Event(msg)
-	local _,_, mindcontrolother, mctype = string.find(msg, L["mcplayerother"])
-	local _,_, mindcontrolotherend, mctype = string.find(msg, L["mcplayerotherend"])
-	local _,_, mindcontrolotherdeath,mctype = string.find(msg, L["deathother_trigger"])
-		
-	if string.find(msg, L["mcplayer"]) then
-		self:Sync(syncName.mc .. " " .. UnitName("player"))
-	elseif string.find(msg, L["mcplayeryouend"]) then
-		self:Sync(syncName.mcOver .. " " .. UnitName("player"))
-	elseif string.find(msg, L["deathyou_trigger"]) then
-		self:Sync(syncName.mcOver .. " " .. UnitName("player"))
-	elseif mindcontrolother then
-		self:Sync(syncName.mc .. " " .. mindcontrolother)
-	elseif mindcontrolotherend then
-		self:Sync(syncName.mcOver .. " " .. mindcontrolotherend)
-	elseif mindcontrolotherdeath then
-		self:Sync(syncName.mcOver .. " " .. mindcontrolotherdeath)
-	end
-
-	local _,_, mindflayother, mctype = string.find(msg, L["mindflayplayerother"])
-	local _,_, mindflayotherend, mctype = string.find(msg, L["mindflayplayerotherend"])
-	local _,_, mindflayotherdeath,mctype = string.find(msg, L["deathother_trigger"])
-		
-	if string.find(msg, L["mindflayplayer"]) then
-		self:Sync(syncName.mindflay .. " " .. UnitName("player"))
-	elseif string.find(msg, L["mindflayplayeryouend"]) then
-		self:Sync(syncName.mindflayOver .. " " .. UnitName("player"))
-	elseif string.find(msg, L["deathyou_trigger"]) then
-		self:Sync(syncName.mindflayOver .. " " .. UnitName("player"))
-	elseif mindflayother then
-		self:Sync(syncName.mindflay .. " " .. mindflayother)
-	elseif mindflayotherend then
-		self:Sync(syncName.mindflayOver .. " " .. mindflayotherend)
-	elseif mindflayotherdeath then
-		self:Sync(syncName.mindflayOver .. " " .. mindflayotherdeath)
-	end
-	if string.find(msg, L["mobdead"]) then
-		diesoon = false
-	end
+	disorientSoonCheck = true
 end
 
 function module:UNIT_HEALTH(msg)
-	if UnitName(msg) == self.translatedName then
-		if UnitHealthMax(msg) == 100 then
-			if  UnitHealth(msg) < 15 and not diesoon then
-				if GetRaidTargetIndex("target")==nil then mobicon = "NoIcon"; end
-				if GetRaidTargetIndex("target")==1 then mobicon = "Star"; end
-				if GetRaidTargetIndex("target")==2 then mobicon = "Circle"; end
-				if GetRaidTargetIndex("target")==3 then mobicon = "Diamond"; end
-				if GetRaidTargetIndex("target")==4 then mobicon = "Triangle"; end
-				if GetRaidTargetIndex("target")==5 then mobicon = "Moon"; end
-				if GetRaidTargetIndex("target")==6 then mobicon = "Square"; end
-				if GetRaidTargetIndex("target")==7 then mobicon = "Cross"; end
-				if GetRaidTargetIndex("target")==8 then mobicon = "Skull"; end
-				self:Message(mobicon.." dies soon, max range!", "Urgent")
-				self:Sound("Alarm")
-				diesoon = true
-				self:UnregisterEvent("UNIT_HEALTH")
+	if UnitName(msg) == self.translatedName and disorientSoonCheck == true then
+		local healthPct = UnitHealth(msg) * 100 / UnitHealthMax(msg)
+		if healthPct < 20 then
+			self:Sync(syncName.disorientSoon)
+		end
+	end
+end
+
+function module:Event(msg)
+	if msg == L["trigger_mcYou"] then
+		self:Sync(syncName.mc .. " " .. UnitName("player"))
+	elseif string.find(msg, L["trigger_mcOther"]) then
+		local _,_, mcPlayer, _ = string.find(msg, L["trigger_mcOther"])
+		self:Sync(syncName.mc .. " " .. mcPlayer)
+	elseif string.find(msg, L["trigger_mcFade"]) then
+		local _,_, mcFadePlayer, _ = string.find(msg, L["trigger_mcFade"])
+		if mcFadePlayer == "you" then mcFadePlayer = UnitName("Player") end
+		self:Sync(syncName.mcFade .. " " .. mcFadePlayer)
+	
+	elseif msg == L["trigger_mindFlayYou"] then
+		self:Sync(syncName.mindFlay .. " " .. UnitName("player"))
+	elseif string.find(msg, L["trigger_mindFlayOther"]) then
+		local _,_, mindFlayPlayer, _ = string.find(msg, L["trigger_mindFlayOther"])
+		self:Sync(syncName.mindFlay .. " " .. mindFlayPlayer)
+	elseif string.find(msg, L["trigger_mindFlayFade"]) then
+		local _,_, mindFlayFadePlayer, _ = string.find(msg, L["trigger_mindFlayFade"])
+		if mindFlayFadePlayer == "you" then mindFlayFadePlayer = UnitName("Player") end
+		self:Sync(syncName.mindFlayFade .. " " .. mindFlayFadePlayer)
+
+	elseif string.find(msg, L["trigger_disorient"]) then
+		self:Sync(syncName.disorient)
+	end
+end
+
+
+function module:BigWigs_RecvSync(sync, rest, nick)
+	if sync == syncName.mc and rest and self.db.profile.mc then
+		self:Mc(rest)
+	elseif sync == syncName.mcFade and rest and self.db.profile.mc then
+		self:McFade(rest)
+		
+	elseif sync == syncName.mindFlay and rest and self.db.profile.mindflay then
+		self:MindFlay(rest)
+	elseif sync == syncName.mindFlayFade and rest and self.db.profile.mindflay then
+		self:MindFlayFade(rest)
+		
+	elseif sync == syncName.disorient and self.db.profile.disorient then
+		self:Disorient()
+	elseif sync == syncName.disorientSoon and self.db.profile.disorient then
+		self:DisorientSoon()
+	end
+end
+
+
+function module:Mc(rest)
+	self:Bar(rest..L["bar_mc"].." >Click Me<", timer.mc, icon.mc, true, color.mc)
+	self:SetCandyBarOnClick("BigWigsBar "..rest..L["bar_mc"].. " >Click Me<", function(name, button, extra) TargetByName(extra, true) end, rest)
+	self:Message(L["msg_mc"], "Attention", false, nil, false)
+	
+	if IsRaidLeader() or IsRaidOfficer() then
+		for i=1,GetNumRaidMembers() do
+			if UnitName("raid"..i) == rest then
+				SetRaidTarget("raid"..i, 4)
+			end
+		end
+	end
+	
+	if UnitClass("Player") == "Mage" then
+		self:WarningSign(icon.mc, 1)
+		self:Sound("Info")
+	end
+end
+
+function module:McFade(rest)
+	self:RemoveBar(rest..L["bar_mc"].. " >Click Me<")
+	
+	if IsRaidLeader() or IsRaidOfficer() then
+		for i=1,GetNumRaidMembers() do
+			if UnitName("raid"..i) == rest then
+				SetRaidTargetIcon("raid"..i, 0)
 			end
 		end
 	end
 end
 
-function module:BigWigs_RecvSync(sync, rest, nick)
-	if sync == syncName.mc then
-		if self.db.profile.mc then
-			if rest == UnitName("player") then
-				self:Bar(string.format(L["mindcontrol_bar"], UnitName("player")), timer.mc, icon.mc, true, "red")
-			else
-				self:Bar(string.format(L["mindcontrol_bar"], rest .. " >Click Me!<"), timer.mc, icon.mc, true, "red")
-				self:SetCandyBarOnClick("BigWigsBar "..string.format(L["mindcontrol_bar"], rest .. " >Click Me!<"), function(name, button, extra) TargetByName(extra, true) end, rest)
-			end
-		end
-	elseif sync == syncName.mcOver then
-		if self.db.profile.mc then
-			self:RemoveBar(string.format(L["mindcontrol_bar"], rest .. " >Click Me!<"))
-		end
-	end
+function module:MindFlay(rest)
+	self:Bar(rest..L["bar_mindFlay"], timer.mindFlay, icon.mindFlay, true, color.mindFlay)
+end
 
-	if sync == syncName.mindflay then
-		if self.db.profile.mindflay then
-			if rest == UnitName("player") then
-				self:Bar(string.format(L["mindflay_bar"], UnitName("player")), timer.mindflay, icon.mindflay, true, "black")
-			else
-				self:Bar(string.format(L["mindflay_bar"], rest), timer.mindflay, icon.mindflay, true, "black")
-			end
-		end
-	elseif sync == syncName.mindflayOver then
-		if self.db.profile.mindflay then
-			self:RemoveBar(string.format(L["mindflay_bar"], rest))
-		end
-	end
+function module:MindFlayFade(rest)
+	self:RemoveBar(rest..L["bar_mindFlay"])
+end
+
+function module:Disorient()
+	self:Bar(L["bar_disorient"], timer.disorient, icon.disorient, true, color.disorient)
+end
+
+function module:DisorientSoon()
+	disorientSoonCheck = nil
+	
+	self:Message(L["msg_disorientSoon"], "Urgent", false, nil, false)
+	self:ScheduleEvent("EnableDisorientSoonCheck", self.EnableDisorientSoonCheck, 5, self)
+end
+
+function module:EnableDisorientSoonCheck()
+	disorientSoonCheck = true
 end
