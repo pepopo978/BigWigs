@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Battleguard Sartura", "Ahn'Qiraj")
 
-module.revision = 30067
+module.revision = 30068
 module.enabletrigger = module.translatedName
 module.wipemobs = {"Sartura's Royal Guard"}
 module.toggleoptions = {"whirlwind", "adds", "enrage", "berserk", "bosskill"}
@@ -80,7 +80,7 @@ module:RegisterYellEngage(L["trigger_engage"])
 function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
 	
-	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")
+	--self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")
 	
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event")
 	
@@ -172,7 +172,7 @@ end
 function module:WhirlwindFade()
 	self:RemoveBar(L["bar_whirlwind"])
 	
-	self:IntervalBar(timer.whirlwindDur, L["bar_whirlwindCd"], timer.whirlwindCd[1], timer.whirlwindCd[2], icon.whirlwind, true, color.whirlwindCd)
+	self:DelayedIntervalBar(timer.whirlwindDur, L["bar_whirlwindCd"], timer.whirlwindCd[1], timer.whirlwindCd[2], icon.whirlwind, true, color.whirlwindCd)
 	self:Message(L["msg_whirlwindFade"], "Attention", false, nil, false)
 end
 
