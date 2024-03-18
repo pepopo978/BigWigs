@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Ouro", "Ahn'Qiraj")
 
-module.revision = 30067
+module.revision = 30068
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"sweep", "sandblast", "popcorn", "emerge", "berserk", -1, "targeticon", "bosskill"}
 
@@ -198,7 +198,7 @@ function module:UNIT_HEALTH(msg)
 				self:Message(L["msg_berserkSoon"], "Important", false, nil, false)
 			end
 			berserkAnnounced = true
-		elseif health > 30 and berserkAnnounced then
+		elseif healthPct > 30 and berserkAnnounced then
 			berserkAnnounced = nil
 		end
 	end
