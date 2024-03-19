@@ -35,10 +35,12 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_mindFlayOther = "(.*) is afflicted by Mind Flay.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
 	trigger_mindFlayFade = "Mind Flay fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 	bar_mindFlay = " Mind Flay",
-	-- You are afflicted by Mana Burn. CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE",
+	
 	trigger_disorient = "afflicted by Mana Burn.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
 	bar_disorient = "Mana Burn & Disorient",
 	msg_disorientSoon = "Qiraji Mindslayer < 20% HP - 30 Yards Mana Burn & Disorient Soon!",
+	
+	["You have slain %s!"] = true,
 } end )
 
 local timer = {
@@ -71,7 +73,7 @@ function module:OnEnable()
 	if self.core:IsModuleActive("Qiraji Brainwasher", "Ahn'Qiraj") then self.core:DisableModule("Qiraji Brainwasher", "Ahn'Qiraj") end
 	if self.core:IsModuleActive("The Prophet Skeram", "Ahn'Qiraj") then self.core:DisableModule("The Prophet Skeram", "Ahn'Qiraj") end
 	
-	self:RegisterEvent("CHAT_MSG_SAY", "Event") --debug
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event") --debug
 	
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event")
@@ -109,7 +111,8 @@ end
 
 function module:CheckForBossDeath(msg)
 	if msg == string.format(UNITDIESOTHER, self:ToString())
-		or msg == string.format(L["You have slain %s!"], self.translatedName) then
+		or msg == string.format(L["You have slain %s!"], self.translatedName)
+		or msg == string.format(L["You have slain %s!"], "Qiraji Champion") then
 		local function IsBossInCombat()
 			local t = module.enabletrigger
 			if not t then return false end
