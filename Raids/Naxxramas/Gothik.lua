@@ -5,7 +5,7 @@ local __tinsert = table.insert
 
 local module, L = BigWigs:ModuleDeclaration("Gothik the Harvester", "Naxxramas")
 
-module.revision = 30055
+module.revision = 30068
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"room", -1, "add", "adddeath", "bosskill"}
 
@@ -159,6 +159,8 @@ function module:OnSetup()
 end
 
 function module:OnEngage()
+	if self.core:IsModuleActive("Deathknight Cavalier", "Naxxramas") then self.core:DisableModule("Deathknight Cavalier", "Naxxramas") end
+	
 	if self.db.profile.room then
 		self:Message(L["startwarn"], "Important", false, nil, false)
 		self:Bar(L["inroombartext"], timer.inroom, icon.inroom, true, "White")

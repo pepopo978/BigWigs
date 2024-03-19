@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Qiraji Mindslayer", "Ahn'Qiraj")
 
-module.revision = 30067
+module.revision = 30068
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"mc", "mindflay", "disorient"}
 module.trashMod = true
@@ -35,7 +35,7 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_mindFlayOther = "(.*) is afflicted by Mind Flay.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
 	trigger_mindFlayFade = "Mind Flay fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 	bar_mindFlay = " Mind Flay",
-	
+	-- You are afflicted by Mana Burn. CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE",
 	trigger_disorient = "afflicted by Mana Burn.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
 	bar_disorient = "Mana Burn & Disorient",
 	msg_disorientSoon = "Qiraji Mindslayer < 20% HP - 30 Yards Mana Burn & Disorient Soon!",
@@ -71,7 +71,7 @@ function module:OnEnable()
 	if self.core:IsModuleActive("Qiraji Brainwasher", "Ahn'Qiraj") then self.core:DisableModule("Qiraji Brainwasher", "Ahn'Qiraj") end
 	if self.core:IsModuleActive("The Prophet Skeram", "Ahn'Qiraj") then self.core:DisableModule("The Prophet Skeram", "Ahn'Qiraj") end
 	
-	--self:RegisterEvent("CHAT_MSG_SAY", "Event") --debug
+	self:RegisterEvent("CHAT_MSG_SAY", "Event") --debug
 	
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event")
@@ -105,6 +105,44 @@ end
 
 function module:OnDisengage()
 	disorientSoonCheck = true
+end
+
+function module:CheckForBossDeath(msg)
+	if msg == string.format(UNITDIESOTHER, self:ToString())
+		or msg == string.format(L["You have slain %s!"], self.translatedName) then
+		local function IsBossInCombat()
+			local t = module.enabletrigger
+			if not t then return false end
+			if type(t) == "string" then t = {t} end
+
+			if UnitExists("Target") and UnitAffectingCombat("Target") then
+				local target = UnitName("Target")
+				for _, mob in pairs(t) do
+					if target == mob then
+						return true
+					end
+				end
+			end
+
+			local num = GetNumRaidMembers()
+			for i = 1, num do
+				local raidUnit = string.format("raid%starget", i)
+				if UnitExists(raidUnit) and UnitAffectingCombat(raidUnit) then
+					local target = UnitName(raidUnit)
+					for _, mob in pairs(t) do
+						if target == mob then
+							return true
+						end
+					end
+				end
+			end
+			return false
+		end
+
+		if not IsBossInCombat() then
+			self:SendBossDeathSync()
+		end
+	end
 end
 
 function module:UNIT_HEALTH(msg)
@@ -165,7 +203,7 @@ end
 function module:Mc(rest)
 	self:Bar(rest..L["bar_mc"].." >Click Me<", timer.mc, icon.mc, true, color.mc)
 	self:SetCandyBarOnClick("BigWigsBar "..rest..L["bar_mc"].. " >Click Me<", function(name, button, extra) TargetByName(extra, true) end, rest)
-	self:Message(L["msg_mc"], "Attention", false, nil, false)
+	self:Message(L["msg_mc"]..rest, "Attention", false, nil, false)
 	
 	if IsRaidLeader() or IsRaidOfficer() then
 		for i=1,GetNumRaidMembers() do
