@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Gluth", "Naxxramas")
 
-module.revision = 30067
+module.revision = 30069
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"frenzy", "fear", "decimate", "enrage", "zombies", "wound", -1, "bosskill"}
 
@@ -68,7 +68,7 @@ local timer = {
 	firstfear = 20,
 	fear = 15,
 	frenzy = 10,
-	wound = 30,
+	wound = 15,
 }
 local icon = {
 	zombie = "Ability_Seal",

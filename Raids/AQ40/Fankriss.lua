@@ -94,7 +94,6 @@ function module:Event(msg)
 		local _,_,woundPlayer,woundQty = string.find(msg, L["trigger_woundOther"])
 		local woundPlayerAndWoundQty = woundPlayer .. " " .. woundQty
 		self:Sync(syncName.wound.." "..woundPlayerAndWoundQty)
-
 	end
 end
 

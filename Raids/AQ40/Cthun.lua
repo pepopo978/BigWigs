@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("C'Thun", "Ahn'Qiraj")
 
-module.revision = 30067
+module.revision = 30069
 local eyeofcthun = AceLibrary("Babble-Boss-2.2")["Eye of C'Thun"]
 local cthun = AceLibrary("Babble-Boss-2.2")["C'Thun"]
 module.enabletrigger = {eyeofcthun, cthun}
@@ -172,6 +172,8 @@ function module:OnRegister()
 end
 
 function module:OnEnable()
+	if self.core:IsModuleActive("Qiraji Mindslayer", "Ahn'Qiraj") then self.core:DisableModule("Qiraji Mindslayer", "Ahn'Qiraj") end
+	
 	--self:RegisterEvent("CHAT_MSG_SAY")--Debug
 	
 	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE", "Emote")

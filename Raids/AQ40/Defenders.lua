@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Anubisath Defender", "Ahn'Qiraj")
 
-module.revision = 30067
+module.revision = 30069
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"reflect", "plague", "icon", "thunderclap", "shadowstorm", "meteor", -1, "explode", "enrage"}
 module.trashMod = true
@@ -69,15 +69,15 @@ L:RegisterTranslations("enUS", function() return {
 	msg_plague = "Plague on ",
 	
 	trigger_thunderClap = "Anubisath Defender's Thunderclap hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
-	bar_thunderClap = "Thunder Clap CD",
+	bar_thunderClap = "Thunder Clap",
 	msg_thunderClap = "Thunder Clap - Ranged get Out!",
 
 	trigger_shadowStorm = "Anubisath Defender's Shadow Storm hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
-	bar_shadowStorm = "Shadow Storm CD",
+	bar_shadowStorm = "Shadow Storm",
 	msg_shadowStorm = "Shadow Storm - Ranged get In!",
 
 	trigger_meteor = "Anubisath Defender's Meteor hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
-	bar_meteor = "Meteor CD",
+	bar_meteor = "Meteor",
 	msg_meteor = "Meteor!",
 	
 	trigger_explode = "Anubisath Defender gains Explode.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
