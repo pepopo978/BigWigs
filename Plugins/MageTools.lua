@@ -722,7 +722,7 @@ function BigWigsMageTools:IgniteEvent(msg)
 	else
 		-- check for ignite crits
 		local _, _, spellName, critTarget = string.find(msg, L["ignite_crit_test"])
-		if critTarget and self.IsMageFireSpell(spellName) then
+		if critTarget and self:IsMageFireSpell(spellName) then
 			self:Debug(msg)
 			local timeleft = self:GetTargetIgniteTimeLeft(critTarget)
 			if not self.igniteStacks[critTarget] then
@@ -1522,4 +1522,64 @@ function BigWigsMageTools:Test()
 		end
 	end
 
+end
+
+function BigWigsMageTools:Test2()
+	events = {
+		"Relkag 's Scorch crits Heroic Training Dummy for 888 Fire damage.",
+		"Relkag gains 45 Mana from Relkag 's Master of Elements.",
+		"Heroic Training Dummy is afflicted by Ignite (1).",
+		"Heroic Training Dummy is afflicted by Fire Vulnerability (1).",
+		"Pepopo 's Scorch hits Heroic Training Dummy for 640 Fire damage.",
+		"Pepopo 's Fire Vulnerability was resisted by Heroic Training Dummy.",
+		"Heroic Training Dummy suffers 187 Fire damage from Relkag 's Ignite.",
+		"Pepopo 's Scorch hits Heroic Training Dummy for 667 Fire damage.",
+		"Heroic Training Dummy is afflicted by Fire Vulnerability (2).",
+		"Rootankman gains 1 Rage from Rootankman 's Bloodrage.",
+		"Moeney 's Scorch hits Heroic Training Dummy for 468 Fire damage.",
+		"Relkag 's Scorch crits Heroic Training Dummy for 1003 Fire damage.",
+		"Heroic Training Dummy is afflicted by Fire Vulnerability (4).",
+		"Relkag gains 45 Mana from Relkag 's Master of Elements.",
+		"Heroic Training Dummy is afflicted by Ignite (2).",
+		"Heroic Training Dummy is afflicted by Fire Vulnerability (5).",
+		"Heroic Training Dummy suffers 433 Fire damage from Relkag 's Ignite.",
+		"Pepopo 's Scorch was resisted by Heroic Training Dummy.",
+		"Moeney 's Scorch crits Heroic Training Dummy for 706 Fire damage.",
+		"Heroic Training Dummy is afflicted by Shadow Vulnerability (1).",
+		"Heroic Training Dummy is afflicted by Ignite (3).",
+		"Moeney begins to cast Scorch.",
+		"Heroic Training Dummy suffers 595 Fire damage from Relkag 's Ignite.",
+		"Moeney 's Scorch crits Heroic Training Dummy for 750 Fire damage.",
+		"Heroic Training Dummy is afflicted by Ignite (4).",
+		"Pepopo 's Fireball hits Heroic Training Dummy for 886 Fire damage. (886 resisted)",
+		"Luckystrikes gains 1 Rage from Luckystrikes 's Bloodrage.",
+		"Heroic Training Dummy is afflicted by Fireball (1).",
+		"Relkag 's Fireball crits Heroic Training Dummy for 2680 Fire damage.",
+		"Relkag gains 123 Mana from Relkag 's Master of Elements.",
+		"Luckystrikes gains 1 Rage from Luckystrikes 's Bloodrage.",
+		"Heroic Training Dummy gains Fireball (1).",
+		"Heroic Training Dummy is afflicted by Ignite (5).",
+		"Heroic Training Dummy suffers 1384 Fire damage from Relkag 's Ignite.",
+		"Dewbie 's Bloodthirst hits Heroic Training Dummy for 855.",
+		"Dewbie gains Bloodthirst (1).",
+		"Bubbelhearth 's Flash of Light heals Luckystrikes for 854.",
+		"Heroic Training Dummy suffers 21 Fire damage from Pepopo 's Fireball.",
+		"Pepopo 's Fireball hits Heroic Training Dummy for 1705 Fire damage.",
+		"Heroic Training Dummy suffers 23 Fire damage from Relkag 's Fireball.",
+		"Relkag 's Fireball crits Heroic Training Dummy for 1920 Fire damage. (640 resisted)",
+		"Heroic Training Dummy suffers 1384 Fire damage from Relkag 's Ignite.",
+		"Heroic Training Dummy suffers 1384 Fire damage from Relkag 's Ignite.",
+		"Heroic Training Dummy is afflicted by Fireball (1).",
+		"Relkag 's Fireball crits Heroic Training Dummy for 2434 Fire damage.",
+		"Pepopo 's Fireball crits Heroic Training Dummy for 2428 Fire damage.",
+		"Heroic Training Dummy suffers 1384 Fire damage from Relkag 's Ignite.",
+		"Relkag 's Fireball crits Heroic Training Dummy for 2454 Fire damage.",
+	}
+	local function testEvent(msg)
+		BigWigsMageTools:PlayerDamageEvents(msg)
+	end
+	-- loop through events
+	for i, v in ipairs(events) do
+		self:ScheduleEvent("logtest" .. i, testEvent, 0.4 * i, v)
+	end
 end
