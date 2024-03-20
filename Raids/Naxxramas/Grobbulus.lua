@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Grobbulus", "Naxxramas")
 
-module.revision = 30067
+module.revision = 30071
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"slimespray", "inject", "cloud", "icon",  -1, "enrage", "bosskill"}
 
@@ -138,7 +138,7 @@ function module:UNIT_HEALTH(msg)
 		local healthPct = UnitHealth(msg) * 100 / UnitHealthMax(msg)
 		if healthPct >= 30 and lowHp ~= nil then
 			lowHp = nil
-		elseif health < 30 and lowHp == nil then
+		elseif healthPct < 30 and lowHp == nil then
 			self:Sync(syncName.lowHp)
 		end
 	end
