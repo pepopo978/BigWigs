@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Deathknight Captain", "Naxxramas")
 
-module.revision = 30067
+module.revision = 30071
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"whirlwind"}
 module.trashMod = true
@@ -23,6 +23,8 @@ L:RegisterTranslations("enUS", function() return {
 	bar_whirlwind2 = "Whirlwind 2",
 	bar_whirlwindCd1 = "Whirlwind CD 1",
 	bar_whirlwindCd2 = "Whirlwind CD 2",
+
+	["You have slain %s!"] = true,
 } end )
 
 local timer = {
