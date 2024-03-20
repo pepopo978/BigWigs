@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Azuregos", "Azshara")
 
-module.revision = 30070
+module.revision = 30071
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"chill", "arcanevacuum", "reflection", "selfreflect", "manastorm", "frostbreath", "bosskill"}
 module.zonename = {
@@ -74,6 +74,8 @@ L:RegisterTranslations("enUS", function() return {
 	bar_frostBreathCd = "Frost Breath CD",
 	bar_frostBreathCast = "Casting Frost Breath!",
 	msg_frostBreath = "Frost Breath = Mana Burn... Don't stand in front!",
+
+	["You have slain %s!"] = true,
 } end )
 
 local timer = {
