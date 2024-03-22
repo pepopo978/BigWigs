@@ -537,7 +537,7 @@ BigWigsMageTools.consoleOptions = {
 	}
 }
 
-BigWigsMageTools.revision = 30064
+BigWigsMageTools.revision = 30065
 BigWigsMageTools.external = true
 
 BigWigsMageTools.target = nil
@@ -846,6 +846,9 @@ function BigWigsMageTools:ResyncStacks()
 					self.igniteStacks[target] = tonumber(stacks)
 					foundIgnite = true
 				end
+			else
+				-- once we start getting nil we can break
+				break
 			end
 		end
 		-- if we didn't find it check buffs as well
@@ -858,6 +861,9 @@ function BigWigsMageTools:ResyncStacks()
 					elseif texture == igniteIcon then
 						self.igniteStacks[target] = tonumber(stacks)
 					end
+				else
+					-- once we start getting nil we can break
+					break
 				end
 			end
 		end

@@ -58,7 +58,6 @@ BigWigsThreat.consoleOptions = {
 BigWigsThreat.threatApi = 'TWTv4=';
 BigWigsThreat.UDTS = 'TWT_UDTSv4';
 
-
 BigWigsThreat.prefix = 'TWT'
 BigWigsThreat.channel = ''
 BigWigsThreat.threats = {}
@@ -70,6 +69,11 @@ BigWigsThreat.classesToWatch = {} -- c
 ------------------------------
 
 function BigWigsThreat:OnEnable()
+	BigWigsThreat:StartListening()
+end
+
+function BigWigsThreat:OnDisable()
+	BigWigsThreat:StopListening()
 end
 
 function BigWigsThreat:StartListening()
@@ -149,11 +153,11 @@ function BigWigsThreat:GetPlayerInfo(playerName)
 	local lowerPlayerName = string.lower(playerName)
 	if not self.threats[lowerPlayerName] then
 		return {
-				threat = false,
-				tank = false,
-				perc = false,
-				melee = false,
-			}
+			threat = false,
+			tank = false,
+			perc = false,
+			melee = false,
+		}
 	end
 	return self.threats[lowerPlayerName]
 end
