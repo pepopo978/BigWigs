@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Anubisath Warder", "Ahn'Qiraj")
 
-module.revision = 20044
+module.revision = 30067
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"fear", "silence", "roots", "dust", "warnings"}
 module.trashMod = true
@@ -10,72 +10,73 @@ L:RegisterTranslations("enUS", function() return {
 	cmd = "Warder",
 
 	fear_cmd = "fear",
-	fear_name = "Fear timer",
-	fear_desc = "Shows fear cd",
+	fear_name = "Fear Alert",
+	fear_desc = "Warns for Fear",
 
 	silence_cmd = "silence",
-	silence_name = "Silence timer",
-	silence_desc = "Shows Silence cd",
+	silence_name = "Silence Alert",
+	silence_desc = "Warns for Silence",
 
 	roots_cmd = "roots",
-	roots_name = "Roots timer",
-	roots_desc = "Shows Roots cd",
+	roots_name = "Roots Alert",
+	roots_desc = "Warns for Roots",
 
 	dust_cmd = "dust",
-	dust_name = "Dust Cloud timer",
-	dust_desc = "Shows Dust Cloud cd",
+	dust_name = "Dust Cloud Alert",
+	dust_desc = "Warns for Dust Cloud",
 
 	warnings_cmd = "warnings",
-	warnings_name = "Warning messages ",
-	warnings_desc = "Warning messages showing which 2 abilities current mob has",
+	warnings_name = "Warnings for 2nd Ability",
+	warnings_desc = "Warnings for what the 2nd Ability will be.",
 
-	fearTrigger = "Anubisath Warder begins to cast Fear.",
-	fearWarn = "Fear",
-	fearWarn2 = "(Silence or Dust Cloud)",
-	fearBar = "Fear!",
-	fearBar_next = "Fear CD",
+	
+	trigger_fear = "Anubisath Warder begins to cast Fear.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_fearCast = "Fear!",
+	bar_fearCd = "Fear CD",
 
-	silenceTrigger = "Anubisath Warder begins to cast Silence.",
-	silenceWarn = "Silence",
-	silenceWarn2 = "(Roots or Fear)",
-	silenceBar = "Silence!",
-	silenceBar_next = "Silence CD",
+	trigger_silence = "Anubisath Warder begins to cast Silence.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_silenceCast = "Silence!",
+	bar_silenceCd = "Silence CD",
 
-	rootsTrigger = "Anubisath Warder begins to cast Entangling Roots.",
-	rootsWarn = "Roots",
-	rootsWarn2 = "(Silence or Dust Cloud)",
-	rootsBar = "Roots!",
-	rootsBar_next = "Roots CD",
+	trigger_roots = "Anubisath Warder begins to cast Entangling Roots.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_rootsCast = "Roots!",
+	bar_rootsCd = "Roots CD",
 
-	dustTrigger = "Anubisath Warder begins to perform Dust Cloud.",
-	dustWarn = "Dust Cloud",
-	dustWarn2 = "(Roots or Fear)",
-	dustBar = "Dust Cloud!",
-	dustBar_next = "Dust Cloud CD",
+	trigger_dust = "Anubisath Warder begins to perform Dust Cloud.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_dustCast = "Dust Cloud!",
+	bar_dustCd = "Dust Cloud CD",
+	
+	msg_foundFear = "Fear - Next ability is Silence or Dust", --can't be Roots
+	msg_foundSilence = "Silence - Next ability is Roots or Fear", --can't be Dust
+	msg_foundRoots = "Roots - Next ability is Silence or Dust", --can't be Fear
+	msg_foundDust = "Dust - Next ability is Roots or Fear", --can't be Silence
 } end )
 
 local timer = {
-	earliestFear = 14,
-	latestFear = 19,
+	fearCd = {15,20}, --saw 15.4, 17.2, 20.5
 	fearCast = 1.5,
-	earliestSilence = 14,
-	latestSilence = 19,
+	
+	silenceCd = {11.5,27.2}, --saw 11.5, 27.2
 	silenceCast = 1.5,
-	earliestRoots = 7,
-	latestRoots = 14,
+	
+	rootsCd = {16,16},--saw 16
 	rootsCast = 1.5,
-	earliestDust = 14,
-	latestDust = 19,
+	
+	dustCd = {15,19}, --saw 16.8
 	dustCast = 1.5,
 }
-
 local icon = {
 	fear = "Spell_Shadow_Possession",
 	silence = "Spell_Holy_Silence",
 	roots = "Spell_Nature_StrangleVines",
 	dust = "Ability_Hibernation",
 }
-
+local color = {
+	fear = "Blue",
+	silence = "Red",
+	roots = "Green",
+	dust = "White",
+}
 local syncName = {
 	fear = "WarderFear"..module.revision,
 	silence = "WarderSilence"..module.revision,
@@ -83,88 +84,112 @@ local syncName = {
 	dust = "WarderDust"..module.revision,
 }
 
-local pull = nil
+local firstAbilityFound = nil
 
 function module:OnEnable()
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event") --debug
+	
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event")
 
-	if not warnings then
-		warnings = {
-			["dust"] = {L["dustWarn"], L["dustWarn2"]},
-			["roots"] = {L["rootsWarn"], L["rootsWarn2"]},
-			["fear"] = {L["fearWarn"], L["fearWarn2"]},
-			["silence"] = {L["silenceWarn"], L["silenceWarn2"]},
-		}
-	end
-
-	self:ThrottleSync(6, syncName.fear)
-	self:ThrottleSync(6, syncName.silence)
+	self:ThrottleSync(3, syncName.fear)
+	self:ThrottleSync(3, syncName.silence)
 	self:ThrottleSync(3, syncName.roots)
+	self:ThrottleSync(3, syncName.dust)
 end
 
 function module:OnSetup()
 end
 
 function module:OnEngage()
-	self.ability1 = nil
-	self.ability2 = nil
+	 firstAbilityFound = nil
 end
 
 function module:OnDisengage()
 end
 
 function module:Event(msg)
-	if string.find(msg, L["fearTrigger"]) then
+	if msg == L["trigger_fear"] then
 		self:Sync(syncName.fear)
-	elseif string.find(msg, L["silenceTrigger"]) then
+	
+	elseif msg == L["trigger_silence"] then
 		self:Sync(syncName.silence)
-	elseif string.find(msg, L["rootsTrigger"]) then
+	
+	elseif msg == L["trigger_roots"] then
 		self:Sync(syncName.roots)
-	elseif string.find(msg, L["dustTrigger"]) then
+	
+	elseif msg == L["trigger_dust"] then
 		self:Sync(syncName.dust)
 	end
 end
 
+
 function module:BigWigs_RecvSync( sync, rest, nick )
-	if sync == syncName.fear then
-		if self.db.profile.fear then
-			self:RemoveBar(L["fearBar_next"])
-			self:Bar(L["fearBar"], timer.fearCast, icon.fear, true, "blue")
-			self:DelayedIntervalBar(timer.fearCast, L["fearBar_next"], timer.earliestFear-timer.fearCast, timer.latestFear-timer.fearCast, icon.fear, true, "blue")
-		end
-		self:AbilityWarn("fear")
-	elseif sync == syncName.silence then
-		if self.db.profile.silence then
-			self:RemoveBar(L["silenceBar_next"])
-			self:Bar(L["silenceBar"], timer.silenceCast, icon.silence, true, "red")
-			self:DelayedIntervalBar(timer.silenceCast, L["silenceBar_next"], timer.earliestSilence-timer.silenceCast, timer.latestSilence-timer.silenceCast, icon.silence, true, "red")
-		end
-		self:AbilityWarn("silence")
-	elseif sync == syncName.roots then
-		if self.db.profile.roots then
-			self:RemoveBar(L["rootsBar_next"])
-			self:Bar(L["rootsBar"], timer.rootsCast, icon.roots, true, "Green")
-			self:DelayedIntervalBar(timer.rootsCast, L["rootsBar_next"], timer.earliestRoots-timer.rootsCast, timer.latestRoots-timer.rootsCast, icon.roots, true, "Green")
-		end
-		self:AbilityWarn("roots")
-	elseif sync == syncName.dust then
-		if self.db.profile.dust then
-			self:RemoveBar(L["dustBar_next"])
-			self:Bar(L["dustBar"], timer.dustCast, icon.dust, true, "White")
-			self:DelayedIntervalBar(timer.dustCast, L["dustBar_next"], timer.earliestDust-timer.dustCast, timer.latestDust-timer.dustCast, icon.dust, true, "White")
-		end
-		self:AbilityWarn("dust")
+	if sync == syncName.fear and self.db.profile.fear then
+		self:Fear()
+	elseif sync == syncName.silence and self.db.profile.silence then
+		self:Silence()
+	elseif sync == syncName.roots and self.db.profile.roots then
+		self:Roots()
+	elseif sync == syncName.dust and self.db.profile.dust then
+		self:Dust()
 	end
 end
 
-function module:AbilityWarn( ability )
-	if self.db.profile.warnings then
-		if not self.ability1 then
-			self.ability1 = ability
-			self:Message(string.format("%s + %s",warnings[self.ability1][1], warnings[self.ability1][2]), "Core", nil, "Long")
-		elseif not self.ability2 and ability ~= self.ability1 then
-			self.ability2 = ability
-			self:Message(string.format("%s + %s",warnings[self.ability1][1], warnings[self.ability2][1]), "Core", nil, "Long")
-		end
+
+function module:Fear()
+	self:RemoveBar(L["bar_fearCd"])
+	
+	self:Bar(L["bar_fearCast"], timer.fearCast, icon.fear, true, color.fear)
+	self:DelayedIntervalBar(timer.fearCast, L["bar_fearCd"], timer.fearCd[1] - timer.fearCast, timer.fearCd[2] - timer.fearCast, icon.fear, true, color.fear)
+	
+	if firstAbilityFound == nil and self.db.profile.warnings then
+		self:AbilityWarn("Fear")
+	end
+end
+
+function module:Silence()
+	self:RemoveBar(L["bar_silenceCd"])
+	
+	self:Bar(L["bar_silenceCast"], timer.silenceCast, icon.silence, true, color.silence)
+	self:DelayedIntervalBar(timer.silenceCast, L["bar_silenceCd"], timer.silenceCd[1] - timer.silenceCast, timer.silenceCd[2] - timer.silenceCast, icon.silence, true, color.silence)
+	
+	if firstAbilityFound == nil and self.db.profile.warnings then
+		self:AbilityWarn("Silence")
+	end
+end
+
+function module:Roots()
+	self:RemoveBar(L["bar_rootsCd"])
+	
+	self:Bar(L["bar_rootsCast"], timer.rootsCast, icon.roots, true, color.roots)
+	self:DelayedIntervalBar(timer.rootsCast, L["bar_rootsCd"], timer.rootsCd[1] - timer.rootsCast, timer.rootsCd[2] - timer.rootsCast, icon.roots, true, color.roots)
+	
+	if firstAbilityFound == nil and self.db.profile.warnings then
+		self:AbilityWarn("Roots")
+	end
+end
+
+function module:Dust()
+	self:RemoveBar(L["bar_dustCd"])
+	
+	self:Bar(L["bar_dustCast"], timer.dustCast, icon.dust, true, color.dust)
+	self:DelayedIntervalBar(timer.dustCast, L["bar_dustCd"], timer.dustCd[1] - timer.dustCast, timer.dustCd[2] - timer.dustCast, icon.dust, true, color.dust)
+	
+	if firstAbilityFound == nil and self.db.profile.warnings then
+		self:AbilityWarn("Dust")
+	end
+end
+
+
+function module:AbilityWarn(ability)
+	firstAbilityFound = true
+	if ability == "Fear" then
+		self:Message(L["msg_foundFear"], Important, false, nil, false)
+	elseif ability == "Silence" then
+		self:Message(L["msg_foundSilence"], Important, false, nil, false)
+	elseif ability == "Roots" then
+		self:Message(L["msg_foundRoots"], Important, false, nil, false)
+	elseif ability == "Dust" then
+		self:Message(L["msg_foundDust"], Important, false, nil, false)
 	end
 end

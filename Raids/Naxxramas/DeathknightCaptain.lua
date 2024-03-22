@@ -1,10 +1,13 @@
 
 local module, L = BigWigs:ModuleDeclaration("Deathknight Captain", "Naxxramas")
 
-module.revision = 30011
+module.revision = 30071
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"whirlwind"}
 module.trashMod = true
+module.defaultDB = {
+	bosskill = false,
+}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "deathknightCaptain",
@@ -13,75 +16,103 @@ L:RegisterTranslations("enUS", function() return {
 	whirlwind_name = "Whirlwind Alert",
 	whirlwind_desc = "Warn for Whirlwind",
 	
-	whirlwind_trigger = "Deathknight Captain gains Whirlwind.",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
-	whirlwindEnd_trigger = "Whirlwind fades from Deathknight Captain.",--CHAT_MSG_SPELL_AURA_GONE_OTHER
-	whirlwind_bar1 = "Whirlwind 1",
-	whirlwind_bar2 = "Whirlwind 2",
-	whirlwindCD_bar1 = "Whirlwind CD 1",
-	whirlwindCD_bar2 = "Whirlwind CD 2",
+	
+	trigger_whirlwind = "Deathknight Captain gains Whirlwind.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	trigger_whirlwindFade = "Whirlwind fades from Deathknight Captain.", --CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_whirlwind1 = "Whirlwind 1",
+	bar_whirlwind2 = "Whirlwind 2",
+	bar_whirlwindCd1 = "Whirlwind CD 1",
+	bar_whirlwindCd2 = "Whirlwind CD 2",
+
+	["You have slain %s!"] = true,
 } end )
 
 local timer = {
-	whirlwind = 6,
-	whirlwindCD = 9,
+	whirlwindDur = 6,
+	whirlwindCd = 9,
 }
-
 local icon = {
 	whirlwind = "ability_whirlwind"
 }
-
+local color = {
+	whirlwindDur = "Red",
+	whirlwindCd = "White",
+}
 local syncName = {
 	whirlwind = "DkCapWW"..module.revision,
 	whirlwindEnd = "DkCapWWEnd"..module.revision,
 }
 
-local deathCount = 0
-local _, playerClass = UnitClass("player")
-bwDkCapWwTime = 0
-bwDkCapWwTimeCd = 0
-
+local wwStartTime = 0
+local wwEndTime = 0
 
 function module:OnEnable()
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event")
-
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event") --trigger_whirlwind
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event") --trigger_whirlwindFade
+	
+	
 	self:ThrottleSync(1, syncName.whirlwind)
 	self:ThrottleSync(1, syncName.whirlwindEnd)
 end
 
 function module:OnSetup()
-	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
-	deathCount = 0
+	self.started = nil
 end
 
 function module:OnEngage()
-	bwDkCapWwTime = GetTime() - 8
-	bwDkCapWwTimeCd = GetTime() - 8
-	
-	wwTime = GetTime() - 8
-	wwTimeCD = GetTime() - 8
+	wwStartTime = 0
+	wwEndTime = 0
 end
 
 function module:OnDisengage()
 end
 
-function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
-	if msg == string.format(UNITDIESOTHER, module.translatedName) then
-		deathCount = deathCount + 1
-		if deathCount >= 2 then
-			BigWigs:CheckForBossDeath(msg, self)
+function module:CheckForBossDeath(msg)
+	if msg == string.format(UNITDIESOTHER, self:ToString())
+		or msg == string.format(L["You have slain %s!"], self.translatedName) then
+		local function IsBossInCombat()
+			local t = module.enabletrigger
+			if not t then return false end
+			if type(t) == "string" then t = {t} end
+
+			if UnitExists("Target") and UnitAffectingCombat("Target") then
+				local target = UnitName("Target")
+				for _, mob in pairs(t) do
+					if target == mob then
+						return true
+					end
+				end
+			end
+
+			local num = GetNumRaidMembers()
+			for i = 1, num do
+				local raidUnit = string.format("raid%starget", i)
+				if UnitExists(raidUnit) and UnitAffectingCombat(raidUnit) then
+					local target = UnitName(raidUnit)
+					for _, mob in pairs(t) do
+						if target == mob then
+							return true
+						end
+					end
+				end
+			end
+			return false
+		end
+
+		if not IsBossInCombat() then
+			self:SendBossDeathSync()
 		end
 	end
 end
 
 function module:Event(msg)
-	if string.find(msg, L["whirlwind_trigger"]) then
+	if msg == L["trigger_whirlwind"] then
 		self:Sync(syncName.whirlwind)
-	end
-	if string.find(msg, L["whirlwindEnd_trigger"]) then
+	elseif msg == L["trigger_whirlwindFade"] then
 		self:Sync(syncName.whirlwindEnd)
 	end
 end
+
 
 function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.whirlwind and self.db.profile.whirlwind then
@@ -91,31 +122,26 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 	end
 end
 
+
 function module:Whirlwind()
-	if bwDkCapWwTime == nil then
-		bwDkCapWwTime = GetTime()
-	end
-	if (GetTime() - bwDkCapWwTime) > 8 then
-		self:Bar(L["whirlwind_bar1"], timer.whirlwind, icon.whirlwind, true, "red")
+	if (GetTime() - wwStartTime) > 8 then
+		self:Bar(L["bar_whirlwind1"], timer.whirlwindDur, icon.whirlwind, true, color.whirlwindDur)
 	else
-		self:Bar(L["whirlwind_bar2"], timer.whirlwind, icon.whirlwind, true, "red")
+		self:Bar(L["bar_whirlwind2"], timer.whirlwindDur, icon.whirlwind, true, color.whirlwindDur)
 	end
-	if playerClass == "WARRIOR" or playerClass == "ROGUE" then
-		if UnitName("target") == "Deathknight Captain" then
-			self:WarningSign(icon.whirlwind, 0.7)
-		end
+	
+	if UnitName("Target") == "Deathknight Captain" and (UnitClass("Player") == "Warrior" or UnitClass("Player") == "Rogue" or UnitClass("Player") == "Druid" or UnitClass("Player") == "Paladin") then
+		self:WarningSign(icon.whirlwind, 0.7)
 	end
-	bwDkCapWwTime = GetTime()
+	
+	wwStartTime = GetTime()
 end
 
 function module:WhirlwindEnd()
-	if bwDkCapWwTimeCd == nil then
-		bwDkCapWwTimeCd = GetTime()
-	end
-	if (GetTime() - bwDkCapWwTimeCd) > 8 then
-		self:Bar(L["whirlwindCD_bar1"], timer.whirlwindCD, icon.whirlwind, true, "white")
+	if (GetTime() - wwEndTime) > 8 then
+		self:Bar(L["bar_whirlwindCd1"], timer.whirlwindCd, icon.whirlwind, true, color.whirlwindCd)
 	else
-		self:Bar(L["whirlwindCD_bar2"], timer.whirlwindCD, icon.whirlwind, true, "white")
+		self:Bar(L["bar_whirlwindCd2"], timer.whirlwindCd, icon.whirlwind, true, color.whirlwindCd)
 	end
-	bwDkCapWwTimeCd = GetTime()
+	wwEndTime = GetTime()
 end

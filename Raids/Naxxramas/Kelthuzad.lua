@@ -3,7 +3,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Kel'Thuzad", "Naxxramas")
 
-module.revision = 30065
+module.revision = 30067
 module.enabletrigger = module.translatedName
 module.toggleoptions = {
 	"phase",
@@ -493,11 +493,14 @@ function module:OnDisengage()
 end
 
 function module:MINIMAP_ZONE_CHANGED(msg)
-	if GetMinimapZoneText() ~= "Kel'Thuzad Chamber" or self.core:IsModuleActive(module.translatedName) then
-		return
+	if GetMinimapZoneText() == "Sapphiron's Lair" and self.core:IsModuleActive(module.translatedName) then
+		self.core:DisableModule(module.translatedName)
+	elseif GetMinimapZoneText() == "Plaguewood" and self.core:IsModuleActive(module.translatedName) then
+		self.core:DisableModule(module.translatedName)
+	
+	elseif GetMinimapZoneText() == "Kel'Thuzad Chamber" and not self.core:IsModuleActive(module.translatedName) then
+		self.core:EnableModule(module.translatedName)
 	end
-
-	self.core:EnableModule(module.translatedName)
 end
 
 function module:UNIT_HEALTH(msg)

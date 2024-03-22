@@ -1,10 +1,13 @@
 
 local module, L = BigWigs:ModuleDeclaration("Living Monstrosity", "Naxxramas")
 
-module.revision = 30011
+module.revision = 30067
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"lightningtotem", "autotarget"}
 module.trashMod = true
+module.defaultDB = {
+	bosskill = false,
+}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Monstrosity",
@@ -17,6 +20,7 @@ L:RegisterTranslations("enUS", function() return {
 	autotarget_name = "Auto-Target Lightning Totem",
 	autotarget_desc = "Targets the totem automatically upon summon",
 	
+	
 	trigger_totemUp = "Living Monstrosity casts Lightning Totem.",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF
 	msg_totemUp = "Lightning Totem!",
 	
@@ -26,11 +30,9 @@ L:RegisterTranslations("enUS", function() return {
 
 local timer = {
 }
-
 local icon = {
 	lightningTotem = "Spell_Nature_Lightning"
 }
-
 local syncName = {
 }
 
@@ -51,7 +53,7 @@ end
 function module:Event(msg)
 	if msg == L["trigger_totemUp"] then
 		if self.db.profile.lightningtotem then
-			self:Message(L["msg_totemUp"], "Urgent")
+			self:Message(L["msg_totemUp"], "Urgent", false, nil, false)
 			self:WarningSign(icon.lightningTotem, 0.7)
 		end
 		if self.db.profile.autotarget then
@@ -80,6 +82,6 @@ function module:Event(msg)
 			end
 		end
 	elseif msg == L["trigger_totemDead"] and self.db.profile.lightningtotem then
-		self:Message(L["msg_totemDead"], "Urgent")
+		self:Message(L["msg_totemDead"], "Urgent", false, nil, false)
 	end
 end

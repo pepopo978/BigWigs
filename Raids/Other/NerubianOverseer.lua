@@ -1,6 +1,6 @@
 local module, L = BigWigs:ModuleDeclaration("Nerubian Overseer", "Eastern Plaguelands")
 
-module.revision = 30058
+module.revision = 30070
 module.enabletrigger = module.translatedName
 module.toggleoptions = { "shadowshock", "venomspit", "poisoncloud", "corrosivepoison", "necroticpoison", "webspray", "explode", "bosskill" }
 module.zonename = {
@@ -117,7 +117,7 @@ local syncName = {
 }
 
 function module:OnEnable()
-	self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
 
 	self:RegisterEvent("CHAT_MSG_RAID_BOSS_EMOTE")--trigger_explode, trigger_explodeYou
 

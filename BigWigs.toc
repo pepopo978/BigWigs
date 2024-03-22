@@ -1,6 +1,6 @@
 ## Interface: 11200
 
-## Title: |cFFFF8080Pepopo|r Big Wigs |cff7fff7f30064|r |cffabd473Turtle-WoW|r
+## Title: |cFFFF8080Pepopo|r Big Wigs |cff7fff7f30071|r |cffabd473Turtle-WoW|r
 ## Title-zhCN: |cffabd473Turtle-WoW|r Big Wigs
 ## Notes: Boss Mods with Timer bars.
 ## Notes-esES: Módulos para Jefes con barras temporizadoras.
@@ -187,6 +187,7 @@ Raids\Naxxramas\Kelthuzad.lua
 Raids\Naxxramas\DeathknightCaptain.lua
 Raids\Naxxramas\LivingMonstrosity.lua
 Raids\Naxxramas\SpiderTrash.lua
+Raids\Naxxramas\DeathknightCavalier.lua
 
 Raids\UBRS\Beast.lua
 Raids\UBRS\Drakkisath.lua

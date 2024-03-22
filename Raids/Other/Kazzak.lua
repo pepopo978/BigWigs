@@ -1,394 +1,382 @@
-----------------------------------
---      Module Declaration      --
-----------------------------------
 
 local module, L = BigWigs:ModuleDeclaration("Lord Kazzak", "Blasted Lands")
 
-module.revision = 20008 -- To be overridden by the module!
-module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
-module.toggleoptions = {"markofkazzak", "puticon", "twistedreflection", "voidbolt", "corruptsoul", "supreme", "bosskill"}
-
----------------------------------
---      Module specific Locals --
----------------------------------
-
-local timer = {
-	supreme = 180,
-	mark = 10,
-	twisted = 45,
-	voidbolt = 1.5,
-}
-local icon = {
-	mark = "Interface\\Icons\\Spell_Shadow_Antishadow",
-	twisted = "Interface\\Icons\\Spell_Arcane_PortalDarnassus",
-	voidbolt = "Interface\\Icons\\Spell_Shadow_Haunting",
-}
-local syncName = {
-	markStart = "LordKazzakMarkStart"..module.revision,
-	markStop = "LordKazzakMarkStop"..module.revision,
-	reflectionStart = "LordKazzakReflectionStart"..module.revision,
-	reflectionStop = "LordKazzakReflectionStop"..module.revision,
-	voidboltStart = "LordKazzakVoidBoltStart"..module.revision,
-	voidboltStop = "LordKazzakVoidBoltStop"..module.revision,
-	supreme = "LordKazzakSupreme"..module.revision,
-	dead = "LordKazzakDead"..module.revision,
-	randomDeath = "LordKazzakRandomDeath"..module.revision,
-
-}
-
-----------------------------
---      Localization      --
-----------------------------
+module.revision = 30067
+module.enabletrigger = module.translatedName 
+module.toggleoptions = {"berserk", "markofkazzak", "puticon", "twistedreflection", "voidbolt", "corruptsoul", "lowmana", "bosskill"}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Kazzak",
-
-	starttrigger1 = "All mortals will perish!",
-	starttrigger2 = "The Legion will conquer all!",
-	markofkazzakyou_trigger = "You are afflicted by Mark of Kazzak.",
-	markofkazzakother_trigger = "(.*) is afflicted by Mark of Kazzak.",
-	markofkazzakyouend_trigger = "Mark of Kazzak fades from you.",
-	markofkazzakotherend_trigger = "Mark of Kazzak fades from (.*).",
-	twistedreflectionyou_trigger = "You are afflicted by Twisted Reflection.",
-	twistedreflectionother_trigger = "(.*) is afflicted by Twisted Reflection.",
-	twistedreflectionyouend_trigger = "Twisted Reflection fades from you.",
-	twistedreflectionotherend_trigger = "Twisted Reflection fades from (.*).",
-	deathyou_trigger = "You die\.",
-	deathother_trigger = "(.*) dies.",
-	voidbolt_trigger = "Lord Kazzak begins to cast Void Bolt.",
-	attack_trigger1 = "Lord Kazzak attacks",
-	attack_trigger2 = "Lord Kazzak misses",
-	attack_trigger3 = "Lord Kazzak hits",
-	attack_trigger4 = "Lord Kazzak crits",
-	enrage_trigger = "Lord Kazzak gains Berserk.",
-	enrageyell_trigger = "Kazzak is supreme!",
-	bosskill_trigger = "The Legion... will never... fall.",
-
-	engagewarn = "Lord Kazzak engaged! 3mins until Supreme!",
-	enrage_warm = "Lord Kazzak is supreme!",
-	makrofkazzak_warn = "%s has Mark of Kazzak! Decurse!",
-	twistedreflection_warn = "%s has Twisted Reflection! Dispel!",
-	mark_message_you = "You have Mark of Kazzak! Don't go out of mana!",
-	reflection_message_you = "You have Twisted Reflection!",
-	corruptsoul_warn = "%s has healed Lord Kazzak by dying!",
-	corruptsoul_warn_you = "You have healed Lord Kazzak by dying!",
-
-	supreme1min = "Supreme mode in 1 minute!",
-	supreme30sec = "Supreme mode in 30 seconds!",
-	supreme10sec = "Supreme mode in 10 seconds!",
-
-	enrage_bar = "Supreme mode",
-	voidbolt_bar = "Void Bolt",
-	mark_bar = "%s: Mark of Kazzak",
-	twisted_bar = "%s: Twisted Reflection",
-
-	supreme_cmd = "supreme",
-	supreme_name = "Supreme Alert",
-	supreme_desc = "Warn for Supreme Mode.",
-
-	voidbolt_cmd = "voidbolt",
-	voidbolt_name = "Void Bolt",
-	voidbolt_desc = "Show notifications for Void Bolt.",
-
-	corruptsoul_cmd = "corruptsoul",
-	corruptsoul_name = "Corrupt Soul",
-	corruptsoul_desc = "Warn when boss gets healed from random deaths.",
+	
+	berserk_cmd = "berserk",
+	berserk_name = "Berserk Alert",
+	berserk_desc = "Warn for Berserk.",
 
 	markofkazzak_cmd = "markofkazzak",
-	markofkazzak_name = "Mark of Kazzak",
-	markofkazzak_desc = "Warn when people get the mana drain debuff from the boss.",
-
-	twistedreflection_cmd = "twistedreflection",
-	twistedreflection_name = "Twisted Reflection",
-	twistedreflection_desc = "Warn when people get the debuff that heals the boss for 25000 HP each time it hits them.",
-
+	markofkazzak_name = "Mark of Kazzak Alert",
+	markofkazzak_desc = "Warn for Mark of Kazzak (Mana Drain Debuff).",
+	
 	puticon_cmd = "puticon",
 	puticon_name = "Raid Icon on Mark target",
 	puticon_desc = "Put a Raid Icon on the person who got Mark of Kazzak.\n\n(Requires assistant or higher)",
+	
+	twistedreflection_cmd = "twistedreflection",
+	twistedreflection_name = "Twisted Reflection Alert",
+	twistedreflection_desc = "Warn for Twisted Reflection (heal Kazzak for 25k HP per hit).",
+	
+	voidbolt_cmd = "voidbolt",
+	voidbolt_name = "Void Bolt Alert",
+	voidbolt_desc = "Warn for Void Bolt.",
+
+	corruptsoul_cmd = "corruptsoul",
+	corruptsoul_name = "Corrupt Soul Alert",
+	corruptsoul_desc = "Warn when Kazzak gets healed from random deaths.",
+	
+	lowmana_cmd = "lowmana",
+	lowmana_name = "Low Mana Alert",
+	lowmana_desc = "Warn when you get Low Mana.",
+	
+	
+	trigger_engage1 = "All mortals will perish!", --CHAT_MSG_MONSTER_YELL
+	trigger_engage2 = "The Legion will conquer all!", --CHAT_MSG_MONSTER_YELL
+	trigger_bossDead = "The Legion... will never... fall.", --CHAT_MSG_MONSTER_YELL
+	
+	trigger_berserk = "Lord Kazzak gains Berserk.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS to be confirmed
+	bar_berserk = "Berserk",
+	msg_berserk60 = "Berserk in 1 minute!",
+	msg_berserk10 = "Berserk in 10 seconds!",
+	msg_berserk = "Berserk!",
+	
+	trigger_markOfKazzakYou = "You are afflicted by Mark of Kazzak.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_markOfKazzakOther = "(.+) is afflicted by Mark of Kazzak.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_markOfKazzakFade = "Mark of Kazzak fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_markOfKazzakCd = "Mark of Kazzak CD",
+	bar_markOfKazzakDur = " Mark of Kazzak",
+	msg_markOfKazzak = " has Mark of Kazzak - Decurse!",
+	msg_markOfKazzakYou = "You have Mark of Kazzak - Don't go out of mana!",
+	msg_lowMana = "WARNING - You have low Mana - Mark of Kazzak could be Lethal!",
+	
+	trigger_twistedReflectionYou = "You are afflicted by Twisted Reflection.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_twistedReflectionOther = "(.+) is afflicted by Twisted Reflection.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_twistedReflectionFade = "Twisted Reflection fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_twistedReflectionCd = "Twisted Reflection CD",
+	bar_twistedReflectionDur = " Twisted Reflect",
+	msg_twistedReflection = " has Twisted Reflection - Dispel!",
+	
+	trigger_voidBolt = "Lord Kazzak begins to cast Void Bolt.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_voidBoltCd = "Void Bolt CD",
+	bar_voidBoltCast = "Void Bolt!",
+		
+	trigger_deadYou = "You die.", --CHAT_MSG_COMBAT_FRIENDLY_DEATH
+	trigger_deadOther = "(.+) dies.", --CHAT_MSG_COMBAT_FRIENDLY_DEATH
+	msg_corruptSoul = " Healed Lord Kazzak by dying!",
 } end )
 
-L:RegisterTranslations("esES", function() return {
-	cmd = "Kazzak",
-
-	starttrigger1 = "All mortals will perish!",
-	starttrigger2 = "The Legion will conquer all!",
-	markofkazzakyou_trigger = "Sufres de Marca de Kazzak.",
-	markofkazzakother_trigger = "(.*) sufre de Marca de Kazzak.",
-	markofkazzakyouend_trigger = "Marca de Kazzak acaba de disiparse.",
-	markofkazzakotherend_trigger = "Marca de Kazzak desaparece de (.*).",
-	twistedreflectionyou_trigger = "Sufres de Reflejo retorcido.",
-	twistedreflectionother_trigger = "(.*) sufre fde Reflejo retorcido.",
-	twistedreflectionyouend_trigger = "Reflejo retorcido acaba de disiparse.",
-	twistedreflectionotherend_trigger = "Reflejo retorcido desaparece de (.*).",
-	deathyou_trigger = "Mueres\.",
-	deathother_trigger = "(.*) muere.",
-	voidbolt_trigger = "Lord Kazzak comienza a lanzar Descarga del Vacío.",
-	attack_trigger1 = "Lord Kazzak ataca",
-	attack_trigger2 = "Lord Kazzak falla",
-	attack_trigger3 = "Lord Kazzak golpe",
-	attack_trigger4 = "Lord Kazzak golpe crítico",
-	enrage_trigger = "Lord Kazzak gana Berserk.",
-	enrageyell_trigger = "Kazzak está supremo!",
-	bosskill_trigger = "The Legion... will never... fall.",
-
-	engagewarn = "¡Entablado combate con Lord Kazzak! 3 minutos hasta Supremo!",
-	enrage_warm = "¡Lord Kazzak está supremo!",
-	makrofkazzak_warn = "¡%s tiene Marca de Kazzak! Déshazla!",
-	twistedreflection_warn = "¡%s tiene Reflejo retorcido! Disípalo!",
-	mark_message_you = "¡Tienes Marca de Kazzak! No pierdas maná!",
-	reflection_message_you = "Tiene Reflejo retorcido!",
-	corruptsoul_warn = "¡%s ha curado a Lord Kazzak por morirse!",
-	corruptsoul_warn_you = "¡Has curado a Lord Kazzak por morirse!",
-
-	supreme1min = "¡Modo supremo en 1 minuto!",
-	supreme30sec = "¡Modo supremo en 30 segundos!",
-	supreme10sec = "¡Modo supremo en 10 segundos!",
-
-	enrage_bar = "Modo supremo",
-	voidbolt_bar = "Descarga del Vacío",
-	mark_bar = "%s: Marca de Kazzak",
-	twisted_bar = "%s: Reflejo retorcido",
-
-	--supreme_cmd = "supreme",
-	supreme_name = "Alerta de Supremo",
-	supreme_desc = "Avisa para Modo supremo.",
-
-	--voidbolt_cmd = "voidbolt",
-	voidbolt_name = "Descarga del Vacío",
-	voidbolt_desc = "Avisa para Descarga del Vacío.",
-
-	--corruptsoul_cmd = "corruptsoul",
-	corruptsoul_name = "Alma Corrupto",
-	corruptsoul_desc = "Avisa cuando se cura el jefe porque se muere un jugador.",
-
-	--markofkazzak_cmd = "markofkazzak",
-	markofkazzak_name = "Marca de Kazzak",
-	markofkazzak_desc = "Avisa para Marca de Kazzak.",
-
-	--twistedreflection_cmd = "twistedreflection",
-	twistedreflection_name = "Reflejo retorcido",
-	twistedreflection_desc = "Avisa para Reflejo retorcido.",
-
-	--puticon_cmd = "puticon",
-	puticon_name = "Marcar para Marca de Kazzak",
-	puticon_desc = "Marca con un icono el jugador quien tiene Marca de Kazzak.\n\n(Require asistente o líder)",
-} end )
-------------------------------
---      Initialization      --
-------------------------------
+local timer = {
+	berserk = 180,
+	
+	firstMarkOfKazzakCd = 14,
+	markOfKazzakCd = 10,
+	markOfKazzakDur = 60,
+	
+	twistedReflectionCd = 14,
+	twistedReflectionDur = 45,
+	
+	voidBoltCd = 10,
+	voidBoltCast = 4,
+}
+local icon = {
+	berserk = "Spell_Shadow_UnholyFrenzy",
+	markOfKazzak = "Spell_Shadow_Antishadow",
+	twistedReflection = "Spell_Arcane_PortalDarnassus",
+	voidBolt = "Spell_Shadow_Haunting",
+}
+local color = {
+	berserk = "Black",
+	
+	markOfKazzakCd = "Orange",
+	markOfKazzakDur = "Red",
+	
+	twistedReflectionCd = "White",
+	twistedReflectionDur = "Magenta",
+	
+	voidBoltCd = "Cyan",
+	voidBoltCast = "Blue",
+}
+local syncName = {
+	berserk = "LordKazzakBerserk"..module.revision,
+	
+	markOfKazzak = "LordKazzakMarkStart"..module.revision,
+	markOfKazzakFade = "LordKazzakMarkStop"..module.revision,
+	
+	twistedReflection = "LordKazzakReflectionStart"..module.revision,
+	twistedReflectionFade = "LordKazzakReflectionStop"..module.revision,
+	
+	voidBolt = "LordKazzakVoidBoltStart"..module.revision,
+	--voidboltStop = "LordKazzakVoidBoltStop"..module.revision,
+		
+	randomDeath = "LordKazzakRandomDeath"..module.revision,
+}
 
 function module:OnEnable()
-	self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
-	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "EventSelf")
-	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "EventSelf")
-	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS", "Melee")
-	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES", "Melee")
-	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS", "Melee")
-	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_PARTY_MISSES", "Melee")
-	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS", "Melee")
-	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_MISSES", "Melee")
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS")
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
+	
+	self:RegisterEvent("CHAT_MSG_MONSTER_YELL") --engage and kill
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event") --trigger_markOfKazzakFade, trigger_twistedReflectionFade
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event") --trigger_markOfKazzakFade, trigger_twistedReflectionFade
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event") --trigger_markOfKazzakFade, trigger_twistedReflectionFade
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event") --trigger_markOfKazzakYou, trigger_twistedReflectionYou
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event") --trigger_markOfKazzakOther, trigger_twistedReflectionOther
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event") --trigger_markOfKazzakOther, trigger_twistedReflectionOther
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event") --trigger_voidBolt
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event") --trigger_berserk
 
-	self:ThrottleSync(2, syncName.markStart)
-	self:ThrottleSync(2, syncName.markStop)
-	self:ThrottleSync(2, syncName.reflectionStart)
-	self:ThrottleSync(2, syncName.reflectionStop)
-	self:ThrottleSync(5, syncName.voidboltStart)
-	self:ThrottleSync(5, syncName.voidboltStop)
-	self:ThrottleSync(5, syncName.supreme)
-	self:ThrottleSync(5, syncName.dead)
 
+	self:ThrottleSync(2, syncName.markOfKazzak)
+	self:ThrottleSync(2, syncName.markOfKazzakFade)
+	
+	self:ThrottleSync(2, syncName.twistedReflection)
+	self:ThrottleSync(2, syncName.twistedReflectionFade)
+	
+	self:ThrottleSync(5, syncName.voidBolt)
+	
+	self:ThrottleSync(5, syncName.berserk)
+	
+	self:ThrottleSync(0.5, syncName.randomDeath)
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
-	self:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLY_DEATH")
-	voidbolttime = 0
-	castingvoidbolt = false
+	self:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLY_DEATH") --trigger_deadYou, trigger_deadOther
 end
 
--- called after boss is engaged
-function module:OnEngage()
+function module:OnEngage()	
+	if self.db.profile.berserk then
+		self:Bar(L["bar_berserk"], timer.berserk, icon.berserk, true, color.berserk)
+		self:DelayedMessage(timer.berserk - 60, L["msg_berserk60"], "Attention", false, nil, false)
+		self:DelayedMessage(timer.berserk - 10, L["msg_berserk10"], "Important", false, nil, false)
+		
+	end
+	
+	if self.db.profile.markofkazzak then
+		self:Bar(L["bar_markOfKazzakCd"], timer.firstMarkOfKazzakCd, icon.markOfKazzak, true, color.markOfKazzakCd)
+	end
+	
+	if self.db.profile.twistedreflection then
+		self:Bar(L["bar_twistedReflectionCd"], timer.twistedReflectionCd, icon.twistedReflection, true, color.twistedReflectionCd)
+	end
+	
+	if self.db.profile.voidbolt then
+		self:Bar(L["bar_voidBoltCd"], timer.voidBoltCd, icon.voidBolt, true, color.voidBoltCd)
+	end
+	
+	if self.db.profile.lowmana and not (UnitClass("Player") == "Warrior" or UnitClass("Player") == "Rogue") then
+		self:ScheduleRepeatingEvent("CheckMana", self.CheckMana, 2, self)
+	end
 end
 
--- called after boss is disengaged (wipe(retreat) or victory)
+function module:CheckMana()
+	if self.db.profile.lowmana and not UnitIsDeadOrGhost("Player") and UnitMana("Player") <= 1000 then
+		self:Message(L["msg_lowMana"], "Personal", false, nil, false)
+	end
+end
+
 function module:OnDisengage()
+	self:CancelScheduledEvent("CheckMana")
 end
-
-------------------------------
---      Event Handlers      --
-------------------------------
 
 function module:CHAT_MSG_COMBAT_FRIENDLY_DEATH(msg)
 	BigWigs:CheckForWipe(self)
-	local _,_,otherdeath,_ = string.find(msg, L["deathother_trigger"])
-	if string.find(msg, L["deathyou_trigger"]) then
-		if self.db.profile.markofkazzak then
-			self:RemoveBar(string.format(L["mark_bar"], UnitName("player")))
-		end
-		if self.db.profile.puticon then
-			self:RemoveIcon()
-		end
-		if self.db.profile.twistedreflection then
-			self:RemoveBar(string.format(L["twisted_bar"], UnitName("player")))
-		end
-		if self.db.profile.corruptsoul then
-			self:Message(L["corruptsoul_warn_you"], "Attention")
-		end
-		self:Sync(syncName.randomDeath.." "..UnitName("player"))
-	elseif otherdeath then
-		self:Sync(syncName.randomDeath.." "..otherdeath)
+	
+	if string.find(msg, L["trigger_deadYou"]) then
+		self:Sync(syncName.randomDeath.." "..UnitName("Player"))
+	
+	elseif string.find(msg, L["trigger_deadOther"]) then
+		local _,_,deadPlayer,_ = string.find(msg, L["trigger_deadOther"])
+		self:Sync(syncName.randomDeath.." "..deadPlayer)
 	end
 end
 
-function module:CHAT_MSG_MONSTER_YELL(msg)
-	if self.db.profile.supreme and string.find(msg, L["starttrigger1"]) or  string.find(msg, L["starttrigger2"]) then
-		self:Message(L["engagewarn"], "Important")
-		self:DelayedMessage(timer.supreme - 60, L["supreme1min"], "Attention")
-		self:DelayedMessage(timer.supreme - 30, L["supreme30sec"], "Urgent")
-		self:DelayedMessage(timer.supreme - 10, L["supreme10sec"], "Important")
-		self:Bar(L["enrage_bar"], timer.supreme, "Interface\\Icons\\Spell_Shadow_ShadowWordPain", "Green", "Yellow", "Orange", "Red")
-	elseif self.db.profile.supreme and string.find(msg, L["enrageyell_trigger"]) then
-		self:Message(L["enrage_warm"], "Important")
-	elseif string.find(msg, L["bosskill_trigger"]) then
-		self:Sync(syncName.dead)
-	end
-end
-
-function module:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE(msg)
-	if string.find(msg, L["voidbolt_trigger"]) then
-		self:Sync(syncName.voidboltStart)
-	end
-end
-
-function module:CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS(msg)
-	if string.find(msg, L["enrage_trigger"]) then
-		self:Sync(syncName.supreme)
-	end
-end
-
-function module:EventSelf(msg)
-	if string.find(msg, L["markofkazzakyou_trigger"]) then
-		if self.db.profile.markofkazzak then
-			self:Message(L["mark_message_you"], "Attention", true, "Alert")
-			self:Bar(string.format(L["mark_bar"], UnitName("player")), timer.mark, icon.mark, true, "white")
-		end
-		if self.db.profile.puticon then
-			self:Icon(UnitName("player"))
-		end
-		self:Sync(syncName.markStart.." "..UnitName("player"))
-	elseif string.find(msg, L["markofkazzakyouend_trigger"]) then
-		if self.db.profile.markofkazzak then
-			self:RemoveBar(string.format(L["mark_bar"], UnitName("player")))
-		end
-		if self.db.profile.puticon then
-			self:RemoveIcon()
-		end
-		self:Sync(syncName.markStop.." "..UnitName("player"))
-	elseif string.find(msg, L["twistedreflectionyou_trigger"]) then
-		if self.db.profile.twistedreflection then
-			self:Message(L["reflection_message_you"], "Attention")
-			self:Bar(string.format(L["twisted_bar"], UnitName("player")), timer.twisted, icon.twisted, true, "magenta")
-		end
-		self:Sync(syncName.reflectionStart.." "..UnitName("player"))
-	elseif string.find(msg, L["twistedreflectionyouend_trigger"]) then
-		if self.db.profile.twistedreflection then
-			self:RemoveBar(string.format(L["twisted_bar"], UnitName("player")))
-		end
-		self:Sync(syncName.reflectionStop.." "..UnitName("player"))
+function module:CHAT_MSG_MONSTER_YELL(msg, sender)
+	if msg == L["trigger_engage1"] or msg == L["trigger_engage2"] then
+		module:SendEngageSync()
+	elseif msg == L["trigger_bossDead"] then
+		self:SendBossDeathSync()
 	end
 end
 
 function module:Event(msg)
-	local _,_,markofkazzakother,_ = string.find(msg, L["markofkazzakother_trigger"])
-	local _,_,markofkazzakotherend,_ = string.find(msg, L["markofkazzakotherend_trigger"])
-	local _,_,twistedreflectionother,_ = string.find(msg, L["twistedreflectionother_trigger"])
-	local _,_,twistedreflectionotherend,_ = string.find(msg, L["twistedreflectionotherend_trigger"])
-	if markofkazzakother then
-		self:Sync(syncName.markStart.." "..markofkazzakother)
-	elseif markofkazzakotherend then
-		self:Sync(syncName.markStop.." "..markofkazzakotherend)
-	elseif twistedreflectionother then
-		self:Sync(syncName.reflectionStart.." "..twistedreflectionother)
-	elseif twistedreflectionotherend then
-		self:Sync(syncName.reflectionStop.." "..twistedreflectionotherend)
+	if msg == L["trigger_berserk"] then
+		self:Sync(syncName.berserk)
+	
+	
+	elseif msg == L["trigger_markOfKazzakYou"] then
+		self:Sync(syncName.markOfKazzak.." "..UnitName("Player"))
+	
+	elseif string.find(msg, L["trigger_markOfKazzakOther"]) then
+		local _,_,markOfKazzakPlayer,_ = string.find(msg, L["trigger_markOfKazzakOther"])
+		self:Sync(syncName.markOfKazzak.." "..markOfKazzakPlayer)
+		
+	elseif string.find(msg, L["trigger_markOfKazzakFade"]) then
+		local _,_,markOfKazzakFadePlayer,_ = string.find(msg, L["trigger_markOfKazzakFade"])
+		if markOfKazzakFadePlayer == "you" then markOfKazzakFadePlayer = UnitName("Player") end
+		self:Sync(syncName.markOfKazzakFade.." "..markOfKazzakFadePlayer)
+	
+	
+	elseif msg == L["trigger_twistedReflectionYou"] then
+		self:Sync(syncName.twistedReflection.." "..UnitName("Player"))
+	
+	elseif string.find(msg, L["trigger_twistedReflectionOther"]) then
+		local _,_,twistedReflectionPlayer,_ = string.find(msg, L["trigger_twistedReflectionOther"])
+		self:Sync(syncName.twistedReflection.." "..twistedReflectionPlayer)
+		
+	elseif string.find(msg, L["trigger_twistedReflectionFade"]) then
+		local _,_,twistedReflectionFadePlayer,_ = string.find(msg, L["trigger_twistedReflectionFade"])
+		if twistedReflectionFadePlayer == "you" then twistedReflectionFadePlayer = UnitName("Player") end
+		self:Sync(syncName.twistedReflectionFade.." "..twistedReflectionFadePlayer)
+		
+		
+	elseif msg == L["trigger_voidBolt"] then
+		self:Sync(syncName.voidBolt)
 	end
 end
+
 
 function module:BigWigs_RecvSync(sync, rest, nick)
-	if sync == syncName.markStart and rest ~= UnitName("player") then
-		if self.db.profile.markofkazzak then
-			self:Message(string.format(L["makrofkazzak_warn"], rest), "Important")
-			self:TriggerEvent("BigWigs_SendTell", rest, L["mark_message_you"])
-			self:Bar(string.format(L["mark_bar"], rest), timer.mark, icon.mark, true, "white")
-		end
-		if self.db.profile.puticon then
-			self:Icon(rest)
-		end
-	elseif sync == syncName.markStop and rest ~= UnitName("player") then
-		if self.db.profile.markofkazzak then
-			self:RemoveBar(string.format(L["mark_bar"], rest))
-		end
-		if self.db.profile.puticon then
-			self:RemoveIcon()
-		end
-	elseif sync == syncName.reflectionStart and rest ~= UnitName("player") then
-		if self.db.profile.twistedreflection then
-			self:Message(string.format(L["twistedreflection_warn"], rest), "Important")
-			self:Bar(string.format(L["twisted_bar"], rest), timer.twisted, icon.twisted, true, "magenta")
-		end
-	elseif sync == syncName.reflectionStop and rest ~= UnitName("player") then
-		if self.db.profile.twistedreflection then
-			self:RemoveBar(string.format(L["twisted_bar"], rest))
-		end
-	elseif sync == syncName.randomDeath and rest ~= UnitName("player") then
-		if self.db.profile.markofkazzak then
-			self:RemoveBar(string.format(L["mark_bar"], rest))
-		end
-		if self.db.profile.puticon then
-			self:RemoveIcon()
-		end
-		if self.db.profile.twistedreflection then
-			self:RemoveBar(string.format(L["twisted_bar"], rest))
-		end
-		if self.db.profile.corruptsoul then
-			self:Message(string.format(L["corruptsoul_warn"], rest), "Important")
-		end
-	elseif sync == syncName.voidboltStart then
-		voidbolttime = GetTime()
-		castingvoidbolt = true
-		if self.db.profile.voidbolt then
-			self:Bar(L["voidbolt_bar"], timer.voidbolt, icon.voidbolt, true, "purple")
-		end
-	elseif sync == syncName.voidboltStop then
-		castingvoidbolt = false
-		if self.db.profile.voidbolt then
-			self:RemoveBar(L["voidbolt_bar"])
-		end
-	elseif sync == syncName.supreme and self.db.profile.supreme then
-		self:Message(L["voidbolt_bar"], "Important")
-	elseif sync == syncName.dead then
-		if self.db.profile.bosskill then
-			self:Message(string.format(AceLibrary("AceLocale-2.2"):new("BigWigs")["%s has been defeated"], self.translatedName), "Bosskill", nil, "Victory")
-		end
-		self:RemoveIcon()
-		self.core:ToggleModuleActive(self, false)
+	if sync == syncName.berserk and self.db.profile.berserk then
+		self:Berserk()
+	
+	elseif sync == syncName.markOfKazzak and rest and self.db.profile.markofkazzak then
+		self:MarkOfKazzak(rest)
+	elseif sync == syncName.markOfKazzakFade and rest and self.db.profile.markofkazzak then
+		self:MarkOfKazzakFade(rest)
+	
+	elseif sync == syncName.twistedReflection and rest and self.db.profile.twistedreflection then
+		self:TwistedReflection(rest)
+	elseif sync == syncName.twistedReflectionFade and rest and self.db.profile.twistedreflection then
+		self:TwistedReflectionFade(rest)
+		
+	elseif sync == syncName.voidBolt and self.db.profile.voidbolt then
+		self:VoidBolt()
+		
+	elseif sync == syncName.randomDeath and rest then
+		self:RandomDeath(rest)
 	end
 end
 
-function module:Melee(msg)
-	if string.find(msg, L["attack_trigger1"]) or string.find(msg, L["attack_trigger2"]) or string.find(msg, L["attack_trigger3"]) or string.find(msg, L["attack_trigger4"]) then
-		if castingvoidbolt then
-			if (GetTime() - voidbolttime) < 1.5 then
-				self:Sync(syncName.voidboltStop)
-			elseif (GetTime() - voidbolttime) >= 1.5 then
-				castingvoidbolt = false
+
+function module:Berserk()
+	self:RemoveBar(L["bar_berserk"])
+	self:CancelDelayedMessage(L["msg_berserk60"])
+	self:CancelDelayedMessage(L["msg_berserk10"])
+	
+	self:Message(L["msg_berserk"], "Urgent", false, nil, false)
+	self:WarningSign(icon.berserk, 1)
+	self:Sound("Beware")
+end
+
+function module:MarkOfKazzak(rest)
+	self:Bar(rest..L["bar_markOfKazzakDur"], timer.markOfKazzakDur, icon.markOfKazzak, true, color.markOfKazzakDur)
+	self:Bar(L["bar_markOfKazzakCd"], timer.markOfKazzakCd, icon.markOfKazzak, true, color.markOfKazzakCd)
+	
+	if rest == UnitName("Player") and not (UnitClass("Player") == "Warrior" or UnitClass("Player") == "Rogue") then
+		self:Message(L["msg_markOfKazzakYou"], "Personal", false, nil, false)
+		self:Sound("Beware")
+		self:WarningSign(icon.markOfKazzak, timer.markOfKazzakDur)
+	end
+	
+	if UnitClass("Player") == "Mage" or UnitClass("Player") == "Druid" then
+		self:Message(rest..L["msg_markOfKazzak"], "Urgent", false, nil, false)
+		self:Sound("Info")
+		self:WarningSign(icon.markOfKazzak, timer.markOfKazzakDur)
+	end
+	
+	if IsRaidLeader() or IsRaidOfficer() then
+		for i=1,GetNumRaidMembers() do
+			if UnitName("raid"..i) == rest then
+				SetRaidTarget("raid"..i, 8)
 			end
 		end
 	end
+end
+
+function module:MarkOfKazzakFade(rest)
+	self:RemoveBar(rest..L["bar_markOfKazzakDur"])
+	
+	if rest == UnitName("Player") then
+		self:RemoveWarningSign(icon.markOfKazzak)
+	end
+	
+	if UnitClass("Player") == "Mage" or UnitClass("Player") == "Druid" then
+		self:RemoveWarningSign(icon.markOfKazzak)
+	end
+	
+	if IsRaidLeader() or IsRaidOfficer() then
+		for i=1,GetNumRaidMembers() do
+			if UnitName("raid"..i) == rest then
+				SetRaidTarget("raid"..i, 0)
+			end
+		end
+	end
+end
+
+function module:TwistedReflection(rest)
+	self:Bar(rest..L["bar_twistedReflectionDur"], timer.twistedReflectionDur, icon.twistedReflection, true, color.twistedReflectionDur)
+	self:Bar(L["bar_twistedReflectionCd"], timer.twistedReflectionCd, icon.twistedReflection, true, color.twistedReflectionCd)
+	
+	if UnitClass("Player") == "Priest" or UnitClass("Player") == "Paladin" then
+		self:Message(rest..L["msg_twistedReflection"], "Urgent", false, nil, false)
+		self:Sound("Info")
+		self:WarningSign(icon.twistedReflection, timer.twistedReflectionDur)
+	end
+	
+	if IsRaidLeader() or IsRaidOfficer() then
+		for i=1,GetNumRaidMembers() do
+			if UnitName("raid"..i) == rest then
+				SetRaidTarget("raid"..i, 6)
+			end
+		end
+	end
+end
+
+function module:TwistedReflectionFade(rest)
+	self:RemoveBar(rest..L["bar_twistedReflectionDur"])
+	
+	if UnitClass("Player") == "Priest" or UnitClass("Player") == "Paladin" then
+		self:RemoveWarningSign(icon.twistedReflection)
+	end
+	
+	if IsRaidLeader() or IsRaidOfficer() then
+		for i=1,GetNumRaidMembers() do
+			if UnitName("raid"..i) == rest then
+				SetRaidTarget("raid"..i, 0)
+			end
+		end
+	end
+end
+
+function module:VoidBolt()
+	self:RemoveBar(L["bar_voidBoltCd"])
+	self:Bar(L["bar_voidBoltCast"], timer.voidBoltCast, icon.voidBolt, true, color.voidBoltCast)
+	self:DelayedBar(timer.voidBoltCast, L["bar_voidBoltCd"], timer.voidBoltCd, icon.voidBolt, true, color.voidBoltCd)
+end
+
+function module:RandomDeath(rest)
+	if self.db.profile.markofkazzak then
+		self:MarkOfKazzakFade(rest)
+	end
+		
+	if self.db.profile.twistedreflection then
+		self:TwistedReflectionFade(rest)
+	end
+	if self.db.profile.corruptsoul then
+		self:CorruptSoul(rest)
+	end
+end
+
+function module:CorruptSoul(rest)
+	self:Message(rest..L["msg_corruptSoul"], "Attention", false, nil, false)
 end

@@ -2,7 +2,7 @@
 local module, L = BigWigs:ModuleDeclaration("General Rajaxx", "Ruins of Ahn'Qiraj")
 local andorov = AceLibrary("Babble-Boss-2.2")["Lieutenant General Andorov"]
 
-module.revision = 30027
+module.revision = 30069
 module.enabletrigger = {module.translatedName, andorov}
 module.toggleoptions = {"wave", "fear", "attackorder", "lightningcloud", "shockwave", "shield", "knockback", "enlarge", "thundercrash", "bosskill"}
 
@@ -44,6 +44,7 @@ L:RegisterTranslations("enUS", function() return {
 	thundercrash_cmd = "thundercrash",--2
 	thundercrash_name = "Thundercrash Alert",
 	thundercrash_desc = "Warn for Thundercrash",
+	
 	
 	trigger_eventStarted = "Remember, Rajaxx, when I said I'd kill you last?",--CHAT_MSG_MONSTER_YELL
 	bar_eventStart = "Encounter begins",
@@ -98,7 +99,7 @@ L:RegisterTranslations("enUS", function() return {
 local timer = {
 	eventStart = 34.72,
 	
-	firstFear = 15,--wave1
+	firstFear = 11,--wave1
 	fearCD = 15,--wave1
 	attackOrder = 10,--wave2
 

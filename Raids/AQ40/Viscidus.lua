@@ -1,5 +1,5 @@
 local module, L = BigWigs:ModuleDeclaration("Viscidus", "Ahn'Qiraj")
-module.revision = 30039
+module.revision = 30067
 module.enabletrigger = module.translatedName
 module.toggleoptions = { "volley", "toxin", "freezestages", "freezecount", "pokecount", "glob", "bosskill" }
 
@@ -236,20 +236,6 @@ function module:Event(msg)
 	end
 end
 
-function module:CheckPhysical(msg)
-	if checkPhysical == true then
-		if string.find(msg, L["trigger_pokeYou"]) or string.find(msg, L["trigger_pokeCritYou"]) or string.find(msg, L["trigger_pokeOther"]) or string.find(msg, L["trigger_pokeCritOther"]) then
-			pokeCount = pokeCount + 1
-			if self.db.profile.pokecount then
-				self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_poke"], pokeCount)
-			end
-			if pokeCount >= maxPokeCount then
-				checkPhysical = false
-				self:StartGlobBar()
-			end
-		end
-	end
-end
 
 function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.volley and self.db.profile.volley then
@@ -269,6 +255,7 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 	end
 end
 
+
 function module:Volley()
 	self:IntervalBar(L["bar_volley"], timer.volley[1], timer.volley[2], icon.volley, true, color.volley)
 
@@ -286,6 +273,8 @@ end
 function module:ToxinFade()
 	self:RemoveWarningSign(icon.toxin)
 end
+
+
 
 function module:Slow()
 	pokeCount = 0
@@ -327,61 +316,60 @@ function module:Crack()
 	end
 end
 
+--on shatter emote, start looking for globs
 function module:Shatter()
 	if self.db.profile.freezestages then
 		self:Message(L["msg_shatter"], "Attention", false, nil, false)
-	end
-end
-
-function module:StartGlobBar()
-	if self.db.profile.glob then
-		self:TriggerEvent("BigWigs_StopCounterBar", self, L["bar_poke"])
-
-		self:TriggerEvent("BigWigs_StartCounterBar", self, L["bar_glob"], maxGlobDeathCount, "Interface\\Icons\\" .. icon.glob, true, color.glob)
-		self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_glob"], globDeathCount)
 	end
 
 	self:ScheduleRepeatingEvent("bwviscFindGlob", self.FindGlob, 0.5, self)
 end
 
-function module:Glob()
-	globDeathCount = globDeathCount + 1
-	checkPhysical = false
 
-	if self.db.profile.glob then
-		self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_glob"], globDeathCount)
-	end
-end
 
-function module:FrostDmg()
-	frostDmgCount = frostDmgCount + 1
 
-	if self.db.profile.freezecount then
-		self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_frostDmg"], frostDmgCount)
-	end
-end
-
+--look for globs, once found, stop looking, stop registering physical hits, go in glob section
 function module:FindGlob()
-	if UnitName("target") == "Glob of Viscidus" then
+	if UnitName("target") == "Glob of Viscidus" and not UnitIsDeadOrGhost("target") then
 		self:CancelScheduledEvent("bwviscFindGlob")
 		self:ScheduleRepeatingEvent("bwviscFindViscidus", self.FindViscidus, 0.5, self)
+		checkPhysical = false
+		self:StartGlobBar()
 	else
 		for i = 1, GetNumRaidMembers(), 1 do
-			if UnitName("Raid" .. i .. "target") == "Glob of Viscidus" then
+			if UnitName("Raid"..i.."target") == "Glob of Viscidus" and not UnitIsDeadOrGhost("Raid"..i.."target") then
 				self:CancelScheduledEvent("bwviscFindGlob")
 				self:ScheduleRepeatingEvent("bwviscFindViscidus", self.FindViscidus, 0.5, self)
+				checkPhysical = false
+				self:StartGlobBar()
 				break
 			end
 		end
 	end
 end
 
+--glob section, remove the poke bar, start the glob bar, start looking for visc
+function module:StartGlobBar()
+	if self.db.profile.glob then
+		self:TriggerEvent("BigWigs_StopCounterBar", self, L["bar_poke"])
+	
+		self:TriggerEvent("BigWigs_StartCounterBar", self, L["bar_glob"], maxGlobDeathCount, "Interface\\Icons\\"..icon.glob, true, color.glob)
+		self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_glob"], globDeathCount)
+	end
+	
+	self:ScheduleRepeatingEvent("bwviscFindGlob", self.FindGlob, 0.5, self)
+end
+
+--look for visc, once found, stop looking, start registering frost damage, go in frost section
 function module:FindViscidus()
 	if UnitName("target") == "Viscidus" then
+		self:CancelScheduledEvent("bwviscFindViscidus")
 		self:StartFostDmgBar()
+		checkFrost = true
 	else
 		for i = 1, GetNumRaidMembers(), 1 do
-			if UnitName("Raid" .. i .. "target") == "Viscidus" then
+			if UnitName("Raid"..i.."target") == "Viscidus" then
+				self:CancelScheduledEvent("bwviscFindViscidus")
 				self:StartFostDmgBar()
 				checkFrost = true
 				break
@@ -390,13 +378,44 @@ function module:FindViscidus()
 	end
 end
 
+--frost section, remove glob bar, start frost bar
 function module:StartFostDmgBar()
-	self:CancelScheduledEvent("bwviscFindViscidus")
-
 	self:TriggerEvent("BigWigs_StopCounterBar", self, L["bar_glob"])
 
 	if self.db.profile.freezecount then
 		self:TriggerEvent("BigWigs_StartCounterBar", self, L["bar_frostDmg"], maxFreezeCount, "Interface\\Icons\\" .. icon.frostDmg, true, color.frostDmg)
 		self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_frostDmg"], frostDmgCount)
+	end
+end
+
+
+
+--update frost bar on frost dmg
+function module:FrostDmg()
+	frostDmgCount = frostDmgCount + 1
+	
+	if self.db.profile.freezecount then
+		self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_frostDmg"], frostDmgCount)
+	end
+end
+
+--update poke bar on poke damage
+function module:CheckPhysical(msg)
+	if checkPhysical == true then
+		if string.find(msg, L["trigger_pokeYou"]) or string.find(msg, L["trigger_pokeCritYou"]) or string.find(msg, L["trigger_pokeOther"]) or string.find(msg, L["trigger_pokeCritOther"]) then
+			pokeCount = pokeCount + 1
+			if self.db.profile.pokecount then
+				self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_poke"], pokeCount)
+			end
+		end
+	end
+end
+
+--update glob bar on glob death
+function module:Glob()
+	globDeathCount = globDeathCount + 1
+	
+	if self.db.profile.glob then
+		self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_glob"], globDeathCount)
 	end
 end

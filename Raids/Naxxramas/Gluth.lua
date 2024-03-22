@@ -1,9 +1,9 @@
 
 local module, L = BigWigs:ModuleDeclaration("Gluth", "Naxxramas")
 
-module.revision = 30030
+module.revision = 30069
 module.enabletrigger = module.translatedName
-module.toggleoptions = {"frenzy", "fear", "decimate", "enrage", "zombies", -1, "bosskill"}
+module.toggleoptions = {"frenzy", "fear", "decimate", "enrage", "zombies", "wound", -1, "bosskill"}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Gluth",
@@ -28,11 +28,16 @@ L:RegisterTranslations("enUS", function() return {
 	zombies_name = "Zombie Spawn",
 	zombies_desc = "Shows timer for zombies",
 	
-	trigger_frenzyGain = "%s goes into a frenzy!",--CHAT_MSG_MONSTER_EMOTE
+	wound_cmd = "wound",
+	wound_name = "Mortal Wounds Alert",
+	wound_desc = "Warn for Mortal Wounds",
+	
+	
+	trigger_frenzyGain = "Gluth gains Frenzy.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
 	trigger_frenzyFade = "Frenzy fades from Gluth.",--CHAT_MSG_SPELL_AURA_GONE_OTHER
 	msg_frenzy = "Frenzy - Tranq!",
 	bar_frenzyGain = "Frenzy - Tranq!",
-	bar_frenzyCD = "FrenzyCD",
+	bar_frenzyCD = "Frenzy CD",
 	
 	trigger_enrage = "Gluth gains Berserk.",--to be confirmed
 	msg_enrage60 = "Enrage in 60 seconds",
@@ -50,61 +55,10 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_fear = "Terrifying Roar",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 	bar_fearCD = "Fear CD",
 	msg_fear = "Fear!",
-} end )
-
-L:RegisterTranslations("esES", function() return {
-	--cmd = "Gluth",
-
-	--fear_cmd = "fear",
-	fear_name = "Alerta de Miedo",
-	fear_desc = "Avisa para Miedo",
-
-	--frenzy_cmd = "frenzy",
-	frenzy_name = "Alerta de Frenesí",
-	frenzy_desc = "Avisa para Frenesí",
-
-	--enrage_cmd = "enrage",
-	enrage_name = "Temporizador de Enfurecer",
-	enrage_desc = "Avisa para Enfurecer",
-
-	--decimate_cmd = "decimate",
-	decimate_name = "Alerta de Diezmar",
-	decimate_desc = "Avisa para Diezmar",
-
-	frenzy_trigger = "¡%s entra frenesí!",
-	berserk_trigger = "gana Rabia",
-	fear_trigger = "de Clamor aterrorizador.",
-	starttrigger = "¡devora todos los zombis cercanos!",
-
-	frenzy_warn = "¡Alerta de Frenesí!",
-	fear_warn_5 = "5 segundos hasta Miedo!",
-	fear_warn = "¡Alerta de Miedo - 20 segundos hasta el próximo!",
-
-	enragewarn = "¡ENFURECER!",
-	enragebartext = "Enfurecer",
-	enrage_warn_90 = "Enfurecer en 90 segundos",
-	enrage_warn_30 = "Enfurecer en 30 segundos",
-	enrage_warn_10 = "Enfurecer en 10 segundos",
-
-	startwarn = "¡Entrando en combate con Gluth! ~1:45 hasta Diezmar!",
-	decimatesoonwarn = "¡Diezmar Pronto!",
-	decimatebar = "Diezmar Zombi",
-
-	--zombies_cmd = "zombies",
-	zombies_name = "Zombi",
-	zombies_desc = "Muestra temporizador para zombis",
-	zombiebar = "Próximo Zombi - %d",
-
-	fear_bar = "Miedo",
-
-	testtrigger = "testtrigger";
-
-	frenzygain_trigger = "Gluth gana Frenesí.",
-	frenzygain_trigger2 = "Gluth entra frenzy!",
-	frenzyend_trigger = "Frenesí desaparece de Gluth.",
-	frenzy_message = "¡Frensí! Disparo tranquilizante ahora!",
-	frenzy_bar = "Frenesí",
-	frenzy_Nextbar = "Próximo Frenesí",
+	
+	trigger_woundYou = "You are afflicted by Mortal Wound %((.+)%).",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_woundOther = "(.+) is afflicted by Mortal Wound %((.+)%).",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+	bar_wound = " Wounds",
 } end )
 
 local timer = {
@@ -114,6 +68,7 @@ local timer = {
 	firstfear = 20,
 	fear = 15,
 	frenzy = 10,
+	wound = 15,
 }
 local icon = {
 	zombie = "Ability_Seal",
@@ -122,6 +77,16 @@ local icon = {
 	decimate = "INV_Shield_01",
 	tranquil = "Spell_Nature_Drowsy",
 	frenzy = "Ability_Druid_ChallangingRoar",
+	wound = "ability_criticalstrike",
+}
+local color = {
+	zombie = "Green",
+	enrage = "Cyan",
+	fear = "Blue",
+	decimate = "Black",
+	frenzyGain = "Red",
+	frenzyCd = "White",
+	wound = "Magenta",
 }
 local syncName = {
 	frenzy = "GluthFrenzyStart"..module.revision,
@@ -130,58 +95,64 @@ local syncName = {
 	enrage = "GluthEnrage"..module.revision,
 	decimate = "GluthDecimate"..module.revision,
 	fear = "GluthFear"..module.revision,
+	wound = "GluthWound"..module.revision,
 }
 
 local lastFrenzy = 0
-local _, playerClass = UnitClass("player")
 
 function module:OnEnable()
-	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE", "Event")--frenzyGain, maybe enrage too
-	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event")--frenzyFade
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event")--Decimate, Fear
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event")--Decimate
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event")--Decimate
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")--Fear
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")--Fear
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")--Fear
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event") --trigger_frenzyGain
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event") --trigger_frenzyFade
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event") --trigger_decimate, trigger_fear
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event") --trigger_decimate
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event") --trigger_decimate
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event") --trigger_fear, trigger_woundOther
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event") --trigger_fear, trigger_woundOther
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event") --trigger_fear, trigger_woundYou
+	
 	
 	self:ThrottleSync(5, syncName.frenzy)
 	self:ThrottleSync(1, syncName.frenzyOver)
 	self:ThrottleSync(5, syncName.enrage)
 	self:ThrottleSync(5, syncName.decimate)
 	self:ThrottleSync(5, syncName.fear)
+	self:ThrottleSync(3, syncName.wound)
 end
 
 function module:OnSetup()
 	self.started = nil
-	self.prior = nil
 	self.zomnum = 1
 	lastFrenzy = 0
 end
 
 function module:OnEngage()
 	if self.db.profile.frenzy then
-		self:Bar(L["bar_frenzyCD"], timer.frenzy, icon.frenzy, true, "white")
+		self:Bar(L["bar_frenzyCD"], timer.frenzy, icon.frenzy, true, color.frenzyCd)
 	end
+	
 	if self.db.profile.enrage then
-		self:Bar(L["bar_enrage"], timer.enrage, icon.enrage, true, "Cyan")
-		self:DelayedMessage(timer.enrage - 60, L["msg_enrage60"], "Attention")
-		self:DelayedMessage(timer.enrage - 10, L["msg_enrage10"], "Attention")
+		self:Bar(L["bar_enrage"], timer.enrage, icon.enrage, true, color.enrage)
+		self:DelayedMessage(timer.enrage - 60, L["msg_enrage60"], "Important", false, nil, false)
+		self:DelayedMessage(timer.enrage - 10, L["msg_enrage10"], "Important", false, nil, false)
 	end
+	
 	if self.db.profile.decimate then
-		self:Bar(L["bar_decimate"], timer.decimate, icon.decimate, true, "Black")
-		self:DelayedMessage(timer.decimate - 5, L["msg_decimate5"], "Urgent")
+		self:Bar(L["bar_decimate"], timer.decimate, icon.decimate, true, color.decimate)
+		self:DelayedMessage(timer.decimate - 5, L["msg_decimate5"], "Urgent", false, nil, false)
 	end
+	
 	if self.db.profile.fear then
-		self:Bar(L["bar_fearCD"], timer.firstfear, icon.fear, true, "Blue")
+		self:Bar(L["bar_fearCD"], timer.firstfear, icon.fear, true, color.fear)
 	end
-	
-	
-	
 	
 	if self.db.profile.zombies then
 		self.zomnum = 1
-		self:Bar(string.format(L["bar_zombies"],self.zomnum), timer.zombie, icon.zombie, true, "Green")
+		self:Bar(string.format(L["bar_zombies"],self.zomnum), timer.zombie, icon.zombie, true, color.zombie)
 		self.zomnum = self.zomnum + 1
 		self:Zombie()
 	end
@@ -193,17 +164,31 @@ end
 function module:Event(msg)
 	if msg == L["trigger_frenzyGain"] then
 		self:Sync(syncName.frenzy)
+	
 	elseif msg == L["trigger_frenzyFade"] then
 		self:Sync(syncName.frenzyOver)
+	
 	elseif msg == L["trigger_enrage"] then
 		self:Sync(syncName.enrage)
+	
 	elseif string.find(msg, L["trigger_decimate"]) then
 		self:Sync(syncName.decimate)
+	
 	elseif string.find(msg, L["trigger_fear"]) then
 		self:Sync(syncName.fear)
+		
+	elseif string.find(msg, L["trigger_woundYou"]) then
+		local _,_,woundQty,_ = string.find(msg, L["trigger_woundYou"])
+		local woundPlayer = UnitName("Player")
+		local woundPlayerAndWoundQty = woundPlayer .. " " .. woundQty
+		self:Sync(syncName.wound.." "..woundPlayerAndWoundQty)
+		
+	elseif string.find(msg, L["trigger_woundOther"]) then
+		local _,_,woundPlayer,woundQty = string.find(msg, L["trigger_woundOther"])
+		local woundPlayerAndWoundQty = woundPlayer .. " " .. woundQty
+		self:Sync(syncName.wound.." "..woundPlayerAndWoundQty)
 	end
 end
-
 
 
 function module:BigWigs_RecvSync(sync, rest, nick)
@@ -217,29 +202,30 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		self:Decimate()
 	elseif sync == syncName.fear and self.db.profile.fear then
 		self:Fear()
+	elseif sync == syncName.wound and rest and self.db.profile.wound then
+		self:Wound(rest)
 	end
 end
 
 
-
-
 function module:Frenzy()
-	self:Message(L["msg_frenzy"], "Important", nil, true, "Alert")
-	self:Bar(L["bar_frenzyGain"], timer.frenzy, icon.frenzy, true, "red")
+	self:Message(L["msg_frenzy"], "Attention", false, nil, false)
+	self:Sound("Alert")
+	self:Bar(L["bar_frenzyGain"], timer.frenzy, icon.frenzy, true, color.frenzyGain)
 	lastFrenzy = GetTime()
 	
-	if playerClass == "HUNTER" then
-		self:WarningSign(icon.tranquil, timer.frenzy, true)
+	if UnitClass("Player") == "Hunter" then
+		self:WarningSign(icon.tranquil, timer.frenzy)
 	end
 end
 
 function module:FrenzyOver()
 	self:RemoveBar(L["bar_frenzyGain"])
-	self:RemoveWarningSign(icon.tranquil, true)
+	self:RemoveWarningSign(icon.tranquil)
 	
 	if lastFrenzy ~= 0 then
 		local NextTime = (lastFrenzy + timer.frenzy) - GetTime()
-		self:Bar(L["bar_frenzyCD"], NextTime, icon.frenzy, true, "white")
+		self:Bar(L["bar_frenzyCD"], NextTime, icon.frenzy, true, color.frenzyCd)
 	end
 end
 
@@ -248,7 +234,7 @@ function module:Enrage()
 	self:CancelDelayedMessage(L["msg_enrage60"])
 	self:CancelDelayedMessage(L["msg_enrage10"])
 	
-	self:Message(L["msg_enrage"], "Important", nil, "Beware")
+	self:Message(L["msg_enrage"], "Important", false, nil, false)
 	self:WarningSign(icon.enrage, 0.7)
 	self:Sound("Info")
 end
@@ -256,35 +242,53 @@ end
 function module:Decimate()
 	if self.db.profile.decimate then
 		self:RemoveBar(L["bar_decimate"])
-		self:Bar(L["bar_decimate"], timer.decimate, icon.decimate, true, "Black")
-		self:DelayedMessage(timer.decimate - 5, L["msg_decimate5"], "Urgent")
+		self:Bar(L["bar_decimate"], timer.decimate, icon.decimate, true, color.decimate)
+		self:DelayedMessage(timer.decimate - 5, L["msg_decimate5"], "Urgent", false, nil, false)
 		self:Sound("Beware")
 	end
 	
 	if self.db.profile.zombies then
 		self.zomnum = 1
-		self:Bar(string.format(L["bar_zombies"],self.zomnum), timer.zombie, icon.zombie, true, "Green")
+		self:Bar(string.format(L["bar_zombies"],self.zomnum), timer.zombie, icon.zombie, true, color.zombie)
 		self.zomnum = self.zomnum + 1
 		self:Zombie()
 	end
 end
 
 function module:Fear()
-	self:Bar(L["bar_fearCD"], timer.fear, icon.fear, true, "Blue")
+	self:Bar(L["bar_fearCD"], timer.fear, icon.fear, true, color.fear)
 end
 
 function module:Zombies()
-	self:Bar(string.format(L["bar_zombies"],self.zomnum), timer.zombie, icon.zombie, true, "Green")
+	self:Bar(string.format(L["bar_zombies"],self.zomnum), timer.zombie, icon.zombie, true, color.zombie)
 
 	if self.zomnum <= 10 then
 		self.zomnum = self.zomnum + 1
 	elseif self.zomnum > 10 then
-		self:CancelScheduledEvent("bwgluthzbrepop")
+		self:CancelScheduledEvent("Zombies")
 		self:RemoveBar(string.format(L["bar_zombies"], self.zomnum ))
 		self.zomnum = 1
 	end
 end
 
 function module:Zombie()
-	self:ScheduleRepeatingEvent("bwgluthzbrepop", self.Zombies, timer.zombie, self)
+	self:ScheduleRepeatingEvent("Zombies", self.Zombies, timer.zombie, self)
+end
+
+function module:Wound(rest)
+	local woundPlayer = strsub(rest,0,strfind(rest," ") - 1)
+	local woundQty = tonumber(strsub(rest,strfind(rest," "),strlen(rest)))
+	
+	self:RemoveBar(woundPlayer.." ".."1"..L["bar_wound"])
+	self:RemoveBar(woundPlayer.." ".."2"..L["bar_wound"])
+	self:RemoveBar(woundPlayer.." ".."3"..L["bar_wound"])
+	self:RemoveBar(woundPlayer.." ".."4"..L["bar_wound"])
+	self:RemoveBar(woundPlayer.." ".."5"..L["bar_wound"])
+	self:RemoveBar(woundPlayer.." ".."6"..L["bar_wound"])
+	self:RemoveBar(woundPlayer.." ".."7"..L["bar_wound"])
+	self:RemoveBar(woundPlayer.." ".."8"..L["bar_wound"])
+	self:RemoveBar(woundPlayer.." ".."9"..L["bar_wound"])
+	self:RemoveBar(woundPlayer.." ".."10"..L["bar_wound"])
+
+	self:Bar(woundPlayer.." "..woundQty..L["bar_wound"], timer.wound, icon.wound, true, color.wound)
 end

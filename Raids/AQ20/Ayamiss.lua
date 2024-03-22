@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Ayamiss the Hunter", "Ruins of Ahn'Qiraj")
 
-module.revision = 30027
+module.revision = 30069
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"bigicon", "sacrifice", "bosskill"}
 
@@ -15,6 +15,7 @@ L:RegisterTranslations("enUS", function() return {
 	bigicon_cmd = "bigicons",
 	bigicon_name = "Kill the larva icon alert",
 	bigicon_desc = "Shows a big icon when a larva spawns",
+	
 	
 	sacrificeother_trigger = "(.*) is afflicted by Paralyze.",
 	sacrificeyou_trigger = "(.*) are afflicted by Paralyze.",
@@ -79,10 +80,11 @@ end
 function module:UNIT_HEALTH(arg1)
 	if UnitName(arg1) == module.translatedName then
 		local health = UnitHealth(arg1)
-		if health > 65 and health <= 70 and not p2 then
+		local maxHealth = UnitHealthMax(arg1)
+		if math.ceil(100*health/maxHealth) > 65 and math.ceil(100*health/maxHealth) <= 70 and not p2 then
 			self:Sync(syncName.p2)
 			p2 = true
-		elseif health > 70 and p2 then
+		elseif math.ceil(100*health/maxHealth) > 70 and p2 then
 			p2 = nil
 		end
 	end

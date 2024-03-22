@@ -1,229 +1,200 @@
 
-----------------------------------
---      Module Declaration      --
-----------------------------------
-
 local module, L = BigWigs:ModuleDeclaration("Renataki", "Zul'Gurub")
 
-
-----------------------------
---      Localization      --
-----------------------------
+module.revision = 30067
+module.enabletrigger = module.translatedName
+module.toggleoptions = {"vanish", "enrage", "gouge", "bosskill"}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Renataki",
-
-	enrage_trigger = "Renataki gains Enrage\.",
-	enragesoon_message = "Enrage soon! Get ready!",
-	enrage_message = "Enraged!",
-	vanishsoon_message = "Vanish soon!",
-	vanish_message = "Boss has vanished!",
-	unvanish_message = "Boss is revealed!",
-	vanish_bar = "Vanish",
-	return_bar = "Return",
-
+	
 	vanish_cmd = "vanish",
-	vanish_name = "Vanish announce",
-	vanish_desc = "Shows warnings for boss' Vanish.",
+	vanish_name = "Vanish / Return Alert",
+	vanish_desc = "Warn for Vanish and Return.",
 
-	enraged_cmd = "enraged",
-	enraged_name = "Announce boss Enrage",
-	enraged_desc = "Lets you know when boss hits harder.",
+	enrage_cmd = "enrage",
+	enrage_name = "Enrage Alert",
+	enrage_desc = "Warn for Enrage.",
+	
+	gouge_cmd = "gouge",
+	gouge_name = "Gouge Alert",
+	gouge_desc = "Warn for Gouge.",
+	
+	
+	--no trigger for vanish
+	msg_vanish = "Renataki has Vanished!",
+	bar_nextReturn = "Return",
+	
+	trigger_vanishFade = "Unknown's Ambush", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	msg_vanishFade = "Renataki Appears!",
+	bar_nextVanish = "Vanish",
+	
+	trigger_enrage = "Renataki gains Enrage.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	msg_enrage = "Enrage!",
+	
+	trigger_gouge = "Renataki's Gouge", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_gouge = "Gouge CD",	
 } end )
 
-L:RegisterTranslations("esES", function() return {
-	--cmd = "Renataki",
-
-	enrage_trigger = "Renataki gana Enfurecer\.",
-	enragesoon_message = "¡Enfurecer pronto! Prepárate!",
-	enrage_message = "¡Enfurecido!",
-	vanishsoon_message = "¡Esfumar pronto!",
-	vanish_message = "¡El jefe se he esfumado!",
-	unvanish_message = "¡El jefe está revelado!",
-	vanish_bar = "Esfumarse",
-	return_bar = "Regresar",
-
-	--vanish_cmd = "vanish",
-	vanish_name = "Alerta de Esfumar",
-	vanish_desc = "Avisa para Esfumar.",
-
-	--enraged_cmd = "enraged",
-	enraged_name = "Alerta de Enfurecer",
-	enraged_desc = "Avisa para Enfurecer.",
-} end )
-
-L:RegisterTranslations("deDE", function() return {
-	cmd = "Renataki",
-
-	enrage_trigger = "Renataki bekommt \'Wutanfall\'\.",
-	enragesoon_message = "Raserei bald! Mach dich bereit!",
-	enrage_message = "Boss ist in Raserei!",
-	vanishsoon_message = "Verschwinden bald!",
-	vanish_message = "Boss ist verschwunden!",
-	unvanish_message = "Boss wird aufgedeckt!",
-	vanish_bar = "Verschwinden",
-
-	vanish_cmd = "vanish",
-	vanish_name = "Verschwinden anzeigen",
-	vanish_desc = "Verk\195\188ndet Boss' Verschwinden.",
-
-	enraged_cmd = "enraged",
-	enraged_name = "Verk\195\188ndet Boss' Raserei",
-	enraged_desc = "L\195\164sst dich wissen, wenn Boss h\195\164rter zuschl\195\164gt.",
-} end )
-
-
----------------------------------
---      	Variables 		   --
----------------------------------
-
--- module variables
-module.revision = 20006 -- To be overridden by the module!
-module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
-module.toggleoptions = {"vanish", "enraged", "bosskill"}
-
--- locals
 local timer = {
-	vanishSoon = 28,
-	unvanish = 20,
+	nextVanish = 28,
+	nextReturn = 20,
+	
+	gouge = 9, --saw 8.979 and 10.755
 }
 local icon = {
-	vanish = "Ability_Stealth",
+	nextVanish = "ability_vanish",
+	nextReturn = "ability_rogue_ambush",
+	
+	enrage = "spell_shadow_unholyfrenzy",
+	
+	gouge = "ability_gouge",
+}
+local color = {
+	vanish = "White",	
+	gouge = "Red",
 }
 local syncName = {
-	unvanish = "RenatakiUnvanish"..module.revision,
 	vanish = "RenatakiVanish"..module.revision,
+	vanishFade = "RenatakiUnvanish"..module.revision,
 	enrage = "RenatakiEnrage"..module.revision,
-	enrageSoon = "RenatakiEnrageSoon"..module.revision,
+	gouge = "RenatakiGouge"..module.revision,
 }
 
+local gougeTime = 0
+local vanishTime = 0
 
-------------------------------
---      Initialization      --
-------------------------------
-
---module:RegisterYellEngage(L["start_trigger"])
-
--- called after module is enabled
 function module:OnEnable()
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS")
-	self:RegisterEvent("UNIT_HEALTH")
-
-	self:ThrottleSync(5, syncName.unvanish)
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
+		
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event") --trigger_enrage
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event") --trigger_vanishFade, trigger_gouge
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event") --trigger_vanishFade, trigger_gouge
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event") --trigger_vanishFade, trigger_gouge
+	
 	self:ThrottleSync(5, syncName.vanish)
+	self:ThrottleSync(5, syncName.vanishFade)
 	self:ThrottleSync(5, syncName.enrage)
-	self:ThrottleSync(10, syncName.enrageSoon)
+	self:ThrottleSync(5, syncName.gouge)
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
-	enrageannounced = nil
-	vanished = nil
 end
 
--- called after boss is engaged
 function module:OnEngage()
+	gougeTime = 0
+	vanishTime = 0
+	
 	if self.db.profile.vanish then
-		self:Bar(L["vanish_bar"], timer.vanishSoon, icon.vanish)
+		self:Bar(L["bar_nextVanish"], timer.nextVanish, icon.nextVanish, true, color.vanish)
 	end
-	self:ScheduleRepeatingEvent("renatakivanishcheck", self.CheckVanish, 1, self)
+	
+	if self.db.profile.gouge then
+		self:Bar(L["bar_gouge"], timer.gouge, icon.gouge, true, color.gouge)
+	end
+	
+	self:ScheduleRepeatingEvent("CheckIfVanish", self.CheckIfVanish, 0.5, self)
 end
 
--- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
 end
 
-
-------------------------------
---      Event Handlers	    --
-------------------------------
-
-function module:CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS(msg)
-	if msg == L["enrage_trigger"] then
+function module:Event(msg)
+	if string.find(msg, L["trigger_vanishFade"]) then
+		self:Sync(syncName.vanishFade)
+	
+	elseif msg == L["trigger_enrage"] then
 		self:Sync(syncName.enrage)
+	
+	elseif string.find(msg, L["trigger_gouge"]) then
+		self:Sync(syncName.gouge)
 	end
 end
 
-function module:UNIT_HEALTH(arg1)
-	if UnitName(arg1) == module.translatedName then
-		local health = UnitHealth(arg1)
-		if health > 25 and health <= 30 and not enrageannounced then
-			self:Sync(syncName.enrageSoon)
-			enrageannounced = true
-		elseif health > 30 and enrageannounced then
-			enrageannounced = nil
-		end
-	end
-end
-
-
-------------------------------
---      Synchronization	    --
-------------------------------
 
 function module:BigWigs_RecvSync(sync, rest, nick)
-	if sync == syncName.enrageSoon and self.db.profile.enraged then
-		self:Message(L["enragesoon_message"], "Urgent")
-	elseif sync == syncName.enrage and self.db.profile.enraged then
-		self:Message(L["enrage_message"], "Attention")
-	elseif sync == syncName.unvanish then
-		self:VisiblePhase()
-	elseif sync == syncName.vanish then
-		self:VanishPhase()
+	if sync == syncName.vanish then
+		self:Vanish()
+	elseif sync == syncName.vanishFade then
+		self:VanishFade()
+	
+	elseif sync == syncName.enrage and self.db.profile.enrage then
+		self:Enrage()
+		
+	elseif sync == syncName.gouge and self.db.profile.gouge then
+		self:Gouge()
 	end
 end
 
-------------------------------
---      Sync Handlers	    --
-------------------------------
 
-function module:VisiblePhase()
-	vanished = false
-	self:CancelScheduledEvent("renatakiunvanishcheck")
+function module:Vanish()
+	self:CancelScheduledEvent("CheckIfVanish")
+	
 	if self.db.profile.vanish then
-		self:RemoveBar(L["return_bar"])
-		self:Bar(L["vanish_bar"], timer.vanishSoon, icon.vanish)
-		self:Message(L["unvanish_message"], "Attention")
+		self:RemoveBar(L["bar_nextVanish"])
+		
+		self:Bar(L["bar_nextReturn"], timer.nextReturn, icon.nextReturn, true, color.vanish)
+		self:Message(L["msg_vanish"], "Attention", false, nil, false)
 	end
-
-	if not vanished then
-		self:ScheduleRepeatingEvent("renatakivanishcheck", self.CheckVanish, 0.5, self)
+	
+	self:ScheduleRepeatingEvent("CheckIfVanishFade", self.CheckIfVanishFade, 0.5, self)
+	
+	if self.db.profile.gouge then
+		self:RemoveBar(L["bar_gouge"])
+		vanishTime = GetTime()
 	end
 end
 
-function module:VanishPhase()
-	vanished = true
-	self:CancelScheduledEvent("renatakivanishcheck")
+function module:VanishFade()
+	self:CancelScheduledEvent("CheckIfVanishFade")
+	
 	if self.db.profile.vanish then
-		self:RemoveBar(L["vanish_bar"])
-		self:Message(L["vanish_message"], "Attention")
-		self:Bar(L["return_bar"], timer.unvanish, icon.vanish)
+		self:RemoveBar(L["bar_nextReturn"])
+		
+		self:Bar(L["bar_nextVanish"], timer.nextVanish, icon.nextVanish, true, color.vanish)
+		self:Message(L["msg_vanishFade"], "Attention", false, nil, false)
 	end
-	self:ScheduleRepeatingEvent("renatakiunvanishcheck", self.CheckUnvanish, 0.5, self)
-end
-
-------------------------------
---      Utility	Functions   --
-------------------------------
-
-function module:CheckUnvanish()
-	self:DebugMessage("CheckUnvanish")
-	if module:IsRenatakiVisible() then
-		self:Sync(syncName.unvanish)
+	
+	self:ScheduleRepeatingEvent("CheckIfVanish", self.CheckIfVanish, 0.5, self)
+	
+	if self.db.profile.gouge then
+		self:Bar(L["bar_gouge"], timer.gouge - (vanishTime - gougeTime), icon.gouge, true, color.gouge)
 	end
 end
-function module:CheckVanish()
-	self:DebugMessage("CheckVanish")
+
+function module:Enrage()
+	self:WarningSign(icon.enrage, 1)
+	self:Sound("Beware")
+	self:Message(L["msg_enrage"], "Urgent", false, nil, false)
+end
+
+function module:Gouge()
+	self:Sound("Info")
+	self:Bar(L["bar_gouge"], timer.gouge, icon.gouge, true, color.gouge)
+	gougeTime = GetTime()
+end
+
+
+--vanish / visible check
+function module:CheckIfVanish()
 	if not module:IsRenatakiVisible() then
 		self:Sync(syncName.vanish)
 	end
 end
+
+function module:CheckIfVanishFade()
+	if module:IsRenatakiVisible() then
+		self:Sync(syncName.vanishFade)
+	end
+end
+
 function module:IsRenatakiVisible()
-	if UnitName("playertarget") == self.translatedName then
+	if UnitName("Target") == self.translatedName then
 		return true
 	else
-		for i = 1, GetNumRaidMembers(), 1 do
-			if UnitName("Raid"..i.."target") == self.translatedName then
+		for i=1,GetNumRaidMembers() do
+			if UnitName("Raid"..i.."Target") == self.translatedName then
 				return true
 			end
 		end
