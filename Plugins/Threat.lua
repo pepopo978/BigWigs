@@ -62,7 +62,7 @@ BigWigsThreat.prefix = 'TWT'
 BigWigsThreat.channel = ''
 BigWigsThreat.threats = {}
 
-BigWigsThreat.classesToWatch = {} -- c
+BigWigsThreat.playerNamesToNotify = {} -- c
 
 ------------------------------
 --      Initialization      --
@@ -76,16 +76,36 @@ function BigWigsThreat:OnDisable()
 	BigWigsThreat:StopListening()
 end
 
+function BigWigsThreat:IsListening()
+	return self:IsEventRegistered("CHAT_MSG_ADDON")
+end
+
 function BigWigsThreat:StartListening()
-	if not self:IsEventRegistered("CHAT_MSG_ADDON") then
+	if not self:IsListening() then
 		self:RegisterEvent("CHAT_MSG_ADDON", "Event")
 	end
 end
 
 function BigWigsThreat:StopListening()
-	if self:IsEventRegistered("CHAT_MSG_ADDON") then
+	if self:IsListening() then
 		self:UnregisterEvent("CHAT_MSG_ADDON")
 	end
+end
+
+function BigWigsThreat:EnableEventsForPlayerName(playerName)
+	if not self.playerNamesToNotify[playerName] then
+		self.playerNamesToNotify[playerName] = true
+	end
+end
+
+function BigWigsThreat:DisableEventsForPlayerName(playerName)
+	if self.playerNamesToNotify[playerName] then
+		self.playerNamesToNotify[playerName] = nil
+	end
+end
+
+function BigWigsThreat:DisablePlayerEvents()
+	self.playerNamesToNotify = {}
 end
 
 function BigWigsThreat:Event()
@@ -120,11 +140,9 @@ function BigWigsThreat:handleThreatPacket(packet)
 
 	local players = self:explode(playersString, ';')
 	for _, tData in players do
-
 		local msgEx = self:explode(tData, ':')
-
 		if msgEx[1] and msgEx[2] and msgEx[3] and msgEx[4] and msgEx[5] then
-			local player = string.lower(msgEx[1])
+			local player = msgEx[1]
 			local tank = msgEx[2] == '1'
 			local threat = tonumber(msgEx[3])
 			local perc = tonumber(msgEx[4])
@@ -140,6 +158,10 @@ function BigWigsThreat:handleThreatPacket(packet)
 			if tank then
 				self.tankName = player
 			end
+
+			if self.playerNamesToNotify[player] then
+				self:TriggerEvent("BigWigs_ThreatUpdate", player, threat, perc, tank, melee)
+			end
 		end
 	end
 end
@@ -150,8 +172,7 @@ end
 -- perc = threatPercentage,
 -- melee = boolean
 function BigWigsThreat:GetPlayerInfo(playerName)
-	local lowerPlayerName = string.lower(playerName)
-	if not self.threats[lowerPlayerName] then
+	if not self.threats[playerName] then
 		return {
 			threat = false,
 			tank = false,
@@ -159,7 +180,7 @@ function BigWigsThreat:GetPlayerInfo(playerName)
 			melee = false,
 		}
 	end
-	return self.threats[lowerPlayerName]
+	return self.threats[playerName]
 end
 
 function BigWigsThreat:explode(str, delimiter)

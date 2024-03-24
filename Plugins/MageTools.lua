@@ -45,6 +45,8 @@ local scorchTimerUpdateEvent = "scorchTimerUpdateEvent"
 
 local warningSyncSpeed = 5
 
+local ticksForWarning = 4     -- if another player own's ignite
+local ticksForSelfWarning = 5 -- if current player owns the ignite
 -----------------------------------------------------------------------
 --      Localization
 -----------------------------------------------------------------------
@@ -111,6 +113,9 @@ L:RegisterTranslations("enUS", function()
 		["IgniteThreatBarHeight"] = "Ignite threat bar height",
 		["IgniteThreatBarHeightDesc"] = "Sets the height of the ignite threat bar",
 
+		["IgniteAutoWarning"] = "Automated ignite warning",
+		["IgniteAutoWarningDesc"] = "Warning message when small number of ignite ticks will pull aggro for the ignite owner",
+
 		["IgnitePlayerWarning"] = "Ignite player warnings",
 		["IgnitePlayerWarningDesc"] = "Whether to display + play sounds for manual player warnings",
 		["IgnitePlayerWarningTrigger"] = "Trigger ignite warning",
@@ -130,7 +135,7 @@ L:RegisterTranslations("enUS", function()
 
 		ignite_afflict_test = "^(.+) is afflicted by Ignite(.*)", -- for stacks 2-5 will be "Ignite (2)".
 		ignite_gains_test = "^(.+) gains Ignite(.*)", -- for stacks 2-5 will be "Ignite (2)".
-		ignite_crit_test = "^.+ (.+) crits (.+) for .+ Fire damage",
+		ignite_crit_test = "^(.+) (.+) crits (.+) for .+ Fire damage",
 		ignite_dmg = "^(.+) suffers (.+) Fire damage from (.+) Ignite",
 		ignite_fades_test = "Ignite fades from (.+).",
 
@@ -175,6 +180,7 @@ BigWigsMageTools.defaultDB = {
 	ignitethreatthreshold = 80,
 	ignitethreatwidth = 180,
 	ignitethreatheight = 30,
+	igniteautowarning = true,
 	igniteplayerwarning = true,
 	ignitepyrorequest = true,
 }
@@ -487,6 +493,18 @@ BigWigsMageTools.consoleOptions = {
 			name = " ",
 			order = 11,
 		},
+		igniteautowarning = {
+			type = "toggle",
+			name = L["IgniteAutoWarning"],
+			desc = L["IgniteAutoWarningDesc"],
+			order = 12,
+			get = function()
+				return BigWigsMageTools.db.profile.igniteautowarning
+			end,
+			set = function(v)
+				BigWigsMageTools.db.profile.igniteautowarning = v
+			end,
+		},
 		igniteplayerwarning = {
 			type = "toggle",
 			name = L["IgnitePlayerWarning"],
@@ -549,6 +567,9 @@ BigWigsMageTools.igniteStacks = {}
 BigWigsMageTools.igniteOwners = {}
 BigWigsMageTools.igniteHasScorch = {}
 BigWigsMageTools.igniteDamage = {}
+BigWigsMageTools.previousThreat = {}
+BigWigsMageTools.previousThreatPercent = {}
+
 -----------------------------------------------------------------------
 --      Initialization
 -----------------------------------------------------------------------
@@ -564,6 +585,7 @@ function BigWigsMageTools:OnEnable()
 	if isMage then
 		-- start listening to threat events
 		BigWigsThreat:StartListening()
+		self:RegisterEvent("BigWigs_ThreatUpdate", "ThreatUpdate")
 
 		self:RegisterEvent("PLAYER_REGEN_ENABLED")
 		self:RegisterEvent("PLAYER_TARGET_CHANGED")
@@ -587,7 +609,6 @@ function BigWigsMageTools:OnEnable()
 	end
 
 	self.target = UnitName("target")
-	self:Debug("|" .. tostring(target) .. "|")
 	self:ThrottleSync(warningSyncSpeed, syncName.ignitePlayerWarning)
 	self:ThrottleSync(warningSyncSpeed, syncName.ignitePyroRequest)
 end
@@ -696,6 +717,19 @@ function BigWigsMageTools:IsMageFireSpell(spellName)
 
 end
 
+function BigWigsMageTools:UpdateIgniteOwner(playername, target)
+	local playerName = ""
+	-- playername can be "your" or "name 's"
+	if string.lower(playername) == "your" then
+		playerName = self.playerName        -- add ignite owner if it's not already set
+	else
+		--	strip the 's and the space that is currently inserted after the player name
+		playerName = string.gsub(playername, " 's", "")
+	end
+	BigWigsThreat:EnableEventsForPlayerName(playerName)
+	self.igniteOwners[target] = playerName
+end
+
 function BigWigsMageTools:IgniteEvent(msg)
 	if not self.db.profile.igniteenable then
 		return
@@ -721,14 +755,18 @@ function BigWigsMageTools:IgniteEvent(msg)
 		return true, false, afflictedTarget  -- handled, crit, target
 	else
 		-- check for ignite crits
-		local _, _, spellName, critTarget = string.find(msg, L["ignite_crit_test"])
+		local _, _, playerName, spellName, critTarget = string.find(msg, L["ignite_crit_test"])
 		if critTarget and self:IsMageFireSpell(spellName) then
 			self:Debug(msg)
-			local timeleft = self:GetTargetIgniteTimeLeft(critTarget)
 			if not self.igniteStacks[critTarget] then
 				-- may have missed msg, resync stacks
 				self:ResyncStacks()
 			end
+			-- if no owner is set, set it.  Ignite tick will correct it if wrong
+			if not self.igniteOwners[critTarget] then
+				self:UpdateIgniteOwner(playerName, critTarget)
+			end
+
 			self.igniteTimers[critTarget] = GetTime()
 			self:Ignite(critTarget)
 			return true, true, critTarget  -- handled, crit, target
@@ -741,13 +779,7 @@ function BigWigsMageTools:IgniteEvent(msg)
 		self:Debug(msg)
 		self.igniteDamage[igniteTickTarget] = tonumber(igniteDmg)
 		if igniteOwner then
-			if igniteOwner == "your" then
-				self.igniteOwners[igniteTickTarget] = self.playerName        -- add ignite owner if it's not already set
-			else
-				--	strip the 's and the space that is currently inserted after the player name
-				igniteOwner = string.gsub(igniteOwner, " 's", "")
-				self.igniteOwners[igniteTickTarget] = igniteOwner
-			end
+			self:UpdateIgniteOwner(igniteOwner, igniteTickTarget)
 		end
 		self:ResyncStacks()
 		self:Ignite(igniteTickTarget)
@@ -816,6 +848,8 @@ function BigWigsMageTools:PLAYER_REGEN_ENABLED()
 	self.igniteOwners = {}
 	self.igniteDamage = {}
 
+	BigWigsThreat:DisablePlayerEvents()
+
 	--	cancel events
 	if self:IsEventScheduled(targetChangeEvent) then
 		self:CancelScheduledEvent(targetChangeEvent)
@@ -873,7 +907,6 @@ end
 function BigWigsMageTools:RecheckTargetChange()
 	local target = UnitName("target")
 	self.target = target
-	self:Debug("|" .. tostring(target) .. "|")
 
 	-- if this target has been scorched, query current stacks
 	if target and self.scorchTimers[target] or self.igniteStacks[target] then
@@ -904,7 +937,6 @@ end
 function BigWigsMageTools:Scorch(target)
 	if not self.target then
 		self.target = UnitName("target")
-		self:Debug("|" .. tostring(target) .. "|")
 	end
 
 	if target == self.target then
@@ -925,7 +957,6 @@ end
 function BigWigsMageTools:Ignite(target)
 	if not self.target then
 		self.target = UnitName("target")
-		self:Debug("|" .. tostring(target) .. "|")
 	end
 
 	if target == self.target then
@@ -933,12 +964,34 @@ function BigWigsMageTools:Ignite(target)
 		self:StartIgniteBar(target, self:GetTargetIgniteText(target), timeleft, self.igniteStacks[target], self.igniteHasScorch[target])
 
 		--	if there's an ignite owner and we have threat data, start a threat bar as well
+		local hadThreatData = false
 		if self.igniteOwners[target] then
 			local owner = self.igniteOwners[target]
 			local threatData = BigWigsThreat:GetPlayerInfo(owner)
+			self:Debug("Owner threat data " .. tostring(owner) .. " "
+					.. tostring(threatData['threat']) .. " " .. tostring(threatData['perc']))
 			if threatData['perc'] then
-				self:StartThreatBar(target, owner, threatData['perc'])
+				hadThreatData = true
+				self:StartThreatBar(target, owner, threatData['perc'], threatData['threat'])
 			end
+		end
+		if not hadThreatData then
+			self:Debug("No threat data for target " .. tostring(target) .. " owner " .. tostring(self.igniteOwners[target]))
+		end
+	end
+end
+
+function BigWigsMageTools:ThreatUpdate(player, threat, perc, tank, melee)
+	if not self.target then
+		return
+	end
+
+	if self.igniteOwners[self.target] then
+		local owner = self.igniteOwners[self.target]
+		if player == owner and perc then
+			self:Debug("Threat data update " .. tostring(player) .. " "
+					.. tostring(threat) .. " " .. tostring(perc))
+			self:StartThreatBar(self.target, owner, perc, threat)
 		end
 	end
 end
@@ -1028,7 +1081,7 @@ end
 function BigWigsMageTools:Test()
 	self:StopAllBars()
 
-	self:StartThreatBar("Ragnaros", "Pepopo", 55)
+	self:StartThreatBar("Ragnaros", "Pepopo", 55, 3500)
 	self:StartIgniteBar("Ragnaros", "2222 Pepopo", timer.ignite, 5, true)
 	self:StartScorchBar("Thaddius", timer.scorch, 5)
 
@@ -1400,7 +1453,18 @@ function BigWigsMageTools:StartIgniteBar(target, text, timeleft, stacks, igniteH
 	tinsert(barCache, id)
 end
 
-function BigWigsMageTools:StartThreatBar(target, owner, percent)
+function BigWigsMageTools:CalcIgniteTicksTillAggro(target, percent, threat)
+	if not target or not percent or not threat or not self.igniteDamage[target] then
+		return nil
+	end
+
+	local decimalPercent = percent / 100.0
+	local aggroThreat = threat / decimalPercent - threat
+	local threatPerTick = self.igniteDamage[target] * 0.7 -- burning soul reduces threat by 30%
+	return math.floor(aggroThreat / threatPerTick)
+end
+
+function BigWigsMageTools:StartThreatBar(target, owner, percent, threat)
 	if not owner or not self.db.profile.ignitethreatenable then
 		return
 	end
@@ -1423,8 +1487,27 @@ function BigWigsMageTools:StartThreatBar(target, owner, percent)
 		candybar:SetText(id, text)
 	end
 
+	local ticksTillAggro = self:CalcIgniteTicksTillAggro(target, percent, threat)
+	-- calculate number of ignite ticks to 100% threat
+	if ticksTillAggro then
+		if ticksTillAggro < 10 then
+			candybar:SetIconText(id, ticksTillAggro)
+			local warning = ticksForWarning
+			if owner == self.playerName then
+				warning = ticksForSelfWarning
+			end
+
+			if ticksTillAggro <= warning and self.db.profile.igniteautowarning then
+				self:WarningSign("Spell_Fire_Incinerate", 2, true, tostring(ticksTillAggro) .. " ticks till aggro")
+			end
+		else
+			candybar:SetIconText(id, ">10")
+		end
+	else
+		candybar:SetIconText(id, "")
+	end
+
 	candybar:SetCandyBarTexture(id, surface:Fetch(self.db.profile.texture))
-	candybar:SetIconText(id, "")
 
 	if type(self.db.profile.ignitethreatwidth) == "number" then
 		local minwidth = self.db.profile.ignitethreatwidth / 2
@@ -1467,8 +1550,8 @@ function BigWigsMageTools:StopAllBars()
 	barCache = {}
 end
 
-function BigWigsMageTools:Test()
-	-- /run local m=BigWigs:GetModule("MageTools");m:Test()
+function BigWigsMageTools:Test1()
+	-- /run local m=BigWigs:GetModule("MageTools");m:Test1()
 	local function scorch1()
 		self:PlayerDamageEvents("Pepopo 's Scorch hits Heroic Training Dummy for 743 Fire damage.")
 		self:PlayerDamageEvents("Heroic Training Dummy is afflicted by Fire Vulnerability")
