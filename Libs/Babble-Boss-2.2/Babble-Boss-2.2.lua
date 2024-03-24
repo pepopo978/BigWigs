@@ -28,6 +28,9 @@ local BabbleBoss = AceLibrary("AceLocale-2.2"):new(MAJOR_VERSION)
 
 BabbleBoss:RegisterTranslations("enUS", function()
 	return {
+		["Core Hound"] = true,
+		["Lava Surger"] = true,
+		["Flame Imp"] = true,
 		["Mad Servant"] = true,
 		["Deathknight Cavalier"] = true,
 		["Death Lord"] = true,

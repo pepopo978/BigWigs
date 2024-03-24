@@ -1,6 +1,6 @@
 ## Interface: 11200
 
-## Title: |cFFFF8080Relar|r Big Wigs |cff7fff7f30072|r |cffabd473Turtle-WoW|r
+## Title: |cFFFF8080Relar|r Big Wigs |cff7fff7f30073|r |cffabd473Turtle-WoW|r
 ## Title-zhCN: |cffabd473Turtle-WoW|r Big Wigs
 ## Notes: Boss Mods with Timer bars.
 ## Notes-esES: Módulos para Jefes con barras temporizadoras.
@@ -146,6 +146,9 @@ Raids\MC\Shazzrah.lua
 Raids\MC\Garr.lua
 Raids\MC\Sulfuron.lua
 Raids\MC\Golemagg.lua
+Raids\MC\AncientCoreHound.lua
+Raids\MC\FlameImp.lua
+Raids\MC\Surger.lua
 Raids\MC\CoreHound.lua
 
 Raids\DireMaul\CaptainKromcrush.lua
