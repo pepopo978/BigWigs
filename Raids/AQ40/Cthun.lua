@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("C'Thun", "Ahn'Qiraj")
 
-module.revision = 30069
+module.revision = 30074
 local eyeofcthun = AceLibrary("Babble-Boss-2.2")["Eye of C'Thun"]
 local cthun = AceLibrary("Babble-Boss-2.2")["C'Thun"]
 module.enabletrigger = {eyeofcthun, cthun}
@@ -210,7 +210,8 @@ function module:OnSetup()
 	firstWarning = nil
 	phase2started = nil
 	doCheckForWipe = false
-
+	isWeakened = nil
+	
 	tentacletime = timer.p1Tentacle
 
 	self:RemoveProximity()
@@ -229,8 +230,30 @@ end
 function module:MINIMAP_ZONE_CHANGED(msg)
 	--The Scarab Wall when you release, then Gates of Ahn'Qiraj as you run back, then Ahn'Qiraj when you zone in
 	if (GetMinimapZoneText() == "The Scarab Wall" or GetMinimapZoneText() == "Gates of Ahn'Qiraj") and self.core:IsModuleActive(module.translatedName) then
-		self.core:DisableModule(module.translatedName)
+		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
+		self:ResetModule()
+		DEFAULT_CHAT_FRAME:AddMessage("   Auto-Rebooting C'Thun Module")
+		
+		--self.core:DisableModule(module.translatedName)
 	end
+end
+
+function module:ResetModule()
+	self.started = nil
+	self.firstTentacleHP = 100
+	self.secondTentacleHP = 100
+	self.warning = 100
+	fleshtentacledead = nil
+	secondTentacleLowWarn = nil
+	eyeTarget = nil
+	cthunstarted = nil
+	firstGlare = nil
+	firstWarning = nil
+	phase2started = nil
+	doCheckForWipe = false
+	isWeakened = nil
+	
+	tentacletime = timer.p1Tentacle
 end
 
 function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
