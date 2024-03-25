@@ -456,12 +456,12 @@ end
 function module:MINIMAP_ZONE_CHANGED(msg)
 	if GetMinimapZoneText() == "Sapphiron's Lair" and self.core:IsModuleActive(module.translatedName) then
 		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
-		self:ResetKt()
+		self:ResetModule()
 		DEFAULT_CHAT_FRAME:AddMessage("   Auto-Rebooting Kel'Thuzad Module")
 	
 	elseif GetMinimapZoneText() == "Eastern Plaguelands" and self.core:IsModuleActive(module.translatedName) then
 		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
-		self:ResetKt()
+		self:ResetModule()
 		DEFAULT_CHAT_FRAME:AddMessage("   Auto-Rebooting Kel'Thuzad Module")
 	
 	elseif GetMinimapZoneText() == "Kel'Thuzad Chamber" and not self.core:IsModuleActive(module.translatedName) then
