@@ -582,7 +582,7 @@ function BigWigsMageTools:OnEnable()
 	self.frames = {}
 	self:SetupFrames()
 	self:RegisterEvent("BigWigs_RecvSync")
-	if isMage then
+	if self.db.profile.enable then
 		-- start listening to threat events
 		BigWigsThreat:StartListening()
 		self:RegisterEvent("BigWigs_ThreatUpdate", "ThreatUpdate")
@@ -724,7 +724,7 @@ function BigWigsMageTools:UpdateIgniteOwner(playername, target)
 		playerName = self.playerName        -- add ignite owner if it's not already set
 	else
 		--	strip the 's and the space that is currently inserted after the player name
-		playerName = string.gsub(playername, " 's", "")
+		playerName = string.gsub(playername, "(%s?)'s", "")
 	end
 	BigWigsThreat:EnableEventsForPlayerName(playerName)
 	self.igniteOwners[target] = playerName
