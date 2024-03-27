@@ -146,8 +146,6 @@ local syncName = {
 
 	polarityShiftCast = "ThaddiusPolarityShiftCast" .. module.revision,
 	polarity = "ThaddiusPolarity" .. module.revision,
-
-	newPolarity = "ThaddiusNewPolarity" .. module.revision,
 }
 
 local phase2started = nil
@@ -174,7 +172,7 @@ function module:OnEnable()
 	self:ThrottleSync(10, syncName.enrage)
 	self:ThrottleSync(5, syncName.polarityShiftCast)
 	self:ThrottleSync(5, syncName.polarity)
-	self:ThrottleSync(5, syncName.newPolarity)
+	self:ThrottleSync(2, syncName.checkAuras)
 end
 
 function module:OnSetup()
@@ -374,7 +372,7 @@ end
 
 function module:PolarityShift()
 	self:Bar(L["bar_polarityShiftCd"], timer.polarityShiftCd, icon.polarityShift, true, color.polarityShiftCd)
-	self:DelayedSync(1, syncName.checkAuras)
+	self:DelayedSync(1, syncName.checkAuras) -- PLAYER_AURAS_CHANGED doesn't seem to always fire, use this as a backup
 end
 
 function module:PLAYER_AURAS_CHANGED(msg)
