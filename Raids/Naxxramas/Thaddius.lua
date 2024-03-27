@@ -146,6 +146,8 @@ local syncName = {
 
 	polarityShiftCast = "ThaddiusPolarityShiftCast" .. module.revision,
 	polarity = "ThaddiusPolarity" .. module.revision,
+
+	newPolarity = "ThaddiusNewPolarity" .. module.revision,
 }
 
 local phase2started = nil
