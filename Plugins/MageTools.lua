@@ -998,12 +998,12 @@ end
 
 function BigWigsMageTools:BigWigs_RecvSync(sync, arg1, arg2)
 	if sync == syncName.ignitePlayerWarning then
-		if self.db.profile.igniteplayerwarning then
+		if self.db.profile.enable and self.db.profile.igniteplayerwarning then
 			self:Bar(arg1 .. " says stop casting!!!", 5, "inv_misc_bone_orcskull_01", false, "Red")
 			BigWigsSound:BigWigs_Sound("stopcasting")
 		end
 	elseif sync == syncName.ignitePyroRequest then
-		if self.db.profile.ignitepyrorequest then
+		if self.db.profile.enable and self.db.profile.ignitepyrorequest then
 			self:Bar(arg1 .. " has requested pyro!!!", 3, "spell_fire_fireball02", false, "Red")
 			BigWigsSound:BigWigs_Sound("Pyro")
 		end
