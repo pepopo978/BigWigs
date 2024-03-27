@@ -190,7 +190,7 @@ function module:OnDisengage()
 end
 
 function module:Event(msg)
-	if string.find(msg, L["trigger_selfReflect"]) and not string.find(msg, "Elemental Vulnerability") and not string.find(msg, "Fire Strike") then
+	if string.find(msg, L["trigger_selfReflect"]) and not (string.find(msg, "Elemental Vulnerability") or string.find(msg, "Fire Strike")) then
 		self:SelfReflect()
 	end
 	

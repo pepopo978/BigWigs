@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Lucifron", "Molten Core")
 
-module.revision = 30073
+module.revision = 30075
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"curse", "doom", "mc", -1, "shock", -1, "adds", "bosskill"}
 module.wipemobs = {"Flamewaker Protector"}
@@ -109,7 +109,7 @@ local syncName = {
 local addDead = 0
 
 function module:OnEnable()
-	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event") --Debug
 	
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event") --trigger_curse, trigger_doom, trigger_mcYou
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event") --trigger_curse, trigger_doom, trigger_mcOther
@@ -141,12 +141,13 @@ end
 
 function module:OnSetup()
 	self.started = nil
-	addDead = 0
 
 	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH") --addDead, mcFade
 end
 
 function module:OnEngage()
+	addDead = 0
+	
 	if self.db.profile.curse then
 		self:Bar(L["bar_curseCd"], timer.curseFirstCd, icon.curse, true, color.curse)
 	end
@@ -178,7 +179,9 @@ function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
 	
 	elseif string.find(msg, L["trigger_deadOther"]) then
 		local _,_, deadPerson, _ = string.find(msg, L["trigger_deadOther"])
-		self:Sync(syncName.mcFade .. " " .. mcFadePerson)
+		if deadPerson ~= "Flamewaker Protector" and deadPerson ~= "Lucifron" then
+			self:Sync(syncName.mcFade .. " " .. deadPerson)
+		end
 	end
 end
 

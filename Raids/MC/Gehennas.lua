@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Gehennas", "Molten Core")
- --MUST TEST
-module.revision = 30074
+
+module.revision = 30075
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"curse", "rain", "adds", "bosskill"}
 module.wipemobs = {"Flamewaker"}
@@ -18,8 +18,8 @@ L:RegisterTranslations("enUS", function() return {
 	rain_desc = "Warn for Rain of Fire",
 	
 	adds_cmd = "adds",
-	adds_name = "Dead adds counter",
-	adds_desc = "Announces dead Flamewakers",
+	adds_name = "Add Dies Alert",
+	adds_desc = "Warn for Adds Deaths",
 	
 	
 	trigger_curse = "afflicted by Gehennas' Curse.", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
@@ -77,6 +77,8 @@ function module:OnSetup()
 end
 
 function module:OnEngage()
+	if self.core:IsModuleActive("Flame Imp", "Molten Core") then self:TriggerEvent("BigWigs_RebootModule", "Flame Imp", "Molten Core") end
+	
 	addDead = 0
 	
 	if self.db.profile.curse then
@@ -120,7 +122,7 @@ end
 
 
 function module:Curse()
-	self:IntervalBar(L["bar_curse"], timer.earliestCurse, timer.latestCurse, icon.curse, true, "Blue")
+	self:IntervalBar(L["bar_curseCd"], timer.curseCd[1], timer.curseCd[2], icon.curse, true, color.curseCd)
 	
 	if UnitClass("Player") == "Mage" or UnitClass("Player") == "Druid" then
 		self:Message(L["msg_curse"], "Urgent", false, nil, false)

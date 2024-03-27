@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("C'Thun", "Ahn'Qiraj")
 
-module.revision = 30074
+module.revision = 30075
 local eyeofcthun = AceLibrary("Babble-Boss-2.2")["Eye of C'Thun"]
 local cthun = AceLibrary("Babble-Boss-2.2")["C'Thun"]
 module.enabletrigger = {eyeofcthun, cthun}
@@ -136,6 +136,11 @@ local icon = {
 	weaken = "INV_ValentinesCandy",
 	eyeBeamSelf = "Ability_creature_poison_05",
 	digestiveAcid = "ability_creature_disease_02",
+	
+	stomachTentacle = "inv_misc_ahnqirajtrinket_05",
+}
+local color = {
+	stomachTentacle = "Magenta",
 }
 local syncName = {
 	p2Start = "CThunP2Start"..module.revision,
@@ -388,10 +393,10 @@ function module:CThunP2Start()
 		phase2started = true
 		doCheckForWipe = false -- disable wipe check since we get out of combat, enable it later again
 		tentacletime = timer.p2Tentacle
-
-		self:TriggerEvent("BigWigs_StartHPBar", self, L["First Tentacle"], 100)
+		
+		self:TriggerEvent("BigWigs_StartHPBar", self, L["First Tentacle"], 100, "Interface\\Icons\\"..icon.tentacle, true, color.tentacle)
 		self:TriggerEvent("BigWigs_SetHPBar", self, L["First Tentacle"], 0)
-		self:TriggerEvent("BigWigs_StartHPBar", self, L["Second Tentacle"], 100)
+		self:TriggerEvent("BigWigs_StartHPBar", self, L["Second Tentacle"], 100, "Interface\\Icons\\"..icon.tentacle, true, color.tentacle)
 		self:TriggerEvent("BigWigs_SetHPBar", self, L["Second Tentacle"], 0)
 		self:ScheduleRepeatingEvent("bwcthunCheckTentacleHP", self.CheckTentacleHP, timer.CheckTentacleHP, self )
 
@@ -485,9 +490,10 @@ function module:CThunWeakenedOver()
 	self:ThrottleSync(600, syncName.weakenOver)
 	self.firstTentacleHP = 100
 	self.secondTentacleHP = 100
-	self:TriggerEvent("BigWigs_StartHPBar", self, L["First Tentacle"], 100)
+	
+	self:TriggerEvent("BigWigs_StartHPBar", self, L["First Tentacle"], 100, "Interface\\Icons\\"..icon.tentacle, true, color.tentacle)
 	self:TriggerEvent("BigWigs_SetHPBar", self, L["First Tentacle"], 0)
-	self:TriggerEvent("BigWigs_StartHPBar", self, L["Second Tentacle"], 100)
+	self:TriggerEvent("BigWigs_StartHPBar", self, L["Second Tentacle"], 100, "Interface\\Icons\\"..icon.tentacle, true, color.tentacle)
 	self:TriggerEvent("BigWigs_SetHPBar", self, L["Second Tentacle"], 0)
 		
 	self:CancelDelayedSync(syncName.weakenOver) -- ok
