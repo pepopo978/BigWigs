@@ -1,102 +1,103 @@
-
 local module, L = BigWigs:ModuleDeclaration("Anubisath Defender", "Ahn'Qiraj")
 
 module.revision = 30069
 module.enabletrigger = module.translatedName
-module.toggleoptions = {"reflect", "plague", "icon", "thunderclap", "shadowstorm", "meteor", -1, "explode", "enrage"}
+module.toggleoptions = { "reflect", "plague", "icon", "thunderclap", "shadowstorm", "meteor", -1, "explode", "enrage" }
 module.trashMod = true
 module.defaultDB = {
 	bosskill = false,
 }
 
-L:RegisterTranslations("enUS", function() return {
-	cmd = "Defender",
-	
-	reflect_cmd = "reflect",
-	reflect_name = "Spell Reflect Alert",
-	reflect_desc = "Shows bars for which reflect the Defender has",
-	
-	plague_cmd = "plague",
-	plague_name = "Plague Alert",
-	plague_desc = "Warns for Plague",
-	
-	icon_cmd = "icon",
-	icon_name = "Raid Icon for Plague",
-	icon_desc = "Place Raid Icon on the last plagued person (requires promoted or higher)",
-	
-	thunderclap_cmd = "thunderclap",
-	thunderclap_name = "Thunder Clap Alert",
-	thunderclap_desc = "Warns for Thunder Clap",
-	
-	shadowstorm_cmd = "shadowstorm",
-	shadowstorm_name = "Shadow Storm Alert",
-	shadowstorm_desc = "Warns for Shadow Storm",
-	
-	meteor_cmd = "meteor",
-	meteor_name = "Meteor Alert",
-	meteor_desc = "Warns for Meteor",
-	
-	explode_cmd = "explode",
-	explode_name = "Explode Alert",
-	explode_desc = "Warns for Explode",
+L:RegisterTranslations("enUS", function()
+	return {
+		cmd = "Defender",
 
-	enrage_cmd = "enrage",
-	enrage_name = "Enrage Alert",
-	enrage_desc = "Warns for Enrage",
-	
-	
-	trigger_arcaneFireReflect1 = "Moonfire is reflected back by Anubisath Defender.",--CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
-	trigger_arcaneFireReflect2 = "Scorch is reflected back by Anubisath Defender.",--CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
-	trigger_arcaneFireReflect3 = "Flame Shock is reflected back by Anubisath Defender.",--CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
-	trigger_arcaneFireReflect4 = "Fireball is reflected back by Anubisath Defender.",--CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
-	trigger_arcaneFireReflect5 = "Flame Lash is reflected back by Anubisath Defender.",--CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
-	trigger_arcaneFireReflect6 = "Detect Magic is reflected",--CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
-	bar_fireArcaneReflect = "Fire & Arcane Reflect",
-	
-	trigger_shadowFrostReflect1 = "Shadow Word: Pain is reflected back by Anubisath Defender.",--CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
-	trigger_shadowFrostReflect2 = "Corruption is reflected back by Anubisath Defender.",--CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
-	trigger_shadowFrostReflect3 = "Frostbolt is reflected back by Anubisath Defender.",--CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
-	trigger_shadowFrostReflect4 = "Frost Shock is reflected back by Anubisath Defender.",--CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
-	trigger_shadowFrostReflect5 = "Anubisath Defender is afflicted by Detect Magic.",--CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE
-	bar_shadowFrostReflect = "Shadow & Frost Reflect",
-	
-	trigger_selfReflect = "Your (.*) is reflected back by Anubisath Defender.",--CHAT_MSG_SPELL_SELF_DAMAGE
-	msg_selfReflect = "Spell Reflect - STOP KILLING YOURSELF!",
-	
-	trigger_plagueYou = "You are afflicted by Plague.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
-	trigger_plagueOther = "(.+) is afflicted by Plague.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
-	bar_plague = " Plagued",
-	msg_plague = "Plague on ",
-	
-	trigger_thunderClap = "Anubisath Defender's Thunderclap hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
-	bar_thunderClap = "Thunder Clap",
-	msg_thunderClap = "Thunder Clap - Ranged get Out!",
+		reflect_cmd = "reflect",
+		reflect_name = "Spell Reflect Alert",
+		reflect_desc = "Shows bars for which reflect the Defender has",
 
-	trigger_shadowStorm = "Anubisath Defender's Shadow Storm hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
-	bar_shadowStorm = "Shadow Storm",
-	msg_shadowStorm = "Shadow Storm - Ranged get In!",
+		plague_cmd = "plague",
+		plague_name = "Plague Alert",
+		plague_desc = "Warns for Plague",
 
-	trigger_meteor = "Anubisath Defender's Meteor hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
-	bar_meteor = "Meteor",
-	msg_meteor = "Meteor!",
-	
-	trigger_explode = "Anubisath Defender gains Explode.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
-	bar_explode = "Exploding!",
-	msg_explode = "Exploding!",
+		icon_cmd = "icon",
+		icon_name = "Raid Icon for Plague",
+		icon_desc = "Place Raid Icon on the last plagued person (requires promoted or higher)",
 
-	trigger_enrage = "Anubisath Defender gains Enrage.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
-	msg_enrage = "Enraged!",
-} end )
+		thunderclap_cmd = "thunderclap",
+		thunderclap_name = "Thunder Clap Alert",
+		thunderclap_desc = "Warns for Thunder Clap",
+
+		shadowstorm_cmd = "shadowstorm",
+		shadowstorm_name = "Shadow Storm Alert",
+		shadowstorm_desc = "Warns for Shadow Storm",
+
+		meteor_cmd = "meteor",
+		meteor_name = "Meteor Alert",
+		meteor_desc = "Warns for Meteor",
+
+		explode_cmd = "explode",
+		explode_name = "Explode Alert",
+		explode_desc = "Warns for Explode",
+
+		enrage_cmd = "enrage",
+		enrage_name = "Enrage Alert",
+		enrage_desc = "Warns for Enrage",
+
+
+		trigger_arcaneFireReflect1 = "Moonfire is reflected back by Anubisath Defender.", --CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
+		trigger_arcaneFireReflect2 = "Scorch is reflected back by Anubisath Defender.", --CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
+		trigger_arcaneFireReflect3 = "Flame Shock is reflected back by Anubisath Defender.", --CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
+		trigger_arcaneFireReflect4 = "Fireball is reflected back by Anubisath Defender.", --CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
+		trigger_arcaneFireReflect5 = "Flame Lash is reflected back by Anubisath Defender.", --CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
+		trigger_arcaneFireReflect6 = "Detect Magic is reflected", --CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
+		bar_fireArcaneReflect = "Fire & Arcane Reflect",
+
+		trigger_shadowFrostReflect1 = "Shadow Word: Pain is reflected back by Anubisath Defender.", --CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
+		trigger_shadowFrostReflect2 = "Corruption is reflected back by Anubisath Defender.", --CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
+		trigger_shadowFrostReflect3 = "Frostbolt is reflected back by Anubisath Defender.", --CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
+		trigger_shadowFrostReflect4 = "Frost Shock is reflected back by Anubisath Defender.", --CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
+		trigger_shadowFrostReflect5 = "Anubisath Defender is afflicted by Detect Magic.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE
+		bar_shadowFrostReflect = "Shadow & Frost Reflect",
+
+		trigger_selfReflect = "Your (.*) is reflected back by Anubisath Defender.", --CHAT_MSG_SPELL_SELF_DAMAGE
+		msg_selfReflect = "Spell Reflect - STOP KILLING YOURSELF!",
+
+		trigger_plagueYou = "You are afflicted by Plague.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_plagueOther = "(.+) is afflicted by Plague.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+		bar_plague = " Plagued",
+		msg_plague = "Plague on ",
+
+		trigger_thunderClap = "Anubisath Defender's Thunderclap hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+		bar_thunderClap = "Thunder Clap",
+		msg_thunderClap = "Thunder Clap - Ranged get Out!",
+
+		trigger_shadowStorm = "Anubisath Defender's Shadow Storm hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+		bar_shadowStorm = "Shadow Storm",
+		msg_shadowStorm = "Shadow Storm - Ranged get In!",
+
+		trigger_meteor = "Anubisath Defender's Meteor hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+		bar_meteor = "Meteor",
+		msg_meteor = "Meteor!",
+
+		trigger_explode = "Anubisath Defender gains Explode.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+		bar_explode = "Exploding!",
+		msg_explode = "Exploding!",
+
+		trigger_enrage = "Anubisath Defender gains Enrage.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+		msg_enrage = "Enraged!",
+	}
+end)
 local timer = {
-		--the timers for tClap, sStorm, meteor vary too much,
-			--will just put 600 so bars tell people what abilities they have
+	--the timers for tClap, sStorm, meteor vary too much,
+	--will just put 600 so bars tell people what abilities they have
 	fireArcaneReflect = 600,
 	shadowFrostReflect = 600,
 	plague = 40,
 	thunderClap = 600, --saw 3 and saw 8
 	shadowStorm = 600,
-	meteor = 600,--saw 6.4 and saw 13
-	explode = 6,	
+	meteor = 600, --saw 6.4 and saw 13
+	explode = 6,
 }
 local icon = {
 	fireArcaneReflect = "spell_arcane_portaldarnassus",
@@ -118,14 +119,14 @@ local color = {
 	explode = "Black",
 }
 local syncName = {
-	fireArcaneReflect = "DefenderArcaneReflect"..module.revision,
-	shadowFrostReflect = "DefenderShadowReflect"..module.revision,
-	plague = "DefenderPlague"..module.revision,
-	thunderClap = "DefenderThunderclap"..module.revision,
-	shadowStorm = "DefenderShadowstorm"..module.revision,
-	meteor = "DefenderMeteor"..module.revision,
-	explode = "DefenderExplode"..module.revision,
-	enrage = "DefenderEnrage"..module.revision,
+	fireArcaneReflect = "DefenderArcaneReflect" .. module.revision,
+	shadowFrostReflect = "DefenderShadowReflect" .. module.revision,
+	plague = "DefenderPlague" .. module.revision,
+	thunderClap = "DefenderThunderclap" .. module.revision,
+	shadowStorm = "DefenderShadowstorm" .. module.revision,
+	meteor = "DefenderMeteor" .. module.revision,
+	explode = "DefenderExplode" .. module.revision,
+	enrage = "DefenderEnrage" .. module.revision,
 }
 
 local fireArcaneReflectFound = nil
@@ -136,18 +137,18 @@ local meteorFound = nil
 
 function module:OnEnable()
 	--self:RegisterEvent("CHAT_MSG_SAY", "Event") --debug
-	
+
 	self:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE", "Event")--arcaneFireReflect, shadowFrostReflect, trigger_selfReflect
 	self:RegisterEvent("CHAT_MSG_SPELL_PARTY_DAMAGE", "Event")--arcaneFireReflect, shadowFrostReflect
-	self:RegisterEvent("CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE","Event")--arcaneFireReflect, shadowFrostReflect
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE","Event")--Anubisath Defender is afflicted by Detect Magic
-	
+	self:RegisterEvent("CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE", "Event")--arcaneFireReflect, shadowFrostReflect
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE", "Event")--Anubisath Defender is afflicted by Detect Magic
+
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event")--Explosion and Enrage
-	
+
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event") --trigger_plagueYou
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event") --trigger_plagueOther
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event") --trigger_plagueOther
-		
+
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event")--Thunderclap and Shadowstorm
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event")--Thunderclap and Shadowstorm
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event")--Thunderclap and Shadowstorm
@@ -172,7 +173,7 @@ function module:OnEngage()
 	thunderClapFound = nil
 	shadowStormFound = nil
 	meteorFound = nil
-	
+
 	--in case the bars are still there when pulling a new one
 	self:RemoveBar(L["bar_fireArcaneReflect"])
 	self:RemoveBar(L["bar_shadowFrostReflect"])
@@ -190,41 +191,41 @@ function module:OnDisengage()
 end
 
 function module:Event(msg)
-	if string.find(msg, L["trigger_selfReflect"]) and not string.find(msg, "Elemental Vulnerability") and not string.find(msg, "Fire Strike") then
+	if string.find(msg, L["trigger_selfReflect"]) and not (string.find(msg, "Elemental Vulnerability") or string.find(msg, "Fire Strike")) then
 		self:SelfReflect()
 	end
-	
+
 	if string.find(msg, L["trigger_arcaneFireReflect1"]) or
-		string.find(msg, L["trigger_arcaneFireReflect2"]) or
-	string.find(msg, L["trigger_arcaneFireReflect3"]) or
-	string.find(msg, L["trigger_arcaneFireReflect4"]) or
-	string.find(msg, L["trigger_arcaneFireReflect5"]) or
-	string.find(msg, L["trigger_arcaneFireReflect6"]) then
+			string.find(msg, L["trigger_arcaneFireReflect2"]) or
+			string.find(msg, L["trigger_arcaneFireReflect3"]) or
+			string.find(msg, L["trigger_arcaneFireReflect4"]) or
+			string.find(msg, L["trigger_arcaneFireReflect5"]) or
+			string.find(msg, L["trigger_arcaneFireReflect6"]) then
 		self:Sync(syncName.fireArcaneReflect)
-	
+
 	elseif string.find(msg, L["trigger_shadowFrostReflect1"]) or
-		string.find(msg, L["trigger_shadowFrostReflect2"]) or
-	string.find(msg, L["trigger_shadowFrostReflect3"]) or
-	string.find(msg, L["trigger_shadowFrostReflect4"]) or
-	string.find(msg, L["trigger_shadowFrostReflect5"]) then
-		self:Sync(syncName.shadowFrostReflect)		
+			string.find(msg, L["trigger_shadowFrostReflect2"]) or
+			string.find(msg, L["trigger_shadowFrostReflect3"]) or
+			string.find(msg, L["trigger_shadowFrostReflect4"]) or
+			string.find(msg, L["trigger_shadowFrostReflect5"]) then
+		self:Sync(syncName.shadowFrostReflect)
 
 
 	elseif msg == L["trigger_plagueYou"] then
 		self:Sync(syncName.plague .. " " .. UnitName("Player"))
-		
+
 	elseif string.find(msg, L["trigger_plagueOther"]) then
-		local _,_, plaguePlayer, _ = string.find(msg, L["trigger_plagueOther"])
+		local _, _, plaguePlayer, _ = string.find(msg, L["trigger_plagueOther"])
 		self:Sync(syncName.plague .. " " .. plaguePlayer)
-	
+
 	elseif string.find(msg, L["trigger_thunderClap"]) then
 		self:Sync(syncName.thunderClap)
 	elseif string.find(msg, L["trigger_shadowStorm"]) then
 		self:Sync(syncName.shadowStorm)
-		
+
 	elseif string.find(msg, L["trigger_meteor"]) then
 		self:Sync(syncName.meteor)
-	
+
 	elseif msg == L["trigger_explode"] then
 		self:Sync(syncName.explode)
 	elseif msg == L["trigger_enrage"] then
@@ -232,24 +233,23 @@ function module:Event(msg)
 	end
 end
 
-
 function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.fireArcaneReflect and self.db.profile.reflect then
 		self:ArcaneReflect()
 	elseif sync == syncName.shadowFrostReflect and self.db.profile.reflect then
 		self:ShadowReflect()
-	
+
 	elseif sync == syncName.plague and rest and self.db.profile.plague then
 		self:Plague(rest)
-	
+
 	elseif sync == syncName.thunderClap and self.db.profile.thunderclap then
 		self:Thunderclap()
 	elseif sync == syncName.shadowStorm and self.db.profile.shadowstorm then
 		self:ShadowStorm()
-	
+
 	elseif sync == syncName.meteor and self.db.profile.meteor then
 		self:Meteor()
-		
+
 	elseif sync == syncName.explode and self.db.profile.explode then
 		self:Explode()
 	elseif sync == syncName.enrage and self.db.profile.enrage then
@@ -257,17 +257,16 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 	end
 end
 
-
 function module:ArcaneReflect()
 	if fireArcaneReflectFound == nil then
 		self:Bar(L["bar_fireArcaneReflect"], timer.fireArcaneReflect, icon.fireArcaneReflect, true, color.fireArcaneReflect)
-		
+
 		if UnitClass("Player") == "Mage" or UnitClass("Player") == "Warlock" or UnitClass("Player") == "Priest" or UnitClass("Player") == "Shaman" then
 			self:WarningSign(icon.fireArcaneReflect, 1)
 		end
-		
+
 		self:RemoveBar(L["bar_shadowFrostReflect"])
-		
+
 		shadowFrostReflectFound = nil
 		fireArcaneReflectFound = true
 	end
@@ -276,37 +275,36 @@ end
 function module:ShadowReflect()
 	if shadowFrostReflectFound == nil then
 		self:Bar(L["bar_shadowFrostReflect"], timer.shadowFrostReflect, icon.shadowFrostReflect, true, color.shadowFrostReflect)
-		
+
 		if UnitClass("Player") == "Mage" or UnitClass("Player") == "Warlock" or UnitClass("Player") == "Priest" or UnitClass("Player") == "Shaman" then
 			self:WarningSign(icon.shadowFrostReflect, 1)
 		end
-		
-		
+
 		self:RemoveBar(L["bar_fireArcaneReflect"])
-		
+
 		shadowFrostReflectFound = true
 		fireArcaneReflectFound = nil
 	end
 end
 
 function module:Plague(rest)
-	self:Bar(rest..L["bar_plague"], timer.plague, icon.plague, true, color.plague)
-	self:Message(L["msg_plague"]..rest, "Important", false, nil, false)
-	
+	self:Bar(rest .. L["bar_plague"], timer.plague, icon.plague, true, color.plague)
+	self:Message(L["msg_plague"] .. rest, "Important", false, nil, false)
+
 	if rest == UnitName("Player") then
 		self:WarningSign(icon.plague, 1)
-		SendChatMessage("Plague on "..rest.."!", "SAY")
-		self:Sound("BikeHorn")
+		SendChatMessage("Plague on " .. rest .. "!", "SAY")
+		self:Sound("Plague")
 	end
-	
+
 	if self.db.profile.icon and (IsRaidLeader() or IsRaidOfficer()) then
-		for i=1,GetNumRaidMembers() do
-			if UnitName("raid"..i) == rest then
-				SetRaidTarget("raid"..i, 8)
+		for i = 1, GetNumRaidMembers() do
+			if UnitName("raid" .. i) == rest then
+				SetRaidTarget("raid" .. i, 8)
 			end
 		end
 	end
-	
+
 	meteorFound = nil
 end
 
@@ -317,9 +315,9 @@ function module:Thunderclap()
 		self:WarningSign(icon.thunderClap, 1)
 		self:Sound("Beware")
 	end
-	
+
 	self:RemoveBar(L["bar_shadowStorm"])
-	
+
 	thunderClapFound = true
 	shadowStormFound = nil
 end
@@ -331,9 +329,9 @@ function module:ShadowStorm()
 		self:WarningSign(icon.shadowStorm, 1)
 		self:Sound("Beware")
 	end
-	
+
 	self:RemoveBar(L["bar_thunderClap"])
-	
+
 	thunderClapFound = nil
 	shadowStormFound = true
 end
@@ -344,7 +342,7 @@ function module:Meteor()
 		self:Message(L["msg_meteor"], "Important", false, nil, false)
 		self:WarningSign(icon.meteor, 1)
 	end
-		
+
 	meteorFound = true
 end
 
@@ -359,7 +357,6 @@ function module:Enrage()
 	self:Message(L["msg_enrage"], "Important", false, nil, false)
 	self:WarningSign(icon.enrage, 1)
 end
-
 
 function module:SelfReflect()
 	self:Message(L["msg_selfReflect"], "Personal", false, nil, false)

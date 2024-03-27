@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Sapphiron", "Naxxramas")
 
-module.revision = 30071
+module.revision = 30075
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"frostbreath", "lifedrain", "block", "enrage", "blizzard", "tailsweep", "phase", -1, "proximity", -1, "parry", "bosskill"}
 
@@ -224,12 +224,24 @@ end
 function module:MINIMAP_ZONE_CHANGED(msg)
 	if GetMinimapZoneText() == "Kel'Thuzad Chamber" and self.core:IsModuleActive(module.translatedName) then
 		self.core:DisableModule(module.translatedName)
-	elseif GetMinimapZoneText() == "Plaguewood" and self.core:IsModuleActive(module.translatedName) then
-		self.core:DisableModule(module.translatedName)
 	
+	elseif GetMinimapZoneText() == "Eastern Plaguelands" and self.core:IsModuleActive(module.translatedName) then
+		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
+		self:ResetModule()
+		DEFAULT_CHAT_FRAME:AddMessage("   BigWigs - Auto-Rebooting Module: "..module.translatedName)
+			
 	elseif GetMinimapZoneText() == "Sapphiron's Lair" and not self.core:IsModuleActive(module.translatedName) then
 		self.core:EnableModule(module.translatedName)
 	end
+end
+
+function module:ResetModule()
+	lastLifeDrainTime = GetTime()
+	airPhaseTime = GetTime()
+	remainingLifeDrainTimer = 60
+	
+	lowHp = nil
+	phase = "ground"
 end
 
 function module:UNIT_HEALTH(msg)
@@ -432,7 +444,7 @@ function module:GroundPhase()
 			self:Message(L["msg_groundPhase"], "Important", false, nil, false)
 		end
 		
-		self:DelayedSync(timer.groundPhase, syncName.airPhase)
+		--self:DelayedSync(timer.groundPhase, syncName.airPhase)
 	end
 end
 

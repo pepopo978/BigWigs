@@ -1,6 +1,6 @@
 local module, L = BigWigs:ModuleDeclaration("The Twin Emperors", "Ahn'Qiraj")
 
-module.revision = 30067
+module.revision = 30075
 local veklor = AceLibrary("Babble-Boss-2.2")["Emperor Vek'lor"]
 local veknilash = AceLibrary("Babble-Boss-2.2")["Emperor Vek'nilash"]
 local boss = AceLibrary("Babble-Boss-2.2")["The Twin Emperors"]
@@ -110,7 +110,7 @@ module:RegisterYellEngage(L["pull_trigger9"])
 module:RegisterYellEngage(L["pull_trigger10"])
 
 function module:OnEnable()
-	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event") --Debug
 	
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL") --pull trigger, kill trigger
 	
@@ -133,6 +133,8 @@ function module:OnSetup()
 end
 
 function module:OnEngage()
+	if self.core:IsModuleActive("Anubisath Defender", "Ahn'Qiraj") then self:TriggerEvent("BigWigs_RebootModule", "Anubisath Defender", "Ahn'Qiraj") end
+		
 	self:Sync(syncName.tp)
 
 	if self.db.profile.enrage then

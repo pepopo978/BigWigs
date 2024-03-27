@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Anubisath Warder", "Ahn'Qiraj")
 
-module.revision = 30067
+module.revision = 30075
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"fear", "silence", "roots", "dust", "warnings"}
 module.trashMod = true

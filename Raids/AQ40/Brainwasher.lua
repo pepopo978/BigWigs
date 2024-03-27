@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Qiraji Brainwasher", "Ahn'Qiraj")
 
-module.revision = 30067
+module.revision = 30075
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"mc", "mindflay"}
 module.trashMod = true
@@ -78,6 +78,7 @@ function module:OnSetup()
 end
 
 function module:OnEngage()
+	if self.core:IsModuleActive("Anubisath Sentinel", "Ahn'Qiraj") then self.core:DisableModule("Anubisath Sentinel", "Ahn'Qiraj") end
 end
 
 function module:OnDisengage()

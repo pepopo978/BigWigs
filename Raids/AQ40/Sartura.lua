@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Battleguard Sartura", "Ahn'Qiraj")
 
-module.revision = 30068
+module.revision = 30075
 module.enabletrigger = module.translatedName
 module.wipemobs = {"Sartura's Royal Guard"}
 module.toggleoptions = {"whirlwind", "adds", "enrage", "berserk", "bosskill"}
@@ -172,7 +172,7 @@ end
 function module:WhirlwindFade()
 	self:RemoveBar(L["bar_whirlwind"])
 	
-	self:DelayedIntervalBar(timer.whirlwindDur, L["bar_whirlwindCd"], timer.whirlwindCd[1], timer.whirlwindCd[2], icon.whirlwind, true, color.whirlwindCd)
+	self:IntervalBar(L["bar_whirlwindCd"], timer.whirlwindCd[1], timer.whirlwindCd[2], icon.whirlwind, true, color.whirlwindCd)
 	self:Message(L["msg_whirlwindFade"], "Attention", false, nil, false)
 end
 

@@ -1,186 +1,160 @@
 
-----------------------------------
---      Module Declaration      --
-----------------------------------
-
 local module, L = BigWigs:ModuleDeclaration("Garr", "Molten Core")
 
-module.revision = 20006 -- To be overridden by the module!
-module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
---module.wipemobs = nil
-module.toggleoptions = {"adds", "bosskill"}
-
-module.defaultDB = {
-	adds = false,
-}
-
----------------------------------
---      Module specific Locals --
----------------------------------
-
-local timer = {}
-local icon = {}
-local syncName = {
-	}
-
-local adds = 0
-
-----------------------------
---      Localization      --
-----------------------------
+module.revision = 30075
+module.enabletrigger = module.translatedName
+module.toggleoptions = {"pulse", "remove", "adds", "immolate", "bosskill"}
+module.wipemobs = {"Firesworn"}
 
 L:RegisterTranslations("enUS", function() return {
-	firesworn_name = "Firesworn",
-	triggeradddead8 = "Garr gains Enrage(.+)8",
-	triggeradddead7 = "Garr gains Enrage(.+)7",
-	triggeradddead6 = "Garr gains Enrage(.+)6",
-	triggeradddead5 = "Garr gains Enrage(.+)5",
-	triggeradddead4 = "Garr gains Enrage(.+)4",
-	triggeradddead3 = "Garr gains Enrage(.+)3",
-	triggeradddead2 = "Garr gains Enrage(.+)2",
-	triggeradddead1 = "Garr gains Enrage.",
-
-	counterbarMsg = "Firesworns dead",
-	addmsg1 = "1/8 Firesworns dead!",
-	addmsg2 = "2/8 Firesworns dead!",
-	addmsg3 = "3/8 Firesworns dead!",
-	addmsg4 = "4/8 Firesworns dead!",
-	addmsg5 = "5/8 Firesworns dead!",
-	addmsg6 = "6/8 Firesworns dead!",
-	addmsg7 = "7/8 Firesworns dead!",
-	addmsg8 = "8/8 Firesworns dead!",
-
 	cmd = "Garr",
-
+	
+	pulse_cmd = "pulse",
+	pulse_name = "Antimagic Pulse Alert",
+	pulse_desc = "Warn for Antimagic Pulse",
+	
+	remove_cmd = "remove",
+	remove_name = "Removed Buff Alert",
+	remove_desc = "Warn for Removed Buff",
+	
 	adds_cmd = "adds",
-	adds_name = "Dead adds counter",
-	adds_desc = "Announces dead Firesworns",
+	adds_name = "Add Dies Alert",
+	adds_desc = "Warn for Adds Deaths",
+	
+	immolate_cmd = "immolate",
+	immolate_name = "Immolate Alert",
+	immolate_desc = "Warn for Immolate",
+	
+	
+	trigger_antimagicPulse = "Garr performs Antimagic Pulse", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_antimagicPulse = "Antimagic Pulse",
+	
+	trigger_remove = "Your (.+) is removed.", --CHAT_MSG_SPELL_BREAK_AURA
+	msg_remove = "Antimagic Pulse Removed your ",
+	
+	msg_addDead = "/2 Firesworn Dead",
+	
+	--not tracking the afflicted since many mobs do immolate, may cause conflict
+		--instead only showing the message once to remind dispels on Garr
+	trigger_immolate = "Fire damage from Firesworn's Immolate.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	msg_immolate = "Immolate - Dispel!",
 } end)
 
-L:RegisterTranslations("esES", function() return {
-	firesworn_name = "Jurafuegos",
-	triggeradddead8 = "Garr hace ganar Enfurecer(.+)8",
-	triggeradddead7 = "Garr hace ganar Enfurecer(.+)7",
-	triggeradddead6 = "Garr hace ganar Enfurecer(.+)6",
-	triggeradddead5 = "Garr hace ganar Enfurecer(.+)5",
-	triggeradddead4 = "Garr hace ganar Enfurecer(.+)4",
-	triggeradddead3 = "Garr hace ganar Enfurecer(.+)3",
-	triggeradddead2 = "Garr hace ganar Enfurecer(.+)2",
-	triggeradddead1 = "Garr hace ganar Enfurecer.",
+local timer = {
+	antimagicPulseFirst = 15,
+	antimagicPulse = 10,
+}
+local icon = {
+	antimagicPulse = "spell_holy_dispelmagic",
+	immolate = "spell_fire_immolation",
+}
+local color = {
+	antimagicPulse = "White",
+}
+local syncName = {
+	antimagicPulse = "GarrAntimagicPulse"..module.revision,
+	addDead = "GarrAddDead"..module.revision,
+	immolate = "GarrImmolate"..module.revision,
+}
 
-	counterbarMsg = "Jurafuegos muertos",
-	addmsg1 = "¡1/8 Jurafuegos muertos!",
-	addmsg2 = "¡2/8 Jurafuegos muertos!",
-	addmsg3 = "¡3/8 Jurafuegos muertos!",
-	addmsg4 = "¡4/8 Jurafuegos muertos!",
-	addmsg5 = "¡5/8 Jurafuegos muertos!",
-	addmsg6 = "¡6/8 Jurafuegos muertos!",
-	addmsg7 = "¡7/8 Jurafuegos muertos!",
-	addmsg8 = "¡8/8 Jurafuegos muertos!",
-
-	--cmd = "Garr",
-
-	--adds_cmd = "adds",
-	adds_name = "Contador de Jurafuegos muertos",
-	adds_desc = "Anuncia los Jurafuegos muertos",
-} end)
-
-L:RegisterTranslations("deDE", function() return {
-	firesworn_name = "Feueranbeter",
-	triggeradddead1 = "Garr bekommt \'Wutanfall\'.",
-	triggeradddead2 = "Garr bekommt \'Wutanfall(.+)2",
-	triggeradddead3 = "Garr bekommt \'Wutanfall(.+)3",
-	triggeradddead4 = "Garr bekommt \'Wutanfall(.+)4",
-	triggeradddead5 = "Garr bekommt \'Wutanfall(.+)5",
-	triggeradddead6 = "Garr bekommt \'Wutanfall(.+)6",
-	triggeradddead7 = "Garr bekommt \'Wutanfall(.+)7",
-	triggeradddead8 = "Garr bekommt \'Wutanfall(.+)8",
-
-	counterbarMsg = "Feueranbeter tot",
-	addmsg1 = "1/8 Feueranbeter tot!",
-	addmsg2 = "2/8 Feueranbeter tot!",
-	addmsg3 = "3/8 Feueranbeter tot!",
-	addmsg4 = "4/8 Feueranbeter tot!",
-	addmsg5 = "5/8 Feueranbeter tot!",
-	addmsg6 = "6/8 Feueranbeter tot!",
-	addmsg7 = "7/8 Feueranbeter tot!",
-	addmsg8 = "8/8 Feueranbeter tot!",
-
-	cmd = "Garr",
-
-	adds_cmd = "adds",
-	adds_name = "Z\195\164hler f\195\188r tote Adds",
-	adds_desc = "Verk\195\188ndet Feueranbeter Tod",
-} end)
+local addDead = 0
+local fightningGarr = nil
 
 
-------------------------------
---      Initialization      --
-------------------------------
-
-module.wipemobs = { L["firesworn_name"] }
-
--- called after module is enabled
 function module:OnEnable()
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS")
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event") --Debug
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event") --trigger_antimagicPulse
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event") --trigger_antimagicPulse
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event") --trigger_antimagicPulse
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event") --trigger_immolate
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event") --trigger_immolate
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event") --trigger_immolate
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_BREAK_AURA", "Event") --trigger_remove
+	
+	
+	self:ThrottleSync(5, syncName.antimagicPulse)
+	self:ThrottleSync(0.5, syncName.addDead)
+	self:ThrottleSync(60, syncName.immolate)
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
-	self.started    = nil
-	adds       		= 0
+	self.started = nil
+
+	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH") --addDead
 end
 
--- called after boss is engaged
 function module:OnEngage()
---self:TriggerEvent("BigWigs_StartCounterBar", self, L["counterbarMsg"], 8, "Interface\\Icons\\spell_nature_strengthofearthtotem02")
---self:TriggerEvent("BigWigs_SetCounterBar", self, L["counterbarMsg"], (8 - 0.1))
+	addDead = 0
+	fightningGarr = true
+	
+	if self.db.profile.pulse then
+		self:Bar(L["bar_antimagicPulse"], timer.antimagicPulseFirst, icon.antimagicPulse, true, color.antimagicPulse)
+	end
 end
 
--- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
+	fightningGarr = false
 end
 
+function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
+	BigWigs:CheckForBossDeath(msg, self)
 
-------------------------------
---      Event Handlers      --
-------------------------------
+	if (msg == string.format(UNITDIESOTHER, "Firesworn")) then
+		addDead = addDead + 1
+		if addDead <= 2 then
+			self:Sync(syncName.addDead .. " " .. addDead)
+		end
+	elseif (msg == string.format(UNITDIESOTHER, "Garr")) then
+		fightningGarr = false
+	end
+end
 
-function module:CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS(msg)
-	if (string.find(msg, L["triggeradddead8"])) then
-		self:Sync("GarrAddDead8")
-	elseif (string.find(msg, L["triggeradddead7"])) then
-		self:Sync("GarrAddDead7")
-	elseif (string.find(msg, L["triggeradddead6"])) then
-		self:Sync("GarrAddDead6")
-	elseif (string.find(msg, L["triggeradddead5"])) then
-		self:Sync("GarrAddDead5")
-	elseif (string.find(msg, L["triggeradddead4"])) then
-		self:Sync("GarrAddDead4")
-	elseif (string.find(msg, L["triggeradddead3"])) then
-		self:Sync("GarrAddDead3")
-	elseif (string.find(msg, L["triggeradddead2"])) then
-		self:Sync("GarrAddDead2")
-	elseif (string.find(msg, L["triggeradddead1"])) then
-		self:Sync("GarrAddDead1")
+function module:Event(msg)
+	if string.find(msg, L["trigger_antimagicPulse"]) then
+		self:Sync(syncName.antimagicPulse)
+	
+	elseif string.find(msg, L["trigger_remove"]) and fightningGarr == true and self.db.profile.remove then
+		local _,_, removedBuff, _ = string.find(msg, L["trigger_remove"])
+		if removedBuff ~= "Immolate" then
+			self:Remove(removedBuff)
+		end
+		
+	elseif string.find(msg, L["trigger_immolate"]) then
+		self:Sync(syncName.immolate)
+	end
+end
+
+function module:BigWigs_RecvSync(sync, rest, nick)
+	if sync == syncName.antimagicPulse and self.db.profile.pulse then
+		self:AntimagicPulse()
+		
+	elseif sync == syncName.addDead and rest and self.db.profile.adds then
+		self:AddDead(rest)
+		
+	elseif sync == syncName.immolate and self.db.profile.immolate then
+		self:Immolate()
 	end
 end
 
 
-------------------------------
---      Synchronization	    --
-------------------------------
+function module:AntimagicPulse()
+	self:Bar(L["bar_antimagicPulse"], timer.antimagicPulse, icon.antimagicPulse, true, color.antimagicPulse)
+end
 
-function module:BigWigs_RecvSync(sync, rest, nick)
-	if self.started and string.find(sync, "GarrAddDead%d") then
-		local newCount = tonumber(string.sub(sync, 12))
+function module:Remove(rest)
+	self:Message(L["msg_remove"]..rest, "Attention", false, nil, false)
+end
 
-		if self.adds < newCount then
-			self.adds = newCount
-			if self.db.profile.adds then
-				self:Message(L["addmsg" .. newCount], "Positive")
-				--self:TriggerEvent("BigWigs_SetCounterBar", self, L["counterbarMsg"], (8 - newCount))
-			end
-		end
+function module:AddDead(rest)
+	self:Message(rest..L["msg_addDead"], "Positive", false, nil, false)
+end
+
+function module:Immolate()
+	if UnitClass("Player") == "Priest" or UnitClass("Player") == "Paladin" then
+		self:Message(L["msg_immolate"], "Urgent", false, nil, false)
+		self:WarningSign(icon.immolate, 1)
 	end
 end

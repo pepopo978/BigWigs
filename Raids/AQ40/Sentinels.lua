@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Anubisath Sentinel", "Ahn'Qiraj")
 
-module.revision = 30067
+module.revision = 30075
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"abilities", "selfreflect"}
 module.trashMod = true
@@ -111,6 +111,8 @@ local syncName = {
 	thunderClap = "SentinelThunderclap"..module.revision,
 	fireArcaneReflect = "SentinelArcref2"..module.revision,
 	shadowFrostReflect = "SentinelSharef2"..module.revision,
+	
+	addDead = "SentinelAddDead"..module.revision,
 }
 
 local raidIcon_knockBack = 2
@@ -133,8 +135,10 @@ local thunderClapFound = nil
 local fireArcaneReflectFound = nil
 local shadowFrostReflectFound = nil
 
+local addDead = 0
+
 function module:OnEnable()
-	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
+	self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
 	
 	self:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE", "Event") --trigger_selfReflect, reflect type detection
 	self:RegisterEvent("CHAT_MSG_SPELL_PARTY_DAMAGE", "Event") --reflect type detection
@@ -150,13 +154,19 @@ function module:OnEnable()
 	self:ThrottleSync(5, syncName.thunderClap)
 	self:ThrottleSync(5, syncName.fireArcaneReflect)
 	self:ThrottleSync(5, syncName.shadowFrostReflect)
+	
+	self:ThrottleSync(3, syncName.addDead)
 end
 
 function module:OnSetup()
 	self.started = nil
+	
+	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
 end
 
 function module:OnEngage()
+	addDead = 0
+	
 	self:ResetAllBars()
 	
 	raidIcon_knockBack = 2
@@ -279,6 +289,17 @@ function module:OnDisengage()
 	self:CancelScheduledEvent("AbilitiesScan")
 end
 
+function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
+	--BigWigs:CheckForBossDeath(msg, self)
+
+	if (msg == string.format(UNITDIESOTHER, "Anubisath Sentinel")) then
+		addDead = addDead + 1
+		if addDead <= 4 then
+			self:Sync(syncName.addDead .. " " .. addDead)
+		end
+	end
+end
+
 function module:CheckForBossDeath(msg)
 	if msg == string.format(UNITDIESOTHER, self:ToString())
 		or msg == string.format(L["You have slain %s!"], self.translatedName) then
@@ -313,12 +334,21 @@ function module:CheckForBossDeath(msg)
 
 		if not IsBossInCombat() then
 			self:SendBossDeathSync()
+			self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
 		end
 	end
 end
 
 function module:Event(msg)
-	if string.find(msg, L["trigger_selfReflect"]) and not string.find(msg, "Elemental Vulnerability") and not string.find(msg, "Fire Strike") and self.db.profile.selfreflect then
+	if msg == "add" then
+		addDead = addDead + 1
+		if addDead <= 4 then
+			self:Sync(syncName.addDead .. " " .. addDead)
+		end
+	end
+	--debug
+	
+	if string.find(msg, L["trigger_selfReflect"]) and self.db.profile.selfreflect and not (string.find(msg, "Elemental Vulnerability") or string.find(msg, "Fire Strike")) then
 		self:SelfReflect()
 	end
 	
@@ -558,6 +588,9 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		self:FireArcaneReflect(rest)
 	elseif sync == syncName.shadowFrostReflect and rest and shadowFrostReflectFound == nil then
 		self:ShadowFrostReflect(rest)
+		
+	elseif sync == syncName.addDead and rest then
+		self:AddDead(rest)
 	end
 end
 
@@ -665,4 +698,14 @@ end
 function module:SelfReflect()
 	self:Message(L["msg_selfReflect"], "Personal", false, nil, false)
 	self:Sound("Beware")
+end
+
+function module:AddDead(rest)
+	if tonumber(rest) == 4 then
+		self:SendBossDeathSync()
+		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
+		if UnitName("Player") == "Relar" or UnitName("Player") == "Dreadsome" then
+			DEFAULT_CHAT_FRAME:AddMessage("   BigWigs - Auto-Rebooting Module: "..module.translatedName)
+		end
+	end
 end

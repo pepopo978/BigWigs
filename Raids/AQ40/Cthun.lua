@@ -1,5 +1,6 @@
 local module, L = BigWigs:ModuleDeclaration("C'Thun", "Ahn'Qiraj")
 
+module.revision = 30075
 local eyeofcthun = AceLibrary("Babble-Boss-2.2")["Eye of C'Thun"]
 local cthun = AceLibrary("Babble-Boss-2.2")["C'Thun"]
 module.enabletrigger = { eyeofcthun, cthun }
@@ -151,6 +152,11 @@ local icon = {
 	weaken = "INV_ValentinesCandy",
 	eyeBeamSelf = "Ability_creature_poison_05",
 	digestiveAcid = "ability_creature_disease_02",
+	
+	stomachTentacle = "inv_misc_ahnqirajtrinket_05",
+}
+local color = {
+	stomachTentacle = "Magenta",
 }
 local syncName = {
 	p2Start = "CThunP2Start" .. module.revision,
@@ -226,7 +232,8 @@ function module:OnSetup()
 	firstWarning = nil
 	phase2started = nil
 	doCheckForWipe = false
-
+	isWeakened = nil
+	
 	tentacletime = timer.p1Tentacle
 
 	self:RemoveProximity()
@@ -246,8 +253,30 @@ end
 function module:MINIMAP_ZONE_CHANGED(msg)
 	--The Scarab Wall when you release, then Gates of Ahn'Qiraj as you run back, then Ahn'Qiraj when you zone in
 	if (GetMinimapZoneText() == "The Scarab Wall" or GetMinimapZoneText() == "Gates of Ahn'Qiraj") and self.core:IsModuleActive(module.translatedName) then
-		self.core:DisableModule(module.translatedName)
+		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
+		self:ResetModule()
+		DEFAULT_CHAT_FRAME:AddMessage("   Auto-Rebooting C'Thun Module")
+		
+		--self.core:DisableModule(module.translatedName)
 	end
+end
+
+function module:ResetModule()
+	self.started = nil
+	self.firstTentacleHP = 100
+	self.secondTentacleHP = 100
+	self.warning = 100
+	fleshtentacledead = nil
+	secondTentacleLowWarn = nil
+	eyeTarget = nil
+	cthunstarted = nil
+	firstGlare = nil
+	firstWarning = nil
+	phase2started = nil
+	doCheckForWipe = false
+	isWeakened = nil
+	
+	tentacletime = timer.p1Tentacle
 end
 
 function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
@@ -387,10 +416,10 @@ function module:CThunP2Start()
 		phase2started = true
 		doCheckForWipe = false -- disable wipe check since we get out of combat, enable it later again
 		tentacletime = timer.p2Tentacle
-
-		self:TriggerEvent("BigWigs_StartHPBar", self, L["First Tentacle"], 100)
+		
+		self:TriggerEvent("BigWigs_StartHPBar", self, L["First Tentacle"], 100, "Interface\\Icons\\"..icon.tentacle, true, color.tentacle)
 		self:TriggerEvent("BigWigs_SetHPBar", self, L["First Tentacle"], 0)
-		self:TriggerEvent("BigWigs_StartHPBar", self, L["Second Tentacle"], 100)
+		self:TriggerEvent("BigWigs_StartHPBar", self, L["Second Tentacle"], 100, "Interface\\Icons\\"..icon.tentacle, true, color.tentacle)
 		self:TriggerEvent("BigWigs_SetHPBar", self, L["Second Tentacle"], 0)
 		self:ScheduleRepeatingEvent("bwcthunCheckTentacleHP", self.CheckTentacleHP, timer.CheckTentacleHP, self)
 
@@ -487,9 +516,10 @@ function module:CThunWeakenedOver()
 	self:ThrottleSync(600, syncName.weakenOver)
 	self.firstTentacleHP = 100
 	self.secondTentacleHP = 100
-	self:TriggerEvent("BigWigs_StartHPBar", self, L["First Tentacle"], 100)
+	
+	self:TriggerEvent("BigWigs_StartHPBar", self, L["First Tentacle"], 100, "Interface\\Icons\\"..icon.tentacle, true, color.tentacle)
 	self:TriggerEvent("BigWigs_SetHPBar", self, L["First Tentacle"], 0)
-	self:TriggerEvent("BigWigs_StartHPBar", self, L["Second Tentacle"], 100)
+	self:TriggerEvent("BigWigs_StartHPBar", self, L["Second Tentacle"], 100, "Interface\\Icons\\"..icon.tentacle, true, color.tentacle)
 	self:TriggerEvent("BigWigs_SetHPBar", self, L["Second Tentacle"], 0)
 
 	self:CancelDelayedSync(syncName.weakenOver) -- ok

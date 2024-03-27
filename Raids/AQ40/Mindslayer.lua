@@ -1,12 +1,12 @@
 
 local module, L = BigWigs:ModuleDeclaration("Qiraji Mindslayer", "Ahn'Qiraj")
 
-module.revision = 30068
+module.revision = 30075
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"mc", "mindflay", "disorient"}
 module.trashMod = true
 module.defaultDB = {
-	bosskill = false,
+	bosskill = nil,
 }
 
 L:RegisterTranslations("enUS", function() return {
@@ -70,9 +70,6 @@ local syncName = {
 local disorientSoonCheck = nil
 
 function module:OnEnable()
-	if self.core:IsModuleActive("Qiraji Brainwasher", "Ahn'Qiraj") then self.core:DisableModule("Qiraji Brainwasher", "Ahn'Qiraj") end
-	if self.core:IsModuleActive("The Prophet Skeram", "Ahn'Qiraj") then self.core:DisableModule("The Prophet Skeram", "Ahn'Qiraj") end
-	
 	--self:RegisterEvent("CHAT_MSG_SAY", "Event") --debug
 	
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event")
@@ -98,15 +95,23 @@ end
 
 function module:OnSetup()
 	self.started = nil
-	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH", "Event")
+	
+	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
 end
 
 function module:OnEngage()
+	if self.core:IsModuleActive("Qiraji Brainwasher", "Ahn'Qiraj") then self.core:DisableModule("Qiraji Brainwasher", "Ahn'Qiraj") end
+	if self.core:IsModuleActive("The Prophet Skeram", "Ahn'Qiraj") then self.core:DisableModule("The Prophet Skeram", "Ahn'Qiraj") end
+	
 	disorientSoonCheck = true
 end
 
 function module:OnDisengage()
 	disorientSoonCheck = true
+end
+
+function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
+	BigWigs:CheckForBossDeath(msg, self)
 end
 
 function module:CheckForBossDeath(msg)
@@ -143,7 +148,7 @@ function module:CheckForBossDeath(msg)
 		end
 
 		if not IsBossInCombat() then
-			self:SendBossDeathSync()
+			--self:SendBossDeathSync()
 		end
 	end
 end

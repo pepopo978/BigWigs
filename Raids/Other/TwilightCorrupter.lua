@@ -1,12 +1,12 @@
 
 local module, L = BigWigs:ModuleDeclaration("Twilight Corrupter", "Duskwood")
 
-module.revision = 30044
+module.revision = 30073
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"creatureofnightmare", "soulcorruption", "swellofsouls", "bosskill"}
 module.zonename = {
 	AceLibrary("AceLocale-2.2"):new("BigWigs")["Outdoor Raid Bosses Zone"],
-	AceLibrary("Babble-Zone-2.2")["Deadwind Pass"],
+	AceLibrary("Babble-Zone-2.2")["Duskwood"],
 }
 
 L:RegisterTranslations("enUS", function() return {
@@ -83,7 +83,8 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event")--trigger_creatureOfNightmareFade
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event")--trigger_creatureOfNightmareFade
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event")--trigger_creatureOfNightmareFade
-		
+	
+	
 	self:ThrottleSync(5, syncName.creatureOfNightmare)
 	self:ThrottleSync(5, syncName.creatureOfNightmareFade)
 	self:ThrottleSync(5, syncName.soulCorruption)
