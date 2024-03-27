@@ -1,156 +1,119 @@
 
-----------------------------------
---      Module Declaration      --
-----------------------------------
+local module, L = BigWigs:ModuleDeclaration("Core Hound", "Molten Core")
 
-local module, L = BigWigs:ModuleDeclaration("Ancient Core Hound", "Molten Core")
-
-module.revision = 20001
+module.revision = 30073
 module.enabletrigger = module.translatedName
-module.toggleoptions = {"bars"--[[, "bosskill"]]}
-
-------------------------------
---      Locals 			    --
-------------------------------
-
-local timer = {
-	firstDebuff = 12,
-	debuff = 14,
+module.toggleoptions = {"respawn"}
+module.trashMod = true
+module.zonename = {
+	AceLibrary("AceLocale-2.2"):new("BigWigs")["Molten Core"],
+	AceLibrary("Babble-Zone-2.2")["Molten Core"],
 }
-local icon = {
-	debuff = "Spell_Shadow_UnholyFrenzy"
+module.defaultDB = {
+	bosskill = nil,
 }
-local syncName = {
-	debuff = "CoreHoundDebuff"..module.revision,
-}
-
-
-----------------------------
---      Localization      --
-----------------------------
 
 L:RegisterTranslations("enUS", function() return {
-	Debuff = "Debuff",
+	cmd = "CoreHound",
 
-	trigger1 = "afflicted by %s",
-	trigger2 = "%s fail(.+) immune.",
-	trigger3 = "%s was resisted",
-
-
-	-- AceConsole strings
-	cmd = "Corehound",
-
-	bars_cmd = "bars",
-	bars_name = "Toggle bars",
-	bars_desc = "Toggles showing bars for timers.",
-
-
+	respawn_cmd = "respawn",
+	respawn_name = "Respawn Alert",
+	respawn_desc = "Warn for Respawn",
+	
+	
+	trigger_smolder = "Core Hound collapses and begins to smolder.",
+	bar_respawn = "Respawn",
+	msg_respawn = "Kill all Core Hounds within 10 seconds",
+	
+	["You have slain %s!"] = true,
 } end )
 
-L:RegisterTranslations("esES", function() return {
-	Debuff = "Debuff",
-
-	trigger1 = "sufre de %s",
-	trigger2 = "(.+) de %s falla inmune.",
-	trigger3 = "Resistido %s de Can del Núcleo",
-
-
-	-- AceConsole strings
-	cmd = "Corehound",
-
-	bars_cmd = "bars",
-	bars_name = "Alternar barras",
-	bars_desc = "Alterna que se muestra las barras temporizadoras.",
-
-
-} end )
-
-L:RegisterTranslations("deDE", function() return {
-	Debuff = "Debuff",
-
-	trigger1 = "afflicted by %s",
-	trigger2 = "%s fail(.+) immune.",
-	trigger3 = "%s was resisted",
-
-
-	-- AceConsole strings
-	cmd = "Corehound",
-
-	bars_cmd = "bars",
-	bars_name = "Toggle bars",
-	bars_desc = "Toggles showing bars for timers.",
-
-
-} end )
-
-local debuffTable = {
-	"Ancient Dread",
-	"Ancient Despair",
-	"Ground Stomp",
-	"Cauterizing Flames",
-	"Withering Heat",
-	"Ancient Hysteria"
+local timer = {
+	respawn = 10,
+}
+local icon = {
+	respawn = "inv_misc_pocketwatch_01",
+}
+local color = {
+	respawn = "Magenta",
+}
+local syncName = {
+	dead = "CoreHoundDead"..module.revision,
 }
 
-------------------------------
---      Initialization      --
-------------------------------
-
--- called after module is enabled
 function module:OnEnable()
-
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Debuff")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Debuff")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Debuff")
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Debuff")
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Debuff")
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Debuff")
-
-
-	self:ThrottleSync(2, syncName.debuff)
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
+	
+	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")
+	
+	self:ThrottleSync(10, syncName.dead)
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
-	self.started = false
+	self.started = nil
 end
 
--- called after boss is engaged
 function module:OnEngage()
-	if self.db.profile.bars then
-		self:Bar(L["Debuff"], timer.firstDebuff, icon.debuff)
-	end
 end
 
--- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
-
 end
 
+function module:CheckForBossDeath(msg)
+	if msg == string.format(UNITDIESOTHER, self:ToString())
+		or msg == string.format(L["You have slain %s!"], self.translatedName) then
+		local function IsBossInCombat()
+			local t = module.enabletrigger
+			if not t then return false end
+			if type(t) == "string" then t = {t} end
 
-------------------------------
---      Event Handlers	    --
-------------------------------
+			if UnitExists("Target") and UnitAffectingCombat("Target") then
+				local target = UnitName("Target")
+				for _, mob in pairs(t) do
+					if target == mob then
+						return true
+					end
+				end
+			end
 
-function module:Debuff(msg)
-	for k,v in pairs(debuffTable) do
-		t1 = string.format(L["trigger1"], v)
-		t2 = string.format(L["trigger2"], v)
-		t3 = string.format(L["trigger3"], v)
-		if ((string.find(msg, t1)) or (string.find(msg, t2)) or (string.find(msg, t3))) then
-			self:Sync(syncName.debuff)
+			local num = GetNumRaidMembers()
+			for i = 1, num do
+				local raidUnit = string.format("raid%starget", i)
+				if UnitExists(raidUnit) and UnitAffectingCombat(raidUnit) then
+					local target = UnitName(raidUnit)
+					for _, mob in pairs(t) do
+						if target == mob then
+							return true
+						end
+					end
+				end
+			end
+			return false
+		end
+
+		if not IsBossInCombat() then
+			self:SendBossDeathSync()
 		end
 	end
 end
 
-------------------------------
---      Synchronization	    --
-------------------------------
-
-function module:BigWigs_RecvSync( sync, rest, nick )
-	if sync == syncName.debuff then
-		if self.db.profile.bars then
-			self:Bar(L["Debuff"], timer.debuff, icon.debuff)
-		end
+function module:CHAT_MSG_MONSTER_EMOTE(msg)
+	if msg == L["trigger_smolder"] then
+		self:Sync(syncName.dead)
 	end
+end
+
+function module:Event(msg)
+end
+
+function module:BigWigs_RecvSync(sync, rest, nick)
+	if sync == syncName.dead and self.db.profile.respawn then
+		self:StartTimer()
+	end
+end
+
+
+function module:StartTimer()
+	self:Message(L["msg_respawn"])
+	self:Bar(L["bar_respawn"], timer.respawn, icon.respawn, true, color.respawn)
 end

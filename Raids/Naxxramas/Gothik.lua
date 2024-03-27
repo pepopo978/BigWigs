@@ -5,7 +5,7 @@ local __tinsert = table.insert
 
 local module, L = BigWigs:ModuleDeclaration("Gothik the Harvester", "Naxxramas")
 
-module.revision = 30068
+module.revision = 30074
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"room", -1, "add", "adddeath", "bosskill"}
 
@@ -185,8 +185,17 @@ end
 
 function module:MINIMAP_ZONE_CHANGED(msg)
 	if GetMinimapZoneText() == "Eastern Plaguelands" and self.core:IsModuleActive(module.translatedName) then
-		self.core:DisableModule(module.translatedName)
+		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
+		self:ResetModule()
+		DEFAULT_CHAT_FRAME:AddMessage("   Auto-Rebooting Gothik Module")
 	end
+end
+
+function module:ResetModule()
+	wave = 0
+	numTrainees = 0
+	numDeathknights = 0
+	numRiders = 0
 end
 
 function module:CHAT_MSG_MONSTER_YELL( msg )

@@ -3,7 +3,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Kel'Thuzad", "Naxxramas")
 
-module.revision = 30067
+module.revision = 30075
 module.enabletrigger = module.translatedName
 module.toggleoptions = {
 	"phase",
@@ -423,10 +423,6 @@ function module:OnSetup()
 end
 
 function module:OnEngage()
-	self:RefreshP1()
-end
-
-function module:RefreshP1()
 	p3warn = nil
 	mcYellTime = GetTime()
 	frostBlastYellTime = GetTime()
@@ -441,15 +437,15 @@ function module:RefreshP1()
 	numAbomDead = 0
 	numWeaverDead = 0
 	bloodTapCounter = 0
-
+	
 	if self.db.profile.phase then
 		self:Bar(L["bar_phase1"], timer.phase1, icon.phase, true, color.phase)
 	end
-
+	
 	if self.db.profile.p1adds then
-		self:Bar(numAbomDead .. L["bar_abom"], timer.p1adds, icon.abomination, true, color.abomination)
-		self:Bar(numWeaverDead .. L["bar_weaver"], timer.p1adds, icon.soulWeaver, true, color.soulWeaver)
-
+		self:Bar(numAbomDead..L["bar_abom"], timer.p1adds, icon.abomination, true, color.abomination)
+		self:Bar(numWeaverDead..L["bar_weaver"], timer.p1adds, icon.soulWeaver, true, color.soulWeaver)
+		
 		self:ScheduleEvent("abom1", self.AbominationSpawns, 44, self, "1")
 		self:ScheduleEvent("abom2", self.AbominationSpawns, 72, self, "2")
 		self:ScheduleEvent("abom3", self.AbominationSpawns, 100, self, "3")
@@ -464,7 +460,7 @@ function module:RefreshP1()
 		self:ScheduleEvent("abom12", self.AbominationSpawns, 285, self, "12")
 		self:ScheduleEvent("abom13", self.AbominationSpawns, 300, self, "13")
 		self:ScheduleEvent("abom14", self.AbominationSpawns, 318, self, "14")
-
+		
 		self:ScheduleEvent("weaver1", self.WeaverSpawns, 44, self, "1")
 		self:ScheduleEvent("weaver2", self.WeaverSpawns, 68, self, "2")
 		self:ScheduleEvent("weaver3", self.WeaverSpawns, 97, self, "3")
@@ -494,13 +490,35 @@ end
 
 function module:MINIMAP_ZONE_CHANGED(msg)
 	if GetMinimapZoneText() == "Sapphiron's Lair" and self.core:IsModuleActive(module.translatedName) then
-		self.core:DisableModule(module.translatedName)
-	elseif GetMinimapZoneText() == "Plaguewood" and self.core:IsModuleActive(module.translatedName) then
-		self.core:DisableModule(module.translatedName)
+		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
+		self:ResetModule()
+		DEFAULT_CHAT_FRAME:AddMessage("   BigWigs - Auto-Rebooting Module: "..module.translatedName)
+	
+	elseif GetMinimapZoneText() == "Eastern Plaguelands" and self.core:IsModuleActive(module.translatedName) then
+		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
+		self:ResetModule()
+		DEFAULT_CHAT_FRAME:AddMessage("   BigWigs - Auto-Rebooting Module: "..module.translatedName)
 	
 	elseif GetMinimapZoneText() == "Kel'Thuzad Chamber" and not self.core:IsModuleActive(module.translatedName) then
 		self.core:EnableModule(module.translatedName)
 	end
+end
+
+function module:ResetModule()
+	p3warn = nil
+	mcYellTime = GetTime()
+	frostBlastYellTime = GetTime()
+	mc1 = nil
+	mc2 = nil
+	mc3 = nil
+	mc4 = nil
+	castingFrostbolt = nil
+	shackleCount = 0
+	shackleCounter = 0
+	phase = "p1"
+	numAbomDead = 0
+	numWeaverDead = 0
+	bloodTapCounter = 0
 end
 
 function module:UNIT_HEALTH(msg)
@@ -519,9 +537,6 @@ end
 function module:CHAT_MSG_MONSTER_YELL(msg)
 	if string.find(msg, L["trigger_engage"]) then
 		module:SendEngageSync()
-		if phase ~= "p1" then
-			self:RefreshP1()
-		end
 
 	elseif msg == L["trigger_phase2_1"] or msg == L["trigger_phase2_2"] or msg == L["trigger_phase2_3"] then
 		self:Sync(syncName.phase2)

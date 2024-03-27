@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("High Priest Thekal", "Zul'Gurub")
 
-module.revision = 30012
+module.revision = 30075
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"bloodlust", "silence", "cleave", "heal", "disarm", -1, "phase", "punch", "tigers", "frenzy", "enraged", "bosskill"}
 module.wipemobs = {"Zealot Zath", "Zealot Lor'Khan"}
@@ -125,7 +125,12 @@ local icon = {
 	silence = "Spell_Holy_Silence",
 	mortalCleave = "Ability_Warrior_SavageBlow",
 	disarm = "Ability_Warrior_Disarm",
-	phase2 = "Spell_Holy_PrayerOfHealing"
+	phase2 = "Spell_Holy_PrayerOfHealing",
+	
+	hpBar = "spell_holy_prayerofspirit",
+}
+local color = {
+	hpBar = "Magenta",
 }
 local syncName = {
 	phase2 = "ThekalPhaseTwo"..module.revision,
@@ -191,12 +196,15 @@ function module:OnEngage()
 	self.lorkhanHP = 100
 	self.thekalHP = 100
 	
-	self:TriggerEvent("BigWigs_StartHPBar", self, "Zealot Zath", 100)
+	self:TriggerEvent("BigWigs_StartHPBar", self, "Zealot Zath", 100, "Interface\\Icons\\"..icon.hpBar, true, color.hpBar)
 	self:TriggerEvent("BigWigs_SetHPBar", self, "Zealot Zath", 0)
-	self:TriggerEvent("BigWigs_StartHPBar", self, "Zealot Lor'Khan", 100)
+	
+	self:TriggerEvent("BigWigs_StartHPBar", self, "Zealot Lor'Khan", 100, "Interface\\Icons\\"..icon.hpBar, true, color.hpBar)
 	self:TriggerEvent("BigWigs_SetHPBar", self, "Zealot Lor'Khan", 0)
-	self:TriggerEvent("BigWigs_StartHPBar", self, "High Priest Thekal", 100)
+	
+	self:TriggerEvent("BigWigs_StartHPBar", self, "High Priest Thekal", 100, "Interface\\Icons\\"..icon.hpBar, true, color.hpBar)
 	self:TriggerEvent("BigWigs_SetHPBar", self, "High Priest Thekal", 0)
+	
 	self:ScheduleRepeatingEvent("thekalHpCheck", self.CheckHP, 0.5, self)
 end
 
