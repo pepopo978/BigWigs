@@ -117,7 +117,7 @@ function module:OnEnable()
 
 	self:ThrottleSync(5, syncName.disease)
 	self:ThrottleSync(1, syncName.manaBurn)
-	self:ThrottleSync(10, syncName.danceStart)
+	self:ThrottleSync(1, syncName.danceStart)
 	self:ThrottleSync(10, syncName.fightStart)
 end
 
