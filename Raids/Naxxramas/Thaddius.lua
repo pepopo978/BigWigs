@@ -66,6 +66,18 @@ L:RegisterTranslations("enUS", function()
 		msg_enrage60 = "Enrage in 60 seconds",
 		msg_enrage10 = "Enrage in 10 seconds",
 
+		posicontext = "Positive",
+		negicontext = "Negative",
+
+		positivetype = "Interface\\Icons\\Spell_ChargePositive",
+		poswarn = "You changed to a Positive Charge!",
+		negativetype = "Interface\\Icons\\Spell_ChargeNegative",
+		negwarn = "You changed to a Negative Charge!",
+		polaritytickbar = "Polarity tick",
+
+		stayedpos = "You stayed Positive, don't move!",
+		stayedneg = "You stayed Negative, don't move!",
+
 		trigger_polarityShiftCast = "Thaddius begins to cast Polarity Shift.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 		bar_polarityShiftCast = "Polarity Shift Cast",
 		msg_polarityShift = "Casting Polarity Shift!",
@@ -130,6 +142,8 @@ local syncName = {
 
 	enrage = "ThaddiusEnrage" .. module.revision,
 
+	checkAuras = "ThaddiusCheckAuras" .. module.revision,
+
 	polarityShiftCast = "ThaddiusPolarityShiftCast" .. module.revision,
 	polarity = "ThaddiusPolarity" .. module.revision,
 }
@@ -144,7 +158,7 @@ module:RegisterYellEngage(L["trigger_engage1"])
 function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL") --trigger_engage, trigger_engage1, trigger_feugenDeadYell, trigger_stalaggDeadYell, trigger_polarityShiftAfflic
 	self:RegisterEvent("CHAT_MSG_RAID_BOSS_EMOTE") --trigger_3sec
-
+	self:RegisterEvent("PLAYER_AURAS_CHANGED")
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event") --trigger_polarityShiftCast
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event") --trigger_manaBurn, trigger_manaBurn2
 
@@ -158,6 +172,7 @@ function module:OnEnable()
 	self:ThrottleSync(10, syncName.enrage)
 	self:ThrottleSync(5, syncName.polarityShiftCast)
 	self:ThrottleSync(5, syncName.polarity)
+	self:ThrottleSync(5, syncName.newPolarity)
 end
 
 function module:OnSetup()
@@ -216,7 +231,7 @@ function module:CHAT_MSG_MONSTER_YELL(msg)
 		self:Sync(syncName.polarity)
 	end
 
-	if feugenDead == true and feugenDead == true then
+	if phase2started == false and feugenDead == true and feugenDead == true then
 		self:Sync(syncName.phase2)
 	end
 end
@@ -284,6 +299,8 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		self:PolarityShift()
 	elseif sync == syncName.polarityShiftCast and self.db.profile.polarity then
 		self:PolarityShiftCast()
+	elseif sync == syncName.checkAuras then
+		self:CheckAuras()
 	end
 end
 
@@ -354,16 +371,20 @@ function module:PolarityShiftCast()
 end
 
 function module:PolarityShift()
-	self:RegisterEvent("PLAYER_AURAS_CHANGED")
 	self:Bar(L["bar_polarityShiftCd"], timer.polarityShiftCd, icon.polarityShift, true, color.polarityShiftCd)
+	self:DelayedSync(1, syncName.checkAuras)
 end
 
 function module:PLAYER_AURAS_CHANGED(msg)
+	self:Sync(syncName.checkAuras)
+end
+
+function module:CheckAuras(msg)
 	local chargetype = nil
 	local iIterator = 1
 	while UnitDebuff("Player", iIterator) do
 		local texture, applications = UnitDebuff("Player", iIterator)
-		if texture == "Interface\\Icons\\Spell_ChargePositive" or texture == "Interface\\Icons\\Spell_ChargeNegative" then
+		if texture == L["positivetype"] or texture == L["negativetype"] then
 			if applications > 1 then
 				return
 			end
@@ -374,21 +395,20 @@ function module:PLAYER_AURAS_CHANGED(msg)
 	if not chargetype then
 		return
 	end
-	self:UnregisterEvent("PLAYER_AURAS_CHANGED")
 	if self.db.profile.selfcharge then
 		self:NewPolarity(chargetype)
 	end
 end
 
 function module:NewPolarity(chargeType)
-	if self.db.profile.charge then
+	if self.db.profile.selfcharge then
 		if self.previousCharge and self.previousCharge ~= chargeType then
 			if chargeType == L["positivetype"] then
-				self:WarningSign("spell_chargepositive", 3, false, L["posicontext"])
+				self:WarningSign(icon.positive, 3, false, L["posicontext"])
 				self:Message(L["poswarn"], "Positive", true, nil, false)
 				self:Sound("PositiveSwitchSides")
 			elseif chargeType == L["negativetype"] then
-				self:WarningSign("spell_chargenegative", 3, false, L["negicontext"])
+				self:WarningSign(icon.negative, 3, false, L["negicontext"])
 				self:Message(L["negwarn"], "Important", true, nil, false)
 				self:Sound("NegativeSwitchSides")
 			end
@@ -398,7 +418,7 @@ function module:NewPolarity(chargeType)
 			else
 				self:Message(L["poswarn"], "Positive", true, nil, false)
 			end
-			self:WarningSign("spell_chargepositive", 3, false, L["posicontext"])
+			self:WarningSign(icon.positive, 3, false, L["posicontext"])
 			self:Sound("Positive")
 		elseif chargeType == L["negativetype"] then
 			if self.previousCharge then
@@ -406,7 +426,7 @@ function module:NewPolarity(chargeType)
 			else
 				self:Message(L["negwarn"], "Important", true, nil, false)
 			end
-			self:WarningSign("spell_chargenegative", 3, false, L["negicontext"])
+			self:WarningSign(icon.negative, 3, false, L["negicontext"])
 			self:Sound("Negative")
 		end
 
