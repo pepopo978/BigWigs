@@ -105,7 +105,7 @@ end)
 ----------------------------------
 
 BigWigsSound = BigWigs:NewModule(L["Sounds"])
-BigWigsSound.defaults = {
+BigWigsSound.defaultDB = {
 	defaultonly = false,
 	sound = true,
 }
