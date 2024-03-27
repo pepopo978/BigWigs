@@ -17,6 +17,8 @@ L:RegisterTranslations("enUS", function() return {
 	["raidicon"] = true,
 	["place"] = true,
 	["icon"] = true,
+	["sticky"] = true,
+	["chat"] = true,
 
 	["Place"] = true,
 	["Place Raid Icons"] = true,
@@ -25,6 +27,14 @@ L:RegisterTranslations("enUS", function() return {
 	["Icon"] = true,
 	["Set Icon"] = true,
 	["Set which icon to place on players."] = true,
+
+	["Sticky"] = true,
+	["Sticky Markers"] = true,
+	["Markers are not removed by reapplying the same mark on a unit."] = true,
+
+	["Chat"] = true,
+	["Chat Markers"] = true,
+	["Type {marker} to post it in chat channels."] = true,
 
 	["Options for Raid Icons."] = true,
 
@@ -189,10 +199,12 @@ L:RegisterTranslations("frFR", function() return {
 --      Module Declaration      --
 ----------------------------------
 
-BigWigsRaidIcon = BigWigs:NewModule(L["Raid Icons"])
+BigWigsRaidIcon = BigWigs:NewModule(L["Raid Icons"], "AceHook-2.1")
 BigWigsRaidIcon.defaultDB = {
 	place = true,
 	icon = L["skull"],
+	sticky = true,
+	chat = true,
 }
 BigWigsRaidIcon.icontonumber = {
 	[L["star"]] = 1,
@@ -225,6 +237,20 @@ BigWigsRaidIcon.consoleOptions = {
 			set = function(v) BigWigsRaidIcon.db.profile.icon = v end,
 			validate = {L["star"], L["circle"], L["diamond"], L["triangle"], L["moon"], L["square"], L["cross"], L["skull"] },
 		},
+		[L["sticky"]] = {
+			type = "toggle",
+			name = L["Sticky Markers"],
+			desc = L["Markers are not removed by reapplying the same mark on a unit."],
+			get = function() return BigWigsRaidIcon.db.profile.sticky end,
+			set = function(v) BigWigsRaidIcon.db.profile.sticky = v end,
+		},
+		[L["chat"]] = {
+			type = "toggle",
+			name = L["Chat Markers"],
+			desc = L["Type {marker} to post it in chat channels."],
+			get = function() return BigWigsRaidIcon.db.profile.chat end,
+			set = function(v) BigWigsRaidIcon.db.profile.chat = v end,
+		},
 	}
 }
 
@@ -235,6 +261,8 @@ BigWigsRaidIcon.consoleOptions = {
 function BigWigsRaidIcon:OnEnable()
 	self:RegisterEvent("BigWigs_SetRaidIcon")
 	self:RegisterEvent("BigWigs_RemoveRaidIcon")
+	self:Hook("SetRaidTargetIcon", "StickySetRaidTarget")
+	self:Hook("SendChatMessage", "ConvertRaidMarkers")
 end
 
 function BigWigsRaidIcon:BigWigs_SetRaidIcon(player, iconnumber)
@@ -248,10 +276,10 @@ function BigWigsRaidIcon:BigWigs_SetRaidIcon(player, iconnumber)
 	for i=1,GetNumRaidMembers() do
 		if UnitName("raid"..i) == player then
 			if not iconnumber then
-				SetRaidTargetIcon("raid"..i, icon)
+				SetRaidTarget("raid"..i, icon)
 				lastplayer = player
 			else
-				SetRaidTargetIcon("raid"..i, iconnumber)
+				SetRaidTarget("raid"..i, iconnumber)
 				lastplayer = player
 			end
 		end
@@ -263,8 +291,29 @@ function BigWigsRaidIcon:BigWigs_RemoveRaidIcon()
 	if not self.db.profile.place or not lastplayer then return end
 	for i=1,GetNumRaidMembers() do
 		if UnitName("raid"..i) == lastplayer then
-			SetRaidTargetIcon("raid"..i, 0)
+			SetRaidTarget("raid"..i, 0)
 		end
 	end
 	lastplayer = nil
+end
+
+function BigWigsRaidIcon:StickySetRaidTarget(unit, index)
+	self.hooks["SetRaidTargetIcon"](unit, index)
+	if self.db.profile.sticky then
+		SetRaidTarget(unit, index);
+	end
+end
+
+function BigWigsRaidIcon:ConvertRaidMarkers(msg, chatType, language, channel)
+	if self.db.profile.chat then
+		msg = string.gsub(msg, "{star}", SpellstatusV2IndexToIcon[1])
+		msg = string.gsub(msg, "{circle}", SpellstatusV2IndexToIcon[2])
+		msg = string.gsub(msg, "{diamond}", SpellstatusV2IndexToIcon[3])
+		msg = string.gsub(msg, "{triangle}", SpellstatusV2IndexToIcon[4])
+		msg = string.gsub(msg, "{moon}", SpellstatusV2IndexToIcon[5])
+		msg = string.gsub(msg, "{square}", SpellstatusV2IndexToIcon[6])
+		msg = string.gsub(msg, "{cross}", SpellstatusV2IndexToIcon[7])
+		msg = string.gsub(msg, "{skull}", SpellstatusV2IndexToIcon[8])
+	end
+	self.hooks["SendChatMessage"](msg, chatType, language, channel)
 end

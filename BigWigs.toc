@@ -41,7 +41,7 @@ Libs\Dewdrop-2.0\Dewdrop-2.0.lua
 Libs\Tablet-2.0\Tablet-2.0.lua
 Libs\FuBarPlugin-2.0\FuBarPlugin-2.0.lua
 Libs\PaintChips-2.0\PaintChips-2.0.lua
-Libs\CandyBar-2.1\CandyBar-2.1.lua
+Libs\CandyBar-2.2\CandyBar-2.2.lua
 Libs\Surface-1.0\Surface-1.0.lua
 Libs\Deformat-2.0\Deformat-2.0.lua
 Libs\Gratuity-2.0\Gratuity-2.0.lua
@@ -66,6 +66,7 @@ Plugins\Range.lua
 Plugins\CommonAuras.lua
 Plugins\Version.lua
 Plugins\Test.lua
+Plugins\Threat.lua
 Plugins\CustomBar.lua
 Plugins\Tranq.lua
 Plugins\ZombieFood.lua
@@ -75,9 +76,8 @@ Plugins\BossRecords.lua
 Plugins\RaidOfficer.lua
 Plugins\AutoReply.lua
 Plugins\Proximity.lua
-Plugins\Ignite.lua
 Plugins\WorldBuffTimers.lua
-Plugins\ScorchTimer.lua
+Plugins\MageTools.lua
 Plugins\FRBuffMacro.lua
 Plugins\Farclip.lua
 Plugins\FrostBlast.lua
