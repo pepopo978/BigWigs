@@ -20,6 +20,7 @@ L:RegisterTranslations("enUS", function()
 		["ThreatDesc"] = "Parses messages from TWThreat for usage in BigWigs plugins.",
 		["Active"] = true,
 		["Activate the plugin."] = true,
+		["Debug"] = true,
 	}
 end)
 
@@ -31,6 +32,7 @@ BigWigsThreat = BigWigs:NewModule(L["Threat"])
 BigWigsThreat.revision = 20011
 BigWigsThreat.defaultDB = {
 	active = false,
+	debug = false,
 }
 BigWigsThreat.consoleCmd = "threat"
 
@@ -49,8 +51,24 @@ BigWigsThreat.consoleOptions = {
 			end,
 			set = function(v)
 				BigWigsThreat.db.profile.active = v
+				if v then
+					BigWigsThreat:Enable()
+				else
+					BigWigsThreat:Disable()
+				end
 			end,
-			--passValue = "reverse",
+		},
+		debug = {
+			type = "toggle",
+			name = L["Debug"],
+			desc = L["Debug"],
+			order = 1,
+			get = function()
+				return BigWigsThreat.db.profile.debug
+			end,
+			set = function(v)
+				BigWigsThreat.db.profile.debug = v
+			end,
 		},
 	}
 }
@@ -94,18 +112,27 @@ end
 
 function BigWigsThreat:EnableEventsForPlayerName(playerName)
 	if not self.playerNamesToNotify[playerName] then
+		self:Debug('Enabling events for {' .. playerName .. '}')
 		self.playerNamesToNotify[playerName] = true
 	end
 end
 
 function BigWigsThreat:DisableEventsForPlayerName(playerName)
 	if self.playerNamesToNotify[playerName] then
+		self:Debug('Disabling events for {' .. playerName .. '}')
 		self.playerNamesToNotify[playerName] = nil
 	end
 end
 
 function BigWigsThreat:DisablePlayerEvents()
+	self:Debug('Disabling all player events')
 	self.playerNamesToNotify = {}
+end
+
+function BigWigsThreat:Debug(msg)
+	if self.db.profile.debug then
+		DEFAULT_CHAT_FRAME:AddMessage(msg)
+	end
 end
 
 function BigWigsThreat:Event()
@@ -154,12 +181,14 @@ function BigWigsThreat:handleThreatPacket(packet)
 				perc = perc,
 				melee = melee,
 			}
+			self:Debug('Player: {' .. player .. '} Threat: ' .. threat .. ' Perc: ' .. perc .. ' Tank: ' .. tostring(tank) .. ' Melee: ' .. tostring(melee))
 
 			if tank then
 				self.tankName = player
 			end
 
 			if self.playerNamesToNotify[player] then
+				self:Debug('Notifying for {' .. player .. '}')
 				self:TriggerEvent("BigWigs_ThreatUpdate", player, threat, perc, tank, melee)
 			end
 		end
