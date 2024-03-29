@@ -394,9 +394,9 @@ function module:CThunP2Start()
 		doCheckForWipe = false -- disable wipe check since we get out of combat, enable it later again
 		tentacletime = timer.p2Tentacle
 		
-		self:TriggerEvent("BigWigs_StartHPBar", self, L["First Tentacle"], 100, "Interface\\Icons\\"..icon.tentacle, true, color.tentacle)
+		self:TriggerEvent("BigWigs_StartHPBar", self, L["First Tentacle"], 100, "Interface\\Icons\\"..icon.stomachTentacle, true, color.stomachTentacle)
 		self:TriggerEvent("BigWigs_SetHPBar", self, L["First Tentacle"], 0)
-		self:TriggerEvent("BigWigs_StartHPBar", self, L["Second Tentacle"], 100, "Interface\\Icons\\"..icon.tentacle, true, color.tentacle)
+		self:TriggerEvent("BigWigs_StartHPBar", self, L["Second Tentacle"], 100, "Interface\\Icons\\"..icon.stomachTentacle, true, color.stomachTentacle)
 		self:TriggerEvent("BigWigs_SetHPBar", self, L["Second Tentacle"], 0)
 		self:ScheduleRepeatingEvent("bwcthunCheckTentacleHP", self.CheckTentacleHP, timer.CheckTentacleHP, self )
 
@@ -491,9 +491,9 @@ function module:CThunWeakenedOver()
 	self.firstTentacleHP = 100
 	self.secondTentacleHP = 100
 	
-	self:TriggerEvent("BigWigs_StartHPBar", self, L["First Tentacle"], 100, "Interface\\Icons\\"..icon.tentacle, true, color.tentacle)
+	self:TriggerEvent("BigWigs_StartHPBar", self, L["First Tentacle"], 100, "Interface\\Icons\\"..icon.stomachTentacle, true, color.stomachTentacle)
 	self:TriggerEvent("BigWigs_SetHPBar", self, L["First Tentacle"], 0)
-	self:TriggerEvent("BigWigs_StartHPBar", self, L["Second Tentacle"], 100, "Interface\\Icons\\"..icon.tentacle, true, color.tentacle)
+	self:TriggerEvent("BigWigs_StartHPBar", self, L["Second Tentacle"], 100, "Interface\\Icons\\"..icon.stomachTentacle, true, color.stomachTentacle)
 	self:TriggerEvent("BigWigs_SetHPBar", self, L["Second Tentacle"], 0)
 		
 	self:CancelDelayedSync(syncName.weakenOver) -- ok
