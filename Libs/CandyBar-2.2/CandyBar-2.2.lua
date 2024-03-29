@@ -239,6 +239,7 @@ function CandyBar:Pause(name, hideTimer)
 	CandyBar.var.handlers[name].pausetime = GetTime()
 	CandyBar.var.handlers[name].paused = true
 	CandyBar.var.handlers[name].running = nil
+	CandyBar.var.handlers[name].frame.spark:Hide()
 
 	if hideTimer then
 		CandyBar.var.handlers[name].frame.timertext:Hide()
