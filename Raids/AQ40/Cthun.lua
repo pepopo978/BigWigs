@@ -152,7 +152,7 @@ local icon = {
 	weaken = "INV_ValentinesCandy",
 	eyeBeamSelf = "Ability_creature_poison_05",
 	digestiveAcid = "ability_creature_disease_02",
-	
+
 	stomachTentacle = "inv_misc_ahnqirajtrinket_05",
 }
 local color = {
@@ -193,17 +193,18 @@ function module:OnRegister()
 end
 
 function module:OnEnable()
-	if self.core:IsModuleActive("Qiraji Mindslayer", "Ahn'Qiraj") then self.core:DisableModule("Qiraji Mindslayer", "Ahn'Qiraj") end
-	
+	if self.core:IsModuleActive("Qiraji Mindslayer", "Ahn'Qiraj") then
+		self.core:DisableModule("Qiraji Mindslayer", "Ahn'Qiraj")
+	end
+
 	--self:RegisterEvent("CHAT_MSG_SAY")--Debug
-	
+
 	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE", "Emote")
 	self:RegisterEvent("CHAT_MSG_RAID_BOSS_EMOTE", "Emote")
 
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "CheckEyeBeam")
 
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "CheckDigestiveAcid")
-
 
 	self:ThrottleSync(20, syncName.p2Start)
 	self:ThrottleSync(50, syncName.weaken)
@@ -233,7 +234,7 @@ function module:OnSetup()
 	phase2started = nil
 	doCheckForWipe = false
 	isWeakened = nil
-	
+
 	tentacletime = timer.p1Tentacle
 
 	self:RemoveProximity()
@@ -256,7 +257,7 @@ function module:MINIMAP_ZONE_CHANGED(msg)
 		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
 		self:ResetModule()
 		DEFAULT_CHAT_FRAME:AddMessage("   Auto-Rebooting C'Thun Module")
-		
+
 		--self.core:DisableModule(module.translatedName)
 	end
 end
@@ -275,7 +276,7 @@ function module:ResetModule()
 	phase2started = nil
 	doCheckForWipe = false
 	isWeakened = nil
-	
+
 	tentacletime = timer.p1Tentacle
 end
 
@@ -372,9 +373,11 @@ function module:FleshTentacle()
 end
 
 function module:Window()
-	local window = (lastspawn + timer.nextspawn) - GetTime()
-	if window > 0 then
-		self:Bar(L["window_bar"], window, icon.window, true, "white")
+	if lastspawn then
+		local window = (lastspawn + timer.nextspawn) - GetTime()
+		if window > 0 then
+			self:Bar(L["window_bar"], window, icon.window, true, "white")
+		end
 	end
 end
 
@@ -416,10 +419,10 @@ function module:CThunP2Start()
 		phase2started = true
 		doCheckForWipe = false -- disable wipe check since we get out of combat, enable it later again
 		tentacletime = timer.p2Tentacle
-		
-		self:TriggerEvent("BigWigs_StartHPBar", self, L["First Tentacle"], 100, "Interface\\Icons\\"..icon.stomachTentacle, true, color.stomachTentacle)
+
+		self:TriggerEvent("BigWigs_StartHPBar", self, L["First Tentacle"], 100, "Interface\\Icons\\" .. icon.stomachTentacle, true, color.stomachTentacle)
 		self:TriggerEvent("BigWigs_SetHPBar", self, L["First Tentacle"], 0)
-		self:TriggerEvent("BigWigs_StartHPBar", self, L["Second Tentacle"], 100, "Interface\\Icons\\"..icon.stomachTentacle, true, color.stomachTentacle)
+		self:TriggerEvent("BigWigs_StartHPBar", self, L["Second Tentacle"], 100, "Interface\\Icons\\" .. icon.stomachTentacle, true, color.stomachTentacle)
 		self:TriggerEvent("BigWigs_SetHPBar", self, L["Second Tentacle"], 0)
 		self:ScheduleRepeatingEvent("bwcthunCheckTentacleHP", self.CheckTentacleHP, timer.CheckTentacleHP, self)
 
@@ -516,10 +519,10 @@ function module:CThunWeakenedOver()
 	self:ThrottleSync(600, syncName.weakenOver)
 	self.firstTentacleHP = 100
 	self.secondTentacleHP = 100
-	
-	self:TriggerEvent("BigWigs_StartHPBar", self, L["First Tentacle"], 100, "Interface\\Icons\\"..icon.stomachTentacle, true, color.stomachTentacle)
+
+	self:TriggerEvent("BigWigs_StartHPBar", self, L["First Tentacle"], 100, "Interface\\Icons\\" .. icon.stomachTentacle, true, color.stomachTentacle)
 	self:TriggerEvent("BigWigs_SetHPBar", self, L["First Tentacle"], 0)
-	self:TriggerEvent("BigWigs_StartHPBar", self, L["Second Tentacle"], 100, "Interface\\Icons\\"..icon.stomachTentacle, true, color.stomachTentacle)
+	self:TriggerEvent("BigWigs_StartHPBar", self, L["Second Tentacle"], 100, "Interface\\Icons\\" .. icon.stomachTentacle, true, color.stomachTentacle)
 	self:TriggerEvent("BigWigs_SetHPBar", self, L["Second Tentacle"], 0)
 
 	self:CancelDelayedSync(syncName.weakenOver) -- ok
@@ -771,21 +774,21 @@ function module:CheckTentacleHP()
 		health = math.floor(UnitHealth("target") / UnitHealthMax("target") * 100)
 	else
 		for i = 1, GetNumRaidMembers(), 1 do
-			if UnitName("Raid"..i.."target") == fleshtentacle and not UnitIsDeadOrGhost("Raid"..i.."target") then
-				health = math.floor(UnitHealth("Raid"..i.."target")/UnitHealthMax("Raid"..i.."target")*100)
-				break;
+			if UnitName("Raid" .. i .. "target") == fleshtentacle and not UnitIsDeadOrGhost("Raid" .. i .. "target") then
+				health = math.floor(UnitHealth("Raid" .. i .. "target") / UnitHealthMax("Raid" .. i .. "target") * 100)
+				break ;
 			end
 		end
 	end
-	
+
 	if secondTentacleLowWarn == true and health and health >= 20 then
 		secondTentacleLowWarn = nil
 		self.firstTentacleHP = 1
 		self.secondTentacleHP = 100
-		self:TriggerEvent("BigWigs_SetHPBar", self, L["First Tentacle"], 100-self.firstTentacleHP)
-		self:TriggerEvent("BigWigs_SetHPBar", self, L["Second Tentacle"], 100-self.secondTentacleHP)
+		self:TriggerEvent("BigWigs_SetHPBar", self, L["First Tentacle"], 100 - self.firstTentacleHP)
+		self:TriggerEvent("BigWigs_SetHPBar", self, L["Second Tentacle"], 100 - self.secondTentacleHP)
 	end
-	
+
 	if not fleshtentacledead then
 		if health and health < self.firstTentacleHP then
 			self.firstTentacleHP = health
