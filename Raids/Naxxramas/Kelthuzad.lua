@@ -3,7 +3,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Kel'Thuzad", "Naxxramas")
 
-module.revision = 30075
+module.revision = 30076
 module.enabletrigger = module.translatedName
 module.toggleoptions = {
 	"phase",
@@ -305,7 +305,7 @@ function module:OnRegister()
 end
 
 function module:OnEnable()
-	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event") --Debug
 	
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL") --trigger_engage, trigger_phase2_1,2,3, trigger_phase3, trigger_frostBlastYell
 	
@@ -445,7 +445,7 @@ end
 
 function module:OnDisengage()
 	if self.db.profile.proximity then
-		self:RemoveProximity()
+		self:TriggerEvent("BigWigs_HideProximity")
 	end
 	
 	if self.db.profile.frostblastframe then
@@ -484,6 +484,14 @@ function module:ResetModule()
 	numAbomDead = 0
 	numWeaverDead = 0
 	bloodTapCounter = 0
+	
+	if self.db.profile.proximity then
+		self:TriggerEvent("BigWigs_HideProximity")
+	end
+	
+	if self.db.profile.frostblastframe then
+		BigWigsFrostBlast:FBClose()
+	end
 end
 
 function module:UNIT_HEALTH(msg)
@@ -730,7 +738,7 @@ function module:Phase2()
 	end
 
 	if self.db.profile.proximity then
-		self:ScheduleEvent("bwShowProximity", self.Proximity, timer.phase2, self)
+		self:ScheduleEvent("KtShowProximity", self.EnableProximity, timer.phase2, self)
 	end
 	
 	if self.db.profile.frostblastframe then
@@ -823,59 +831,23 @@ function module:Mc(rest)
 		mc1 = rest
 		self:Bar(rest..L["bar_mcAfflic"].. " >Click Me<", timer.mcAfflic, icon.mc, true, color.mc)
 		self:SetCandyBarOnClick("BigWigsBar "..rest..L["bar_mcAfflic"].. " >Click Me<", function(name, button, extra) TargetByName(extra, true) end, rest)
-		--[[if (IsRaidLeader() or IsRaidOfficer()) and self.db.profile.mcicon then
-			for i=1,GetNumRaidMembers() do
-				if UnitName("raid"..i) == rest then
-					SetRaidTargetIcon("raid"..i, 1)
-				end
-			end
-		end]]--
 	elseif mc2 == nil then
 		mc2 = rest
 		self:Bar(rest..L["bar_mcAfflic"].. " >Click Me<", timer.mcAfflic, icon.mc, true, color.mc)
 		self:SetCandyBarOnClick("BigWigsBar "..rest..L["bar_mcAfflic"].. " >Click Me<", function(name, button, extra) TargetByName(extra, true) end, rest)
-		--[[if (IsRaidLeader() or IsRaidOfficer()) and self.db.profile.mcicon then
-			for i=1,GetNumRaidMembers() do
-				if UnitName("raid"..i) == rest then
-					SetRaidTargetIcon("raid"..i, 2)
-				end
-			end
-		end]]--
 	elseif mc3 == nil then
 		mc3 = rest
 		self:Bar(rest..L["bar_mcAfflic"].. " >Click Me<", timer.mcAfflic, icon.mc, true, color.mc)
 		self:SetCandyBarOnClick("BigWigsBar "..rest..L["bar_mcAfflic"].. " >Click Me<", function(name, button, extra) TargetByName(extra, true) end, rest)
-		--[[if (IsRaidLeader() or IsRaidOfficer()) and self.db.profile.mcicon then
-			for i=1,GetNumRaidMembers() do
-				if UnitName("raid"..i) == rest then
-					SetRaidTargetIcon("raid"..i, 3)
-				end
-			end
-		end]]--
 	elseif mc4 == nil then
 		mc4 = rest
 		self:Bar(rest..L["bar_mcAfflic"].. " >Click Me<", timer.mcAfflic, icon.mc, true, color.mc)
 		self:SetCandyBarOnClick("BigWigsBar "..rest..L["bar_mcAfflic"].. " >Click Me<", function(name, button, extra) TargetByName(extra, true) end, rest)
-		--[[if (IsRaidLeader() or IsRaidOfficer()) and self.db.profile.mcicon then
-			for i=1,GetNumRaidMembers() do
-				if UnitName("raid"..i) == rest then
-					SetRaidTargetIcon("raid"..i, 4)
-				end
-			end
-		end]]--
 	end
 end
 
 function module:McFade(rest)
 	self:RemoveBar(rest..L["bar_mcAfflic"].. " >Click Me<")
-	
-	--[[if IsRaidLeader() or IsRaidOfficer() then
-		for i=1,GetNumRaidMembers() do
-			if UnitName("raid"..i) == rest then
-				SetRaidTargetIcon("raid"..i, 0)
-			end
-		end
-	end]]--
 	
 	if mc1 ~= nil and mc2 ~= nil and mc3 ~= nil and mc4 ~= nil then
 		mc1 = nil
@@ -894,6 +866,8 @@ end
 
 function module:FrostBlastYell()
 	frostBlastYellTime = GetTime()
+	
+	self:RemoveBar(L["bar_frostBlastCd"])
 	
 	self:Bar(L["bar_frostBlastAfflic"], timer.frostBlastAfflic, icon.frostBlast, true, color.frostBlast)
 	self:DelayedIntervalBar(timer.frostBlastAfflic, L["bar_frostBlastCd"], timer.frostBlastCd[1], timer.frostBlastCd[2], icon.frostBlast, true, color.frostBlast)
@@ -1004,4 +978,8 @@ function module:BloodTap(rest)
 		bloodTapCounter = tonumber(rest) * 10
 		self:Bar(L["bar_bloodTapA"]..bloodTapCounter..L["bar_bloodTapB"], timer.bloodTap, icon.bloodTap, true, color.bloodTap)
 	end
+end
+
+function module:EnableProximity()
+	self:TriggerEvent("BigWigs_ShowProximity")
 end

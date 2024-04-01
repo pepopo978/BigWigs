@@ -49,17 +49,17 @@ L:RegisterTranslations("enUS", function() return {
 	phase_name = "Phase notification",
 	phase_desc = "Announces the boss' phase transitions.",
 	
-	phase2_trigger = "fill me with your RAGE!",
+	
+	trigger_phase2 = "fill me with your RAGE!",
 
-	phaseone_message = "Troll Phase",
-	phasetwo_message = "Tiger Phase",
-	phasetwo_bar = "Tiger Phase",
+	msg_phase2 = "Tiger Phase",
+	bar_phase2 = "Tiger Phase",
 	
-	tigers_trigger = "High Priest Thekal performs Summon Zulian Guardians.",
-	tigers_message = "Incoming Tigers!",
+	trigger_tigers = "High Priest Thekal performs Summon Zulian Guardians.",
+	msg_tigers = "Incoming Tigers!",
 	
-	forcepunch_trigger = "High Priest Thekal begins to perform Force Punch.",
-	forcepunch_bar = "Force Punch",
+	trigger_forcePunch = "High Priest Thekal begins to perform Force Punch.",
+	bar_forcePunch = "Force Punch",
 	
 	heal_trigger = "Zealot Lor'Khan begins to cast Great Heal.",
 	heal_message = "Zealot Lor'Khan is Healing! Interrupt it!",
@@ -260,7 +260,7 @@ function module:CheckForBossDeath(msg)
 end
 
 function module:CHAT_MSG_MONSTER_YELL(msg)
-	if string.find(msg, L["phase2_trigger"]) then
+	if string.find(msg, L["trigger_phase2"]) then
 		self:Sync(syncName.phase2)
 	end
 end
@@ -291,8 +291,8 @@ function module:Event(msg)
 	local _,_,silenceother_triggerword = string.find(msg, L["silenceother_trigger"])
 	local _,_,disarmother_triggerword = string.find(msg, L["disarmother_trigger"])
 	local _,_,mortalcleaveother_triggerword = string.find(msg, L["mortalcleaveother_trigger"])
-	if msg == L["tigers_trigger"] then
-		self:Message(L["tigers_message"], "Important")
+	if msg == L["trigger_tigers"] then
+		self:Message(L["msg_tigers"], "Important")
 	elseif msg == L["heal_trigger"] then
 		self:Sync(syncName.heal)
 	elseif msg == L["silenceself_trigger"] then
@@ -332,8 +332,8 @@ function module:CHAT_MSG_MONSTER_EMOTE(msg)
 end
 
 function module:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE(msg)
-	if msg == L["forcepunch_trigger"] then
-		self:Bar(L["forcepunch_bar"], timer.forcePunch, icon.forcePunch, true, "red")
+	if msg == L["trigger_forcePunch"] then
+		self:Bar(L["bar_forcePunch"], timer.forcePunch, icon.forcePunch, true, "red")
 	end
 end
 
@@ -365,12 +365,12 @@ end
 function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.phase2 and self.phase < 2 then
 		self.phase = 2
-		self:RemoveBar(L["phasetwo_bar"])
+		self:RemoveBar(L["bar_phase2"])
 		self:TigerPhase()
 	elseif sync == syncName.phasechange then
 		self:CancelScheduledEvent("checkphasechange")
 		self.phase = 1.5
-		self:Bar(L["phasetwo_bar"], timer.phase2, icon.phase2, true, "White")
+		self:Bar(L["bar_phase2"], timer.phase2, icon.phase2, true, "White")
 	elseif sync == syncName.heal and self.db.profile.heal then
 		self:Message(L["heal_message"], "Attention", "Alarm")
 		self:Bar(L["heal_bar"], 4, icon.heal, true, "Blue")
@@ -411,7 +411,7 @@ function module:TigerPhase()
 		self:Bar(L["Next Bloodlust"], timer.bloodlust, icon.bloodlust, true, "cyan")
 	end
 	if self.db.profile.phase then
-		self:Message(L["phasetwo_message"], "Attention")
+		self:Message(L["msg_phase2"], "Attention")
 	end
 	self:Bar(L["New Adds"], timer.adds, icon.adds, true, "blue")
 	self:Bar(L["Knockback"], timer.knockback, icon.knockback, true, "red")
