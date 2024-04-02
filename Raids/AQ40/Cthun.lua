@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("C'Thun", "Ahn'Qiraj")
 
-module.revision = 30076
+module.revision = 30077
 module.enabletrigger = {"Eye of C'Thun", "C'Thun"}
 module.toggleoptions = {
 	"cthuneyebeam",
@@ -120,7 +120,8 @@ L:RegisterTranslations("enUS", function() return {
 	
 	bar_windowOfOpportunity = "Window of Opportunity",
 	
-	trigger_weakened = "C'Thun is weakened!", --CHAT_MSG_MONSTER_EMOTE
+		--must be a string.find
+	trigger_weakened = "is weakened!", --CHAT_MSG_MONSTER_EMOTE
 	bar_weakened = "C'Thun is Weakened!",
 	msg_weakened = "C'Thun is Weakened!",
 	msg_weakenedFade = "Weaken is Over",
@@ -252,13 +253,11 @@ function module:OnRegister()
 end
 
 function module:OnEnable()
-	if self.core:IsModuleActive("Qiraji Mindslayer", "Ahn'Qiraj") then self.core:DisableModule("Qiraji Mindslayer", "Ahn'Qiraj") end
-	
-	self:RegisterEvent("CHAT_MSG_SAY", "Event") --Debug
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event") --Debug
 	
 	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE") --trigger_weakened
 	
-	self:RegisterEvent("UNIT_HEALTH") --stomach tentacles hp
+	--self:RegisterEvent("UNIT_HEALTH") --stomach tentacles hp
 	
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event") --trigger_cthun_eyeBeam, trigger_giantEye_eyeBeam
 	
@@ -298,6 +297,8 @@ function module:OnSetup()
 end
 
 function module:OnEngage()
+	if self.core:IsModuleActive("Qiraji Mindslayer", "Ahn'Qiraj") then self.core:DisableModule("Qiraji Mindslayer", "Ahn'Qiraj") end
+	
 	doCheckForWipe = false
 	cthunStarted = nil
 	phase = "phase1"
@@ -338,8 +339,6 @@ function module:OnEngage()
 	end
 	
 	self:ScheduleRepeatingEvent("CthunCheckTarget", self.CheckTarget, 0.5, self)
-	
-	self:TriggerEvent("BigWigs_StopDebuffTrack")
 end
 
 function module:OnDisengage()
@@ -350,6 +349,7 @@ function module:OnDisengage()
 	self:CancelScheduledEvent("CthunDarkGlare")
 	self:CancelScheduledEvent("CThunDelayedEyeBeamCheck")
 	self:CancelScheduledEvent("CthunCheckTarget")
+	self:CancelScheduledEvent("CThunCheckTentacleHP")
 end
 
 function module:MINIMAP_ZONE_CHANGED(msg)
@@ -378,6 +378,13 @@ function module:ResetModule()
 	lastspawn = 0
 	
 	self:TriggerEvent("BigWigs_HideProximity")
+	self:TriggerEvent("BigWigs_StopDebuffTrack")
+	
+	self:CancelScheduledEvent("CthunP1Claw")
+	self:CancelScheduledEvent("CthunDarkGlare")
+	self:CancelScheduledEvent("CThunDelayedEyeBeamCheck")
+	self:CancelScheduledEvent("CthunCheckTarget")
+	self:CancelScheduledEvent("CThunCheckTentacleHP")
 end
 
 function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
@@ -412,11 +419,12 @@ function module:CheckForWipe(event)
 end
 
 function module:CHAT_MSG_MONSTER_EMOTE(msg)
-	if msg == L["trigger_weakened"] then
+	if string.find(msg, L["trigger_weakened"]) then
 		self:Sync(syncName.weakened)
 	end
 end
 
+--[[
 function module:UNIT_HEALTH(msg)
 	if UnitName(msg) == "Flesh Tentacle" then
 		local healthPct = UnitHealth(msg) * 100 / UnitHealthMax(msg)
@@ -453,6 +461,7 @@ function module:UNIT_HEALTH(msg)
 		end
 	end
 end
+]]--
 
 function module:Event(msg)
 	if msg == L["trigger_cthun_eyeBeam"] then
@@ -678,6 +687,8 @@ function module:Phase2()
 		self:TriggerEvent("BigWigs_SetHPBar", self, L["hpBar_firstTentacle"], 0)
 		self:TriggerEvent("BigWigs_StartHPBar", self, L["hpBar_secondTentacle"], 100, "Interface\\Icons\\"..icon.stomachTentacle, true, color.stomachTentacle)
 		self:TriggerEvent("BigWigs_SetHPBar", self, L["hpBar_secondTentacle"], 0)
+		
+		self:ScheduleRepeatingEvent("CThunCheckTentacleHP", self.CheckTentacleHP, 0.5, self)
 	end
 
 	if self.db.profile.stomachplayers then
@@ -785,5 +796,50 @@ function module:FleshTentacleDead()
 		secondTentacleHP = 100
 		self:TriggerEvent("BigWigs_SetHPBar", self, L["hpBar_firstTentacle"], 100 - firstTentacleHP)
 		self:TriggerEvent("BigWigs_SetHPBar", self, L["hpBar_secondTentacle"], 100 - secondTentacleHP)
+	end
+end
+
+function module:CheckTentacleHP()
+	local health
+	if UnitName("Target") == "Flesh Tentacle" and not UnitIsDeadOrGhost("Target") then
+		health = math.floor(UnitHealth("Target")/UnitHealthMax("Target")*100)
+	else
+		for i=1,GetNumRaidMembers() do
+			if UnitName("Raid"..i.."Target") == "Flesh Tentacle" and not UnitIsDeadOrGhost("Raid"..i.."Target") then
+				health = math.floor(UnitHealth("Raid"..i.."Target")/UnitHealthMax("Raid"..i.."Target")*100)
+				break
+			end
+		end
+	end
+	
+	if secondTentacleLowWarn == true and health and health >= 20 then
+		secondTentacleLowWarn = nil
+		firstTentacleHP = 1
+		secondTentacleHP = 100
+		self:TriggerEvent("BigWigs_SetHPBar", self, L["hpBar_firstTentacle"], 100 - firstTentacleHP)
+		self:TriggerEvent("BigWigs_SetHPBar", self, L["hpBar_secondTentacle"], 100 - secondTentacleHP)
+	end
+	
+	if not firstStomachTentacleDead then
+		if health and health < firstTentacleHP then
+			firstTentacleHP = health
+			self:TriggerEvent("BigWigs_SetHPBar", self, L["hpBar_firstTentacle"], 100 - firstTentacleHP)
+			self:TriggerEvent("BigWigs_SetHPBar", self, L["hpBar_secondTentacle"], 100 - secondTentacleHP)
+		elseif health and health > firstTentacleHP and health < secondTentacleHP then
+			secondTentacleHP = health
+			self:TriggerEvent("BigWigs_SetHPBar", self, L["hpBar_firstTentacle"], 100 - firstTentacleHP)
+			self:TriggerEvent("BigWigs_SetHPBar", self, L["hpBar_secondTentacle"], 100 - secondTentacleHP)
+		end
+	elseif firstStomachTentacleDead then
+		firstTentacleHP = 1
+		if health and health < secondTentacleHP then
+			secondTentacleHP = health
+			sself:TriggerEvent("BigWigs_SetHPBar", self, L["hpBar_firstTentacle"], 100 - firstTentacleHP)
+			self:TriggerEvent("BigWigs_SetHPBar", self, L["hpBar_secondTentacle"], 100 - secondTentacleHP)
+		end
+		if secondTentacleHP <= 20 and not secondTentacleLowWarn then
+			self:Message("Second Tentacle at "..secondTentacleHP.."% HP")
+			secondTentacleLowWarn = true
+		end
 	end
 end

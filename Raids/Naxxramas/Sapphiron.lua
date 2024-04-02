@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Sapphiron", "Naxxramas")
 
-module.revision = 30076
+module.revision = 30077
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"frostbreath", "lifedrain", "block", "enrage", "blizzard", "tailsweep", "phase", -1, "proximity", -1, "parry", "bosskill"}
 
@@ -140,8 +140,8 @@ local syncName = {
 	enableProximity = "SapphironEnableProximity"..module.revision,
 }
 
-local lastLifeDrainTime = nil
-local airPhaseTime = nil
+--local lastLifeDrainTime = nil
+--local airPhaseTime = nil
 local remainingLifeDrainTimer = nil
 
 local lowHp = nil
@@ -190,8 +190,8 @@ function module:OnSetup()
 end
 
 function module:OnEngage()
-	lastLifeDrainTime = GetTime()
-	airPhaseTime = GetTime()
+	--lastLifeDrainTime = GetTime()
+	--airPhaseTime = GetTime()
 	remainingLifeDrainTimer = 60
 	
 	lowHp = nil
@@ -236,8 +236,8 @@ function module:MINIMAP_ZONE_CHANGED(msg)
 end
 
 function module:ResetModule()
-	lastLifeDrainTime = GetTime()
-	airPhaseTime = GetTime()
+	--lastLifeDrainTime = GetTime()
+	--airPhaseTime = GetTime()
 	remainingLifeDrainTimer = 60
 	
 	lowHp = nil
@@ -348,7 +348,7 @@ function module:FrostBreath()
 end
 
 function module:LifeDrain()
-	lastLifeDrainTime = GetTime()
+	--lastLifeDrainTime = GetTime()
 	self:Bar(L["bar_lifeDrain"], timer.lifeDrain, icon.lifeDrain, true, color.lifeDrain)
 	
 	if UnitClass("Player") == "Mage" or UnitClass("Player") == "Druid" then
@@ -377,7 +377,7 @@ end
 function module:IceboltHits()
 	if phase == "ground" then
 		phase = "air"
-		airPhaseTime = GetTime() - 7
+		--airPhaseTime = GetTime() - 7
 	end
 	
 	self:RemoveBar(L["bar_timeToGroundPhase"])
@@ -440,8 +440,8 @@ function module:GroundPhase()
 	self:CancelDelayedSync(syncName.groundPhase)
 	
 	if self.db.profile.lifedrain then
-		remainingLifeDrainTimer = timer.lifeDrain - (airPhaseTime - lastLifeDrainTime)
-		self:Bar(L["bar_lifeDrain"], remainingLifeDrainTimer, icon.lifeDrain, true, color.lifeDrain)
+		--remainingLifeDrainTimer = timer.lifeDrain - (airPhaseTime - lastLifeDrainTime)
+		self:Bar(L["bar_lifeDrain"], 6, icon.lifeDrain, true, color.lifeDrain)
 	end
 	
 	if lowHp == nil then

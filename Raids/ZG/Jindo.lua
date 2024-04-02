@@ -1,13 +1,21 @@
 
 local module, L = BigWigs:ModuleDeclaration("Jin'do the Hexxer", "Zul'Gurub")
 
-module.revision = 30041
+module.revision = 30077
 module.enabletrigger = module.translatedName
-module.toggleoptions = {"curse", "hex", "brainwash", "healingward", "puticon", "autotarget", "bosskill"}
+module.toggleoptions = {"curse", "hex", "brainwash", "healingward", "autotarget", "bosskill"}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Jindo",
+	
+	curse_cmd = "curse",
+	curse_name = "Curse Alert",
+	curse_desc = "Warn when players get Delusions of Jin'do.",
 
+	hex_cmd = "hex",
+	hex_name = "Hex Alert",
+	hex_desc = "Warn when players get Hex.",
+	
 	brainwash_cmd = "brainwash",
 	brainwash_name = "Brain Wash Totem Alert",
 	brainwash_desc = "Warn when Jin'do summons Brain Wash Totems.",
@@ -16,35 +24,24 @@ L:RegisterTranslations("enUS", function() return {
 	healingward_name = "Healing Totem Alert",
 	healingward_desc = "Warn when Jin'do summons Powerful Healing Wards.",
 
-	curse_cmd = "curse",
-	curse_name = "Curse Alert",
-	curse_desc = "Warn when players get Delusions of Jin'do.",
-
-	hex_cmd = "hex",
-	hex_name = "Hex Alert",
-	hex_desc = "Warn when players get Hex.",
-
-	puticon_cmd = "puticon",
-	puticon_name = "Raid icon on cursed players",
-	puticon_desc = "Place a raid icon on the player with Delusions of Jin'do.\n\n(Requires assistant or higher)",
-	
 	autotarget_cmd = "autotarget",
 	autotarget_name = "Autotargetting of Totems",
 	autotarget_desc = "Autotargetting of Totems",
+	
 	
 	trigger_engage = "Welcome to the great show, friends. Step right up to die!",--CHAT_MSG_MONSTER_YELL
 	
 	trigger_hexYou = "You are afflicted by Hex.",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 	trigger_hexOther = "(.+) is afflicted by Hex.",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
-	trigger_hexFades = "Hex fades from (.+).",----CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
+	trigger_hexFade = "Hex fades from (.+).",----CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
 	bar_hex = " Hexxed",
-	msg_hex = " is Hexxed! Dispel it!",
+	msg_hex = " is Hexxed - Dispel!",
 	
 	trigger_curseYou = "You are afflicted by Delusions of Jin'do.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 	msg_curseYou = "You are cursed! Kill the Shades!",
 	trigger_curseOther = "(.+) is afflicted by Delusions of Jin'do.",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
 	bar_curse = " Cursed",
-	trigger_curseFade = "Delusions of Jin'do fades from (.*).",--CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
+	trigger_curseFade = "Delusions of Jin'do fades from (.+).",--CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
 	
 	trigger_curseDispel = "Delusions of Jin'do is removed.",--CHAT_MSG_SPELL_BREAK_AURA
 	msg_curseDispel = "Delusions of Jin'do was decursed!",
@@ -68,6 +65,10 @@ local icon = {
 	brainWash = "Spell_Totem_WardOfDraining",
 	healingWard = "Spell_Holy_LayOnHands",
 }
+local color = {
+	hex = "Green",
+	curse = "Blue",
+}
 local syncName = {
 	hex = "JindoHexStart"..module.revision,
 	hexFade = "JindoHexStop"..module.revision,
@@ -82,14 +83,19 @@ module:RegisterYellEngage(L["trigger_engage"])
 
 function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF", "Event")--summon totems
+	
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event")--hexYou
+	
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event")--hexFade, curseFade
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event")--hexFade, curseFade
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event")--hexFade, curseFade
+	
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")--curseYou
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")--curseOther, hexOther
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")--curseOther, hexOther
+	
 	self:RegisterEvent("CHAT_MSG_SPELL_BREAK_AURA", "Event")--curseDispel
+
 
 	self:ThrottleSync(3, syncName.hex)
 	self:ThrottleSync(3, syncName.hexFade)
@@ -117,8 +123,8 @@ function module:Event(msg)
 		local _, _, hexPlayer = string.find(msg, L["trigger_hexOther"])
 		self:Sync(syncName.hex.." "..hexPlayer)
 	
-	elseif string.find(msg, L["trigger_hexFades"]) then
-		local _, _, hexFadePlayer = string.find(msg, L["trigger_hexFades"])
+	elseif string.find(msg, L["trigger_hexFade"]) then
+		local _, _, hexFadePlayer = string.find(msg, L["trigger_hexFade"])
 		self:Sync(syncName.hexFade.." "..hexFadePlayer)
 		
 		
@@ -171,16 +177,13 @@ end
 
 
 function module:Curse(rest)
-	if rest == UnitName("player") then
+	if rest == UnitName("Player") then
 		self:WarningSign(icon.curse, 1)
-		self:Message(L["msg_curseYou"], "Personal", true, "Beware")
+		self:Message(L["msg_curseYou"], "Personal", false, nil, false)
+		self:Sound("Beware")
 	end
 	
-	if self.db.profile.puticon then
-		self:Icon(rest)
-	end
-	
-	self:Bar(rest..L["bar_curse"], timer.curseDuration, icon.curse, true, "Blue")
+	self:Bar(rest..L["bar_curse"], timer.curseDuration, icon.curse, true, color.curse)
 end
 
 function module:CurseFade(rest)
@@ -188,18 +191,17 @@ function module:CurseFade(rest)
 end
 
 function module:CurseDispel()
-	self:Message(L["msg_curseDispel"], "Urgent")
+	self:Message(L["msg_curseDispel"], "Urgent", false, nil, false)
 end
 
 function module:Hex(rest)
-	if UnitClass("Player") == "Paladin" then
-		self:WarningSign(icon.hex, 0.7)
-	elseif UnitClass("Player") == "Priest" then
+	self:Bar(rest..L["bar_hex"], timer.hexDuration, icon.hex, true, color.hex)
+	
+	if UnitClass("Player") == "Paladin" or UnitClass("Player") == "Priest" then
+		self:Message(rest..L["msg_hex"], "Important", false, nil, false)
+		self:Sound("Info")
 		self:WarningSign(icon.hex, 0.7)
 	end
-	
-	self:Bar(rest..L["bar_hex"], timer.hexDuration, icon.hex, true, "Green")
-	self:Message(rest..L["msg_hex"], "Important")
 end
 
 function module:HexFade(rest)
@@ -208,7 +210,8 @@ end
 
 function module:BrainWash()
 	self:WarningSign(icon.brainWash, 0.7)
-	self:Message(L["msg_brainWash"], "Attention", true, "Alarm")
+	self:Message(L["msg_brainWash"], "Attention", false, nil, false)
+	self:Sound("Alarm")
 	
 	if UnitName("Target") == "Jin'do the Hexxer" and UnitName("TargetTarget") == UnitName("Player") then return end
 	
@@ -231,7 +234,8 @@ end
 
 function module:HealingWard()
 	self:WarningSign(icon.healingWard, 0.7)
-	self:Message(L["msg_healingWard"], "Attention", true, "Alarm")
+	self:Message(L["msg_healingWard"], "Attention", false, nil, false)
+	self:Sound("Alarm")
 	
 	if UnitName("Target") == "Brain Wash Totem" then return end
 	if UnitName("Target") == "Jin'do the Hexxer" and UnitName("TargetTarget") == UnitName("Player") then return end
