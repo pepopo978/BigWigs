@@ -2,7 +2,7 @@ local module, L = BigWigs:ModuleDeclaration("Thaddius", "Naxxramas")
 local feugen = AceLibrary("Babble-Boss-2.2")["Feugen"]
 local stalagg = AceLibrary("Babble-Boss-2.2")["Stalagg"]
 
-module.revision = 30067
+module.revision = 30076
 module.enabletrigger = { module.translatedName, feugen, stalagg }
 module.toggleoptions = { "power", "magneticPull", "manaburn", -1, "phase", -1, "enrage", "selfcharge", "polarity", "bosskill" }
 
@@ -118,6 +118,8 @@ local icon = {
 	negative = "Spell_ChargeNegative",
 
 	manaBurn = "Spell_Shadow_ManaBurn",
+	
+	hpBar = "spell_shadow_raisedead",
 }
 local color = {
 	powerSurge = "Red",
@@ -132,6 +134,8 @@ local color = {
 
 	positive = "Blue",
 	negative = "Red",
+	
+	hpBar = "Magenta"
 }
 local syncName = {
 	powerSurge = "StalaggPower" .. module.revision,
@@ -192,9 +196,9 @@ function module:OnEngage()
 
 	self.feugenHP = 100
 	self.stalaggHP = 100
-	self:TriggerEvent("BigWigs_StartHPBar", self, "Feugen", 100)
+	self:TriggerEvent("BigWigs_StartHPBar", self, "Feugen", 100, "Interface\\Icons\\"..icon.hpBar, true, color.hpBar)
 	self:TriggerEvent("BigWigs_SetHPBar", self, "Feugen", 0)
-	self:TriggerEvent("BigWigs_StartHPBar", self, "Stalagg", 100)
+	self:TriggerEvent("BigWigs_StartHPBar", self, "Stalagg", 100, "Interface\\Icons\\"..icon.hpBar, true, color.hpBar)
 	self:TriggerEvent("BigWigs_SetHPBar", self, "Stalagg", 0)
 
 	self:ScheduleRepeatingEvent("CheckAddHP", self.CheckAddHP, 0.5, self)
@@ -225,14 +229,16 @@ end
 function module:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L["trigger_feugenDeadYell"] then
 		feugenDead = true
+		if feugenDead == true and feugenDead == true then
+			self:Sync(syncName.phase2)
+		end
 	elseif msg == L["trigger_stalaggDeadYell"] then
 		stalaggDead = true
+		if feugenDead == true and feugenDead == true then
+			self:Sync(syncName.phase2)
+		end
 	elseif msg == L["trigger_polarityShiftAfflic"] then
 		self:Sync(syncName.polarity)
-	end
-
-	if phase2started == false and feugenDead == true and feugenDead == true then
-		self:Sync(syncName.phase2)
 	end
 end
 

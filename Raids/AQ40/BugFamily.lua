@@ -5,7 +5,7 @@ local kri = AceLibrary("Babble-Boss-2.2")["Lord Kri"]
 local yauj = AceLibrary("Babble-Boss-2.2")["Princess Yauj"]
 local vem = AceLibrary("Babble-Boss-2.2")["Vem"]
 
-module.revision = 30067
+module.revision = 30077
 module.enabletrigger = {kri, yauj, vem}
 module.toggleoptions = {"panic", "volley", "heal", "enrage", "vapors", "deathspecials", "bosskill"}
 
@@ -168,21 +168,24 @@ end
 
 function module:OnSetup()
 	self.started = nil
-	kriDead = nil
-	vemDead = nil
-	yaujDead = nil
-	castingHeal = false
-
+	
 	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
 end
 
 function module:OnEngage()
+	kriDead = nil
+	vemDead = nil
+	yaujDead = nil
+	castingHeal = false
+	
 	if self.db.profile.panic then
 		self:IntervalBar(L["bar_panic"], timer.earliestFirstPanic, timer.latestFirstPanic, icon.panic, true, color.panic)
 	end
+	
 	if self.db.profile.volley then
 		self:IntervalBar(L["bar_volley"], timer.earliestFirstVolley, timer.latestFirstVolley, icon.volley, true, color.volley)
 	end
+	
 	if self.db.profile.enrage then
 		self:Bar(L["bar_enrage"], timer.enrage, icon.enrage, true, color.enrage)
 		self:DelayedMessage(timer.enrage - 60, L["msg_enrage60"], "Attention", false, nil, false)
@@ -299,42 +302,44 @@ end
 
 function module:KriDead()
 	kriDead = true
-	if self.db.profile.volley then
-		self:RemoveBar(L["bar_volley"])
-	end
-	if self.db.profile.deathspecials then
-		self:Message(L["msg_kriDead"], "Positive", false, nil, false)
-	end
 	if vemDead and yaujDead then
 		self:Sync(syncName.allDead)
+	else
+		if self.db.profile.volley then
+			self:RemoveBar(L["bar_volley"])
+		end
+		if self.db.profile.deathspecials then
+			self:Message(L["msg_kriDead"], "Positive", false, nil, false)
+		end
 	end
 end
 
 function module:YaujDead()
 	yaujDead = true
-	if self.db.profile.heal then
-		self:RemoveBar(L["bar_heal"])
-	end
-	if self.db.profile.panic then
-		self:RemoveBar(L["bar_panic"])
-	end
-	if self.db.profile.deathspecials then
-		self:Message(L["msg_yaujDead"], "Positive", false, nil, false)
-	end
 	if vemDead and kriDead then
 		self:Sync(syncName.allDead)
-	end
+	else
+		if self.db.profile.heal then
+			self:RemoveBar(L["bar_heal"])
+		end
+		if self.db.profile.panic then
+			self:RemoveBar(L["bar_panic"])
+		end
+		if self.db.profile.deathspecials then
+			self:Message(L["msg_yaujDead"], "Positive", false, nil, false)
+		end
+	end	
 end
 
 function module:VemDead()
 	vemDead = true
-	
-	if self.db.profile.deathspecials then
-		self:Message(L["msg_vemDead"], "Positive", false, nil, false)
-	end
 	if yaujDead and kriDead then
 		self:Sync(syncName.allDead)
-	end
+	else
+		if self.db.profile.deathspecials then
+			self:Message(L["msg_vemDead"], "Positive", false, nil, false)
+		end
+	end	
 end
 
 function module:ToxicVapors()
