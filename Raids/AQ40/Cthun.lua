@@ -834,7 +834,7 @@ function module:CheckTentacleHP()
 		firstTentacleHP = 1
 		if health and health < secondTentacleHP then
 			secondTentacleHP = health
-			sself:TriggerEvent("BigWigs_SetHPBar", self, L["hpBar_firstTentacle"], 100 - firstTentacleHP)
+			self:TriggerEvent("BigWigs_SetHPBar", self, L["hpBar_firstTentacle"], 100 - firstTentacleHP)
 			self:TriggerEvent("BigWigs_SetHPBar", self, L["hpBar_secondTentacle"], 100 - secondTentacleHP)
 		end
 		if secondTentacleHP <= 20 and not secondTentacleLowWarn then
