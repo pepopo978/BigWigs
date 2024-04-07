@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Sulfuron Harbinger", "Molten Core")
 
-module.revision = 30075
+module.revision = 30078
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"heal", "knockback", "flamespear", "inspire", "shadowwordpain", "immolate", "adds", "bosskill"}
 module.wipemobs = {"Flamewaker Priest"}
@@ -60,7 +60,7 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_immolate = "(.+) is afflicted by Immolate.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 	msg_immolate = "Immolate - Dispel!",
 	
-	msg_addDead = "/2 Flamewaker Protectors Dead",
+	msg_addDead = "/4 Flamewaker Protectors Dead",
 } end)
 
 local timer = {
@@ -156,7 +156,7 @@ function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
 
 	if (msg == string.format(UNITDIESOTHER, "Flamewaker Priest")) then
 		addDead = addDead + 1
-		if addDead <= 2 then
+		if addDead <= 4 then
 			self:Sync(syncName.addDead .. " " .. addDead)
 		end
 	end
@@ -246,7 +246,7 @@ function module:FlameSpear()
 end
 
 function module:Inspire()
-	self:Bar(L["bar_inspireDur"], timer.inspireDur, icon.inspire, true, color.inspireDur)
+	self:Bar(L["bar_inspireDur"], timer.inspireDur, icon.inspire, true, color.inspire)
 	self:Message(L["msg_inspire"], "Attention", false, nil, false)
 end
 

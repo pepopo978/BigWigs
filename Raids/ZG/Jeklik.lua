@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("High Priestess Jeklik", "Zul'Gurub")
 
-module.revision = 30025
+module.revision = 30078
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"heal", "fear", "fire", "mindflay", "silence", "swarm", "phase", "bosskill"}
 
@@ -39,19 +39,26 @@ L:RegisterTranslations("enUS", function() return {
 	
 	trigger_engage = "Lord Hir'eek, grant me wings of vengance!",--CHAT_MSG_MONSTER_YELL
 	
-	
-	
 	trigger_heal = "High Priestess Jeklik begins to cast Great Heal.",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF",
 	bar_healCast = "Heal - Interrupt!",
 	bar_healCd = "Heal CD",
 	msg_healCast = "Heal! Interrupt it!",
 	
-	trigger_attack1 = "High Priestess Jeklik attacks",--CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_MISSES
-	trigger_attack2 = "High Priestess Jeklik misses",--CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_MISSES
-	trigger_attack3 = "High Priestess Jeklik hits",--CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS
-	trigger_attack4 = "High Priestess Jeklik crits",--CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS
-	
-	
+	trigger_attack1 = "High Priestess Jeklik attacks", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_MISSES
+	trigger_attack2 = "High Priestess Jeklik misses", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_MISSES
+	trigger_attack3 = "High Priestess Jeklik hits", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS
+	trigger_attack4 = "High Priestess Jeklik crits", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS
+	trigger_kick1 = "Kick hits High Priestess Jeklik", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_kick2 = "Kick crits High Priestess Jeklik", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_kick3 = "Kick was blocked by High Priestess Jeklik", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_pummel1 = "Pummel hits High Priestess Jeklik", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_pummel2 = "Pummel crits High Priestess Jeklik", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_pummel3 = "Pummel was blocked by High Priestess Jeklik", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_shieldBash1 = "Shield Bash hits High Priestess Jeklik", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_shieldBash2 = "Shield Bash crits High Priestess Jeklik", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_shieldBash3 = "Shield Bash was blocked by High Priestess Jeklik", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_earthShock1 = "Earth Shock hits High Priestess Jeklik", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_earthShock2 = "Earth Shock crits High Priestess Jeklik", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
 	
 	--this happens in P1
 	trigger_terrifyingScreech1 = "afflicted by Terrifying Screech",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
@@ -65,13 +72,12 @@ L:RegisterTranslations("enUS", function() return {
 
 	bar_fearCd = "Fear CD",
 	
-	
-	
 	trigger_liquidFire = "Liquid Fire hits you for",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 	msg_liquidFire = "Move away from Fire!",
 	
 	trigger_mindflay = "afflicted by Mind Flay",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE //CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
-	trigger_mindflayFade = "Mind Flay fades",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+		--mindFlay chains, this trigger is unreliable
+	--trigger_mindflayFade = "Mind Flay fades",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 	bar_mindflay = "Mind Flay - Interrupt!",
 	
 	trigger_silence = "Sonic Burst hits",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
@@ -125,7 +131,7 @@ local syncName = {
 	terrifyingScreech = "JeklikTerrifyingScreech"..module.revision,
 	psychicScream = "JeklikPsychicScream"..module.revision,
 	mindflay = "Jeklikmindflay"..module.revision,
-	mindflayFade = "JeklikmindflayEnd"..module.revision,
+	mindflayFade = "JeklikmindflayEnd2"..module.revision,
 	silence = "JeklikSilence"..module.revision,
 	swarm = "JeklikSwarmBats"..module.revision,
 	phase = "JeklikPhase"..module.revision,
@@ -133,16 +139,26 @@ local syncName = {
 
 module:RegisterYellEngage(L["trigger_engage"])
 
+local phase2 = nil
+local castingHeal = nil
+local castingMindFlay = nil
+
 function module:OnEnable()
 	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
 	
+	self:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE", "Event") --trigger_kick1-2-3, trigger_pummel1-2-3, trigger_shieldBash1-2-3, trigger_earthShock1-2
+	self:RegisterEvent("CHAT_MSG_SPELL_PARTY_DAMAGE", "Event") --trigger_kick1-2-3, trigger_pummel1-2-3, trigger_shieldBash1-2-3, trigger_earthShock1-2
+	self:RegisterEvent("CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE", "Event") --trigger_kick1-2-3, trigger_pummel1-2-3, trigger_shieldBash1-2-3, trigger_earthShock1-2
+		
+	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS", "Event") --trigger_attack3, trigger_attack4
+	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS", "Event") --trigger_attack3, trigger_attack4
+	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS", "Event") --trigger_attack3, trigger_attack4
+	
+	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES", "Event") --trigger_attack1, trigger_attack2
+	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_PARTY_MISSES", "Event") --trigger_attack1, trigger_attack2
+	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_MISSES", "Event") --trigger_attack1, trigger_attack2
+	
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF", "Event")--trigger_heal
-	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES", "Event")--trigger_attack1, trigger_attack2
-	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_PARTY_MISSES", "Event")--trigger_attack1, trigger_attack2
-	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_MISSES", "Event")--trigger_attack1, trigger_attack2
-	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS", "Event")--trigger_attack3, trigger_attack4
-	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS", "Event")--trigger_attack3, trigger_attack4
-	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS", "Event")--trigger_attack3, trigger_attack4
 	
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")--trigger_terrifyingScreech1, trigger_terrifyingScreech2, trigger_psychicScream1, trigger_psychicScream2, trigger_mindflay
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")--trigger_terrifyingScreech1, trigger_terrifyingScreech2, trigger_psychicScream1, trigger_psychicScream2, trigger_mindflay
@@ -174,13 +190,12 @@ function module:OnEnable()
 end
 
 function module:OnSetup()
-	bwJeklikP2 = nil
-	bwJeklikIsHealing = nil
 end
 
 function module:OnEngage()
-	bwJeklikP2 = nil
-	bwJeklikIsHealing = nil
+	phase2 = nil
+	castingHeal = nil
+	castingMindFlay = nil
 	
 	if self.db.profile.fear then
 		self:Bar(L["bar_fearCd"], timer.firstTerrifyingScreechCd, icon.terrifyingScreech, true, color.fearCd)
@@ -198,13 +213,15 @@ end
 function module:OnDisengage()
 end
 
-function module:UNIT_HEALTH(arg1)
-	if UnitName(arg1) == module.translatedName then
-		local health = UnitHealth(arg1)
-		local maxHealth = UnitHealthMax(arg1)
-		if math.ceil(100*health/maxHealth) > 5 and math.ceil(100*health/maxHealth) <= 50 and not bwJeklikP2 then
+function module:UNIT_HEALTH(msg)
+	if UnitName(msg) == module.translatedName then
+		local healthPct = UnitHealth(msg) * 100 / UnitHealthMax(msg)
+		if healthPct <= 50 and not phase2 then
 			self:Sync(syncName.phase)
-			bwJeklikP2 = true
+			phase2 = true
+			
+		elseif healthPct > 50 and phase2 then
+			phase2 = nil
 		end
 	end
 end
@@ -212,29 +229,32 @@ end
 function module:Event(msg)
 	if string.find(msg, L["trigger_heal"]) then
 		self:Sync(syncName.heal)
-	elseif string.find(msg, L["trigger_attack1"]) or string.find(msg, L["trigger_attack2"]) or string.find(msg, L["trigger_attack3"]) or string.find(msg, L["trigger_attack4"]) then
-		if bwJeklikIsHealing then
-			self:Sync(syncName.healOver)
-		end
+	elseif castingHeal == true and (string.find(msg, L["trigger_attack1"]) or string.find(msg, L["trigger_attack2"]) or string.find(msg, L["trigger_attack3"]) or string.find(msg, L["trigger_attack4"])
+		or string.find(msg, L["trigger_kick1"]) or string.find(msg, L["trigger_kick2"]) or string.find(msg, L["trigger_kick3"]) -- kicked
+		or string.find(msg, L["trigger_pummel1"]) or string.find(msg, L["trigger_pummel2"]) or string.find(msg, L["trigger_pummel3"]) -- pummeled
+		or string.find(msg, L["trigger_shieldBash1"]) or string.find(msg, L["trigger_shieldBash2"]) or string.find(msg, L["trigger_shieldBash3"]) -- shield bashed
+		or string.find(msg, L["trigger_earthShock1"]) or string.find(msg, L["trigger_earthShock2"])) then -- earth shocked
+		self:Sync(syncName.healOver)
 	
 	elseif string.find(msg, L["trigger_terrifyingScreech1"]) or string.find(msg, L["trigger_terrifyingScreech2"]) or string.find(msg, L["trigger_terrifyingScreech3"]) then
 		self:Sync(syncName.terrifyingScreech)
 	elseif string.find(msg, L["trigger_psychicScream1"]) or string.find(msg, L["trigger_psychicScream2"]) or string.find(msg, L["trigger_psychicScream3"]) then
 		self:Sync(syncName.psychicScream)
 			
-	elseif string.find(msg, L["trigger_liquidFire"]) then
-		self:Message(L["msg_liquidFire"], "Urgent", false, nil, false)
-		self:Sound("Info")
-		self:WarningSign(icon.liquidFire, 0.7)
+	elseif string.find(msg, L["trigger_liquidFire"]) and self.db.profile.fire then
+		self:LiquidFire()
 		
 	elseif string.find(msg, L["trigger_mindflay"]) then
 		self:Sync(syncName.mindflay)
-	elseif string.find(msg, L["trigger_mindflayFade"]) then
+	elseif castingMindFlay == true and (string.find(msg, L["trigger_attack1"]) or string.find(msg, L["trigger_attack2"]) or string.find(msg, L["trigger_attack3"]) or string.find(msg, L["trigger_attack4"])
+		or string.find(msg, L["trigger_kick1"]) or string.find(msg, L["trigger_kick2"]) or string.find(msg, L["trigger_kick3"]) -- kicked
+		or string.find(msg, L["trigger_pummel1"]) or string.find(msg, L["trigger_pummel2"]) or string.find(msg, L["trigger_pummel3"]) -- pummeled
+		or string.find(msg, L["trigger_shieldBash1"]) or string.find(msg, L["trigger_shieldBash2"]) or string.find(msg, L["trigger_shieldBash3"]) -- shield bashed
+		or string.find(msg, L["trigger_earthShock1"]) or string.find(msg, L["trigger_earthShock2"])) then -- earth shocked
 		self:Sync(syncName.mindflayFade)
 
 	elseif string.find(msg, L["trigger_silence"]) then
 		self:Sync(syncName.silence)
-
 
 	elseif msg == L["trigger_swarm"] then
 		self:Sync(syncName.swarm)
@@ -259,14 +279,14 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		self:Silence()
 	elseif sync == syncName.swarm and self.db.profile.swarm then
 		self:Swarm()
-	elseif sync == syncName.phase and self.db.profile.phase then
+	elseif sync == syncName.phase then
 		self:Phase()
 	end
 end
 
 
 function module:Heal()
-	bwJeklikIsHealing = true
+	castingHeal = true
 	self:Bar(L["bar_healCast"], timer.healCast, icon.heal, true, color.healCast)
 	self:Message(L["msg_healCast"], "Positive", false, nil, false)
 	
@@ -275,16 +295,17 @@ function module:Heal()
 		self:WarningSign(icon.heal, 0.7)
 	elseif UnitClass("Player") == "Warrior" then
 		self:Sound("Beware")
-		self:WarningSign(icon.heal, 0.7)
+		self:WarningSign(icon.heal, timer.healCast)
 	elseif UnitClass("Player") == "Rogue" then
 		self:Sound("Beware")
-		self:WarningSign(icon.heal, 0.7)
+		self:WarningSign(icon.heal, timer.healCast)
 	end
 end
 
 function module:HealOver()
-	bwJeklikIsHealing = nil
+	castingHeal = nil
 	self:RemoveBar(L["bar_healCast"])
+	self:RemoveWarningSign(icon.heal)
 end
 
 function module:TerrifyingScreech()
@@ -295,13 +316,32 @@ function module:PsychicScream()
 	self:Bar(L["bar_fearCd"], timer.psychicScreamCd, icon.psychicScream, true, color.fearCd)
 end
 
+function module:LiquidFire()
+	self:Message(L["msg_liquidFire"], "Urgent", false, nil, false)
+	self:Sound("Info")
+	self:WarningSign(icon.liquidFire, 0.7)
+end
 
 function module:MindFlay()
+	castingMindFlay = true
 	self:Bar(L["bar_mindflay"], timer.mindflay, icon.mindflay, true, color.mindflay)
+	
+	if UnitClass("Player") == "Mage" then
+		self:Sound("Alarm")
+		self:WarningSign(icon.mindFlay, 0.7)
+	elseif UnitClass("Player") == "Warrior" then
+		self:Sound("Alarm")
+		self:WarningSign(icon.mindFlay, timer.mindFlay)
+	elseif UnitClass("Player") == "Rogue" then
+		self:Sound("Alarm")
+		self:WarningSign(icon.mindFlay, timer.mindFlay)
+	end
 end
 
 function module:MindFlayFade()
+	castingMindFlay = nil
 	self:RemoveBar(L["bar_mindflay"])
+	self:RemoveWarningSign(icon.heal)
 end
 
 function module:Silence()
@@ -315,12 +355,15 @@ function module:Swarm()
 end
 
 function module:Phase()
-	bwJeklikP2 = true
-	self:Message(L["msg_p2"])
+	phase2 = true
 	
-	self:RemoveBar(L["bar_fearCd"])
-	self:RemoveBar(L["bar_silenceCd"])
-	self:RemoveBar(L["bar_swam"])
-	
-	self:CancelDelayedBar(L["bar_silenceCd"])
+	if self.db.profile.phase then
+		self:Message(L["msg_p2"])
+		
+		self:RemoveBar(L["bar_fearCd"])
+		self:RemoveBar(L["bar_silenceCd"])
+		self:RemoveBar(L["bar_swam"])
+		
+		self:CancelDelayedBar(L["bar_silenceCd"])
+	end
 end
