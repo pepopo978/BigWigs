@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Garr", "Molten Core")
 
-module.revision = 30075
+module.revision = 30078
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"pulse", "remove", "adds", "immolate", "bosskill"}
 module.wipemobs = {"Firesworn"}
@@ -32,7 +32,7 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_remove = "Your (.+) is removed.", --CHAT_MSG_SPELL_BREAK_AURA
 	msg_remove = "Antimagic Pulse Removed your ",
 	
-	msg_addDead = "/2 Firesworn Dead",
+	msg_addDead = "/8 Firesworn Dead",
 	
 	--not tracking the afflicted since many mobs do immolate, may cause conflict
 		--instead only showing the message once to remind dispels on Garr
@@ -42,7 +42,7 @@ L:RegisterTranslations("enUS", function() return {
 
 local timer = {
 	antimagicPulseFirst = 15,
-	antimagicPulse = 10,
+	antimagicPulse = 20,
 }
 local icon = {
 	antimagicPulse = "spell_holy_dispelmagic",
@@ -104,7 +104,7 @@ function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
 
 	if (msg == string.format(UNITDIESOTHER, "Firesworn")) then
 		addDead = addDead + 1
-		if addDead <= 2 then
+		if addDead <= 8 then
 			self:Sync(syncName.addDead .. " " .. addDead)
 		end
 	elseif (msg == string.format(UNITDIESOTHER, "Garr")) then

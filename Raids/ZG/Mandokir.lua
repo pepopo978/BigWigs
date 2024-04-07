@@ -1,357 +1,353 @@
 
 local module, L = BigWigs:ModuleDeclaration("Bloodlord Mandokir", "Zul'Gurub")
 
-module.revision = 30012
+module.revision = 30078
 module.enabletrigger = module.translatedName
-module.toggleoptions = {"sounds", "bigicon", "sunder", "charge", "gaze", "announce", "puticon", "whirlwind", "enraged", "bosskill"}
+module.wipemobs = {"Ohgan"}
+module.toggleoptions = {"gaze", "cancelaction", -1, "whirlwind", "charge", "enrage", "sunder", -1, "levelup", "bosskill"}
 
 L:RegisterTranslations("enUS", function() return {
-	ohgan = "Ohgan",
 	cmd = "Mandokir",
-
-	engage_trigger = "feed your souls to Hakkar himself",
-	watch_trigger = "(.+)! I'm watching you!",
-	gaze_trigger = "Bloodlord Mandokir begins to cast Threatening Gaze.",
-	gazeafflictyou = "You are afflicted by Threatening Gaze.",
-	gazeafflictother = "(.+) is afflicted by Threatening Gaze.",
-	gazeendyou = "Threatening Gaze fades from you.",
-	gazeendother = "Threatening Gaze fades from (.+).",
-	gazecast = "Incoming Threatening Gaze!",
-	gazewatchedbar = "Threatening Gaze: %s",
-	enragegain = "Bloodlord Mandokir gains Enrage.",
-	enragefade = "Enrage fades from Bloodlord Mandokir.",
-	enragebar = "Enrage",
-	wwgain = "Bloodlord Mandokir gains Whirlwind.",
-	wwloss = "Whirlwind fades from Bloodlord Mandokir.",
-	ww = "Whirlwind",
-	deathyou = "You die.",
-	deathother = "(.+) dies.",
-	you = "you",
-	gaze_warn = "Gaze on ",
 	
-	sunder_trigger = "Sunder Armor %(5%)",
-	sunder_warn = "Too many Sunder stacks, seek help!",
+	gaze_cmd = "gaze",
+	gaze_name = "Threatening Gaze Alert",
+	gaze_desc = "Warn for Threatening Gaze",
 	
-	watched_warning = "You are being watched! Stop everything!",
-	watched_warning_tell = "You are being watched! Stop everything!",
-	watched_warning_other = "%s is being watched!",
-	enraged_message = "Ohgan down! Mandokir enraged!",
+	cancelaction_cmd = "cancelaction",
+	cancelaction_name = "Auto-Cancel all actions on Gaze",
+	cancelaction_desc = "Automatically cancel all actions when you get Threatening Gaze",
 	
-	charge_trigger = "Bloodlord Mandokir's Charge",
-	chargecd_bar = "Charge CD",
-	
-	announce_cmd = "whispers",
-	announce_name = "Whisper watched players",
-	announce_desc = "Warn when boss uses Threatening Gaze.\n\n(Requires assistant or higher)",
-	
-	bigicon_cmd = "bigicon",
-	bigicon_name = "WW and Gaze big icon alert",
-	bigicon_desc = "Shows a big icon when whirlwind is happening and Gaze is on you",
-	
-	sounds_cmd = "sounds",
-	sounds_name = "Gaze, 5Sunders and WW sound alert",
-	sounds_desc = "Sound alert Gaze is on you, when you have 5 stacks of sunder on you, when whirlwind is happening.",
-	
-	puticon_cmd = "puticon",
-	puticon_name = "Raid icon on watched players",
-	puticon_desc = "Place a raid icon on the watched person.\n\n(Requires assistant or higher)",
+	whirlwind_cmd = "whirlwind",
+	whirlwind_name = "Whirlwind Alert",
+	whirlwind_desc = "Warn for Whirlwind",
 	
 	charge_cmd = "charge",
 	charge_name = "Charge Alert",
-	charge_desc = "Shows Charge bars",
+	charge_desc = "Warn for Charge",
 	
-	gaze_cmd = "gaze",
-	gaze_name = "Threatening Gaze alert",
-	gaze_desc = "Shows bars for Threatening Gaze",
-
-	whirlwind_cmd = "whirlwind",
-	whirlwind_name = "Whirlwind Alert",
-	whirlwind_desc = "Shows Whirlwind bars",
+	enrage_cmd = "enrage",
+	enrage_name = "Enrage Alert",
+	enrage_desc = "Warn for Enrage",
 	
 	sunder_cmd = "sunder",
-	sunder_name = "5 sunder stacks on you alert",
-	sunder_desc = "Alerts Ohgan's tank to get help if he has 5 stacks of Sunder Armor on him.",
+	sunder_name = "Sunder Alert",
+	sunder_desc = "Warn for Sunder",
 	
-	enraged_cmd = "enraged",
-	enraged_name = "Enrage alert",
-	enraged_desc = "Announces the boss' Enrage",
-
-	["Possible Gaze"] = true,
-	["Charge"] = true,
-	["Next Whirlwind"] = true,
+	levelup_cmd = "levelup",
+	levelup_name = "Level Up Alert",
+	levelup_desc = "Warn for Level Up",
+	
+	
+	trigger_engage = "I'll feed your souls to Hakkar himself!", --CHAT_MSG_MONSTER_YELL
+	
+	trigger_gaze = "(.+)! I'm watching you!", --CHAT_MSG_MONSTER_YELL
+	trigger_gazeFade = "Threatening Gaze fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_gazeCd = "Threatening Gaze CD",
+	bar_gazeDur = " Gaze!",
+	msg_gaze = "Threatening Gaze - Stop all Actions ",
+	
+	trigger_whirlwind = "Bloodlord Mandokir gains Whirlwind.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	bar_whirlwindCd = "Whirlwind CD",
+	bar_whirlwindCast = "Casting Whirlwind!",
+	
+	trigger_charge = "Bloodlord Mandokir's Charge", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_chargeCd = "Charge CD",
+	
+	
+	trigger_enrage = "Bloodlord Mandokir gains Enrage.", --guessing CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	trigger_enrageFade = "Enrage fades from Bloodlord Mandokir.", --guessing CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_enrage = "Enrage",
+	msg_enrage = "You killed Ohgan - Mandokir is Enraged!",
+	msg_enrageFade = "Mandokir is no longer Enraged!",
+	
+	trigger_sunderYou = "You are afflicted by Sunder Armor %((.+)%).",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_sunderOther = "(.+) is afflicted by Sunder Armor %((.+)%).",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+	bar_sunder = " Sunders",
+	msg_sunderHigh = " Sunder Stacks - Seek Replacement!",
+	
+	trigger_levelUp = "DING!", --CHAT_MSG_MONSTER_YELL
+	msg_levelUp = "Mandokir Leveled Up by killing someone - He is now Level "
 } end )
-
-L:RegisterTranslations("deDE", function() return {
-	ohgan = "Ohgan",
-	cmd = "Mandokir",
-
-	engage_trigger = "feed your souls to Hakkar himself",
-	watch_trigger = "(.+)! I'm watching you!",
-	gaze_trigger = "Bloodlord Mandokir beginnt Bedrohlicher Blick zu wirken.",
-	gazeafflictyou = "Ihr seid von Bedrohlicher Blick betroffen.",
-	gazeafflictother = "(.+) ist von Bedrohlicher Blick betroffen.",
-	gazeendyou = "'Bedrohlicher Blick' schwindet von Euch.",
-	gazeendother = "Bedrohlicher Blick schwindet von (.+).",
-	gazecast = "Bedrohlicher Blick kommt!",
-	gazewatchedbar = "Bedrohlicher Blick: %s",
-	enragegain = "Bloodlord Mandokir bekommt 'Wutanfall'.",
-	enragefade = "Wutanfall schwindet von Bloodlord Mandokir.",
-	enragebar = "Wutanfall",
-	wwgain = "Bloodlord Mandokir bekommt 'Wirbelwind'.",
-	wwloss = "Wirbelwind schwindet von Bloodlord Mandokir\.",
-	ww = "Wirbelwind",
-	deathyou = "Du stirbst.",
-	deathother = "(.+) stirbt.",
-	you = "Euch",
-
-	watched_warning = "Du wirst beobachtet! Stoppen Sie alles!",
-	watched_warning_tell = "You are being watched! Stop everything!",
-	watched_warning_other = "%s wird beobachtet!",
-	enraged_message = "Ohgan ist tot! Mandokir wütend!",
-
-	announce_cmd = "whispers",
-	announce_name = "Warnung, wenn Spieler beobachtet werden",
-	announce_desc = "Warnen, wenn Bloodlord Mandokir wirft Bedrohlicher Blick\n\n(Benötigt Schlachtzugleiter oder Assistent)",
-
-	puticon_cmd = "puticon",
-	puticon_name = "Schlachtzugsymbol auf die beobachtet Spieler",
-	puticon_desc = "Versetzt eine Schlachtzugsymbol auf der beobachteten Spieler.\n\n(Benötigt Schlachtzugleiter oder Assistent)",
-
-	gaze_cmd = "gaze",
-	gaze_name = "Alarm für Bedrohlicher Blick",
-	gaze_desc = "Zeigt Balken für Bedrohlicher Blick",
-
-	whirlwind_cmd = "whirlwind",
-	whirlwind_name = "Alarm für Wirbelwind",
-	whirlwind_desc = "Zeigt Balken für Wirbelwind",
-
-	enraged_cmd = "enraged",
-	enraged_name = "Verkündet Boss' Raserei",
-	enraged_desc = "Lässt dich wissen, wenn Boss härter zuschlägt",
-
-	["Possible Gaze"] = "Mögliches Starren",
-	["Charge"] = "Sturmangriff",
-	["Next Whirlwind"] = "Wirbelwind",
-} end )
-
-L:RegisterTranslations("esES", function() return {
-	ohgan = "Ohgan",
-	--	cmd = "Mandokir",
-
-	engage_trigger = "feed your souls to Hakkar himself",
-	watch_trigger = "(.+)! I'm watching you!",
-	gaze_trigger = "Señor sangriento Mandokir comienza a lanzar Mirada amenazante.",
-	gazeafflictyou = "Sufres de Mirada amenazante.",
-	gazeafflictother = "(.+) sufre de Mirada amenazante.",
-	gazeendyou = "Mirada amenazante desaparece de ti.",
-	gazeendother = "Mirada amenazante desaparece de (.+).",
-	gazecast = "¡Mirada amenazante entrante!",
-	gazewatchedbar = "Mirada amenazante: %s",
-	enragegain = "Señor sangriento Mandokir gana Enfurecer.",
-	enragefade = "Enfurecer desaparece de Señor sangriento Mandokir.",
-	enragebar = "Enfurecer",
-	wwgain = "Señor sangriento Mandokir gana Torbellino.",
-	wwloss = "Torbellino desaparece de Señor sangriento Mandokir.",
-	ww = "Torbellino",
-	deathyou = "Has muerto.",
-	deathother = "(.+) ha muerto.",
-	you = "tu",
-
-	watched_warning = "¡Estás siendo mirado! Detén todos!",
-	watched_warning_tell = "¡Estás siendo mirado! Detén todos!",
-	watched_warning_other = "¡%s está siendo mirado!",
-	enraged_message = "¡Acabado con Ohgan! Mandokir enfurecido!",
-
-	--announce_cmd = "whispers",
-	announce_name = "Susurrar a los jugadores mirados",
-	announce_desc = "Avisa cuando el jefe use Mirada amenazante.\n\n(Require asistente o líder)",
-
-	--puticon_cmd = "puticon",
-	puticon_name = "Marcar a los jugadores con Mirada amenazante",
-	puticon_desc = "Marca con un icono el jugador con Mirada amenazante.\n\n(Require asistente o líder)",
-
-	--gaze_cmd = "gaze",
-	gaze_name = "Alerta de Mirada amenazante",
-	gaze_desc = "Muestra una barra para Mirada amenazante",
-
-	--whirlwind_cmd = "whirlwind",
-	whirlwind_name = "Alerta de Torbellino",
-	whirlwind_desc = "Muestra barras para Torbellino",
-
-	--enraged_cmd = "enraged",
-	enraged_name = "Alerta de Enfurecer",
-	enraged_desc = "Anuncia cuando tenga Enfurecer el jefe",
-
-	["Possible Gaze"] = "Mirada amenazante Posible",
-	["Charge"] = "Embestir",
-	["Next Whirlwind"] = "Próximo Torbellino",
-} end )
-
-module.wipemobs = { L["ohgan"] }
 
 local timer = {
-	firstCharge = 15,
-	charge = 34,
-	firstWhirlwind = 20,
-	firstGaze = 33,
-
-	gaze = 20,
+	gazeFirstCd = 33,
+	gazeCd = 12,
+	gazeDur = 8, --2sec cast + 6sec dur
+	
+	whirlwindFirstCd = 20,
+	whirlwindCast = 2,
+	whirlwindCd = 18,
+	
+	chargeFirstCd = 15.8,
+	chargeCd = {30,35},
+	
+	enrage = 90,
+	
+	sunder = 20,
 }
 local icon = {
-	charge = "Ability_Warrior_Charge",
-	whirlwind = "Ability_Whirlwind",
 	gaze = "Spell_Shadow_Charm",
+	whirlwind = "Ability_Whirlwind",
+	charge = "Ability_Warrior_Charge",
+	enrage = "Spell_Shadow_UnholyFrenzy",
+	sunder = "ability_warrior_sunder",
+}
+local color = {
+	gazeCd = "Orange",
+	gazeDur = "Red",
+	
+	whirlwindCd = "Cyan",
+	whirlwindCast = "Blue",
+	
+	chargeCd = "White",
+	
+	enrage = "Green",
+	
+	sunder = "Black"
 }
 local syncName = {
+	gaze = "MandokirGaze2"..module.revision,
+	gazeFade = "MandokirGazeEnd2"..module.revision,
+	
 	whirlwind = "MandokirWWStart"..module.revision,
-	whirlwindOver = "MandokirWWStop"..module.revision,
-	enrage = "MandokirEnrageStart"..module.revision,
-	enrageOver = "MandokirEnrageEnd"..module.revision,
-	gazeCast = "MandokirGazeCast"..module.revision,
-	gazeAfflicted = "MandokirGazeAfflict"..module.revision,
-	gazeOver = "MandokirGazeEnd"..module.revision,
+
 	charge = "MandokirCharge"..module.revision,
+	
+	enrage = "MandokirEnrageStart"..module.revision,
+	enrageFade = "MandokirEnrageEnd"..module.revision,
+	
+	sunder = "MandokirSunder"..module.revision,
 }
 
-module:RegisterYellEngage(L["engage_trigger"])
+local fightningMandokir = nil
+local bossLevel = 63
 
 function module:OnEnable()
-	self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event")
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event") --Debug
+	
+	self:RegisterEvent("CHAT_MSG_MONSTER_YELL") --trigger_engage, trigger_gaze
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event") --trigger_gazeFade
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event") --trigger_gazeFade
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event") --trigger_gazeFade, trigger_enrageFade
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event") --trigger_whirlwind, trigger_enrage
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event") --trigger_sunderYou
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event") --trigger_sunderOther
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event") --trigger_sunderOther
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event") --trigger_charge
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event") --trigger_charge
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event") --trigger_charge
+	
+	
+	self:ThrottleSync(5, syncName.gaze)
+	self:ThrottleSync(5, syncName.gazeFade)
 	
 	self:ThrottleSync(5, syncName.whirlwind)
-	self:ThrottleSync(5, syncName.whirlwindOver)
-	self:ThrottleSync(5, syncName.enrage)
-	self:ThrottleSync(5, syncName.enrageOver)
-	self:ThrottleSync(5, syncName.gazeCast)
-	self:ThrottleSync(5, syncName.gazeAfflicted)
-	self:ThrottleSync(5, syncName.gazeOver)
+	
 	self:ThrottleSync(5, syncName.charge)
+	
+	self:ThrottleSync(5, syncName.enrage)
+	self:ThrottleSync(5, syncName.enrageFade)
+	
+	self:ThrottleSync(1, syncName.sunder)
 end
 
 function module:OnSetup()
 end
 
 function module:OnEngage()
-	self:Bar(L["chargecd_bar"], timer.firstCharge, icon.charge, true, "yellow")
-	-- todo check combat log regarding CHARGE to trigger the ones following the first
-	self:Bar(L["Next Whirlwind"], timer.firstWhirlwind, icon.whirlwind, true, "blue")
-	self:Bar(L["Possible Gaze"], timer.firstGaze, icon.gaze, true, "red")
+	fightningMandokir = true
+	bossLevel = 63
+	
+	if self.db.profile.gaze then
+		self:Bar(L["bar_gazeCd"], timer.gazeFirstCd, icon.gaze, true, color.gazeCd)
+	end
+	
+	if self.db.profile.whirlwind then
+		self:Bar(L["bar_whirlwindCd"], timer.whirlwindFirstCd, icon.whirlwind, true, color.whirlwindCd)
+	end
+	
+	if self.db.profile.charge then
+		self:Bar(L["bar_chargeCd"], timer.chargeFirstCd, icon.charge, true, color.chargeCd)
+	end
 end
 
 function module:OnDisengage()
+	fightningMandokir = nil
 end
 
 function module:CHAT_MSG_MONSTER_YELL(msg)
-	local gazetime
-	local _,_,watchedplayer,_ = string.find(msg, L["watch_trigger"])
-	if watchedplayer then
-		if self.db.profile.announce then
-			if watchedplayer == UnitName("player") then
-				self:Message(L["watched_warning"], "Personal", true, "Alarm", nil, "Beware")
-			else
-				self:Message(string.format(L["watched_warning_other"], watchedplayer), "Attention")
-				self:TriggerEvent("BigWigs_SendTell", watchedplayer, L["watched_warning_tell"])
-			end
-		end
-		if self.db.profile.puticon then
-			self:Icon(watchedplayer)
-		end
-		if watchedplayer == UnitName("player") and self.db.profile.gaze then
-			self:WarningSign(icon.gaze, 7)
-		end
+	if msg == L["trigger_engage"] then
+		module:SendEngageSync()
+	
+	elseif string.find(msg, L["trigger_gaze"]) then
+		local _,_,gazePlayer,_ = string.find(msg, L["trigger_gaze"])
+		self:Sync(syncName.gaze .. " " .. gazePlayer)
+		
+	elseif msg == L["trigger_levelUp"] and self.db.profile.levelup then
+		bossLevel = bossLevel + 1
+		self:Message(L["msg_levelUp"]..bossLevel)
 	end
 end
 
 function module:Event(msg)
-	local _,_,gazedplayer,_ = string.find(msg, L["gazeafflictother"])
-	local _,_,gazedplayerend,_ = string.find(msg, L["gazeendother"])
-	--local _,_,gazeddeathend,_ = string.find(msg, L["deathother"])
-	if msg == L["wwgain"] then
+	if string.find(msg, L["trigger_gazeFade"]) then
+		local _,_,gazeFadePlayer,_ = string.find(msg, L["trigger_gazeFade"])
+		if gazeFadePlayer == "you" then gazeFadePlayer = UnitName("Player") end
+		self:Sync(syncName.gazeFade .. " " .. gazeFadePlayer)
+	
+	elseif msg == L["trigger_whirlwind"] then
 		self:Sync(syncName.whirlwind)
-	elseif msg == L["wwloss"] then
-		self:Sync(syncName.whirlwindOver)
-	elseif string.find(msg, L["sunder_trigger"]) and self.db.profile.sunder then
-		self:Sunder()
-	elseif string.find(msg, L["charge_trigger"]) then
+
+	elseif string.find(msg, L["trigger_charge"]) then
 		self:Sync(syncName.charge)
-	elseif msg == L["enragegain"] then
+	
+	elseif msg == L["trigger_enrage"] then
 		self:Sync(syncName.enrage)
-	elseif msg == L["enragefade"] then
-		self:Sync(syncName.enrageOver)
-	elseif msg == L["gaze_trigger"] then
-		self:Sync(syncName.gazeCast)
-	elseif msg == L["gazeafflictyou"] then
-		self:Message(L["gaze_warn"].."you! STOP ALL ACTION!", "Urgent")
-		if self.db.profile.sounds then
-			self:Sound("Beware")
+	elseif msg == L["trigger_enrageFade"] then
+		self:Sync(syncName.enrageFade)
+
+	elseif string.find(msg, L["trigger_sunderYou"]) and fightningMandokir then
+		local _,_,sunderQty,_ = string.find(msg, L["trigger_sunderYou"])
+		local sunderPlayer = UnitName("Player")
+		local sunderPlayerAndSunderQty = sunderPlayer .. " " .. sunderQty
+		self:Sync(syncName.sunder.." "..sunderPlayerAndSunderQty)
+		
+	elseif string.find(msg, L["trigger_sunderOther"]) and fightningMandokir then
+		local _,_,sunderPlayer,sunderQty = string.find(msg, L["trigger_sunderOther"])
+		if sunderPlayer ~= "Bloodlord Mandokir" and sunderPlayer ~= "Ohgan" then
+			local sunderPlayerAndSunderQty = sunderPlayer .. " " .. sunderQty
+			self:Sync(syncName.sunder.." "..sunderPlayerAndSunderQty)
 		end
-		if self.db.profile.bigicon then
-			self:WarningSign(icon.gaze, 7)
-		end
-		gazetime = GetTime()
-		self:Sync(syncName.gazeAfflicted .. " " .. UnitName("player"))
-	elseif gazedplayer then
-		gazetime = GetTime()
-		self:Sync(syncName.gazeAfflicted .. " " .. gazedplayer)
-	elseif msg == L["gazeendyou"] then
-		self:Sync(syncName.gazeOver .. " " .. UnitName("player"))
-	elseif gazedplayerend and gazedplayerend ~= L["you"] then
-		self:Sync(syncName.gazeOver .. " " .. gazedplayerend)
-		--elseif msg == L["deathyou"] then
-		--	self:Sync("MandokirGazeEnd "..UnitName("player"))
-		--elseif gazeddeathend then
-		--	self:Sync("MandokirGazeEnd "..gazeddeathend)
 	end
 end
 
-function module:Sunder()
-	self:Message(L["sunder_warn"], "Attention")
-	if self.db.profile.sounds then
-		self:Sound("stacks")
-	end
-end
 
 function module:BigWigs_RecvSync(sync, rest, nick)
-	if sync == syncName.whirlwind and self.db.profile.whirlwind then
-		self:Bar(L["ww"], 2, icon.whirlwind, true, "blue")
-		--self:ScheduleEvent("BigWigs_StartBar", 2, self, "Next Whirlwind", 18, icon.whirlwind)
-	elseif sync == syncName.whirlwindOver and self.db.profile.whirlwind then
-		self:RemoveBar(L["ww"])
-		self:Bar(L["Next Whirlwind"], 18, icon.whirlwind, true, "blue")
-	elseif sync == syncName.enrage and self.db.profile.enraged then
-		self:Message(L["enraged_message"], "Urgent")
-		self:Bar(L["enragebar"], 90, "Spell_Shadow_UnholyFrenzy", true, "white")
-	elseif sync == syncName.enrageOver and self.db.profile.enraged then
-		self:RemoveBar(L["enragebar"])
+	if sync == syncName.gaze and rest and self.db.profile.gaze then
+		self:Gaze(rest)
+	elseif sync == syncName.gazeFade and rest and self.db.profile.gaze then
+		self:GazeFade(rest)
+	
+	elseif sync == syncName.whirlwind and self.db.profile.whirlwind then
+		self:Whirlwind()
+	
 	elseif sync == syncName.charge and self.db.profile.charge then
 		self:Charge()
-	elseif sync == syncName.gazeCast and self.db.profile.gaze then
-		self:Bar(L["gazecast"], 2, icon.gaze, true, "red")
-		self:RemoveBar(L["Possible Gaze"])
-	elseif sync == syncName.gazeAfflicted and self.db.profile.gaze then
-		self:Bar(string.format(L["gazewatchedbar"], rest), 6, icon.gaze, true, "red")
-	elseif sync == syncName.gazeOver then
-		if self.db.profile.gaze then
-			self:RemoveBar(string.format(L["gazewatchedbar"], rest))
-		end
-		if self.db.profile.puticon then
-			self:RemoveIcon(rest)
-		end
-		self:Bar(L["Possible Gaze"], timer.gaze-8, icon.gaze, true, "red")
+		
+	elseif sync == syncName.enrage and self.db.profile.enrage then
+		self:Enrage()
+	elseif sync == syncName.enrageFade and self.db.profile.enrage then
+		self:EnrageFade()
+	
+	
+	elseif sync == syncName.sunder and rest and self.db.profile.sunder then
+		self:Sunder(rest)
 	end
+end
+
+
+function module:Gaze(rest)
+	self:RemoveBar(L["bar_gazeCd"])
+	
+	self:Bar(rest..L["bar_gazeDur"], timer.gazeDur, icon.gaze, true, color.gazeDur)
+	self:Message(L["msg_gaze"]..rest, "Urgent", false, nil, false)
+	
+	if rest == UnitName("Player") then
+		self:Sound("Beware")
+		self:WarningSign(icon.gaze, timer.gazeDur)
+		SendChatMessage("Threatening Gaze on "..UnitName("Player").." !", "SAY")
+		
+		if self.db.profile.cancelaction then
+			self:CancelAllAction()
+			self:ScheduleRepeatingEvent("MandokirCancelAllAction", self.CancelAllAction, 0.25, self)
+			self:ScheduleEvent("MandokirLetMeFree", self.LetMeFree, timer.gazeDur, self)
+		end
+	end
+	
+	if IsRaidLeader() or IsRaidOfficer() then
+		for i=1,GetNumRaidMembers() do
+			if UnitName("raid"..i) == rest then
+				SetRaidTargetIcon("raid"..i, 8)
+			end
+		end
+	end
+	
+	self:DelayedBar(timer.gazeDur, L["bar_gazeCd"], timer.gazeCd, icon.gaze, true, color.gazeCd)
+end
+	function module:CancelAllAction()
+		if PlayerFrame.inCombat then AttackTarget() end
+		SpellStopCasting()
+		ClearTarget()
+	end
+	function module:LetMeFree()
+		self:CancelScheduledEvent("MandokirCancelAllAction")
+	end
+
+function module:GazeFade(rest)
+	self:RemoveBar(rest..L["bar_gazeDur"])
+	
+	if rest == UnitName("Player") and self.db.profile.cancelaction then
+		self:RemoveWarningSign(icon.gaze)
+		self:LetMeFree()
+	end
+	
+	if IsRaidLeader() or IsRaidOfficer() then
+		for i=1,GetNumRaidMembers() do
+			if UnitName("raid"..i) == rest then
+				SetRaidTargetIcon("raid"..i, 0)
+			end
+		end
+	end
+end
+
+function module:Whirlwind()
+	self:RemoveBar(L["bar_whirlwindCd"])
+	
+	self:Bar(L["bar_whirlwindCast"], timer.whirlwindCast, icon.whirlwind, true, color.whirlwindCast)
+	
+	self:DelayedBar(timer.whirlwindCast, L["bar_whirlwindCd"], timer.whirlwindCd, icon.whirlwind, true, color.whirlwindCd)
 end
 
 function module:Charge()
-	self:RemoveBar(L["chargecd_bar"])
-	self:Bar(L["chargecd_bar"], timer.charge, icon.charge, true, "yellow")
+	self:RemoveBar(L["bar_chargeCd"])
+	self:IntervalBar(L["bar_chargeCd"], timer.chargeCd[1], timer.chargeCd[2], icon.charge, true, color.chargeCd)
+end
+
+function module:Enrage()
+	self:Bar(L["bar_enrage"], timer.enrage, icon.enrage, true, color.enrage)
+	self:Message(L["msg_enrage"], "Urgent", false, nil, false)
+	self:Sound("BikeHorn")
+	self:WarningSign(icon.enrage, 0.7)
+end
+
+function module:EnrageFade()
+	self:RemoveBar(L["bar_enrage"])
+	self:Message(L["msg_enrageFade"], "Urgent", false, nil, false)
+end
+
+function module:Sunder(rest)
+	local sunderPlayer = strsub(rest,0,strfind(rest," ") - 1)
+	local sunderQty = tonumber(strsub(rest,strfind(rest," "),strlen(rest)))
+	
+	self:RemoveBar(sunderPlayer.." ".."1"..L["bar_sunder"])
+	self:RemoveBar(sunderPlayer.." ".."2"..L["bar_sunder"])
+	self:RemoveBar(sunderPlayer.." ".."3"..L["bar_sunder"])
+	self:RemoveBar(sunderPlayer.." ".."4"..L["bar_sunder"])
+	self:RemoveBar(sunderPlayer.." ".."5"..L["bar_sunder"])
+	self:RemoveBar(sunderPlayer.." ".."6"..L["bar_sunder"])
+	self:RemoveBar(sunderPlayer.." ".."7"..L["bar_sunder"])
+	self:RemoveBar(sunderPlayer.." ".."8"..L["bar_sunder"])
+	self:RemoveBar(sunderPlayer.." ".."9"..L["bar_sunder"])
+	self:RemoveBar(sunderPlayer.." ".."10"..L["bar_sunder"])
+
+	self:Bar(sunderPlayer.." "..sunderQty..L["bar_sunder"], timer.sunder, icon.sunder, true, color.sunder)
+	
+	if sunderPlayer == UnitName("Player") and sunderQty >= 5 then
+		self:WarningSign(icon.sunder, 0.7)
+		self:Message(sunderQty..L["msg_sunderHigh"], "Personal", false, nil, false)
+	end
 end

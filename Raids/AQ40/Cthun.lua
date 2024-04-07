@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("C'Thun", "Ahn'Qiraj")
 
-module.revision = 30077
+module.revision = 30078
 module.enabletrigger = {"Eye of C'Thun", "C'Thun"}
 module.toggleoptions = {
 	"cthuneyebeam",

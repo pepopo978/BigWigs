@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("High Priestess Mar'li", "Zul'Gurub")
 
-module.revision = 30034
+module.revision = 30078
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"webs", "charge", "drain", "phase", "spider", "volley", "bosskill"}
 
@@ -49,15 +49,16 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_drainLifeYou = "You are afflicted by Drain Life.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 	trigger_drainLifeFade = "Drain Life fades from (.+)",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 	bar_drainLife = "Drain Life",
-	msg_drainLife = "Drain Life! Interrupt/Dispel!",
+	msg_drainLife = "Drain Life - Interrupt/Dispel!",
 	
 	trigger_spiderPhase = "Shadra, make of me your avatar!",--CHAT_MSG_MONSTER_YELL
-	bar_spiderPhaseTimer = "Spider Phase Ends",
+	bar_spiderPhaseTimer = "Next Troll Phase",
 	
 	--no trigger for Troll Phase
-	bar_trollPhaseTimer = "Troll Phase Ends",
+	bar_trollPhaseTimer = "Next Spider Phase",
 	
 	--no trigger for adds spawn
+	bar_addsCd = "Spider adds spawn",
 	msg_addsDead = "/4 Spiders Dead",
 	msg_spidersSpawn = "Kill the Spider add!",
 	
@@ -66,11 +67,17 @@ L:RegisterTranslations("enUS", function() return {
 } end )
 
 local timer = {
+	websFirstCd = 5,
 	websCd = {10,20},--saw 11,19 
-	chargeCd = {10,20},--to be confirmed
+	
+	chargeCd = {10,20},--to be confirmed, saw 18, first one is very random, saw 6
 	drainLife = 7,
-	trollPhase = 35,--to be confirmed
-	spiderPhase = 35,--to be confirmed
+	trollPhase = 35,
+	spiderPhase = 35,
+	
+	spiderAddCd = 20, --sometimes 1, sometimes 4 o.0?, spawn after spider phase is random? saw 5 and 20
+	
+	poisonVolleyFirstCd = 15,
 	poisonVolleyCd = {10,19},--saw 10,19
 }
 local icon = {
@@ -88,15 +95,19 @@ local color = {
 	drainLife = "Red",
 	trollPhase = "White",
 	spiderPhase = "White",
+	spiderAdd = "Black",
 	poisonVolley = "Green",
 }
 local syncName = {
 	webs = "MarliWebs"..module.revision,
 	charge = "MarliCharge"..module.revision,
+	
 	drainStart = "MarliDrainStart"..module.revision,
 	drainOver = "MarliDrainEnd"..module.revision,
+	
 	trollPhase = "MarliTrollPhase"..module.revision,
 	spiderPhase = "MarliSpiderPhase"..module.revision,
+	
 	spidersSpawn = "MarliSpiders"..module.revision,
 	poisonVolley = "MarliVolley"..module.revision,
 }
@@ -105,6 +116,7 @@ local addsDead = 0
 
 function module:OnEnable()
 	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
+	
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL")--trigger_engage, trigger_spiderSpawn
 	
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")--trigger_websYou, trigger_poisonVolley
@@ -119,13 +131,14 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event")--trigger_drainLifeFade
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event")--trigger_drainLifeFade
 	
+	
 	self:ThrottleSync(3, syncName.webs)
 	self:ThrottleSync(3, syncName.charge)
 	self:ThrottleSync(5, syncName.drainStart)
 	self:ThrottleSync(5, syncName.drainOver)
 	self:ThrottleSync(5, syncName.trollPhase)
 	self:ThrottleSync(5, syncName.spiderPhase)
-	self:ThrottleSync(5, syncName.spidersSpawn)
+	self:ThrottleSync(15, syncName.spidersSpawn)
 	self:ThrottleSync(9, syncName.poisonVolley)
 end
 
@@ -137,8 +150,13 @@ function module:OnEngage()
 	if self.db.profile.phase then
 		self:TrollPhase()
 	end
+	
 	if self.db.profile.volley then
-		self:IntervalBar(L["bar_poisonVolleyCd"], timer.poisonVolleyCd[1], timer.poisonVolleyCd[2], icon.poisonVolley, true, color.poisonVolley)
+		self:Bar(L["bar_poisonVolleyCd"], timer.poisonVolleyFirstCd, icon.poisonVolley, true, color.poisonVolley)
+	end
+	
+	if self.db.profile.spider then
+		self:Bar(L["bar_addsCd"], timer.spiderAddCd, icon.spiderAdd, true, color.spiderAdd)
 	end
 	
 	addsDead = 0
@@ -146,40 +164,8 @@ function module:OnEngage()
 end
 
 function module:OnDisengage()
-end
-
-function module:CheckTarget()
-	if UnitName("target") == "Spawn of Mar'li" and not UnitIsDeadOrGhost("target") and UnitExists("target") then
-		self:CancelScheduledEvent("bwmarliaddcheck")
-		if (IsRaidLeader() or IsRaidOfficer()) then
-			SetRaidTarget("target",8)
-		end
-		self:Sync(syncName.spidersSpawn)
-	else
-		for i = 1,GetNumRaidMembers() do
-			if UnitName("Raid"..i.."target") == "Spawn of Mar'li" and not UnitIsDeadOrGhost("Raid"..i.."target") and UnitExists("Raid"..i.."target") then
-				self:CancelScheduledEvent("bwmarliaddcheck")
-				if (IsRaidLeader() or IsRaidOfficer()) then
-					SetRaidTarget("Raid"..i.."target",8)
-				end
-				self:Sync(syncName.spidersSpawn)
-				break
-			end
-		end
-	end
-end
-
-function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
-	if msg == L["trigger_bossDead"] then
-		self:SendBossDeathSync()
-	elseif msg == string.format(UNITDIESOTHER, "Spawn of Mar'li") then
-		if addsDead < 4 then
-			addsDead = addsDead + 1
-			self:Message(addsDead..L["msg_addsDead"], "Positive", false, nil, false)
-		else
-			self:ScheduleRepeatingEvent("bwmarliaddcheck", self.CheckTarget, 0.5, self)
-		end
-	end
+	self:CancelScheduledEvent("EnableSpiderAddCheck")
+	self:CancelScheduledEvent("MarliSpiderAddCheck")
 end
 
 function module:CHAT_MSG_MONSTER_YELL(msg)
@@ -188,6 +174,41 @@ function module:CHAT_MSG_MONSTER_YELL(msg)
 
 	elseif string.find(msg, L["trigger_spiderPhase"]) then
 		self:Sync(syncName.spiderPhase)
+	end
+end
+
+function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
+	if msg == L["trigger_bossDead"] then
+		self:SendBossDeathSync()
+	
+	elseif msg == string.format(UNITDIESOTHER, "Spawn of Mar'li") then
+		if addsDead < 4 then
+			addsDead = addsDead + 1
+			self:Message(addsDead..L["msg_addsDead"], "Positive", false, nil, false)
+		else
+			self:ScheduleRepeatingEvent("MarliSpiderAddCheck", self.SpiderAddCheck, 0.5, self)
+		end
+	end
+end
+
+function module:SpiderAddCheck()
+	if UnitName("target") == "Spawn of Mar'li" and not UnitIsDeadOrGhost("target") and UnitExists("target") then
+		self:CancelScheduledEvent("MarliSpiderAddCheck")
+		if (IsRaidLeader() or IsRaidOfficer()) then
+			SetRaidTarget("target",8)
+		end
+		self:Sync(syncName.spidersSpawn)
+	else
+		for i = 1,GetNumRaidMembers() do
+			if UnitName("Raid"..i.."target") == "Spawn of Mar'li" and not UnitIsDeadOrGhost("Raid"..i.."target") and UnitExists("Raid"..i.."target") then
+				self:CancelScheduledEvent("MarliSpiderAddCheck")
+				if (IsRaidLeader() or IsRaidOfficer()) then
+					SetRaidTarget("Raid"..i.."target",8)
+				end
+				self:Sync(syncName.spidersSpawn)
+				break
+			end
+		end
 	end
 end
 
@@ -269,7 +290,12 @@ function module:SpiderPhase()
 	self:RemoveBar(L["bar_trollPhaseTimer"])
 	
 	self:Bar(L["bar_spiderPhaseTimer"], timer.spiderPhase, icon.spiderPhase, true, color.spiderPhase)
-	self:ScheduleEvent("bwsendtrollphasesync", self.SendTrollPhaseSync, timer.spiderPhase, self)
+	
+	if self.db.profile.webs then
+		self:Bar(L["bar_websCd"], timer.websFirstCd, icon.webs, true, color.webs)
+	end
+	
+	self:DelayedSync(timer.spiderPhase, syncName.trollPhase)
 end
 
 function module:SendTrollPhaseSync()
@@ -277,7 +303,7 @@ function module:SendTrollPhaseSync()
 end
 
 function module:TrollPhase()
-	self:CancelScheduledEvent("bwsendtrollphasesync")
+	self:CancelDelayedSync(syncName.trollPhase)
 	self:RemoveBar(L["bar_websCd"])
 	self:RemoveBar(L["bar_chargeCd"])
 	self:RemoveBar(L["bar_spiderPhaseTimer"])
@@ -286,9 +312,16 @@ function module:TrollPhase()
 end
 
 function module:SpidersSpawn()
-	self:CancelScheduledEvent("bwmarliaddcheck")
+	self:CancelScheduledEvent("EnableSpiderAddCheck")
+	self:CancelScheduledEvent("MarliSpiderAddCheck")
 	self:Message(L["msg_spidersSpawn"], "Attention", false, nil, false)
 	self:Sound("BikeHorn")
+	
+	self:ScheduleEvent("EnableSpiderAddCheck", self.EnableSpiderAddCheck, timer.spiderAddCd - 5, self)
+end
+
+function module:EnableSpiderAddCheck()
+	self:ScheduleRepeatingEvent("MarliSpiderAddCheck", self.SpiderAddCheck, 0.5, self)
 end
 
 function module:PoisonVolley()
