@@ -1,4 +1,3 @@
-
 assert(BigWigs, "BigWigs not found!")
 
 ------------------------------
@@ -35,6 +34,12 @@ local sounds = {
 
 	BikeHorn = "Interface\\AddOns\\BigWigs\\Sounds\\BikeHorn.ogg",
 	AirHorn = "Interface\\AddOns\\BigWigs\\Sounds\\custom2\\AirHorn.ogg",
+
+	Scorch = "Interface\\AddOns\\BigWigs\\Sounds\\Scorch.mp3",
+	ScorchResist = "Interface\\AddOns\\BigWigs\\Sounds\\ScorchResist.mp3",
+	stopcasting = "Interface\\AddOns\\BigWigs\\Sounds\\stopcasting.mp3",
+	IgniteDanger = "Interface\\AddOns\\BigWigs\\Sounds\\IgniteDanger.mp3",
+	Pyro = "Interface\\AddOns\\BigWigs\\Sounds\\Pyro.mp3",
 }
 
 
@@ -42,57 +47,65 @@ local sounds = {
 --      Localization      --
 ----------------------------
 
-L:RegisterTranslations("enUS", function() return {
-	["Sounds"] = true,
-	["sounds"] = true,
-	["Options for sounds."] = true,
+L:RegisterTranslations("enUS", function()
+	return {
+		["Sounds"] = true,
+		["sounds"] = true,
+		["Options for sounds."] = true,
 
-	["toggle"] = true,
-	["Use sounds"] = true,
-	["Toggle sounds on or off."] = true,
-	["default"] = true,
-	["Default only"] = true,
-	["Use only the default sound."] = true,
-} end)
+		["toggle"] = true,
+		["Use sounds"] = true,
+		["Toggle sounds on or off."] = true,
+		["default"] = true,
+		["Default only"] = true,
+		["Use only the default sound."] = true,
+	}
+end)
 
-L:RegisterTranslations("esES", function() return {
-	["Sounds"] = "Sonidos",
-	--["sounds"] = true,
-	["Options for sounds."] = "Opciones para sonidos",
+L:RegisterTranslations("esES", function()
+	return {
+		["Sounds"] = "Sonidos",
+		--["sounds"] = true,
+		["Options for sounds."] = "Opciones para sonidos",
 
-	--["toggle"] = "Alternar",
-	["Use sounds"] = "Usar sonidos",
-	["Toggle sounds on or off."] = "Alterna los sonidos activos o desactivos",
-	--["default"] = "defecto",
-	["Default only"] = "Solamente defecto",
-	["Use only the default sound."] = "Solamente usa el sonido por defecto",
-} end)
+		--["toggle"] = "Alternar",
+		["Use sounds"] = "Usar sonidos",
+		["Toggle sounds on or off."] = "Alterna los sonidos activos o desactivos",
+		--["default"] = "defecto",
+		["Default only"] = "Solamente defecto",
+		["Use only the default sound."] = "Solamente usa el sonido por defecto",
+	}
+end)
 
-L:RegisterTranslations("koKR", function() return {
-	["Sounds"] = "효과음",
-	["Options for sounds."] = "효과음 옵션.",
+L:RegisterTranslations("koKR", function()
+	return {
+		["Sounds"] = "효과음",
+		["Options for sounds."] = "효과음 옵션.",
 
-	["Use sounds"] = "효과음 사용",
-	["Toggle sounds on or off."] = "효과음을 켜거나 끔.",
-	["Default only"] = "기본음",
-	["Use only the default sound."] = "기본음만 사용.",
-} end)
+		["Use sounds"] = "효과음 사용",
+		["Toggle sounds on or off."] = "효과음을 켜거나 끔.",
+		["Default only"] = "기본음",
+		["Use only the default sound."] = "기본음만 사용.",
+	}
+end)
 
-L:RegisterTranslations("deDE", function() return {
-	["Sounds"] = "Sound",
-	["Options for sounds."] = "Optionen f\195\188r Sound.",
-	["Use sounds"] = "Sound nutzen",
-	["Toggle sounds on or off."] = "Sound aktivieren/deaktivieren.",
-	["Default only"] = "Nur Standard",
-	["Use only the default sound."] = "Nur Standard Sound.",
-} end)
+L:RegisterTranslations("deDE", function()
+	return {
+		["Sounds"] = "Sound",
+		["Options for sounds."] = "Optionen f\195\188r Sound.",
+		["Use sounds"] = "Sound nutzen",
+		["Toggle sounds on or off."] = "Sound aktivieren/deaktivieren.",
+		["Default only"] = "Nur Standard",
+		["Use only the default sound."] = "Nur Standard Sound.",
+	}
+end)
 
 ----------------------------------
 --      Module Declaration      --
 ----------------------------------
 
 BigWigsSound = BigWigs:NewModule(L["Sounds"])
-BigWigsSound.defaults = {
+BigWigsSound.defaultDB = {
 	defaultonly = false,
 	sound = true,
 }
@@ -106,7 +119,9 @@ BigWigsSound.consoleOptions = {
 			type = "toggle",
 			name = L["Sounds"],
 			desc = L["Toggle sounds on or off."],
-			get = function() return BigWigsSound.db.profile.sound end,
+			get = function()
+				return BigWigsSound.db.profile.sound
+			end,
 			set = function(v)
 				BigWigsSound.db.profile.sound = v
 				BigWigs:ToggleModuleActive(L["Sounds"], v)
@@ -116,8 +131,12 @@ BigWigsSound.consoleOptions = {
 			type = "toggle",
 			name = L["Default only"],
 			desc = L["Use only the default sound."],
-			get = function() return BigWigsSound.db.profile.defaultonly end,
-			set = function(v) BigWigsSound.db.profile.defaultonly = v end,
+			get = function()
+				return BigWigsSound.db.profile.defaultonly
+			end,
+			set = function(v)
+				BigWigsSound.db.profile.defaultonly = v
+			end,
 		},
 	}
 }
@@ -136,14 +155,19 @@ end
 
 function BigWigsSound:BigWigs_Message(text, color, noraidsay, sound, broadcastonly)
 	if self.db.profile.sound then
-		if not text or sound == false or broadcastonly then return end
+		if not text or sound == false or broadcastonly then
+			return
+		end
 
-		if sounds[sound] and not self.db.profile.defaultonly then PlaySoundFile(sounds[sound])
-		else PlaySound("RaidWarning") end
+		if sounds[sound] and not self.db.profile.defaultonly then
+			PlaySoundFile(sounds[sound])
+		else
+			PlaySound("RaidWarning")
+		end
 	end
 end
 
-function BigWigsSound:BigWigs_Sound( sound )
+function BigWigsSound:BigWigs_Sound(sound)
 	if self.db.profile.sound then
 		if sounds[sound] and not self.db.profile.defaultonly then
 			PlaySoundFile(sounds[sound])
