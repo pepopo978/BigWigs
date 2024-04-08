@@ -1,191 +1,196 @@
-
 local module, L = BigWigs:ModuleDeclaration("Bloodlord Mandokir", "Zul'Gurub")
 
 module.revision = 30012
 module.enabletrigger = module.translatedName
-module.toggleoptions = {"sounds", "bigicon", "sunder", "charge", "gaze", "announce", "puticon", "whirlwind", "enraged", "bosskill"}
+module.toggleoptions = { "sounds", "bigicon", "sunder", "charge", "gaze", "announce", "puticon", "whirlwind", "enraged", "bosskill" }
 
-L:RegisterTranslations("enUS", function() return {
-	ohgan = "Ohgan",
-	cmd = "Mandokir",
+L:RegisterTranslations("enUS", function()
+	return {
+		ohgan = "Ohgan",
+		cmd = "Mandokir",
 
-	engage_trigger = "feed your souls to Hakkar himself",
-	watch_trigger = "(.+)! I'm watching you!",
-	gaze_trigger = "Bloodlord Mandokir begins to cast Threatening Gaze.",
-	gazeafflictyou = "You are afflicted by Threatening Gaze.",
-	gazeafflictother = "(.+) is afflicted by Threatening Gaze.",
-	gazeendyou = "Threatening Gaze fades from you.",
-	gazeendother = "Threatening Gaze fades from (.+).",
-	gazecast = "Incoming Threatening Gaze!",
-	gazewatchedbar = "Threatening Gaze: %s",
-	enragegain = "Bloodlord Mandokir gains Enrage.",
-	enragefade = "Enrage fades from Bloodlord Mandokir.",
-	enragebar = "Enrage",
-	wwgain = "Bloodlord Mandokir gains Whirlwind.",
-	wwloss = "Whirlwind fades from Bloodlord Mandokir.",
-	ww = "Whirlwind",
-	deathyou = "You die.",
-	deathother = "(.+) dies.",
-	you = "you",
-	gaze_warn = "Gaze on ",
-	
-	sunder_trigger = "Sunder Armor %(5%)",
-	sunder_warn = "Too many Sunder stacks, seek help!",
-	
-	watched_warning = "You are being watched! Stop everything!",
-	watched_warning_tell = "You are being watched! Stop everything!",
-	watched_warning_other = "%s is being watched!",
-	enraged_message = "Ohgan down! Mandokir enraged!",
-	
-	charge_trigger = "Bloodlord Mandokir's Charge",
-	chargecd_bar = "Charge CD",
-	
-	announce_cmd = "whispers",
-	announce_name = "Whisper watched players",
-	announce_desc = "Warn when boss uses Threatening Gaze.\n\n(Requires assistant or higher)",
-	
-	bigicon_cmd = "bigicon",
-	bigicon_name = "WW and Gaze big icon alert",
-	bigicon_desc = "Shows a big icon when whirlwind is happening and Gaze is on you",
-	
-	sounds_cmd = "sounds",
-	sounds_name = "Gaze, 5Sunders and WW sound alert",
-	sounds_desc = "Sound alert Gaze is on you, when you have 5 stacks of sunder on you, when whirlwind is happening.",
-	
-	puticon_cmd = "puticon",
-	puticon_name = "Raid icon on watched players",
-	puticon_desc = "Place a raid icon on the watched person.\n\n(Requires assistant or higher)",
-	
-	charge_cmd = "charge",
-	charge_name = "Charge Alert",
-	charge_desc = "Shows Charge bars",
-	
-	gaze_cmd = "gaze",
-	gaze_name = "Threatening Gaze alert",
-	gaze_desc = "Shows bars for Threatening Gaze",
+		engage_trigger = "feed your souls to Hakkar himself",
+		watch_trigger = "(.+)! I'm watching you!",
+		gaze_trigger = "Bloodlord Mandokir begins to cast Threatening Gaze.",
+		gazeafflictyou = BigWigs.AURAHARMFULSELF_PREFIX .. "Threatening Gaze.",
+		gazeafflictother = "(.+) is afflicted by Threatening Gaze.",
+		gazeendyou = "Threatening Gaze" .. BigWigs.AURAREMOVEDSELF_SUFFIX,
+		gazeendother = "Threatening Gaze fades from (.+).",
+		gazecast = "Incoming Threatening Gaze!",
+		gazewatchedbar = "Threatening Gaze: %s",
+		enragegain = "Bloodlord Mandokir gains Enrage.",
+		enragefade = "Enrage fades from Bloodlord Mandokir.",
+		enragebar = "Enrage",
+		wwgain = "Bloodlord Mandokir gains Whirlwind.",
+		wwloss = "Whirlwind fades from Bloodlord Mandokir.",
+		ww = "Whirlwind",
+		deathyou = "You die.",
+		deathother = "(.+) dies.",
+		you = "you",
+		gaze_warn = "Gaze on ",
 
-	whirlwind_cmd = "whirlwind",
-	whirlwind_name = "Whirlwind Alert",
-	whirlwind_desc = "Shows Whirlwind bars",
-	
-	sunder_cmd = "sunder",
-	sunder_name = "5 sunder stacks on you alert",
-	sunder_desc = "Alerts Ohgan's tank to get help if he has 5 stacks of Sunder Armor on him.",
-	
-	enraged_cmd = "enraged",
-	enraged_name = "Enrage alert",
-	enraged_desc = "Announces the boss' Enrage",
+		sunder_trigger = "Sunder Armor %(5%)",
+		sunder_warn = "Too many Sunder stacks, seek help!",
 
-	["Possible Gaze"] = true,
-	["Charge"] = true,
-	["Next Whirlwind"] = true,
-} end )
+		watched_warning = "You are being watched! Stop everything!",
+		watched_warning_tell = "You are being watched! Stop everything!",
+		watched_warning_other = "%s is being watched!",
+		enraged_message = "Ohgan down! Mandokir enraged!",
 
-L:RegisterTranslations("deDE", function() return {
-	ohgan = "Ohgan",
-	cmd = "Mandokir",
+		charge_trigger = "Bloodlord Mandokir's Charge",
+		chargecd_bar = "Charge CD",
 
-	engage_trigger = "feed your souls to Hakkar himself",
-	watch_trigger = "(.+)! I'm watching you!",
-	gaze_trigger = "Bloodlord Mandokir beginnt Bedrohlicher Blick zu wirken.",
-	gazeafflictyou = "Ihr seid von Bedrohlicher Blick betroffen.",
-	gazeafflictother = "(.+) ist von Bedrohlicher Blick betroffen.",
-	gazeendyou = "'Bedrohlicher Blick' schwindet von Euch.",
-	gazeendother = "Bedrohlicher Blick schwindet von (.+).",
-	gazecast = "Bedrohlicher Blick kommt!",
-	gazewatchedbar = "Bedrohlicher Blick: %s",
-	enragegain = "Bloodlord Mandokir bekommt 'Wutanfall'.",
-	enragefade = "Wutanfall schwindet von Bloodlord Mandokir.",
-	enragebar = "Wutanfall",
-	wwgain = "Bloodlord Mandokir bekommt 'Wirbelwind'.",
-	wwloss = "Wirbelwind schwindet von Bloodlord Mandokir\.",
-	ww = "Wirbelwind",
-	deathyou = "Du stirbst.",
-	deathother = "(.+) stirbt.",
-	you = "Euch",
+		announce_cmd = "whispers",
+		announce_name = "Whisper watched players",
+		announce_desc = "Warn when boss uses Threatening Gaze.\n\n(Requires assistant or higher)",
 
-	watched_warning = "Du wirst beobachtet! Stoppen Sie alles!",
-	watched_warning_tell = "You are being watched! Stop everything!",
-	watched_warning_other = "%s wird beobachtet!",
-	enraged_message = "Ohgan ist tot! Mandokir wütend!",
+		bigicon_cmd = "bigicon",
+		bigicon_name = "WW and Gaze big icon alert",
+		bigicon_desc = "Shows a big icon when whirlwind is happening and Gaze is on you",
 
-	announce_cmd = "whispers",
-	announce_name = "Warnung, wenn Spieler beobachtet werden",
-	announce_desc = "Warnen, wenn Bloodlord Mandokir wirft Bedrohlicher Blick\n\n(Benötigt Schlachtzugleiter oder Assistent)",
+		sounds_cmd = "sounds",
+		sounds_name = "Gaze, 5Sunders and WW sound alert",
+		sounds_desc = "Sound alert Gaze is on you, when you have 5 stacks of sunder on you, when whirlwind is happening.",
 
-	puticon_cmd = "puticon",
-	puticon_name = "Schlachtzugsymbol auf die beobachtet Spieler",
-	puticon_desc = "Versetzt eine Schlachtzugsymbol auf der beobachteten Spieler.\n\n(Benötigt Schlachtzugleiter oder Assistent)",
+		puticon_cmd = "puticon",
+		puticon_name = "Raid icon on watched players",
+		puticon_desc = "Place a raid icon on the watched person.\n\n(Requires assistant or higher)",
 
-	gaze_cmd = "gaze",
-	gaze_name = "Alarm für Bedrohlicher Blick",
-	gaze_desc = "Zeigt Balken für Bedrohlicher Blick",
+		charge_cmd = "charge",
+		charge_name = "Charge Alert",
+		charge_desc = "Shows Charge bars",
 
-	whirlwind_cmd = "whirlwind",
-	whirlwind_name = "Alarm für Wirbelwind",
-	whirlwind_desc = "Zeigt Balken für Wirbelwind",
+		gaze_cmd = "gaze",
+		gaze_name = "Threatening Gaze alert",
+		gaze_desc = "Shows bars for Threatening Gaze",
 
-	enraged_cmd = "enraged",
-	enraged_name = "Verkündet Boss' Raserei",
-	enraged_desc = "Lässt dich wissen, wenn Boss härter zuschlägt",
+		whirlwind_cmd = "whirlwind",
+		whirlwind_name = "Whirlwind Alert",
+		whirlwind_desc = "Shows Whirlwind bars",
 
-	["Possible Gaze"] = "Mögliches Starren",
-	["Charge"] = "Sturmangriff",
-	["Next Whirlwind"] = "Wirbelwind",
-} end )
+		sunder_cmd = "sunder",
+		sunder_name = "5 sunder stacks on you alert",
+		sunder_desc = "Alerts Ohgan's tank to get help if he has 5 stacks of Sunder Armor on him.",
 
-L:RegisterTranslations("esES", function() return {
-	ohgan = "Ohgan",
-	--	cmd = "Mandokir",
+		enraged_cmd = "enraged",
+		enraged_name = "Enrage alert",
+		enraged_desc = "Announces the boss' Enrage",
 
-	engage_trigger = "feed your souls to Hakkar himself",
-	watch_trigger = "(.+)! I'm watching you!",
-	gaze_trigger = "Señor sangriento Mandokir comienza a lanzar Mirada amenazante.",
-	gazeafflictyou = "Sufres de Mirada amenazante.",
-	gazeafflictother = "(.+) sufre de Mirada amenazante.",
-	gazeendyou = "Mirada amenazante desaparece de ti.",
-	gazeendother = "Mirada amenazante desaparece de (.+).",
-	gazecast = "¡Mirada amenazante entrante!",
-	gazewatchedbar = "Mirada amenazante: %s",
-	enragegain = "Señor sangriento Mandokir gana Enfurecer.",
-	enragefade = "Enfurecer desaparece de Señor sangriento Mandokir.",
-	enragebar = "Enfurecer",
-	wwgain = "Señor sangriento Mandokir gana Torbellino.",
-	wwloss = "Torbellino desaparece de Señor sangriento Mandokir.",
-	ww = "Torbellino",
-	deathyou = "Has muerto.",
-	deathother = "(.+) ha muerto.",
-	you = "tu",
+		["Possible Gaze"] = true,
+		["Charge"] = true,
+		["Next Whirlwind"] = true,
+	}
+end)
 
-	watched_warning = "¡Estás siendo mirado! Detén todos!",
-	watched_warning_tell = "¡Estás siendo mirado! Detén todos!",
-	watched_warning_other = "¡%s está siendo mirado!",
-	enraged_message = "¡Acabado con Ohgan! Mandokir enfurecido!",
+L:RegisterTranslations("deDE", function()
+	return {
+		ohgan = "Ohgan",
+		cmd = "Mandokir",
 
-	--announce_cmd = "whispers",
-	announce_name = "Susurrar a los jugadores mirados",
-	announce_desc = "Avisa cuando el jefe use Mirada amenazante.\n\n(Require asistente o líder)",
+		engage_trigger = "feed your souls to Hakkar himself",
+		watch_trigger = "(.+)! I'm watching you!",
+		gaze_trigger = "Bloodlord Mandokir beginnt Bedrohlicher Blick zu wirken.",
+		gazeafflictyou = "Ihr seid von Bedrohlicher Blick betroffen.",
+		gazeafflictother = "(.+) ist von Bedrohlicher Blick betroffen.",
+		gazeendyou = "'Bedrohlicher Blick' schwindet von Euch.",
+		gazeendother = "Bedrohlicher Blick schwindet von (.+).",
+		gazecast = "Bedrohlicher Blick kommt!",
+		gazewatchedbar = "Bedrohlicher Blick: %s",
+		enragegain = "Bloodlord Mandokir bekommt 'Wutanfall'.",
+		enragefade = "Wutanfall schwindet von Bloodlord Mandokir.",
+		enragebar = "Wutanfall",
+		wwgain = "Bloodlord Mandokir bekommt 'Wirbelwind'.",
+		wwloss = "Wirbelwind schwindet von Bloodlord Mandokir\.",
+		ww = "Wirbelwind",
+		deathyou = "Du stirbst.",
+		deathother = "(.+) stirbt.",
+		you = "Euch",
 
-	--puticon_cmd = "puticon",
-	puticon_name = "Marcar a los jugadores con Mirada amenazante",
-	puticon_desc = "Marca con un icono el jugador con Mirada amenazante.\n\n(Require asistente o líder)",
+		watched_warning = "Du wirst beobachtet! Stoppen Sie alles!",
+		watched_warning_tell = "You are being watched! Stop everything!",
+		watched_warning_other = "%s wird beobachtet!",
+		enraged_message = "Ohgan ist tot! Mandokir wütend!",
 
-	--gaze_cmd = "gaze",
-	gaze_name = "Alerta de Mirada amenazante",
-	gaze_desc = "Muestra una barra para Mirada amenazante",
+		announce_cmd = "whispers",
+		announce_name = "Warnung, wenn Spieler beobachtet werden",
+		announce_desc = "Warnen, wenn Bloodlord Mandokir wirft Bedrohlicher Blick\n\n(Benötigt Schlachtzugleiter oder Assistent)",
 
-	--whirlwind_cmd = "whirlwind",
-	whirlwind_name = "Alerta de Torbellino",
-	whirlwind_desc = "Muestra barras para Torbellino",
+		puticon_cmd = "puticon",
+		puticon_name = "Schlachtzugsymbol auf die beobachtet Spieler",
+		puticon_desc = "Versetzt eine Schlachtzugsymbol auf der beobachteten Spieler.\n\n(Benötigt Schlachtzugleiter oder Assistent)",
 
-	--enraged_cmd = "enraged",
-	enraged_name = "Alerta de Enfurecer",
-	enraged_desc = "Anuncia cuando tenga Enfurecer el jefe",
+		gaze_cmd = "gaze",
+		gaze_name = "Alarm für Bedrohlicher Blick",
+		gaze_desc = "Zeigt Balken für Bedrohlicher Blick",
 
-	["Possible Gaze"] = "Mirada amenazante Posible",
-	["Charge"] = "Embestir",
-	["Next Whirlwind"] = "Próximo Torbellino",
-} end )
+		whirlwind_cmd = "whirlwind",
+		whirlwind_name = "Alarm für Wirbelwind",
+		whirlwind_desc = "Zeigt Balken für Wirbelwind",
+
+		enraged_cmd = "enraged",
+		enraged_name = "Verkündet Boss' Raserei",
+		enraged_desc = "Lässt dich wissen, wenn Boss härter zuschlägt",
+
+		["Possible Gaze"] = "Mögliches Starren",
+		["Charge"] = "Sturmangriff",
+		["Next Whirlwind"] = "Wirbelwind",
+	}
+end)
+
+L:RegisterTranslations("esES", function()
+	return {
+		ohgan = "Ohgan",
+		--	cmd = "Mandokir",
+
+		engage_trigger = "feed your souls to Hakkar himself",
+		watch_trigger = "(.+)! I'm watching you!",
+		gaze_trigger = "Señor sangriento Mandokir comienza a lanzar Mirada amenazante.",
+		gazeafflictyou = "Sufres de Mirada amenazante.",
+		gazeafflictother = "(.+) sufre de Mirada amenazante.",
+		gazeendyou = "Mirada amenazante desaparece de ti.",
+		gazeendother = "Mirada amenazante desaparece de (.+).",
+		gazecast = "¡Mirada amenazante entrante!",
+		gazewatchedbar = "Mirada amenazante: %s",
+		enragegain = "Señor sangriento Mandokir gana Enfurecer.",
+		enragefade = "Enfurecer desaparece de Señor sangriento Mandokir.",
+		enragebar = "Enfurecer",
+		wwgain = "Señor sangriento Mandokir gana Torbellino.",
+		wwloss = "Torbellino desaparece de Señor sangriento Mandokir.",
+		ww = "Torbellino",
+		deathyou = "Has muerto.",
+		deathother = "(.+) ha muerto.",
+		you = "tu",
+
+		watched_warning = "¡Estás siendo mirado! Detén todos!",
+		watched_warning_tell = "¡Estás siendo mirado! Detén todos!",
+		watched_warning_other = "¡%s está siendo mirado!",
+		enraged_message = "¡Acabado con Ohgan! Mandokir enfurecido!",
+
+		--announce_cmd = "whispers",
+		announce_name = "Susurrar a los jugadores mirados",
+		announce_desc = "Avisa cuando el jefe use Mirada amenazante.\n\n(Require asistente o líder)",
+
+		--puticon_cmd = "puticon",
+		puticon_name = "Marcar a los jugadores con Mirada amenazante",
+		puticon_desc = "Marca con un icono el jugador con Mirada amenazante.\n\n(Require asistente o líder)",
+
+		--gaze_cmd = "gaze",
+		gaze_name = "Alerta de Mirada amenazante",
+		gaze_desc = "Muestra una barra para Mirada amenazante",
+
+		--whirlwind_cmd = "whirlwind",
+		whirlwind_name = "Alerta de Torbellino",
+		whirlwind_desc = "Muestra barras para Torbellino",
+
+		--enraged_cmd = "enraged",
+		enraged_name = "Alerta de Enfurecer",
+		enraged_desc = "Anuncia cuando tenga Enfurecer el jefe",
+
+		["Possible Gaze"] = "Mirada amenazante Posible",
+		["Charge"] = "Embestir",
+		["Next Whirlwind"] = "Próximo Torbellino",
+	}
+end)
 
 module.wipemobs = { L["ohgan"] }
 
@@ -203,14 +208,14 @@ local icon = {
 	gaze = "Spell_Shadow_Charm",
 }
 local syncName = {
-	whirlwind = "MandokirWWStart"..module.revision,
-	whirlwindOver = "MandokirWWStop"..module.revision,
-	enrage = "MandokirEnrageStart"..module.revision,
-	enrageOver = "MandokirEnrageEnd"..module.revision,
-	gazeCast = "MandokirGazeCast"..module.revision,
-	gazeAfflicted = "MandokirGazeAfflict"..module.revision,
-	gazeOver = "MandokirGazeEnd"..module.revision,
-	charge = "MandokirCharge"..module.revision,
+	whirlwind = "MandokirWWStart" .. module.revision,
+	whirlwindOver = "MandokirWWStop" .. module.revision,
+	enrage = "MandokirEnrageStart" .. module.revision,
+	enrageOver = "MandokirEnrageEnd" .. module.revision,
+	gazeCast = "MandokirGazeCast" .. module.revision,
+	gazeAfflicted = "MandokirGazeAfflict" .. module.revision,
+	gazeOver = "MandokirGazeEnd" .. module.revision,
+	charge = "MandokirCharge" .. module.revision,
 }
 
 module:RegisterYellEngage(L["engage_trigger"])
@@ -227,7 +232,7 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event")
-	
+
 	self:ThrottleSync(5, syncName.whirlwind)
 	self:ThrottleSync(5, syncName.whirlwindOver)
 	self:ThrottleSync(5, syncName.enrage)
@@ -253,7 +258,7 @@ end
 
 function module:CHAT_MSG_MONSTER_YELL(msg)
 	local gazetime
-	local _,_,watchedplayer,_ = string.find(msg, L["watch_trigger"])
+	local _, _, watchedplayer, _ = string.find(msg, L["watch_trigger"])
 	if watchedplayer then
 		if self.db.profile.announce then
 			if watchedplayer == UnitName("player") then
@@ -273,8 +278,8 @@ function module:CHAT_MSG_MONSTER_YELL(msg)
 end
 
 function module:Event(msg)
-	local _,_,gazedplayer,_ = string.find(msg, L["gazeafflictother"])
-	local _,_,gazedplayerend,_ = string.find(msg, L["gazeendother"])
+	local _, _, gazedplayer, _ = string.find(msg, L["gazeafflictother"])
+	local _, _, gazedplayerend, _ = string.find(msg, L["gazeendother"])
 	--local _,_,gazeddeathend,_ = string.find(msg, L["deathother"])
 	if msg == L["wwgain"] then
 		self:Sync(syncName.whirlwind)
@@ -291,7 +296,7 @@ function module:Event(msg)
 	elseif msg == L["gaze_trigger"] then
 		self:Sync(syncName.gazeCast)
 	elseif msg == L["gazeafflictyou"] then
-		self:Message(L["gaze_warn"].."you! STOP ALL ACTION!", "Urgent")
+		self:Message(L["gaze_warn"] .. "you! STOP ALL ACTION!", "Urgent")
 		if self.db.profile.sounds then
 			self:Sound("Beware")
 		end
@@ -347,7 +352,7 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		if self.db.profile.puticon then
 			self:RemoveIcon(rest)
 		end
-		self:Bar(L["Possible Gaze"], timer.gaze-8, icon.gaze, true, "red")
+		self:Bar(L["Possible Gaze"], timer.gaze - 8, icon.gaze, true, "red")
 	end
 end
 

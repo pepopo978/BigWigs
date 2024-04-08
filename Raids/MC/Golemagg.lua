@@ -1,37 +1,38 @@
-
 local module, L = BigWigs:ModuleDeclaration("Golemagg the Incinerator", "Molten Core")
 
 module.revision = 30075
 module.enabletrigger = module.translatedName
-module.toggleoptions = {"enrage", "earthquake", "magma", "bosskill"}
-module.wipemobs = {"Core Rager"}
+module.toggleoptions = { "enrage", "earthquake", "magma", "bosskill" }
+module.wipemobs = { "Core Rager" }
 
-L:RegisterTranslations("enUS", function() return {
-	cmd = "Golemagg",
+L:RegisterTranslations("enUS", function()
+	return {
+		cmd = "Golemagg",
 
-	enrage_cmd = "enrage",
-	enrage_name = "Enrage Alert",
-	enrage_desc = "Warn for Enrage",
+		enrage_cmd = "enrage",
+		enrage_name = "Enrage Alert",
+		enrage_desc = "Warn for Enrage",
 
-	earthquake_cmd = "earthquake",
-	earthquake_name = "Earthquake Alert",
-	earthquake_desc = "Warn for Earthquake",
-	
-	magma_cmd = "magma",
-	magma_name = "Magma Splash Alert",
-	magma_desc = "Warn for Magma Splash",
-	
-	
-	trigger_enrage = "Golemagg the Incinerator gains Enrage.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
-	msg_enrage = "Golemagg is Enraged - Casting Earthquakes!",
-	msg_enrageSoon = "Enrage Soon (at 10%) - Earthquake Soon",
-	
-	trigger_earthquake = "Golemagg the Incinerator's Earthquake", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
-	bar_earthquake = "Earthquake",
-	
-	trigger_magmaSplash = "You are afflicted by Magma Splash %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
-	msg_magmaSplash = "Warning - High Magma Splash Stacks: ",
-} end)
+		earthquake_cmd = "earthquake",
+		earthquake_name = "Earthquake Alert",
+		earthquake_desc = "Warn for Earthquake",
+
+		magma_cmd = "magma",
+		magma_name = "Magma Splash Alert",
+		magma_desc = "Warn for Magma Splash",
+
+
+		trigger_enrage = "Golemagg the Incinerator gains Enrage.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+		msg_enrage = "Golemagg is Enraged - Casting Earthquakes!",
+		msg_enrageSoon = "Enrage Soon (at 10%) - Earthquake Soon",
+
+		trigger_earthquake = "Golemagg the Incinerator's Earthquake", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+		bar_earthquake = "Earthquake",
+
+		trigger_magmaSplash = BigWigs.AURAHARMFULSELF_PREFIX .. "Magma Splash %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		msg_magmaSplash = "Warning - High Magma Splash Stacks: ",
+	}
+end)
 
 local timer = {
 	earthquake = 3
@@ -45,27 +46,27 @@ local color = {
 	earthquake = "Orange",
 }
 local syncName = {
-	enrageSoon = "GolemaggEnrageSoon"..module.revision,
-	enrage = "GolemaggEnrage"..module.revision,
-	earthquake = "GolemaggEarthquake"..module.revision,
+	enrageSoon = "GolemaggEnrageSoon" .. module.revision,
+	enrage = "GolemaggEnrage" .. module.revision,
+	earthquake = "GolemaggEarthquake" .. module.revision,
 }
 
 local enrageSoon = nil
 
 function module:OnEnable()
 	--self:RegisterEvent("CHAT_MSG_SAY", "Event") --Debug
-	
+
 	self:RegisterEvent("UNIT_HEALTH")
-	
+
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event") --trigger_enrage
-	
+
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event") --trigger_earthquake
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event") --trigger_earthquake
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event") --trigger_earthquake
-	
+
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event") --trigger_magmaSplash
-	
-	
+
+
 	self:ThrottleSync(10, syncName.enrageSoon)
 	self:ThrottleSync(10, syncName.enrage)
 	self:ThrottleSync(1, syncName.earthquake)
@@ -98,12 +99,12 @@ end
 function module:Event(msg)
 	if msg == L["trigger_enrage"] then
 		self:Sync(syncName.enrage)
-	
+
 	elseif string.find(msg, L["trigger_earthquake"]) then
 		self:Sync(syncName.earthquake)
-	
+
 	elseif string.find(msg, L["trigger_magmaSplash"]) then
-		local _,_, stacks, _ = string.find(msg, L["trigger_magmaSplash"])
+		local _, _, stacks, _ = string.find(msg, L["trigger_magmaSplash"])
 		local stacksNum = tonumber(stacks)
 		if stacksNum >= 12 then
 			self:MagmaSplash(stacksNum)
@@ -111,22 +112,20 @@ function module:Event(msg)
 	end
 end
 
-
 function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.enrageSoon and self.db.profile.enrage then
 		self:EnrageSoon()
 	elseif sync == syncName.enrage and self.db.profile.enrage then
 		self:Enrage()
-	
+
 	elseif sync == syncName.earthquake and self.db.profile.earthquake then
 		self:Earthquake()
 	end
 end
 
-
 function module:EnrageSoon()
 	enrageSoon = true
-	
+
 	if UnitClass("Player") == "Warrior" or UnitClass("Player") == "Rogue" or UnitClass("Player") == "Paladin" or UnitClass("Player") == "Shaman" or UnitClass("Player") == "Druid" then
 		self:Message(L["msg_enrageSoon"], "Attention", false, nil, false)
 	end
@@ -134,7 +133,7 @@ end
 
 function module:Enrage()
 	enrageSoon = true
-	
+
 	self:WarningSign(icon.enrage, 1)
 	self:Message(L["msg_enrage"], "Urgent", false, nil, false)
 	self:Sound("Beware")
@@ -146,6 +145,6 @@ function module:Earthquake()
 end
 
 function module:MagmaSplash(rest)
-	self:Message(L["msg_magmaSplash"]..rest)
+	self:Message(L["msg_magmaSplash"] .. rest)
 	self:WarningSign(icon.magmaSplash, 0.7)
 end

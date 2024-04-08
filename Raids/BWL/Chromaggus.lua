@@ -1,239 +1,244 @@
-
 local module, L = BigWigs:ModuleDeclaration("Chromaggus", "Blackwing Lair")
 
 module.revision = 30037
 module.enabletrigger = module.translatedName
-module.toggleoptions = {"bigicon", "enrage", "frenzy", "breath", "breathcd", "vulnerability", "bosskill"}
+module.toggleoptions = { "bigicon", "enrage", "frenzy", "breath", "breathcd", "vulnerability", "bosskill" }
 
-L:RegisterTranslations("enUS", function() return {
-	cmd = "Chromaggus",
+L:RegisterTranslations("enUS", function()
+	return {
+		cmd = "Chromaggus",
 
-	enrage_cmd = "enrage",
-	enrage_name = "Enrage",
-	enrage_desc = "Warn before the Enrage phase at 20%.",
+		enrage_cmd = "enrage",
+		enrage_name = "Enrage",
+		enrage_desc = "Warn before the Enrage phase at 20%.",
 
-	frenzy_cmd = "frenzy",
-	frenzy_name = "Frenzy",
-	frenzy_desc = "Warn for Frenzy.",
+		frenzy_cmd = "frenzy",
+		frenzy_name = "Frenzy",
+		frenzy_desc = "Warn for Frenzy.",
 
-	breath_cmd = "breath",
-	breath_name = "Breaths",
-	breath_desc = "Warn for Breaths.",
+		breath_cmd = "breath",
+		breath_name = "Breaths",
+		breath_desc = "Warn for Breaths.",
 
-	breathcd_cmd = "breathcd",
-	breathcd_name = "Breath Voice Countdown",
-	breathcd_desc = "Voice warning for the Breaths.",
+		breathcd_cmd = "breathcd",
+		breathcd_name = "Breath Voice Countdown",
+		breathcd_desc = "Voice warning for the Breaths.",
 
-	vulnerability_cmd = "vulnerability",
-	vulnerability_name = "Vulnerability",
-	vulnerability_desc = "Warn for Vulnerability changes.",
-	
-	bigicon_cmd = "bigicon",
-	bigicon_name = "Bronze big icon alert",
-	bigicon_desc = "Shows a big icon when you have bronze",
-	
-	breath_trigger = "Chromaggus begins to cast (.+)\.",
-	vulnerability_direct_test = "^[%w]+[%s's]* ([%w%s:]+) ([%w]+) Chromaggus for ([%d]+) ([%w]+) damage%.[%s%(]*([%d]*)", -- [Fashu's] [Firebolt] [hits] Battleguard Sartura for [44] [Fire] damage. ([14] resisted)
-	vulnerability_dots_test = "^Chromaggus suffers ([%d]+) ([%w]+) damage from [%w]+[%s's]* ([%w%s:]+)%.[%s%(]*([%d]*)",
-	frenzy_trigger = "goes into a killing frenzy",
-	frenzyfade_trigger = "Frenzy fades from Chromaggus\.",
-	vulnerability_trigger = "flinches as its skin shimmers.",
+		vulnerability_cmd = "vulnerability",
+		vulnerability_name = "Vulnerability",
+		vulnerability_desc = "Warn for Vulnerability changes.",
 
-	hit = "hits",
-	crit = "crits",
+		bigicon_cmd = "bigicon",
+		bigicon_name = "Bronze big icon alert",
+		bigicon_desc = "Shows a big icon when you have bronze",
 
-	firstbreaths_warning = "Breath in 5 seconds!",
-	breath_warning = "%s in 5 seconds!",
-	breath_message = "%s is casting!",
-	vulnerability_message = "Vulnerability: %s!",
-	vulnerability_warning = "Spell vulnerability changed!",
-	frenzy_message = "Frenzy! TRANQ NOW!",
-	enrage_warning = "Enrage soon!",
+		breath_trigger = "Chromaggus begins to cast (.+)\.",
+		vulnerability_direct_test = "^[%w]+[%s's]* ([%w%s:]+) ([%w]+) Chromaggus for ([%d]+) ([%w]+) damage%.[%s%(]*([%d]*)", -- [Fashu's] [Firebolt] [hits] Battleguard Sartura for [44] [Fire] damage. ([14] resisted)
+		vulnerability_dots_test = "^Chromaggus suffers ([%d]+) ([%w]+) damage from [%w]+[%s's]* ([%w%s:]+)%.[%s%(]*([%d]*)",
+		frenzy_trigger = "goes into a killing frenzy",
+		frenzyfade_trigger = "Frenzy fades from Chromaggus\.",
+		vulnerability_trigger = "flinches as its skin shimmers.",
 
-	breath1 = "Time Lapse",
-	breath2 = "Corrosive Acid",
-	breath3 = "Ignite Flesh",
-	breath4 = "Incinerate",
-	breath5 = "Frost Burn",
+		hit = "hits",
+		crit = "crits",
 
-	breathcolor1 = "black",
-	breathcolor2 = "green",
-	breathcolor3 = "orange",
-	breathcolor4 = "red",
-	breathcolor5 = "blue",
+		firstbreaths_warning = "Breath in 5 seconds!",
+		breath_warning = "%s in 5 seconds!",
+		breath_message = "%s is casting!",
+		vulnerability_message = "Vulnerability: %s!",
+		vulnerability_warning = "Spell vulnerability changed!",
+		frenzy_message = "Frenzy! TRANQ NOW!",
+		enrage_warning = "Enrage soon!",
 
-	icon1 = "Spell_Arcane_PortalOrgrimmar",
-	icon2 = "Spell_Nature_Acid_01",
-	icon3 = "Spell_Fire_Fire",
-	icon4 = "Spell_Shadow_ChillTouch",
-	icon5 = "Spell_Frost_ChillingBlast",
+		breath1 = "Time Lapse",
+		breath2 = "Corrosive Acid",
+		breath3 = "Ignite Flesh",
+		breath4 = "Incinerate",
+		breath5 = "Frost Burn",
 
-	castingbar = "Cast %s",
-	frenzy_bar = "Frenzy",
-	frenzy_Nextbar = "Next Frenzy",
-	first_bar = "First Breath",
-	second_bar = "Second Breath",
-	vuln_bar = "%s Vulnerability",
+		breathcolor1 = "black",
+		breathcolor2 = "green",
+		breathcolor3 = "orange",
+		breathcolor4 = "red",
+		breathcolor5 = "blue",
 
-	fire = "Fire",
-	frost = "Frost",
-	shadow = "Shadow",
-	nature = "Nature",
-	arcane = "Arcane",
+		icon1 = "Spell_Arcane_PortalOrgrimmar",
+		icon2 = "Spell_Nature_Acid_01",
+		icon3 = "Spell_Fire_Fire",
+		icon4 = "Spell_Shadow_ChillTouch",
+		icon5 = "Spell_Frost_ChillingBlast",
 
-	curseofdoom = "Curse of Doom",
-	ignite = "Ignite",
-	starfire = "Starfire",
-	thunderfury = "Thunderfury",
-	
-	bronze = "You are afflicted by Brood Affliction: Bronze.",	
-} end )
+		castingbar = "Cast %s",
+		frenzy_bar = "Frenzy",
+		frenzy_Nextbar = "Next Frenzy",
+		first_bar = "First Breath",
+		second_bar = "Second Breath",
+		vuln_bar = "%s Vulnerability",
 
-L:RegisterTranslations("esES", function() return {
-	--cmd = "Chromaggus",
+		fire = "Fire",
+		frost = "Frost",
+		shadow = "Shadow",
+		nature = "Nature",
+		arcane = "Arcane",
 
-	--enrage_cmd = "enrage",
-	enrage_name = "Enfurecer",
-	enrage_desc = "Avisa antes de la fase de Enfurecer a 20%.",
+		curseofdoom = "Curse of Doom",
+		ignite = "Ignite",
+		starfire = "Starfire",
+		thunderfury = "Thunderfury",
 
-	--frenzy_cmd = "frenzy",
-	frenzy_name = "Frenesí",
-	frenzy_desc = "Avisa para Frenesí.",
+		bronze = BigWigs.AURAHARMFULSELF_PREFIX .. "Brood Affliction: Bronze.",
+	}
+end)
 
-	--breath_cmd = "breath",
-	breath_name = "Alientos",
-	breath_desc = "Avisa para Alientos.",
+L:RegisterTranslations("esES", function()
+	return {
+		--cmd = "Chromaggus",
 
-	--breathcd_cmd = "breathcd",
-	breathcd_name = "Cuenta de Voz de Aliento",
-	breathcd_desc = "Aviso de Voz para los Alientos.",
+		--enrage_cmd = "enrage",
+		enrage_name = "Enfurecer",
+		enrage_desc = "Avisa antes de la fase de Enfurecer a 20%.",
 
-	--vulnerability_cmd = "vulnerability",
-	vulnerability_name = "Vulnerabilidad",
-	vulnerability_desc = "Avisa para cambios de Vulnerabilidad.",
+		--frenzy_cmd = "frenzy",
+		frenzy_name = "Frenesí",
+		frenzy_desc = "Avisa para Frenesí.",
 
-	breath_trigger = "Chromaggus comienza a lanzar (.+)\.",
-	vulnerability_direct_test = "([%w%s:]+) de ^[%w]+[%s]* inflige ([%d]+) puntos de daño de ([%w]+) a Chromaggus. [%s%(]*([%d]* resistido)", -- [Fashu's] [Firebolt] [hits] Battleguard Sartura for [44] [Fire] damage. ([14] resisted)
-	vulnerability_dots_test = "^Chromaggus sufre ([%d]+) ([%w]+) daño de [%w]+[%s]* ([%w%s:]+)%.[%s%(]*([%d]*)",
-	frenzy_trigger = "entra frenesí",
-	frenzyfade_trigger = "Frenesí desaparece de Chromaggus\.",
-	vulnerability_trigger = "flinches as its skin shimmers.", -- ***
+		--breath_cmd = "breath",
+		breath_name = "Alientos",
+		breath_desc = "Avisa para Alientos.",
 
-	hit = "golpea",
-	crit = "golpe crítico",
+		--breathcd_cmd = "breathcd",
+		breathcd_name = "Cuenta de Voz de Aliento",
+		breathcd_desc = "Aviso de Voz para los Alientos.",
 
-	firstbreaths_warning = "¡Aliento en 5 segundos!",
-	breath_warning = "¡%s en 5 segundos!",
-	breath_message = "¡Está lanzando %s!",
-	vulnerability_message = "¡Vulnerabilidad: %s!",
-	vulnerability_warning = "¡Vulnerabilidad de Hechizo ha cambiado!",
-	frenzy_message = "¡Frenesí! Disparo tranquilizante AHORA!",
-	enrage_warning = "¡Enfurecer pronto!",
+		--vulnerability_cmd = "vulnerability",
+		vulnerability_name = "Vulnerabilidad",
+		vulnerability_desc = "Avisa para cambios de Vulnerabilidad.",
 
-	breath1 = "Lapso de tiempo",
-	breath2 = "Ácido corrosivo",
-	breath3 = "Ignición de la carne",
-	breath4 = "Incinerar",
-	breath5 = "Quemadura de Escarcha",
+		breath_trigger = "Chromaggus comienza a lanzar (.+)\.",
+		vulnerability_direct_test = "([%w%s:]+) de ^[%w]+[%s]* inflige ([%d]+) puntos de daño de ([%w]+) a Chromaggus. [%s%(]*([%d]* resistido)", -- [Fashu's] [Firebolt] [hits] Battleguard Sartura for [44] [Fire] damage. ([14] resisted)
+		vulnerability_dots_test = "^Chromaggus sufre ([%d]+) ([%w]+) daño de [%w]+[%s]* ([%w%s:]+)%.[%s%(]*([%d]*)",
+		frenzy_trigger = "entra frenesí",
+		frenzyfade_trigger = "Frenesí desaparece de Chromaggus\.",
+		vulnerability_trigger = "flinches as its skin shimmers.", -- ***
 
-	breathcolor1 = "negro",
-	breathcolor2 = "verde",
-	breathcolor3 = "naranja",
-	breathcolor4 = "rojo",
-	breathcolor5 = "azul",
+		hit = "golpea",
+		crit = "golpe crítico",
 
-	icon1 = "Spell_Arcane_PortalOrgrimmar",
-	icon2 = "Spell_Nature_Acid_01",
-	icon3 = "Spell_Fire_Fire",
-	icon4 = "Spell_Shadow_ChillTouch",
-	icon5 = "Spell_Frost_ChillingBlast",
+		firstbreaths_warning = "¡Aliento en 5 segundos!",
+		breath_warning = "¡%s en 5 segundos!",
+		breath_message = "¡Está lanzando %s!",
+		vulnerability_message = "¡Vulnerabilidad: %s!",
+		vulnerability_warning = "¡Vulnerabilidad de Hechizo ha cambiado!",
+		frenzy_message = "¡Frenesí! Disparo tranquilizante AHORA!",
+		enrage_warning = "¡Enfurecer pronto!",
 
-	castingbar = "Lanza %s",
-	frenzy_bar = "Frenesí",
-	frenzy_Nextbar = "Próximo Frenesí",
-	first_bar = "Primer Aliento",
-	second_bar = "Segundo Aliento",
-	vuln_bar = "%s Vulnerabilidad",
+		breath1 = "Lapso de tiempo",
+		breath2 = "Ácido corrosivo",
+		breath3 = "Ignición de la carne",
+		breath4 = "Incinerar",
+		breath5 = "Quemadura de Escarcha",
 
-	fire = "Fuego",
-	frost = "Escharcha",
-	shadow = "Sombras",
-	nature = "Naturaleza",
-	arcane = "Arcano",
+		breathcolor1 = "negro",
+		breathcolor2 = "verde",
+		breathcolor3 = "naranja",
+		breathcolor4 = "rojo",
+		breathcolor5 = "azul",
 
-	curseofdoom = "Maldición del apocalipsis",
-	ignite = "Ignición",
-	starfire = "Fuego Estelar",
-	thunderfury = "Furiatrueno",
-} end )
+		icon1 = "Spell_Arcane_PortalOrgrimmar",
+		icon2 = "Spell_Nature_Acid_01",
+		icon3 = "Spell_Fire_Fire",
+		icon4 = "Spell_Shadow_ChillTouch",
+		icon5 = "Spell_Frost_ChillingBlast",
 
-L:RegisterTranslations("deDE", function() return {
-	enrage_name = "Wutanfall",
-	enrage_desc = "Warnung, wenn Chromaggus w\195\188tend wird (ab 20%).",
+		castingbar = "Lanza %s",
+		frenzy_bar = "Frenesí",
+		frenzy_Nextbar = "Próximo Frenesí",
+		first_bar = "Primer Aliento",
+		second_bar = "Segundo Aliento",
+		vuln_bar = "%s Vulnerabilidad",
 
-	frenzy_name = "Raserei",
-	frenzy_desc = "Warnung, wenn Chromaggus in Raserei ger\195\164t.",
+		fire = "Fuego",
+		frost = "Escharcha",
+		shadow = "Sombras",
+		nature = "Naturaleza",
+		arcane = "Arcano",
 
-	breath_name = "Atem",
-	breath_desc = "Warnung, wenn Chromaggus seinen Atem wirkt.",
+		curseofdoom = "Maldición del apocalipsis",
+		ignite = "Ignición",
+		starfire = "Fuego Estelar",
+		thunderfury = "Furiatrueno",
+	}
+end)
 
-	vulnerability_name = "Zauber-Verwundbarkeiten",
-	vulnerability_desc = "Warnung, wenn Chromagguss Zauber-Verwundbarkeit sich \195\164ndert.",
+L:RegisterTranslations("deDE", function()
+	return {
+		enrage_name = "Wutanfall",
+		enrage_desc = "Warnung, wenn Chromaggus w\195\188tend wird (ab 20%).",
 
-	breath_trigger = "^Chromaggus beginnt (.+) zu wirken\.",
-	vulnerability_direct_test = "^(.+) trifft Chromaggus(.+) ([%d]+) ([%w]+)%.[%s%(]*([%d]*)",
-	vulnerability_dots_test = "^Chromaggus erleidet ([%d]+) ([%w]+)schaden[%svon]*[%s%w]* %(durch ([%w%s:]+)%)%.[%s%(]*([%d]*)",
-	frenzy_trigger = "Chromaggus wird mörderisch wahnsinnig!",
-	frenzyfade_trigger = "Raserei schwindet von Chromaggus\.",
-	vulnerability_trigger = "Chromaggus weicht zurück, als die Haut schimmert.",
+		frenzy_name = "Raserei",
+		frenzy_desc = "Warnung, wenn Chromaggus in Raserei ger\195\164t.",
 
-	hit = "trifft",
-	crit = "kritisch",
+		breath_name = "Atem",
+		breath_desc = "Warnung, wenn Chromaggus seinen Atem wirkt.",
 
-	firstbreaths_warning = "Atem in 5 Sekunden!",
-	breath_warning = "%s in 5 Sekunden!",
-	breath_message = "Chromaggus wirkt: %s Atem!",
-	vulnerability_message = "Zauber-Verwundbarkeit: %s",
-	vulnerability_warning = "Zauber-Verwundbarkeit ge\195\164ndert!",
-	frenzy_message = "Raserei - Einlullender Schuss!",
-	enrage_warning = "Wutanfall steht kurz bevor!",
+		vulnerability_name = "Zauber-Verwundbarkeiten",
+		vulnerability_desc = "Warnung, wenn Chromagguss Zauber-Verwundbarkeit sich \195\164ndert.",
 
-	breath1 = "Zeitraffer",
-	breath2 = "\195\132tzende S\195\164ure",
-	breath3 = "Fleisch entz\195\188nden",
-	breath4 = "Verbrennen",
-	breath5 = "Frostbeulen",
+		breath_trigger = "^Chromaggus beginnt (.+) zu wirken\.",
+		vulnerability_direct_test = "^(.+) trifft Chromaggus(.+) ([%d]+) ([%w]+)%.[%s%(]*([%d]*)",
+		vulnerability_dots_test = "^Chromaggus erleidet ([%d]+) ([%w]+)schaden[%svon]*[%s%w]* %(durch ([%w%s:]+)%)%.[%s%(]*([%d]*)",
+		frenzy_trigger = "Chromaggus wird mörderisch wahnsinnig!",
+		frenzyfade_trigger = "Raserei schwindet von Chromaggus\.",
+		vulnerability_trigger = "Chromaggus weicht zurück, als die Haut schimmert.",
 
-	breathcolor1 = "black",
-	breathcolor2 = "green",
-	breathcolor3 = "orange",
-	breathcolor4 = "red",
-	breathcolor5 = "blue",
+		hit = "trifft",
+		crit = "kritisch",
 
-	icon1 = "Spell_Arcane_PortalOrgrimmar",
-	icon2 = "Spell_Nature_Acid_01",
-	icon3 = "Spell_Fire_Fire",
-	icon4 = "Spell_Shadow_ChillTouch",
-	icon5 = "Spell_Frost_ChillingBlast",
+		firstbreaths_warning = "Atem in 5 Sekunden!",
+		breath_warning = "%s in 5 Sekunden!",
+		breath_message = "Chromaggus wirkt: %s Atem!",
+		vulnerability_message = "Zauber-Verwundbarkeit: %s",
+		vulnerability_warning = "Zauber-Verwundbarkeit ge\195\164ndert!",
+		frenzy_message = "Raserei - Einlullender Schuss!",
+		enrage_warning = "Wutanfall steht kurz bevor!",
 
-	castingbar = "Wirkt %s",
-	frenzy_bar = "Raserei",
-	frenzy_Nextbar = "Nächste Raserei",
-	first_bar = "Erster Atem",
-	second_bar = "Zweite Atem",
-	vuln_bar = "%s Verwundbarkeit",
+		breath1 = "Zeitraffer",
+		breath2 = "\195\132tzende S\195\164ure",
+		breath3 = "Fleisch entz\195\188nden",
+		breath4 = "Verbrennen",
+		breath5 = "Frostbeulen",
 
-	fire = "Feuer",
-	frost = "Frost",
-	shadow = "Schatten",
-	nature = "Natur",
-	arcane = "Arkan",
+		breathcolor1 = "black",
+		breathcolor2 = "green",
+		breathcolor3 = "orange",
+		breathcolor4 = "red",
+		breathcolor5 = "blue",
 
-	curseofdoom = "Fluch der Verdammnis",
-	ignite = "Entz\195\188nden",
-	starfire = "Sternenfeuer",
-	thunderfury = "Zorn der Winde",
-} end )
+		icon1 = "Spell_Arcane_PortalOrgrimmar",
+		icon2 = "Spell_Nature_Acid_01",
+		icon3 = "Spell_Fire_Fire",
+		icon4 = "Spell_Shadow_ChillTouch",
+		icon5 = "Spell_Frost_ChillingBlast",
+
+		castingbar = "Wirkt %s",
+		frenzy_bar = "Raserei",
+		frenzy_Nextbar = "Nächste Raserei",
+		first_bar = "Erster Atem",
+		second_bar = "Zweite Atem",
+		vuln_bar = "%s Verwundbarkeit",
+
+		fire = "Feuer",
+		frost = "Frost",
+		shadow = "Schatten",
+		nature = "Natur",
+		arcane = "Arkan",
+
+		curseofdoom = "Fluch der Verdammnis",
+		ignite = "Entz\195\188nden",
+		starfire = "Sternenfeuer",
+		thunderfury = "Zorn der Winde",
+	}
+end)
 
 local timer = {
 	firstBreath = 30,
@@ -242,7 +247,7 @@ local timer = {
 	breathCast = 2,
 	frenzy = 8,
 	nextFrenzy = 15,
-	vulnerability = 20,--was 45, changed to 20 in early dec 2023 patch
+	vulnerability = 20, --was 45, changed to 20 in early dec 2023 patch
 }
 local icon = {
 	unknown = "INV_Misc_QuestionMark",
@@ -254,12 +259,12 @@ local icon = {
 	frenzy = "Ability_Druid_ChallangingRoar",
 	tranquil = "Spell_Nature_Drowsy",
 	vulnerability = "Spell_Shadow_BlackPlague",
-	bronze =  "inv_misc_head_dragon_bronze",
+	bronze = "inv_misc_head_dragon_bronze",
 }
 local syncName = {
-	breath = "ChromaggusBreath"..module.revision,
-	frenzy = "ChromaggusFrenzyStart"..module.revision,
-	frenzyOver = "ChromaggusFrenzyStop"..module.revision,
+	breath = "ChromaggusBreath" .. module.revision,
+	frenzy = "ChromaggusFrenzyStart" .. module.revision,
+	frenzyOver = "ChromaggusFrenzyStop" .. module.revision,
 }
 
 local lastFrenzy = 0
@@ -282,7 +287,7 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE", "PlayerDamageEvents")
 	self:RegisterEvent("UNIT_HEALTH")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")
-	
+
 	self:ThrottleSync(10, "ChromaggusEngage")
 	self:ThrottleSync(25, syncName.breath)
 	self:ThrottleSync(5, syncName.frenzy)
@@ -299,20 +304,20 @@ end
 
 function module:OnEngage()
 	if self.db.profile.breath then
-		local firstBarName  = L["first_bar"]
-		local firstBarMSG   = L["firstbreaths_warning"]
+		local firstBarName = L["first_bar"]
+		local firstBarMSG = L["firstbreaths_warning"]
 		local secondBarName = L["second_bar"]
-		local secondBarMSG  = L["firstbreaths_warning"]
+		local secondBarMSG = L["firstbreaths_warning"]
 		if table.getn(breathCache) == 2 then
 			-- if we have 2 breaths cached this session means we have wiped already and that after discovering the two breath types
-			firstBarName  = string.format(L["castingbar"], breathCache[1])
-			firstBarMSG   = string.format(L["breath_message"], breathCache[1])
+			firstBarName = string.format(L["castingbar"], breathCache[1])
+			firstBarMSG = string.format(L["breath_message"], breathCache[1])
 			secondBarName = string.format(L["castingbar"], breathCache[2])
-			secondBarMSG  = string.format(L["breath_message"], breathCache[2])
+			secondBarMSG = string.format(L["breath_message"], breathCache[2])
 		elseif table.getn(breathCache) == 1 then
 			-- we wiped before but know at least the first breath
-			firstBarName  = string.format(L["castingbar"], breathCache[1])
-			firstBarMSG   = string.format(L["breath_message"], breathCache[1])
+			firstBarName = string.format(L["castingbar"], breathCache[1])
+			firstBarMSG = string.format(L["breath_message"], breathCache[1])
 		end
 		self:DelayedMessage(timer.firstBreath - 5, firstBarMSG, "Attention", nil, nil, true)
 		self:Bar(firstBarName, timer.firstBreath, icon.unknown, true, "cyan")
@@ -341,7 +346,7 @@ end
 function module:OnDisengage()
 end
 
-function module:UNIT_HEALTH( msg )
+function module:UNIT_HEALTH(msg)
 	if self.db.profile.enrage and UnitName(msg) == module.translatedName then
 		local health = UnitHealth(msg)
 		if health > 15 and health <= 20 and not twenty then
@@ -353,13 +358,13 @@ function module:UNIT_HEALTH( msg )
 	end
 end
 
-function module:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE( msg )
-	local _,_, spellName = string.find(msg, L["breath_trigger"])
+function module:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE(msg)
+	local _, _, spellName = string.find(msg, L["breath_trigger"])
 	if spellName then
 		local breath = L:HasReverseTranslation(spellName) and L:GetReverseTranslation(spellName) or nil
 		if breath then
 			breath = string.sub(breath, -1)
-			self:Sync(syncName.breath .. " " ..breath)
+			self:Sync(syncName.breath .. " " .. breath)
 		end
 	end
 end
@@ -387,13 +392,15 @@ function module:CHAT_MSG_SPELL_AURA_GONE_OTHER(msg)
 end
 
 function module:CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE(msg)
-	if not self.db.profile.vulnerability then return end
+	if not self.db.profile.vulnerability then
+		return
+	end
 	if not vulnerability then
 		local _, _, dmg, school, userspell, partial = string.find(msg, L["vulnerability_dots_test"])
 		if dmg and school and userspell then
 			if school == L["arcane"] then
 				if partial and partial ~= "" then
-					if tonumber(dmg)+tonumber(partial) >= 250 then
+					if tonumber(dmg) + tonumber(partial) >= 250 then
 						self:IdentifyVulnerability(school)
 					end
 				else
@@ -403,7 +410,7 @@ function module:CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE(msg)
 				end
 			elseif school == L["fire"] and not string.find(userspell, L["ignite"]) then
 				if partial and partial ~= "" then
-					if tonumber(dmg)+tonumber(partial) >= 400 then
+					if tonumber(dmg) + tonumber(partial) >= 400 then
 						self:IdentifyVulnerability(school)
 					end
 				else
@@ -413,7 +420,7 @@ function module:CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE(msg)
 				end
 			elseif school == L["nature"] then
 				if partial and partial ~= "" then
-					if tonumber(dmg)+tonumber(partial) >= 300 then
+					if tonumber(dmg) + tonumber(partial) >= 300 then
 						self:IdentifyVulnerability(school)
 					end
 				else
@@ -424,7 +431,7 @@ function module:CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE(msg)
 			elseif school == L["shadow"] then
 				if string.find(userspell, L["curseofdoom"]) then
 					if partial and partial ~= "" then
-						if tonumber(dmg)+tonumber(partial) >= 3000 then
+						if tonumber(dmg) + tonumber(partial) >= 3000 then
 							self:IdentifyVulnerability(school)
 						end
 					else
@@ -434,7 +441,7 @@ function module:CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE(msg)
 					end
 				else
 					if partial and partial ~= "" then
-						if tonumber(dmg)+tonumber(partial) >= 500 then
+						if tonumber(dmg) + tonumber(partial) >= 500 then
 							self:IdentifyVulnerability(school)
 						end
 					else
@@ -449,7 +456,9 @@ function module:CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE(msg)
 end
 
 function module:PlayerDamageEvents(msg)
-	if not self.db.profile.vulnerability then return end
+	if not self.db.profile.vulnerability then
+		return
+	end
 	if not vulnerability then
 		local _, _, userspell, stype, dmg, school, partial = string.find(msg, L["vulnerability_direct_test"])
 		-- "^[%w]+[%s's]* ([%w%s:]+) ([%w]+) Chromaggus for ([%d]+) ([%w]+) damage%.[%s%(]*([%d]*)"
@@ -474,7 +483,7 @@ function module:PlayerDamageEvents(msg)
 			if school == L["arcane"] then
 				if string.find(userspell, L["starfire"]) then
 					if partial and partial ~= "" then
-						if (tonumber(dmg)+tonumber(partial) >= 800 and stype == L["hit"]) or (tonumber(dmg)+tonumber(partial) >= 1200 and stype == L["crit"]) then
+						if (tonumber(dmg) + tonumber(partial) >= 800 and stype == L["hit"]) or (tonumber(dmg) + tonumber(partial) >= 1200 and stype == L["crit"]) then
 							self:IdentifyVulnerability(school)
 						end
 					else
@@ -484,7 +493,7 @@ function module:PlayerDamageEvents(msg)
 					end
 				else
 					if partial and partial ~= "" then
-						if (tonumber(dmg)+tonumber(partial) >= 600 and stype == L["hit"]) or (tonumber(dmg)+tonumber(partial) >= 1200 and stype == L["crit"]) then
+						if (tonumber(dmg) + tonumber(partial) >= 600 and stype == L["hit"]) or (tonumber(dmg) + tonumber(partial) >= 1200 and stype == L["crit"]) then
 							self:IdentifyVulnerability(school)
 						end
 					else
@@ -495,7 +504,7 @@ function module:PlayerDamageEvents(msg)
 				end
 			elseif school == L["fire"] then
 				if partial and partial ~= "" then
-					if (tonumber(dmg)+tonumber(partial) >= 1300 and stype == L["hit"]) or (tonumber(dmg)+tonumber(partial) >= 2600 and stype == L["crit"]) then
+					if (tonumber(dmg) + tonumber(partial) >= 1300 and stype == L["hit"]) or (tonumber(dmg) + tonumber(partial) >= 2600 and stype == L["crit"]) then
 						self:IdentifyVulnerability(school)
 					end
 				else
@@ -505,7 +514,7 @@ function module:PlayerDamageEvents(msg)
 				end
 			elseif school == L["frost"] then
 				if partial and partial ~= "" then
-					if (tonumber(dmg)+tonumber(partial) >= 800 and stype == L["hit"])	or (tonumber(dmg)+tonumber(partial) >= 1600 and stype == L["crit"]) then
+					if (tonumber(dmg) + tonumber(partial) >= 800 and stype == L["hit"]) or (tonumber(dmg) + tonumber(partial) >= 1600 and stype == L["crit"]) then
 						self:IdentifyVulnerability(school)
 					end
 				else
@@ -516,7 +525,7 @@ function module:PlayerDamageEvents(msg)
 			elseif school == L["nature"] then
 				if string.find(userspell, L["thunderfury"]) then
 					if partial and partial ~= "" then
-						if (tonumber(dmg)+tonumber(partial) >= 800 and stype == L["hit"]) or (tonumber(dmg)+tonumber(partial) >= 1200 and stype == L["crit"]) then
+						if (tonumber(dmg) + tonumber(partial) >= 800 and stype == L["hit"]) or (tonumber(dmg) + tonumber(partial) >= 1200 and stype == L["crit"]) then
 							self:IdentifyVulnerability(school)
 						end
 					else
@@ -526,18 +535,18 @@ function module:PlayerDamageEvents(msg)
 					end
 				else
 					if partial and partial ~= "" then
-						if (tonumber(dmg)+tonumber(partial) >= 900 and stype == L["hit"]) or (tonumber(dmg)+tonumber(partial) >= 1800 and stype == L["crit"]) then
+						if (tonumber(dmg) + tonumber(partial) >= 900 and stype == L["hit"]) or (tonumber(dmg) + tonumber(partial) >= 1800 and stype == L["crit"]) then
 							self:IdentifyVulnerability(school)
 						end
 					else
-						if (tonumber(dmg) >= 900 and stype == L["hit"]) or (tonumber(dmg)>= 1800 and stype == L["crit"]) then
+						if (tonumber(dmg) >= 900 and stype == L["hit"]) or (tonumber(dmg) >= 1800 and stype == L["crit"]) then
 							self:IdentifyVulnerability(school)
 						end
 					end
 				end
 			elseif school == L["shadow"] then
 				if partial and partial ~= "" then
-					if (tonumber(dmg)+tonumber(partial) >= 1700 and stype == L["hit"]) or (tonumber(dmg)+tonumber(partial) >= 3400 and stype == L["crit"]) then
+					if (tonumber(dmg) + tonumber(partial) >= 1700 and stype == L["hit"]) or (tonumber(dmg) + tonumber(partial) >= 3400 and stype == L["crit"]) then
 						self:IdentifyVulnerability(school)
 					end
 				else
@@ -558,24 +567,26 @@ end
 
 function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.breath and self.db.profile.breath then
-		local spellName = L:HasTranslation("breath"..rest) and L["breath"..rest] or nil
-		if not spellName then return end
-		if table.getn(breathCache) < 2 then
-			breathCache[table.getn(breathCache)+1] = spellName
+		local spellName = L:HasTranslation("breath" .. rest) and L["breath" .. rest] or nil
+		if not spellName then
+			return
 		end
-		local b = "breath"..rest
-		self:RemoveBar(L["icon"..rest]) -- remove timer bar
-		self:Bar(string.format( L["castingbar"], spellName), timer.breathCast, L["icon"..rest]) -- show cast bar
+		if table.getn(breathCache) < 2 then
+			breathCache[table.getn(breathCache) + 1] = spellName
+		end
+		local b = "breath" .. rest
+		self:RemoveBar(L["icon" .. rest]) -- remove timer bar
+		self:Bar(string.format(L["castingbar"], spellName), timer.breathCast, L["icon" .. rest]) -- show cast bar
 		self:Message(string.format(L["breath_message"], spellName), "Important")
 
 		self:DelayedMessage(timer.breathInterval - 5, string.format(L["breath_warning"], spellName), "Important", nil, nil, true)
-		self:DelayedBar(timer.breathCast, spellName, timer.breathInterval, L["icon"..rest], true, L["breathcolor"..rest]) -- delayed timer bar
+		self:DelayedBar(timer.breathCast, spellName, timer.breathInterval, L["icon" .. rest], true, L["breathcolor" .. rest]) -- delayed timer bar
 
 		if self.db.profile.breathcd then
-			self:DelayedSound(timer.breathInterval+timer.breathCast - 10, "Ten", spellName)
-			self:DelayedSound(timer.breathInterval+timer.breathCast - 3, "Three", spellName)
-			self:DelayedSound(timer.breathInterval+timer.breathCast - 2, "Two", spellName)
-			self:DelayedSound(timer.breathInterval+timer.breathCast - 1, "One", spellName)
+			self:DelayedSound(timer.breathInterval + timer.breathCast - 10, "Ten", spellName)
+			self:DelayedSound(timer.breathInterval + timer.breathCast - 3, "Three", spellName)
+			self:DelayedSound(timer.breathInterval + timer.breathCast - 2, "Two", spellName)
+			self:DelayedSound(timer.breathInterval + timer.breathCast - 1, "One", spellName)
 		end
 
 	elseif sync == syncName.frenzy then
@@ -603,8 +614,12 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 end
 
 function module:IdentifyVulnerability(school)
-	if not self.db.profile.vulnerability or not type(school) == "string" then return end
-	if (lastVuln + 5) > GetTime() then return end -- 5 seconds delay
+	if not self.db.profile.vulnerability or not type(school) == "string" then
+		return
+	end
+	if (lastVuln + 5) > GetTime() then
+		return
+	end -- 5 seconds delay
 
 	vulnerability = school
 	self:Message(format(L["vulnerability_message"], school), "Positive")

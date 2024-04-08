@@ -92,7 +92,7 @@ L:RegisterTranslations("enUS", function()
 		invulnerable1 = "Party over - C'Thun invulnerable",
 		barWeakened = "C'Thun is weakened!",
 
-		digestiveAcidTrigger = "You are afflicted by Digestive Acid [%s%(]*([%d]*).",
+		digestiveAcidTrigger = BigWigs.AURAHARMFULSELF_PREFIX .. "Digestive Acid [%s%(]*([%d]*).",
 		msgDigestiveAcid = "5 Acid Stacks",
 
 		["Second TentacleHP"] = "Second Tentacle %d%%",

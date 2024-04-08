@@ -38,7 +38,7 @@ L:RegisterTranslations("enUS", function()
 		--trigger_addDead = "Spawn of Mar'li dies.",--CHAT_MSG_COMBAT_HOSTILE_DEATH
 
 		trigger_websOther = "(.+) is afflicted by Enveloping Webs.", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
-		trigger_websYou = "You are afflicted by Enveloping Webs.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_websYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Enveloping Webs.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		bar_websCd = "Enveloping Webs CD",
 
 		trigger_charge = "High Priestess Mar'li's Charge", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
@@ -46,7 +46,7 @@ L:RegisterTranslations("enUS", function()
 
 		--if registering CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE then will Warlock's...
 		trigger_drainLifeOther = "(.+) is afflicted by Drain Life.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
-		trigger_drainLifeYou = "You are afflicted by Drain Life.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_drainLifeYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Drain Life.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_drainLifeFade = "Drain Life fades from (.+)", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_drainLife = "Drain Life",
 		msg_drainLife = "Drain Life! Interrupt/Dispel!",

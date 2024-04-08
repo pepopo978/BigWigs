@@ -362,7 +362,7 @@ end
 function BigWigsCommonAuras:CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS(msg)
 	if string.find(msg, BS["Gift of Life"]) and (UnitClass("Player") == "Warrior" or UnitClass("Player") == "Druid" or UnitClass("Player") == "Paladin") then
 		self:TriggerEvent("BigWigs_SendSync", "BWCALG")
-	elseif msg == "You gain Divine Intervention." then
+	elseif msg == Bigwigs.AURAHELPFULSELF_PREFIX .. "Divine Intervention" then
 		self:TriggerEvent("BigWigs_SendSync", "BWCADI")
 	end
 end

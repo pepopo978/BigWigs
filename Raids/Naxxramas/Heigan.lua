@@ -44,7 +44,7 @@ L:RegisterTranslations("enUS", function()
 		trigger_manaBurn = "Heigan the Unclean's Mana Burn", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 		bar_manaBurn = "Mana Burn CD",
 
-		trigger_manaBurnYou = "Heigan the Unclean's Mana Burn hits you for", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+		trigger_manaBurnYou = "Heigan the Unclean's Mana Burn" .. BigWigs.COMBATHITOTHERSELF_SUFFIX, --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 		msg_manaBurnYou = "Mana Burn hit you!",
 
 		trigger_danceStart = "The end is upon you.", --CHAT_MSG_MONSTER_YELL

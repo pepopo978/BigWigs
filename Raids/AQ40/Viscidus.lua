@@ -35,9 +35,9 @@ L:RegisterTranslations("enUS", function()
 		trigger_volley = "afflicted by Poison Bolt Volley.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		bar_volley = "Poison Bolt Volley",
 
-		trigger_toxin = "You are afflicted by Toxin.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_toxin = BigWigs.AURAHARMFULSELF_PREFIX .. "Toxin.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		msg_toxin = "Move from Toxin Cloud!",
-		trigger_toxinFade = "Toxin fades from you.", --CHAT_MSG_SPELL_AURA_GONE_OTHER",
+		trigger_toxinFade = "Toxin" .. BigWigs.AURAREMOVEDSELF_SUFFIX, --CHAT_MSG_SPELL_AURA_GONE_OTHER",
 
 		trigger_frostDmg = "Frost damage", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE
 		trigger_chilledDmg = "gains Chilled", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
@@ -236,7 +236,6 @@ function module:Event(msg)
 	end
 end
 
-
 function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.volley and self.db.profile.volley then
 		self:Volley()
@@ -255,7 +254,6 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 	end
 end
 
-
 function module:Volley()
 	self:IntervalBar(L["bar_volley"], timer.volley[1], timer.volley[2], icon.volley, true, color.volley)
 
@@ -273,8 +271,6 @@ end
 function module:ToxinFade()
 	self:RemoveWarningSign(icon.toxin)
 end
-
-
 
 function module:Slow()
 	pokeCount = 0
@@ -337,7 +333,7 @@ function module:FindGlob()
 		self:StartGlobBar()
 	else
 		for i = 1, GetNumRaidMembers(), 1 do
-			if UnitName("Raid"..i.."target") == "Glob of Viscidus" and not UnitIsDeadOrGhost("Raid"..i.."target") then
+			if UnitName("Raid" .. i .. "target") == "Glob of Viscidus" and not UnitIsDeadOrGhost("Raid" .. i .. "target") then
 				self:CancelScheduledEvent("bwviscFindGlob")
 				self:ScheduleRepeatingEvent("bwviscFindViscidus", self.FindViscidus, 0.5, self)
 				checkPhysical = false
@@ -352,11 +348,11 @@ end
 function module:StartGlobBar()
 	if self.db.profile.glob then
 		self:TriggerEvent("BigWigs_StopCounterBar", self, L["bar_poke"])
-	
-		self:TriggerEvent("BigWigs_StartCounterBar", self, L["bar_glob"], maxGlobDeathCount, "Interface\\Icons\\"..icon.glob, true, color.glob)
+
+		self:TriggerEvent("BigWigs_StartCounterBar", self, L["bar_glob"], maxGlobDeathCount, "Interface\\Icons\\" .. icon.glob, true, color.glob)
 		self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_glob"], globDeathCount)
 	end
-	
+
 	self:ScheduleRepeatingEvent("bwviscFindGlob", self.FindGlob, 0.5, self)
 end
 
@@ -368,7 +364,7 @@ function module:FindViscidus()
 		checkFrost = true
 	else
 		for i = 1, GetNumRaidMembers(), 1 do
-			if UnitName("Raid"..i.."target") == "Viscidus" then
+			if UnitName("Raid" .. i .. "target") == "Viscidus" then
 				self:CancelScheduledEvent("bwviscFindViscidus")
 				self:StartFostDmgBar()
 				checkFrost = true
@@ -393,7 +389,7 @@ end
 --update frost bar on frost dmg
 function module:FrostDmg()
 	frostDmgCount = frostDmgCount + 1
-	
+
 	if self.db.profile.freezecount then
 		self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_frostDmg"], frostDmgCount)
 	end
@@ -414,7 +410,7 @@ end
 --update glob bar on glob death
 function module:Glob()
 	globDeathCount = globDeathCount + 1
-	
+
 	if self.db.profile.glob then
 		self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_glob"], globDeathCount)
 	end

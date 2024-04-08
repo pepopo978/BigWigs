@@ -63,7 +63,7 @@ L:RegisterTranslations("enUS", function()
 		trigger_selfReflect = "Your (.*) is reflected back by Anubisath Guardian.", --CHAT_MSG_SPELL_SELF_DAMAGE
 		msg_selfReflect = "Spell Reflect - STOP KILLING YOURSELF!",
 
-		trigger_plagueYou = "You are afflicted by Plague.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_plagueYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Plague.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_plagueOther = "(.+) is afflicted by Plague.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		bar_plague = " Plagued",
 		msg_plague = "Plague on ",

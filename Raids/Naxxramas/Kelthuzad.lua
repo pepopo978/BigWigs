@@ -149,7 +149,7 @@ L:RegisterTranslations("enUS", function()
 		trigger_mcYell2 = "There will be no escape!",
 		msg_mc = "Mind Control!",
 
-		trigger_mcYou = "You are afflicted by Chains of Kel'Thuzad.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_mcYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Chains of Kel'Thuzad.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_mcOther = "(.+) is afflicted by Chains of Kel'Thuzad.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_mcFade = "Chains of Kel'Thuzad fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_mcAfflic = " MC",
@@ -161,7 +161,7 @@ L:RegisterTranslations("enUS", function()
 		msg_fissure = "Shadow Fissure!",
 
 		trigger_frostBlastYell = "I will freeze the blood in your veins!", --CHAT_MSG_MONSTER_YELL
-		trigger_frostBlastYou = "You are afflicted by Frost Blast.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_frostBlastYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Frost Blast.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_frostBlastOther = "(.+) is afflicted by Frost Blast.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE, CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
 		bar_frostBlastCd = "Frost Blast CD",
 		bar_frostBlastAfflic = "Frost Blast",
@@ -169,7 +169,7 @@ L:RegisterTranslations("enUS", function()
 		--unused
 		trigger_frostBlastFade = "Frost Blast fades from (.+)", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 
-		trigger_detonateYou = "You are afflicted by Detonate Mana.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_detonateYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Detonate Mana.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_detonateOther = "(.+) is afflicted by Detonate Mana.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
 		trigger_detonateFade = "Detonate Mana fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_detonateAfflic = " Detonate",
@@ -437,15 +437,15 @@ function module:OnEngage()
 	numAbomDead = 0
 	numWeaverDead = 0
 	bloodTapCounter = 0
-	
+
 	if self.db.profile.phase then
 		self:Bar(L["bar_phase1"], timer.phase1, icon.phase, true, color.phase)
 	end
-	
+
 	if self.db.profile.p1adds then
-		self:Bar(numAbomDead..L["bar_abom"], timer.p1adds, icon.abomination, true, color.abomination)
-		self:Bar(numWeaverDead..L["bar_weaver"], timer.p1adds, icon.soulWeaver, true, color.soulWeaver)
-		
+		self:Bar(numAbomDead .. L["bar_abom"], timer.p1adds, icon.abomination, true, color.abomination)
+		self:Bar(numWeaverDead .. L["bar_weaver"], timer.p1adds, icon.soulWeaver, true, color.soulWeaver)
+
 		self:ScheduleEvent("abom1", self.AbominationSpawns, 44, self, "1")
 		self:ScheduleEvent("abom2", self.AbominationSpawns, 72, self, "2")
 		self:ScheduleEvent("abom3", self.AbominationSpawns, 100, self, "3")
@@ -460,7 +460,7 @@ function module:OnEngage()
 		self:ScheduleEvent("abom12", self.AbominationSpawns, 285, self, "12")
 		self:ScheduleEvent("abom13", self.AbominationSpawns, 300, self, "13")
 		self:ScheduleEvent("abom14", self.AbominationSpawns, 318, self, "14")
-		
+
 		self:ScheduleEvent("weaver1", self.WeaverSpawns, 44, self, "1")
 		self:ScheduleEvent("weaver2", self.WeaverSpawns, 68, self, "2")
 		self:ScheduleEvent("weaver3", self.WeaverSpawns, 97, self, "3")
@@ -492,13 +492,13 @@ function module:MINIMAP_ZONE_CHANGED(msg)
 	if GetMinimapZoneText() == "Sapphiron's Lair" and self.core:IsModuleActive(module.translatedName) then
 		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
 		self:ResetModule()
-		DEFAULT_CHAT_FRAME:AddMessage("   BigWigs - Auto-Rebooting Module: "..module.translatedName)
-	
+		DEFAULT_CHAT_FRAME:AddMessage("   BigWigs - Auto-Rebooting Module: " .. module.translatedName)
+
 	elseif GetMinimapZoneText() == "Eastern Plaguelands" and self.core:IsModuleActive(module.translatedName) then
 		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
 		self:ResetModule()
-		DEFAULT_CHAT_FRAME:AddMessage("   BigWigs - Auto-Rebooting Module: "..module.translatedName)
-	
+		DEFAULT_CHAT_FRAME:AddMessage("   BigWigs - Auto-Rebooting Module: " .. module.translatedName)
+
 	elseif GetMinimapZoneText() == "Kel'Thuzad Chamber" and not self.core:IsModuleActive(module.translatedName) then
 		self.core:EnableModule(module.translatedName)
 	end
