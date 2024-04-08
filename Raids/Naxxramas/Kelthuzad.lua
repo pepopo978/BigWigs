@@ -3,7 +3,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Kel'Thuzad", "Naxxramas")
 
-module.revision = 30076
+module.revision = 30079
 module.enabletrigger = module.translatedName
 module.toggleoptions = {
 	"phase",
@@ -457,12 +457,12 @@ function module:MINIMAP_ZONE_CHANGED(msg)
 	if GetMinimapZoneText() == "Sapphiron's Lair" and self.core:IsModuleActive(module.translatedName) then
 		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
 		self:ResetModule()
-		DEFAULT_CHAT_FRAME:AddMessage("   BigWigs - Auto-Rebooting Module: "..module.translatedName)
+		DEFAULT_CHAT_FRAME:AddMessage("|cff7fff7f   [BigWigs]|r - Auto-Rebooting Module: "..module.translatedName)
 	
 	elseif GetMinimapZoneText() == "Eastern Plaguelands" and self.core:IsModuleActive(module.translatedName) then
 		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
 		self:ResetModule()
-		DEFAULT_CHAT_FRAME:AddMessage("   BigWigs - Auto-Rebooting Module: "..module.translatedName)
+		DEFAULT_CHAT_FRAME:AddMessage("|cff7fff7f   [BigWigs]|r - Auto-Rebooting Module: "..module.translatedName)
 	
 	elseif GetMinimapZoneText() == "Kel'Thuzad Chamber" and not self.core:IsModuleActive(module.translatedName) then
 		self.core:EnableModule(module.translatedName)
@@ -492,16 +492,22 @@ function module:ResetModule()
 	if self.db.profile.frostblastframe then
 		BigWigsFrostBlast:FBClose()
 	end
+	
+	if self.db.profile.bloodtap then
+		for i=10, 1000, 10 do
+			self:RemoveBar(L["bar_bloodTapA"]..i..L["bar_bloodTapB"])
+		end
+	end
 end
 
 function module:UNIT_HEALTH(msg)
 	if UnitName(msg) == module.translatedName then
-		local health = UnitHealth(msg)
-		if health > 40 and health <= 45 and p3warn == nil then
+		local healthPct = UnitHealth(msg) * 100 / UnitHealthMax(msg)
+		if healthPct > 40 and healthPct <= 45 and p3warn == nil then
 			self:Sync(syncName.phase3soon)
-		elseif health > 45 and p3warn == true then
+		elseif healthPct > 45 and p3warn == true then
 			p3warn = nil
-		elseif health <= 40 and p3warn == nil then
+		elseif healthPct <= 40 and p3warn == nil then
 			p3warn = true
 		end
 	end
@@ -973,7 +979,7 @@ end
 
 function module:BloodTap(rest)
 	if (tonumber(rest) * 10) > bloodTapCounter then
-		self:RemoveBar(L["bar_bloodTapA"]..bloodTapCounter..L["bar_bloodTapB"], timer.bloodTap, icon.bloodTap, true, color.bloodTap)
+		self:RemoveBar(L["bar_bloodTapA"]..bloodTapCounter..L["bar_bloodTapB"])
 		
 		bloodTapCounter = tonumber(rest) * 10
 		self:Bar(L["bar_bloodTapA"]..bloodTapCounter..L["bar_bloodTapB"], timer.bloodTap, icon.bloodTap, true, color.bloodTap)
