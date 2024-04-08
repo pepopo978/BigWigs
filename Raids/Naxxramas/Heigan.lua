@@ -24,6 +24,7 @@ L:RegisterTranslations("enUS", function() return {
 	erruption_name = "Erruption Alert",
 	erruption_desc = "Warn for Erruption",
 
+
 	trigger_engage1 = "You are mine now!",--CHAT_MSG_MONSTER_YELL
 	trigger_engage2 = "You...are next!",--CHAT_MSG_MONSTER_YELL
 	trigger_engage3 = "I see you!",--CHAT_MSG_MONSTER_YELL
@@ -48,10 +49,7 @@ L:RegisterTranslations("enUS", function() return {
 	msg_fightStart = "Fight!",
 	bar_fighting = "Dancing Starts",
 	
-	bar_erruption = "Erruption",	
-
-	["Eye Stalk"] = true,
-	["Rotting Maggot"] = true,
+	bar_erruption = "Erruption",
 } end )
 
 local timer = {
