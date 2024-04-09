@@ -63,20 +63,20 @@ L:RegisterTranslations("enUS", function()
 		trigger_selfReflect = "Your (.*) is reflected back by Anubisath Guardian.", --CHAT_MSG_SPELL_SELF_DAMAGE
 		msg_selfReflect = "Spell Reflect - STOP KILLING YOURSELF!",
 
-		trigger_plagueYou = "You are afflicted by Plague.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_plagueYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Plague.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_plagueOther = "(.+) is afflicted by Plague.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		bar_plague = " Plagued",
 		msg_plague = "Plague on ",
 
-		trigger_thunderClap = "Anubisath Guardian's Thunderclap hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+		trigger_thunderClap = "Anubisath Guardian(%s?)'s Thunderclap hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 		bar_thunderClap = "Thunder Clap CD",
 		msg_thunderClap = "Thunder Clap - Ranged get Out!",
 
-		trigger_shadowStorm = "Anubisath Guardian's Shadow Storm hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+		trigger_shadowStorm = "Anubisath Guardian(%s?)'s Shadow Storm hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 		bar_shadowStorm = "Shadow Storm CD",
 		msg_shadowStorm = "Shadow Storm - Ranged get In!",
 
-		trigger_meteor = "Anubisath Guardian's Meteor hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+		trigger_meteor = "Anubisath Guardian(%s?)'s Meteor hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 		bar_meteor = "Meteor CD",
 		msg_meteor = "Meteor!",
 

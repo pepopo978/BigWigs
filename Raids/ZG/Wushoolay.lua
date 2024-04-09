@@ -1,4 +1,3 @@
-
 ----------------------------------
 --      Module Declaration      --
 ----------------------------------
@@ -10,59 +9,65 @@ local module, L = BigWigs:ModuleDeclaration("Wushoolay", "Zul'Gurub")
 --      Localization      --
 ----------------------------
 
-L:RegisterTranslations("enUS", function() return {
-	cmd = "Wushoolay",
+L:RegisterTranslations("enUS", function()
+	return {
+		cmd = "Wushoolay",
 
-	chainlightning_trigger = "Wushoolay begins to cast Chain Lightning\.",
-	chainlightning_bar = "Chain Lightning",
-	chainlightning_message = "Chain Lightning! Interrupt it!",
-	lightningcloud_trigger = "You are afflicted by Lightning Cloud\.",
-	lightningcloud_message = "Get out of the Lightning Cloud!",
+		chainlightning_trigger = "Wushoolay begins to cast Chain Lightning\.",
+		chainlightning_bar = "Chain Lightning",
+		chainlightning_message = "Chain Lightning! Interrupt it!",
+		lightningcloud_trigger = BigWigs.AURAHARMFULSELF_PREFIX .. "Lightning Cloud\.",
+		lightningcloud_message = "Get out of the Lightning Cloud!",
 
-	chainlightning_cmd = "chainlightning",
-	chainlightning_name = "Chain Lightning alert",
-	chainlightning_desc = "Warn when the boss is casting Chain Lightning.",
+		chainlightning_cmd = "chainlightning",
+		chainlightning_name = "Chain Lightning alert",
+		chainlightning_desc = "Warn when the boss is casting Chain Lightning.",
 
-	lightningcloud_cmd = "lightningcloud",
-	lightningcloud_name = "Lightning Cloud warning",
-	lightningcloud_desc = "Warns when you stand in the Lightning Cloud.",
-} end )
+		lightningcloud_cmd = "lightningcloud",
+		lightningcloud_name = "Lightning Cloud warning",
+		lightningcloud_desc = "Warns when you stand in the Lightning Cloud.",
+	}
+end)
 
-L:RegisterTranslations("deDE", function() return {
-	cmd = "Wushoolay",
+L:RegisterTranslations("deDE", function()
+	return {
+		cmd = "Wushoolay",
 
-	chainlightning_trigger = "Wushoolay beginnt Kettenblitzschlag zu wirken\.",
-	chainlightning_bar = "Kettenblitzschlag",
-	chainlightning_message = "Kettenblitzschlag! Unterbreche sie!",
-	lightningcloud_trigger = "Ihr seid von Blitzschlagwolke betroffen\.",
-	lightningcloud_message = "Beweg dich aus der Blitzschlagwolke!",
+		chainlightning_trigger = "Wushoolay beginnt Kettenblitzschlag zu wirken\.",
+		chainlightning_bar = "Kettenblitzschlag",
+		chainlightning_message = "Kettenblitzschlag! Unterbreche sie!",
+		lightningcloud_trigger = "Ihr seid von Blitzschlagwolke betroffen\.",
+		lightningcloud_message = "Beweg dich aus der Blitzschlagwolke!",
 
-	chainlightning_cmd = "chainlightning",
-	chainlightning_name = "Alarm f\195\188r Kettenblitzschlag",
-	chainlightning_desc = "Warnen wenn Wushoolay beginnt Kettenblitzschlag zu wirken.",
+		chainlightning_cmd = "chainlightning",
+		chainlightning_name = "Alarm f\195\188r Kettenblitzschlag",
+		chainlightning_desc = "Warnen wenn Wushoolay beginnt Kettenblitzschlag zu wirken.",
 
-	lightningcloud_cmd = "lightningcloud",
-	lightningcloud_name = "Alarm f\195\188r Blitzschlagwolke",
-	lightningcloud_desc = "Warnt dich wenn du in Blitzschlagwolke stehst.",
-} end )
+		lightningcloud_cmd = "lightningcloud",
+		lightningcloud_name = "Alarm f\195\188r Blitzschlagwolke",
+		lightningcloud_desc = "Warnt dich wenn du in Blitzschlagwolke stehst.",
+	}
+end)
 
-L:RegisterTranslations("esES", function() return {
-	--cmd = "Wushoolay",
+L:RegisterTranslations("esES", function()
+	return {
+		--cmd = "Wushoolay",
 
-	chainlightning_trigger = "Wushoolay comienza a lanzar Cadena de relámpagos\.",
-	chainlightning_bar = "Cadena de relámpagos",
-	chainlightning_message = "¡Cadena de relámpagos! Interrúmpela!",
-	lightningcloud_trigger = "Estás afligido por Nube de relámpagos\.",
-	lightningcloud_message = "¡Muévate del Nube de relámpagos!",
+		chainlightning_trigger = "Wushoolay comienza a lanzar Cadena de relámpagos\.",
+		chainlightning_bar = "Cadena de relámpagos",
+		chainlightning_message = "¡Cadena de relámpagos! Interrúmpela!",
+		lightningcloud_trigger = "Estás afligido por Nube de relámpagos\.",
+		lightningcloud_message = "¡Muévate del Nube de relámpagos!",
 
-	--chainlightning_cmd = "chainlightning",
-	chainlightning_name = "Alerta de Cadena de relámpagos",
-	chainlightning_desc = "Avisa cuando lance Cadena de relámpagos el jefe.",
+		--chainlightning_cmd = "chainlightning",
+		chainlightning_name = "Alerta de Cadena de relámpagos",
+		chainlightning_desc = "Avisa cuando lance Cadena de relámpagos el jefe.",
 
-	--lightningcloud_cmd = "lightningcloud",
-	lightningcloud_name = "Alerta de Nube de relámpagos",
-	lightningcloud_desc = "Avisa cuando estás en el Nube de relámpagos.",
-} end )
+		--lightningcloud_cmd = "lightningcloud",
+		lightningcloud_name = "Alerta de Nube de relámpagos",
+		lightningcloud_desc = "Avisa cuando estás en el Nube de relámpagos.",
+	}
+end)
 ---------------------------------
 --      	Variables 		   --
 ---------------------------------
@@ -70,7 +75,7 @@ L:RegisterTranslations("esES", function() return {
 -- module variables
 module.revision = 20004 -- To be overridden by the module!
 module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
-module.toggleoptions = {"chainlightning", "lightningcloud", "bosskill"}
+module.toggleoptions = { "chainlightning", "lightningcloud", "bosskill" }
 
 
 -- locals
@@ -81,7 +86,7 @@ local icon = {
 	chainlightning = "Spell_Nature_ChainLightning",
 }
 local syncName = {
-	chainlightning = "WushoolayChainLightning"..module.revision,
+	chainlightning = "WushoolayChainLightning" .. module.revision,
 }
 
 ------------------------------

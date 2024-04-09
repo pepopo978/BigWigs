@@ -34,7 +34,7 @@ L:RegisterTranslations("enUS", function() return {
 	bar_fearDuration = "Feared!",
 	bar_fearCd = "Fear CD",
 	
-	trigger_shadowShock = "Antnormi's Shadow Shock",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_FRIENDLYPLAYER_DAMAGE
+	trigger_shadowShock = "Antnormi(%s?)'s Shadow Shock",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_FRIENDLYPLAYER_DAMAGE
 	bar_shadowShockCd = "Shadow Shock CD",
 	
 	trigger_enrage = "Antnormi gains Enrage.",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS

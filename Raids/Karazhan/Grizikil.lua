@@ -22,7 +22,7 @@ L:RegisterTranslations("enUS", function() return {
 	
 	
 	
-	trigger_rainOfFireYou = "You suffer (.+) Fire damage from Grizikil's Grellkin Rain of Fire.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_rainOfFireYou = BigWigs.SUFFER_PREFIX .. "(.+) Fire damage from Grizikil(%s?)'s Grellkin Rain of Fire.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 	msg_rainOfFireYou = "Get out of Rain of Fire!",
 	
 	trigger_flamewave = "Grizikil is afflicted by Flamewave.",--CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE

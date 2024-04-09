@@ -14,11 +14,11 @@ L:RegisterTranslations("enUS", function()
 		charge_desc = "Displays a cooldown and an icon for Poison Charge.",
 
 		charge_trigger = "is afflicted by Poison Charge",
-		chargeself_trigger = "You are afflicted by Poison Charge",
-		chargegone_self = "Poison Charge fades from you",
-		charge_bar = "Poison Charge CD",
+		chargeself_trigger = BigWigs.AURAHARMFULSELF_PREFIX .. "Poison Charge",
+		chargegone_self = "Poison Charge" .. BigWigs.AURAREMOVEDSELF_SUFFIX,
+		charge_bar = "Poison Charge CD ",
 
-		poison_charge_warn = "You've been poisoned, dispel now!",
+		poison_charge_warn = "You 've been poisoned, dispel now!",
 	}
 end)
 
@@ -90,7 +90,8 @@ function module:Event(msg)
 				self:IntervalBar(L["charge_bar"] .. chargeNumber, timer.charge[1], timer.charge[2], icon.charge, true, "red")
 			end
 		end
-	elseif self.db.profile.charge and string.find(msg, L["chargeself_trigger"]) then
+	end
+	if self.db.profile.charge and string.find(msg, L["chargeself_trigger"]) then
 		poisonsOnSelf = poisonsOnSelf + 1
 		self:WarningSign(icon.charge, 6)
 		self:Message(L["poison_charge_warn"], "Personal", true, "DispelPoison")

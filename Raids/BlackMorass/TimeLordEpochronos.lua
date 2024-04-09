@@ -49,14 +49,14 @@ L:RegisterTranslations("enUS", function()
 		msg_dndCast = "Casting Death & Decay, Interrupt!",
 
 		--to be confirmed
-		trigger_dndDamage = "You suffer (.+) Shadow damage from Death & Decay.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_dndDamage = BigWigs.SUFFER_PREFIX .. "(.+) Shadow damage from Death & Decay.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 
-		trigger_devouringPlagueYou = "You are afflicted by Devouring Plague.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_devouringPlagueYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Devouring Plague.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_devouringPlagueOther = "(.+) is afflicted by Devouring Plague.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_devouringPlagueFade = "Devouring Plague fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_devouringPlague = " Devouring Plague",
 
-		trigger_deathCoilYou = "You are afflicted by Death Coil.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_deathCoilYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Death Coil.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_deathCoilOther = "(.+) is afflicted by Death Coil.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
 		trigger_deathCoilFade = "Death Coil fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_deathCoil = " Death Coil",

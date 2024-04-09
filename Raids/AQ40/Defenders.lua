@@ -63,20 +63,20 @@ L:RegisterTranslations("enUS", function()
 		trigger_selfReflect = "Your (.*) is reflected back by Anubisath Defender.", --CHAT_MSG_SPELL_SELF_DAMAGE
 		msg_selfReflect = "Spell Reflect - STOP KILLING YOURSELF!",
 
-		trigger_plagueYou = "You are afflicted by Plague.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_plagueYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Plague.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_plagueOther = "(.+) is afflicted by Plague.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		bar_plague = " Plagued",
 		msg_plague = "Plague on ",
 
-		trigger_thunderClap = "Anubisath Defender's Thunderclap hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+		trigger_thunderClap = "Anubisath Defender(%s?)'s Thunderclap hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 		bar_thunderClap = "Thunder Clap",
 		msg_thunderClap = "Thunder Clap - Ranged get Out!",
 
-		trigger_shadowStorm = "Anubisath Defender's Shadow Storm hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+		trigger_shadowStorm = "Anubisath Defender(%s?)'s Shadow Storm hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 		bar_shadowStorm = "Shadow Storm",
 		msg_shadowStorm = "Shadow Storm - Ranged get In!",
 
-		trigger_meteor = "Anubisath Defender's Meteor hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+		trigger_meteor = "Anubisath Defender(%s?)'s Meteor hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 		bar_meteor = "Meteor",
 		msg_meteor = "Meteor!",
 

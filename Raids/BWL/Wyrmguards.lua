@@ -21,7 +21,7 @@ L:RegisterTranslations("enUS", function() return {
 	crit = "crits",
 	vuln_bar = "%s Vulnerability",
 	
-	warstomp_trigger = "Death Talon Wyrmguard's War Stomp",
+	warstomp_trigger = "Death Talon Wyrmguard(%s?)'s War Stomp",
 	warstomp_bar = "War Stomp CD",
 	
 	vulnerability_direct_test = "^[%w]+[%s's]* ([%w%s:]+) ([%w]+) Death Talon Wyrmguard for ([%d]+) ([%w]+) damage%.[%s%(]*([%d]*)",

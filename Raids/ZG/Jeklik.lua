@@ -1,105 +1,105 @@
-
 local module, L = BigWigs:ModuleDeclaration("High Priestess Jeklik", "Zul'Gurub")
 
 module.revision = 30025
 module.enabletrigger = module.translatedName
-module.toggleoptions = {"heal", "fear", "fire", "mindflay", "silence", "swarm", "phase", "bosskill"}
+module.toggleoptions = { "heal", "fear", "fire", "mindflay", "silence", "swarm", "phase", "bosskill" }
 
-L:RegisterTranslations("enUS", function() return {
-	cmd = "Jeklik",
+L:RegisterTranslations("enUS", function()
+	return {
+		cmd = "Jeklik",
 
-	heal_cmd = "heal",
-	heal_name = "Heal Alert",
-	heal_desc = "Warn for healing",
-	
-	fear_cmd = "fear",
-	fear_name = "Fear Alert",
-	fear_desc = "Warn for Fears",
-	
-	fire_cmd = "fire",
-	fire_name = "Fire Bat Alert",
-	fire_desc = "Warn for Standing in Fire",
-	
-	mindflay_cmd = "mindflay",
-	mindflay_name = "Mind Flay Alert",
-	mindflay_desc = "Warn for casting Mind Flay",
+		heal_cmd = "heal",
+		heal_name = "Heal Alert",
+		heal_desc = "Warn for healing",
 
-	silence_cmd = "silence",
-	silence_name = "Silence Alert",
-	silence_desc = "Warn for Silence",
+		fear_cmd = "fear",
+		fear_name = "Fear Alert",
+		fear_desc = "Warn for Fears",
 
-	swarm_cmd = "swarm",
-	swarm_name = "Bat Swarm Alert",
-	swarm_desc = "Warn for Bat swarms",
-	
-	phase_cmd = "phase",
-	phase_name = "Phase Notification",
-	phase_desc = "Announces the boss' phase transition",
-	
-	
-	trigger_engage = "Lord Hir'eek, grant me wings of vengance!",--CHAT_MSG_MONSTER_YELL
-	
-	
-	
-	trigger_heal = "High Priestess Jeklik begins to cast Great Heal.",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF",
-	bar_healCast = "Heal - Interrupt!",
-	bar_healCd = "Heal CD",
-	msg_healCast = "Heal! Interrupt it!",
-	
-	trigger_attack1 = "High Priestess Jeklik attacks",--CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_MISSES
-	trigger_attack2 = "High Priestess Jeklik misses",--CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_MISSES
-	trigger_attack3 = "High Priestess Jeklik hits",--CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS
-	trigger_attack4 = "High Priestess Jeklik crits",--CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS
-	
-	
-	
-	--this happens in P1
-	trigger_terrifyingScreech1 = "afflicted by Terrifying Screech",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
-	trigger_terrifyingScreech2 = "Terrifying Screech was resisted",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
-	trigger_terrifyingScreech3 = "Terrifying Screech fail",--TBD
-	
-	--guessing this happens in P2
-	trigger_psychicScream1 = "afflicted by Psychic Scream",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
-	trigger_psychicScream2 = "Psychic Scream was resisted",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
-	trigger_psychicScream3 = "Psychic Scream fail",--TBD
+		fire_cmd = "fire",
+		fire_name = "Fire Bat Alert",
+		fire_desc = "Warn for Standing in Fire",
 
-	bar_fearCd = "Fear CD",
-	
-	
-	
-	trigger_liquidFire = "Liquid Fire hits you for",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
-	msg_liquidFire = "Move away from Fire!",
-	
-	trigger_mindflay = "afflicted by Mind Flay",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE //CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
-	trigger_mindflayFade = "Mind Flay fades",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
-	bar_mindflay = "Mind Flay - Interrupt!",
-	
-	trigger_silence = "Sonic Burst hits",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
-	bar_silenceAfflicted = "People Silenced",
-	bar_silenceCd = "Silence CD",
-	
-	trigger_swarm = "TBD",--TBD, is there a trigger or it's on a fixed timer?
-	bar_swam = "Bat Swarm",
-	msg_swarm = "Swarm of Bats! AoE!",
-	
-	msg_p2 = "Phase 2",
-} end )
+		mindflay_cmd = "mindflay",
+		mindflay_name = "Mind Flay Alert",
+		mindflay_desc = "Warn for casting Mind Flay",
+
+		silence_cmd = "silence",
+		silence_name = "Silence Alert",
+		silence_desc = "Warn for Silence",
+
+		swarm_cmd = "swarm",
+		swarm_name = "Bat Swarm Alert",
+		swarm_desc = "Warn for Bat swarms",
+
+		phase_cmd = "phase",
+		phase_name = "Phase Notification",
+		phase_desc = "Announces the boss' phase transition",
+
+
+		trigger_engage = "Lord Hir'eek, grant me wings of vengance!", --CHAT_MSG_MONSTER_YELL
+
+
+
+		trigger_heal = "High Priestess Jeklik begins to cast Great Heal.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF",
+		bar_healCast = "Heal - Interrupt!",
+		bar_healCd = "Heal CD",
+		msg_healCast = "Heal! Interrupt it!",
+
+		trigger_attack1 = "High Priestess Jeklik attacks", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_MISSES
+		trigger_attack2 = "High Priestess Jeklik misses", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_MISSES
+		trigger_attack3 = "High Priestess Jeklik hits", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS
+		trigger_attack4 = "High Priestess Jeklik crits", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS
+
+
+
+		--this happens in P1
+		trigger_terrifyingScreech1 = "afflicted by Terrifying Screech", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+		trigger_terrifyingScreech2 = "Terrifying Screech was resisted", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+		trigger_terrifyingScreech3 = "Terrifying Screech fail", --TBD
+
+		--guessing this happens in P2
+		trigger_psychicScream1 = "afflicted by Psychic Scream", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+		trigger_psychicScream2 = "Psychic Scream was resisted", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+		trigger_psychicScream3 = "Psychic Scream fail", --TBD
+
+		bar_fearCd = "Fear CD",
+
+
+		trigger_liquidFire = "Liquid Fire" .. BigWigs.COMBATHITOTHERSELF_SUFFIX, --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+		msg_liquidFire = "Move away from Fire!",
+
+		trigger_mindflay = "afflicted by Mind Flay", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE //CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+		trigger_mindflayFade = "Mind Flay fades", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+		bar_mindflay = "Mind Flay - Interrupt!",
+
+		trigger_silence = "Sonic Burst hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+		bar_silenceAfflicted = "People Silenced",
+		bar_silenceCd = "Silence CD",
+
+		trigger_swarm = "TBD", --TBD, is there a trigger or it's on a fixed timer?
+		bar_swam = "Bat Swarm",
+		msg_swarm = "Swarm of Bats! AoE!",
+
+		msg_p2 = "Phase 2",
+	}
+end)
 
 local timer = {
 	healCast = 4,
-	healCd = 20,--need data
+	healCd = 20, --need data
 
-	firstTerrifyingScreechCd = 18,--need data
-	terrifyingScreechCd = 30,--need data
-	psychicScreamCd = 39.5,--need data
-	
-	mindflay = 25,--need data
-	
-	firstSilence = 12,--need data
-	silenceCd = 10,--20cd -10afflicted
+	firstTerrifyingScreechCd = 18, --need data
+	terrifyingScreechCd = 30, --need data
+	psychicScreamCd = 39.5, --need data
+
+	mindflay = 25, --need data
+
+	firstSilence = 12, --need data
+	silenceCd = 10, --20cd -10afflicted
 	silenceAfflicted = 10,
-	
-	swarm = 45,--need data
+
+	swarm = 45, --need data
 }
 local icon = {
 	heal = "Spell_Holy_Heal",
@@ -120,22 +120,22 @@ local color = {
 	swarm = "Red",
 }
 local syncName = {
-	heal = "JeklikHeal"..module.revision,
-	healOver = "JeklikHealStop"..module.revision,
-	terrifyingScreech = "JeklikTerrifyingScreech"..module.revision,
-	psychicScream = "JeklikPsychicScream"..module.revision,
-	mindflay = "Jeklikmindflay"..module.revision,
-	mindflayFade = "JeklikmindflayEnd"..module.revision,
-	silence = "JeklikSilence"..module.revision,
-	swarm = "JeklikSwarmBats"..module.revision,
-	phase = "JeklikPhase"..module.revision,
+	heal = "JeklikHeal" .. module.revision,
+	healOver = "JeklikHealStop" .. module.revision,
+	terrifyingScreech = "JeklikTerrifyingScreech" .. module.revision,
+	psychicScream = "JeklikPsychicScream" .. module.revision,
+	mindflay = "Jeklikmindflay" .. module.revision,
+	mindflayFade = "JeklikmindflayEnd" .. module.revision,
+	silence = "JeklikSilence" .. module.revision,
+	swarm = "JeklikSwarmBats" .. module.revision,
+	phase = "JeklikPhase" .. module.revision,
 }
 
 module:RegisterYellEngage(L["trigger_engage"])
 
 function module:OnEnable()
 	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
-	
+
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF", "Event")--trigger_heal
 	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES", "Event")--trigger_attack1, trigger_attack2
 	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_PARTY_MISSES", "Event")--trigger_attack1, trigger_attack2
@@ -143,33 +143,32 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS", "Event")--trigger_attack3, trigger_attack4
 	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS", "Event")--trigger_attack3, trigger_attack4
 	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS", "Event")--trigger_attack3, trigger_attack4
-	
+
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")--trigger_terrifyingScreech1, trigger_terrifyingScreech2, trigger_psychicScream1, trigger_psychicScream2, trigger_mindflay
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")--trigger_terrifyingScreech1, trigger_terrifyingScreech2, trigger_psychicScream1, trigger_psychicScream2, trigger_mindflay
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")--trigger_terrifyingScreech1, trigger_terrifyingScreech2, trigger_psychicScream1, trigger_psychicScream2, trigger_mindflay
-	
+
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event")--trigger_liquidFire, trigger_silence
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event")--trigger_silence
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event")--trigger_silence
-	
+
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event")--trigger_mindflayFade
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event")--trigger_mindflayFade
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event")--trigger_mindflayFade
-	
-	self:RegisterEvent("UNIT_HEALTH")
 
+	self:RegisterEvent("UNIT_HEALTH")
 
 	self:ThrottleSync(4, syncName.heal)
 	self:ThrottleSync(4, syncName.healOver)
-	
+
 	self:ThrottleSync(10, syncName.terrifyingScreech)
 	self:ThrottleSync(10, syncName.psychicScream)
-	
+
 	self:ThrottleSync(1.5, syncName.mindflay)
 	self:ThrottleSync(1.5, syncName.mindflayFade)
-	
+
 	self:ThrottleSync(5, syncName.silence)
-	
+
 	self:ThrottleSync(5, syncName.swarm)
 end
 
@@ -181,11 +180,11 @@ end
 function module:OnEngage()
 	bwJeklikP2 = nil
 	bwJeklikIsHealing = nil
-	
+
 	if self.db.profile.fear then
 		self:Bar(L["bar_fearCd"], timer.firstTerrifyingScreechCd, icon.terrifyingScreech, true, color.fearCd)
 	end
-	
+
 	if self.db.profile.silence then
 		self:Bar(L["bar_silenceCd"], timer.firstSilence, icon.silence, true, color.silenceCd)
 	end
@@ -202,7 +201,7 @@ function module:UNIT_HEALTH(arg1)
 	if UnitName(arg1) == module.translatedName then
 		local health = UnitHealth(arg1)
 		local maxHealth = UnitHealthMax(arg1)
-		if math.ceil(100*health/maxHealth) > 5 and math.ceil(100*health/maxHealth) <= 50 and not bwJeklikP2 then
+		if math.ceil(100 * health / maxHealth) > 5 and math.ceil(100 * health / maxHealth) <= 50 and not bwJeklikP2 then
 			self:Sync(syncName.phase)
 			bwJeklikP2 = true
 		end
@@ -216,17 +215,17 @@ function module:Event(msg)
 		if bwJeklikIsHealing then
 			self:Sync(syncName.healOver)
 		end
-	
+
 	elseif string.find(msg, L["trigger_terrifyingScreech1"]) or string.find(msg, L["trigger_terrifyingScreech2"]) or string.find(msg, L["trigger_terrifyingScreech3"]) then
 		self:Sync(syncName.terrifyingScreech)
 	elseif string.find(msg, L["trigger_psychicScream1"]) or string.find(msg, L["trigger_psychicScream2"]) or string.find(msg, L["trigger_psychicScream3"]) then
 		self:Sync(syncName.psychicScream)
-			
+
 	elseif string.find(msg, L["trigger_liquidFire"]) then
 		self:Message(L["msg_liquidFire"], "Urgent", false, nil, false)
 		self:Sound("Info")
 		self:WarningSign(icon.liquidFire, 0.7)
-		
+
 	elseif string.find(msg, L["trigger_mindflay"]) then
 		self:Sync(syncName.mindflay)
 	elseif string.find(msg, L["trigger_mindflayFade"]) then
@@ -240,7 +239,6 @@ function module:Event(msg)
 		self:Sync(syncName.swarm)
 	end
 end
-
 
 function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.heal and self.db.profile.heal then
@@ -264,12 +262,11 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 	end
 end
 
-
 function module:Heal()
 	bwJeklikIsHealing = true
 	self:Bar(L["bar_healCast"], timer.healCast, icon.heal, true, color.healCast)
 	self:Message(L["msg_healCast"], "Positive", false, nil, false)
-	
+
 	if UnitClass("Player") == "Mage" then
 		self:Sound("Beware")
 		self:WarningSign(icon.heal, 0.7)
@@ -295,7 +292,6 @@ function module:PsychicScream()
 	self:Bar(L["bar_fearCd"], timer.psychicScreamCd, icon.psychicScream, true, color.fearCd)
 end
 
-
 function module:MindFlay()
 	self:Bar(L["bar_mindflay"], timer.mindflay, icon.mindflay, true, color.mindflay)
 end
@@ -317,10 +313,10 @@ end
 function module:Phase()
 	bwJeklikP2 = true
 	self:Message(L["msg_p2"])
-	
+
 	self:RemoveBar(L["bar_fearCd"])
 	self:RemoveBar(L["bar_silenceCd"])
 	self:RemoveBar(L["bar_swam"])
-	
+
 	self:CancelDelayedBar(L["bar_silenceCd"])
 end

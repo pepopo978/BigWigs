@@ -76,12 +76,12 @@ L:RegisterTranslations("enUS", function()
 		voidwarn = "Void Zone Incoming",
 		voidbar = "Void Zone",
 
-		meteortrigger = "Thane Korth'azz's Meteor hits ",
+		meteortrigger = "Thane Korth'azz(%s?)'s Meteor hits ",
 		meteortrigger2 = "I like my meat extra crispy!",
 		meteorwarn = "Meteor!",
 		meteorbar = "Meteor",
 
-		wrathtrigger = "Sir Zeliek's Holy Wrath hits ",
+		wrathtrigger = "Sir Zeliek(%s?)'s Holy Wrath hits ",
 		wrathtrigger2 = "I have no choice but to obey!",
 		wrathwarn = "Holy Wrath!",
 		wrathbar = "Holy Wrath",

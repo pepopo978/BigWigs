@@ -44,7 +44,7 @@ L:RegisterTranslations("enUS", function() return {
 	attack_trigger3 = "High Priest Venoxis hits",--CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS // CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS
 	attack_trigger4 = "High Priest Venoxis crits",--CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS // CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS
 
-	poisoncloudhitsyou_trigger = "You suffer (.+) Nature damage from High Priest Venoxis's Poison Cloud",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	poisoncloudhitsyou_trigger = BigWigs.SUFFER_PREFIX .. "(.+) Nature damage from High Priest Venoxis(%s?)'s Poison Cloud",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 
 	add_name = "Razzashi Cobra",
 	deadaddtrigger = "Razzashi Cobra dies",

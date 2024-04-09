@@ -39,15 +39,12 @@ L:RegisterTranslations("enUS", function()
 		bar_slimeSprayCD = "Slime Spray CD",
 
 		trigger_injectOther = "(.+) is afflicted by Mutating Injection.", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
-		trigger_injectYou = "You are afflicted by Mutating Injection.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_injectYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Mutating Injection.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_injectFade = "Mutating Injection fades from (.+).,", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_injected = " Injected",
 		msg_inject = " Injected",
 
-		trigger_cloudCast = "Grobbulus casts Poison Cloud.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF
-		bar_cloudCD = "Poison Cloud CD",
-		msg_cloudCast = "Cloud -- Move Grobbulus!",
-		trigger_cloudHitsYou = "Grobbulus Cloud's Poison hits you", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+		trigger_cloudHitsYou = "Grobbulus Cloud(%s?)'s Poison" .. BigWigs.COMBATHITOTHERSELF_SUFFIX, --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 
 		msg_lowHp = "Grobbulus <30% - Injecting more Often",
 	}
