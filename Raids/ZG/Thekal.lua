@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("High Priest Thekal", "Zul'Gurub")
 
-module.revision = 30078
+module.revision = 30083
 module.enabletrigger = module.translatedName
 module.wipemobs = {"Zealot Zath", "Zealot Lor'Khan"}
 module.toggleoptions = {
@@ -181,7 +181,7 @@ local timer = {
 	bloodlust = 30,
 	rezTimer = 10, --guessing
 	
-	phase2 = 14,
+	phase2 = 15, --15sec from thekal's death, not from all 3 dead
 	
 	forcePunchFirst = 5,
 	forcePunch = {12,18}, --saw 12,18
@@ -276,6 +276,7 @@ local lorkhanHp = 100
 local thekalHp = 100
 
 local phase = "phase1"
+local thekalDeadTime = 0
 
 local doCheckForBossDeath = false
 
@@ -373,6 +374,7 @@ function module:OnEngage()
 	thekalHp = 100
 	
 	phase = "phase1"
+	thekalDeadTime = 0
 	
 	doCheckForBossDeath = false
 	
@@ -449,38 +451,32 @@ function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
 		
 		self:RemoveBar("High Priest Thekal"..L["bar_bloodlust"])
 		self:TriggerEvent("BigWigs_StopHPBar", self, "High Priest Thekal")
+		
+		thekalDeadTime = GetTime()
 	end
 end
 
 function module:CHAT_MSG_MONSTER_EMOTE(msg)
-	if UnitName("Player") == "Relar" or UnitName("Player") == "Dreadsome" then
-		DEFAULT_CHAT_FRAME:AddMessage(msg)
-	end
-	--debug
-	
+	--there is no way to know which mob was resurrected as the emote is "%s is resurrected by a nearby ally!"
+	--if we're in p1 and that happens, consider all alive and reset all bars
+		--the mobs that are still alive will have their bar refreshed on hit
 	if string.find(msg, L["trigger_resurrection"]) and phase == "phase1" then
-		local _,_,resMob,_ = string.find(msg, L["trigger_resurrection"])
-		if resMob == "Zealot Zath" then
-			self:CancelScheduledEvent("Thekal_PhaseChangeCheck")
-			zathDead = nil
-			zathHp = 100
-			self:TriggerEvent("BigWigs_StartHPBar", self, "Zealot Zath", 100, "Interface\\Icons\\"..icon.hpBar, true, color.hpBar)
-			self:TriggerEvent("BigWigs_SetHPBar", self, "Zealot Zath", 0)
-						
-		elseif resMob == "Zealot Lor'Khan" then
-			self:CancelScheduledEvent("Thekal_PhaseChangeCheck")
-			lorkhanDead = nil
-			lorkhanHp = 100
-			self:TriggerEvent("BigWigs_StartHPBar", self, "Zealot Lor'Khan", 100, "Interface\\Icons\\"..icon.hpBar, true, color.hpBar)
-			self:TriggerEvent("BigWigs_SetHPBar", self, "Zealot Lor'Khan", 0)
-			
-		elseif resMob == "High Priest Thekal" then
-			self:CancelScheduledEvent("Thekal_PhaseChangeCheck")
-			thekalDead = nil
-			thekalHp = 100
-			self:TriggerEvent("BigWigs_StartHPBar", self, "High Priest Thekal", 100, "Interface\\Icons\\"..icon.hpBar, true, color.hpBar)
-			self:TriggerEvent("BigWigs_SetHPBar", self, "High Priest Thekal", 0)
-		end
+		self:CancelScheduledEvent("Thekal_PhaseChangeCheck")
+		
+		if zathDead then zathDead = nil end
+		zathHp = 100
+		self:TriggerEvent("BigWigs_StartHPBar", self, "Zealot Zath", 100, "Interface\\Icons\\"..icon.hpBar, true, color.hpBar)
+		self:TriggerEvent("BigWigs_SetHPBar", self, "Zealot Zath", 0)
+		
+		if lorkhanDead then lorkhanDead = nil end
+		lorkhanHp = 100
+		self:TriggerEvent("BigWigs_StartHPBar", self, "Zealot Lor'Khan", 100, "Interface\\Icons\\"..icon.hpBar, true, color.hpBar)
+		self:TriggerEvent("BigWigs_SetHPBar", self, "Zealot Lor'Khan", 0)
+		
+		if thekalDead then thekalDead = nil end
+		thekalHp = 100
+		self:TriggerEvent("BigWigs_StartHPBar", self, "High Priest Thekal", 100, "Interface\\Icons\\"..icon.hpBar, true, color.hpBar)
+		self:TriggerEvent("BigWigs_SetHPBar", self, "High Priest Thekal", 0)
 	end
 end
 
@@ -838,7 +834,9 @@ function module:Phase1End()
 	self:RemoveBar("Zealot Lor'Khan"..L["bar_bloodlust"])
 	self:RemoveBar("High Priest Thekal"..L["bar_bloodlust"])
 	
-	self:Bar(L["bar_phase2"], timer.phase2, icon.phase, true, color.phase)
+	--phase 2 happens 15sec from the moment thekal dies,
+		--if the other die 8sec after thekal, only 7sec timer for p2
+	self:Bar(L["bar_phase2"], timer.phase2 - (GetTime() - thekalDeadTime), icon.phase, true, color.phase)
 	self:Message(L["msg_phase2"], "Attention", false, nil, false)
 end
 
