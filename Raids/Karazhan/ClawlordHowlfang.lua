@@ -25,7 +25,7 @@ L:RegisterTranslations("enUS", function()
 		enrage_desc = "Warns for Enrage",
 
 
-		trigger_terrifyingPresenceSelf = BigWigs.AURAHARMFULSELF_PREFIX .. "Terrifying Presence %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_terrifyingPresenceSelf = BigWigs.AURAHARMFULSELF_PREFIX .. "Terrifying Presence %((.+)%)", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		--trigger_terrifyingPresence = "(.+) is afflicted by Terrifying Presence %((.+)%).",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
 		bar_terrifyingPresence = "% reduced",
 

@@ -17,7 +17,7 @@ L:RegisterTranslations("enUS", function()
 		dreamstate_name = "Dreamstate Alert",
 		dreamstate_desc = "Warn for Dreamstate",
 
-		trigger_sleepYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Dreamstate.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_sleepYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Dreamstate", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_sleepFade = "Dreamstate fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY
 		trigger_sleepOther = "(.+) is afflicted by Dreamstate.", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
 
@@ -116,7 +116,7 @@ function module:CheckForBossDeath(msg)
 end
 
 function module:Event(msg)
-	if msg == L["trigger_sleepYou"] then
+	if string.find(msg, L["trigger_sleepYou"]) then
 		self:Sync(syncName.sleepOn .. " " .. UnitName("Player"))
 
 		--elseif msg == L["trigger_sleepFade"] then

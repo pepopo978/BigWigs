@@ -17,12 +17,12 @@ L:RegisterTranslations("enUS", function()
 		entangle_desc = "Warn for Entangle",
 
 
-		trigger_entangleYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Entangle.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_entangleYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Entangle", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_entangleOther = "(.+) is afflicted by Entangle.", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
 		trigger_entangleFade = "Entangle fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
 		bar_entangle = " Entangled",
 
-		trigger_woundYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Mortal Wound %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_woundYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Mortal Wound %((.+)%)", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_woundOther = "(.+) is afflicted by Mortal Wound %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
 		bar_wound = " Wounds",
 	}
@@ -72,7 +72,7 @@ function module:OnDisengage()
 end
 
 function module:Event(msg)
-	if msg == L["trigger_entangleYou"] then
+	if string.find(msg, L["trigger_entangleYou"]) then
 		self:Sync(syncName.entangle .. " " .. UnitName("Player"))
 
 	elseif string.find(msg, L["trigger_entangleOther"]) then

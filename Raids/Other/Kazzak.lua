@@ -47,7 +47,7 @@ L:RegisterTranslations("enUS", function()
 		msg_berserk10 = "Berserk in 10 seconds!",
 		msg_berserk = "Berserk!",
 
-		trigger_markOfKazzakYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Mark of Kazzak.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_markOfKazzakYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Mark of Kazzak", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_markOfKazzakOther = "(.+) is afflicted by Mark of Kazzak.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_markOfKazzakFade = "Mark of Kazzak fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_markOfKazzakCd = "Mark of Kazzak CD",
@@ -56,7 +56,7 @@ L:RegisterTranslations("enUS", function()
 		msg_markOfKazzakYou = "You have Mark of Kazzak - Don't go out of mana!",
 		msg_lowMana = "WARNING - You have low Mana - Mark of Kazzak could be Lethal!",
 
-		trigger_twistedReflectionYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Twisted Reflection.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_twistedReflectionYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Twisted Reflection", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_twistedReflectionOther = "(.+) is afflicted by Twisted Reflection.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_twistedReflectionFade = "Twisted Reflection fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_twistedReflectionCd = "Twisted Reflection CD",

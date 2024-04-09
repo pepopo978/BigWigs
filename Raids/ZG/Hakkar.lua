@@ -49,7 +49,7 @@ L:RegisterTranslations("enUS", function()
 		msg_enrage60 = "Enrage in 1 minute!",
 		msg_enrage10 = "Enrage in 10 seconds!",
 
-		trigger_causeInsanityYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Cause Insanity.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_causeInsanityYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Cause Insanity", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_causeInsanityOther = "(.+) is afflicted by Cause Insanity.", --CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_causeInsanityFade = "Cause Insanity fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		trigger_causeInsanityTotem = "Hakkar(%s?)'s Cause Insanity fails. Grounding Totem is immune.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE
@@ -65,7 +65,7 @@ L:RegisterTranslations("enUS", function()
 		--unreliable, as if someone dies this will trigger
 		--trigger_bloodSiphonFade = "Blood Siphon fades from Hakkar.", --CHAT_MSG_SPELL_AURA_GONE_OTHER
 
-		trigger_poisonousBloodYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Poisonous Blood.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_poisonousBloodYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Poisonous Blood", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_poisonousBloodOther = "(.+) is afflicted by Poisonous Blood.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE //CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
 		trigger_poisonousBloodFade = "Poisonous Blood fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_poisonousBlood = " Poisonous Blood",
@@ -82,7 +82,7 @@ L:RegisterTranslations("enUS", function()
 		bar_aspectOfVenoxisCd = "Poison CD - Venoxis",
 
 		--6sec stun, single target
-		trigger_aspectOfMarliYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Aspect of Mar'li.", --guessing CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_aspectOfMarliYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Aspect of Mar'li", --guessing CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_aspectOfMarliOther = "(.+) is afflicted by Aspect of Mar'li.", --guessing CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE //CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
 		trigger_aspectOfMarliResist = "Hakkar(%s?)'s Aspect of Mar'li", --guessing ???
 		trigger_aspectOfMarliFade = "Aspect of Mar'li fades from (.+).", --guessing CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
@@ -97,7 +97,7 @@ L:RegisterTranslations("enUS", function()
 		msg_aspectOfThekal = "Frenzy - Tranq!",
 
 		--2sec stun, single target
-		trigger_aspectOfArlokkYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Aspect of Arlokk.", --guessing CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_aspectOfArlokkYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Aspect of Arlokk", --guessing CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_aspectOfArlokkOther = "(.+) is afflicted by Aspect of Arlokk.", --guessing CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE //CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
 		trigger_aspectOfArlokkResist = "Hakkar(%s?)'s Aspect of Arlokk", --guessing ???
 		trigger_aspectOfArlokkFade = "Aspect of Arlokk fades from (.+).", --guessing CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
@@ -309,7 +309,7 @@ function module:CHAT_MSG_MONSTER_YELL(msg, sender)
 end
 
 function module:Event(msg)
-	if msg == L["trigger_causeInsanityYou"] then
+	if string.find(msg, L["trigger_causeInsanityYou"]) then
 		self:Sync(syncName.causeInsanity .. " " .. UnitName("Player"))
 
 	elseif string.find(msg, L["trigger_causeInsanityOther"]) then
@@ -331,8 +331,6 @@ function module:Event(msg)
 		self:Sync(syncName.bloodSiphon)
 		-- aspects
 	elseif string.find(msg, L["trigger_aspectOfJeklik"]) or string.find(msg, L["trigger_aspectOfJeklikResist"]) then
-		self:Sync(syncName.mindcontrol .. " " .. UnitName("player"))
-		self:Sync(syncName.mindcontrol .. " " .. "Grounded!")
 		self:Sync(syncName.jeklik)
 	elseif string.find(msg, L["trigger_aspectOfVenoxis"]) or string.find(msg, L["trigger_aspectOfVenoxisResist"]) then
 		self:Sync(syncName.venoxis)

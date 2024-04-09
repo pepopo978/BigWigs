@@ -61,7 +61,7 @@ L:RegisterTranslations("enUS", function()
 		stomp_desc = "Warn for Stomp on tank",
 
 		--using self only because affects many people within the same second
-		trigger_conflagYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Conflagration.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_conflagYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Conflagration", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		say_conflagYou = "CONFLAG ON ME! RUN AWAY!",
 		bar_conflag = " Conflag",
 		trigger_conflagYouFade = "Conflagration" .. BigWigs.AURAREMOVEDSELF_SUFFIX, --CHAT_MSG_SPELL_AURA_GONE_SELF
@@ -74,17 +74,17 @@ L:RegisterTranslations("enUS", function()
 
 		trigger_blizzardPhase = "Elusive... Then face the might of the frost!", --CHAT_MSG_MONSTER_YELL
 		msg_blizzardPhase = "No longer casting Rain of Fire - Now casting Blizzard!",
-		trigger_blizzardYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Blizzard.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_blizzardYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Blizzard", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		msg_blizzardYou = "Move away from Blizzard!",
 		trigger_blizzardYouFade = "Blizzard" .. BigWigs.AURAREMOVEDSELF_SUFFIX, --CHAT_MSG_SPELL_AURA_GONE_SELF
 
 		trigger_rainOfFirePhase = "Fire will burn your corruption!", --CHAT_MSG_MONSTER_YELL
 		msg_rainOfFirePhase = "Now casting Rain of Fire! - No more Portals!",
-		trigger_rainOfFireYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Rain of Fire.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_rainOfFireYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Rain of Fire", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		msg_rainOfFireYou = "Move away from Rain of Fire!",
 		trigger_rainOfFireYouFade = "Rain of Fire" .. BigWigs.AURAREMOVEDSELF_SUFFIX, --CHAT_MSG_SPELL_AURA_GONE_SELF
 
-		trigger_sonicBurstYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Sonic Burst.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_sonicBurstYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Sonic Burst", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		msg_sonicBurstYou = "Sonic Burst is 20 yards...",
 
 
@@ -115,12 +115,12 @@ L:RegisterTranslations("enUS", function()
 
 		--unused
 		--p1 only, from adds, blue beam, stunnable, may cause clutter if warning this + conflag
-		trigger_mortalityScan = BigWigs.AURAHARMFULSELF_PREFIX .. "Mortality Scan.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_mortalityScan = BigWigs.AURAHARMFULSELF_PREFIX .. "Mortality Scan", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_mortalityScanFade = "Mortality Scan" .. BigWigs.AURAREMOVEDSELF_SUFFIX, --CHAT_MSG_SPELL_AURA_GONE_SELF
 
 		--unused
 		--p2 only, from traps and pillars, better to stand in this than other ability, so may not want to warn about
-		trigger_frostBreath = BigWigs.AURAHARMFULSELF_PREFIX .. "Frost Breath.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_frostBreath = BigWigs.AURAHARMFULSELF_PREFIX .. "Frost Breath", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_frostBreathFade = "Frost Breath" .. BigWigs.AURAREMOVEDSELF_SUFFIX, --CHAT_MSG_SPELL_AURA_GONE_SELF
 
 		--p3 only, 30-28%, 20-18%, 10-8%
@@ -129,7 +129,7 @@ L:RegisterTranslations("enUS", function()
 		msg_earthquakeDone = "Earthquake done! Melee in!",
 
 		trigger_stomp = "(.+) is afflicted by Stomp.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
-		trigger_stompYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Stomp.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_stompYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Stomp", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_stompFade = "Stomp fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_stomp = " Stomped",
 
@@ -377,13 +377,13 @@ function module:Event(msg)
 	if msg == L["trigger_engage"] then
 		module:SendEngageSync()
 
-	elseif msg == L["trigger_conflagYou"] then
+	elseif string.find(msg, L["trigger_conflagYou"]) then
 		self:Sync(syncName.conflag .. " " .. UnitName("Player"))
 		if self.db.profile.conflagyou then
 			SendChatMessage(L["say_conflagYou"], "SAY")
 		end
 
-	elseif msg == L["trigger_conflagYouFade"] then
+	elseif string.find(msg, L["trigger_conflagYouFade"]) then
 		self:Sync(syncName.conflagFade .. " " .. UnitName("Player"))
 
 	elseif string.find(msg, L["trigger_conflagHitYou"]) and self.db.profile.conflagyou then
@@ -419,25 +419,25 @@ function module:Event(msg)
 		self:Sync(syncName.stompFade .. " " .. stompFadePlayer)
 
 
-	elseif msg == L["trigger_blizzardYou"] and self.db.profile.blizzard then
+	elseif string.find(msg, L["trigger_blizzardYou"]) and self.db.profile.blizzard then
 		self:Message(L["msg_blizzardYou"], "Urgent", false, nil, false)
 		self:WarningSign(icon.blizzard, 10)
 		self:Sound("RunAway")
 
-	elseif msg == L["trigger_blizzardYouFade"] and self.db.profile.blizzard then
+	elseif string.find(msg, L["trigger_blizzardYouFade"]) and self.db.profile.blizzard then
 		self:RemoveWarningSign(icon.blizzard)
 
 
-	elseif msg == L["trigger_rainOfFireYou"] and self.db.profile.rainoffire then
+	elseif string.find(msg, L["trigger_rainOfFireYou"]) and self.db.profile.rainoffire then
 		self:Message(L["msg_rainOfFireYou"], "Urgent", false, nil, false)
 		self:WarningSign(icon.rainOfFire, 10)
 		self:Sound("RunAway")
 
-	elseif msg == L["trigger_rainOfFireYouFade"] and self.db.profile.rainoffire then
+	elseif string.find(msg, L["trigger_rainOfFireYouFade"]) and self.db.profile.rainoffire then
 		self:RemoveWarningSign(icon.rainOfFire)
 
 
-	elseif msg == L["trigger_sonicBurstYou"] and self.db.profile.sonicburst then
+	elseif string.find(msg, L["trigger_sonicBurstYou"]) and self.db.profile.sonicburst then
 		if UnitClass("Player") == "Priest" or UnitClass("Player") == "Mage" or UnitClass("Player") == "Warlock" or UnitClass("Player") == "Hunter" then
 			self:Message(L["msg_sonicBurstYou"], "Urgent", false, nil, false)
 			self:WarningSign(icon.sonicBurst, 1)

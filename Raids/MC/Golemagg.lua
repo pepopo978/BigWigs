@@ -29,7 +29,7 @@ L:RegisterTranslations("enUS", function()
 		trigger_earthquake = "Golemagg the Incinerator(%s?)'s Earthquake", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 		bar_earthquake = "Earthquake",
 
-		trigger_magmaSplash = BigWigs.AURAHARMFULSELF_PREFIX .. "Magma Splash %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_magmaSplash = BigWigs.AURAHARMFULSELF_PREFIX .. "Magma Splash %((.+)%)", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		msg_magmaSplash = "Warning - High Magma Splash Stacks: ",
 	}
 end)

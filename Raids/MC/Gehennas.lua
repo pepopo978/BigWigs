@@ -27,7 +27,7 @@ L:RegisterTranslations("enUS", function()
 		bar_curseCd = "Gehennas' Curse CD",
 		msg_curse = "Gehennas' Curse - Decurse!",
 
-		trigger_rainOfFire = BigWigs.AURAHARMFULSELF_PREFIX .. "Rain of Fire.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_rainOfFire = BigWigs.AURAHARMFULSELF_PREFIX .. "Rain of Fire", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_rainOfFireFade = "Rain of Fire" .. BigWigs.AURAREMOVEDSELF_SUFFIX, --CHAT_MSG_SPELL_AURA_GONE_SELF
 
 		msg_addDead = "/2 Flamewaker Dead",
@@ -107,9 +107,9 @@ function module:Event(msg)
 	if string.find(msg, L["trigger_curse"]) or string.find(msg, L["trigger_curse2"]) then
 		self:Sync(syncName.curse)
 
-	elseif msg == L["trigger_rainOfFire"] and self.db.profile.rain then
+	elseif string.find(msg, L["trigger_rainOfFire"]) and self.db.profile.rain then
 		self:RainOfFire()
-	elseif msg == L["trigger_rainOfFireFade"] and self.db.profile.rain then
+	elseif string.find(msg, L["trigger_rainOfFireFade"]) and self.db.profile.rain then
 		self:RainOfFireFade()
 	end
 end

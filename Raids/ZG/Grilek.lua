@@ -48,7 +48,7 @@ L:RegisterTranslations("enUS", function()
 		bar_groundTremorCd = "Ground Tremor CD",
 		bar_groundTremorDur = "Ground Tremor Stun",
 
-		trigger_rootsYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Entangling Roots.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_rootsYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Entangling Roots", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_rootsOther = "(.+) is afflicted by Entangling Roots.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_rootsFade = "Entangling Roots fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_roots = " Rooted",

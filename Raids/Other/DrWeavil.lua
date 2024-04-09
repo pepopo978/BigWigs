@@ -26,7 +26,7 @@ L:RegisterTranslations("enUS", function()
 		bar_mindShatterCd = "Mind Shatter CD",
 		bar_mindShatterSoon = "Mind Shatter Soon...",
 
-		trigger_mcYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Mental Domination.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_mcYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Mental Domination", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_mcOther = "(.+) is afflicted by Mental Domination.", --CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_mcFade = "Mental Domination fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_mc = " MC",

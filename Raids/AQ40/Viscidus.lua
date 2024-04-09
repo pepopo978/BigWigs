@@ -35,7 +35,7 @@ L:RegisterTranslations("enUS", function()
 		trigger_volley = "afflicted by Poison Bolt Volley.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		bar_volley = "Poison Bolt Volley",
 
-		trigger_toxin = BigWigs.AURAHARMFULSELF_PREFIX .. "Toxin.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_toxin = BigWigs.AURAHARMFULSELF_PREFIX .. "Toxin", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		msg_toxin = "Move from Toxin Cloud!",
 		trigger_toxinFade = "Toxin" .. BigWigs.AURAREMOVEDSELF_SUFFIX, --CHAT_MSG_SPELL_AURA_GONE_OTHER",
 
@@ -224,9 +224,9 @@ function module:Event(msg)
 	if string.find(msg, L["trigger_volley"]) then
 		self:Sync(syncName.volley)
 
-	elseif msg == L["trigger_toxin"] then
+	elseif string.find(msg, L["trigger_toxin"]) then
 		self:Toxin()
-	elseif msg == L["trigger_toxinFade"] then
+	elseif string.find(msg, L["trigger_toxinFade"]) then
 		self:ToxinFade()
 
 	elseif string.find(msg, L["trigger_frostDmg"]) or string.find(msg, L["trigger_chilledDmg"]) or string.find(msg, L["trigger_wintersChill"]) then

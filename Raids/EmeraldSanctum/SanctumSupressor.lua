@@ -17,7 +17,7 @@ L:RegisterTranslations("enUS", function()
 		emeraldsupression_name = "Emerald Supression Alert",
 		emeraldsupression_desc = "Warn for Emerald Supression",
 
-		trigger_emeraldSupressionYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Emerald Supression.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_emeraldSupressionYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Emerald Supression", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_emeraldSupressionOther = "(.+) is afflicted by Emerald Supression.", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
 		trigger_emeraldSupressionFade = "Emerald Supression fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY
 
@@ -113,7 +113,7 @@ function module:CheckForBossDeath(msg)
 end
 
 function module:Event(msg)
-	if msg == L["trigger_emeraldSupressionYou"] then
+	if string.find(msg, L["trigger_emeraldSupressionYou"]) then
 		self:Sync(syncName.emeraldSupressionOn .. " " .. UnitName("Player"))
 
 	elseif string.find(msg, L["trigger_emeraldSupressionFade"]) then

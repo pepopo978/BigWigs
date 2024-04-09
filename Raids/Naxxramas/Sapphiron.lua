@@ -54,7 +54,7 @@ L:RegisterTranslations("enUS", function()
 		msg_lifeDrain = "Life Drain, Decurse!",
 		bar_lifeDrain = "Life Drain",
 
-		trigger_iceboltYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Icebolt.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_iceboltYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Icebolt", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_iceboltOther = "(.+) is afflicted by Icebolt.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		msg_iceBlock = "Ice Block on ",
 
@@ -74,7 +74,7 @@ L:RegisterTranslations("enUS", function()
 		msg_enrage10 = "10sec to Enrage!",
 
 
-		trigger_blizzardYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Chill.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_blizzardYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Chill", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_blizzardYouFade = "Chill" .. BigWigs.AURAREMOVEDSELF_SUFFIX, --CHAT_MSG_SPELL_AURA_GONE_SELF
 
 		trigger_tailSweepYou = "Sapphiron(%s?)'s Tail Sweep" .. BigWigs.COMBATHITOTHERSELF_SUFFIX, --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
@@ -273,16 +273,16 @@ function module:Event(msg)
 	elseif string.find(msg, L["trigger_iceboltHits"]) then
 		self:Sync(syncName.iceboltHits)
 
-	elseif msg == L["trigger_iceboltYou"] then
+	elseif string.find(msg, L["trigger_iceboltYou"]) then
 		self:Sync(syncName.iceBlock .. " " .. UnitName("Player"))
 
 	elseif string.find(msg, L["trigger_iceboltOther"]) then
 		local _, _, iceBlockPerson, _ = string.find(msg, L["trigger_iceboltOther"])
 		self:Sync(syncName.iceBlock .. " " .. iceBlockPerson)
 
-	elseif msg == L["trigger_blizzardYou"] and self.db.profile.blizzard then
+	elseif string.find(msg, L["trigger_blizzardYou"]) and self.db.profile.blizzard then
 		self:Blizzard()
-	elseif msg == L["trigger_blizzardYouFade"] and self.db.profile.blizzard then
+	elseif string.find(msg, L["trigger_blizzardYouFade"]) and self.db.profile.blizzard then
 		self:BlizzardFade()
 
 	elseif string.find(msg, L["trigger_tailSweepYou"]) and self.db.profile.tailsweep then

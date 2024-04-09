@@ -30,7 +30,7 @@ L:RegisterTranslations("enUS", function()
 
 
 		trigger_wyvernSting = "afflicted by Wyvern Sting", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
-		trigger_wyvernStingYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Wyvern Sting.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_wyvernStingYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Wyvern Sting", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_wyvernStingYouFade = "Wyvern Sting" .. BigWigs.AURAREMOVEDSELF_SUFFIX, --CHAT_MSG_SPELL_AURA_GONE_SELF
 		bar_wyvernStingDuration = "Wyvern Stung",
 		bar_wyvernStingCd = "Wyvern Sting CD",
@@ -42,7 +42,7 @@ L:RegisterTranslations("enUS", function()
 		msg_frenzy = "Frenzy - Tranq Shot!",
 
 		trigger_noxiousPoison = "afflicted by Noxious Poison", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
-		trigger_noxiousPoisonYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Noxious Poison.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_noxiousPoisonYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Noxious Poison", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_noxiousPoisonYouFade = "Noxious Poison" .. BigWigs.AURAREMOVEDSELF_SUFFIX, --CHAT_MSG_SPELL_AURA_GONE_SELF
 		bar_noxiousPoisonDuration = "People Silenced",
 		bar_noxiousPoisonCd = "Noxious Poison CD",
@@ -141,15 +141,15 @@ function module:OnDisengage()
 end
 
 function module:Event(msg)
-	if msg == L["trigger_noxiousPoisonYou"] then
+	if string.find(msg, L["trigger_noxiousPoisonYou"]) then
 		self:WarningSign(icon.noxiousPoison, timer.noxiousPoisonDuration)
-	elseif msg == L["trigger_noxiousPoisonYouFade"] then
+	elseif string.find(msg, L["trigger_noxiousPoisonYouFade"]) then
 		self:RemoveWarningSign(icon.noxiousPoison)
 	end
 
-	if msg == L["trigger_wyvernStingYou"] then
+	if string.find(msg, L["trigger_wyvernStingYou"]) then
 		self:WarningSign(icon.wyvernSting, timer.wyvernStingDuration)
-	elseif msg == L["trigger_wyvernStingYouFade"] then
+	elseif string.find(msg, L["trigger_wyvernStingYouFade"]) then
 		self:RemoveWarningSign(icon.wyvernSting)
 	end
 

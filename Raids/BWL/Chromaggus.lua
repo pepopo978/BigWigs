@@ -86,7 +86,7 @@ L:RegisterTranslations("enUS", function()
 		starfire = "Starfire",
 		thunderfury = "Thunderfury",
 
-		bronze = BigWigs.AURAHARMFULSELF_PREFIX .. "Brood Affliction: Bronze.",
+		bronze = BigWigs.AURAHARMFULSELF_PREFIX .. "Brood Affliction: Bronze",
 	}
 end)
 

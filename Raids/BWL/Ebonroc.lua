@@ -12,7 +12,7 @@ L:RegisterTranslations("enUS", function()
 	return {
 		wingbuffet_trigger = "Ebonroc begins to cast Wing Buffet.",
 		shadowflame_trigger = "Ebonroc begins to cast Shadow Flame.",
-		shadowcurseyou_trigger = BigWigs.AURAHARMFULSELF_PREFIX .. "Shadow of Ebonroc\.",
+		shadowcurseyou_trigger = BigWigs.AURAHARMFULSELF_PREFIX .. "Shadow of Ebonroc",
 		shadowcurseother_trigger = "(.+) is afflicted by Shadow of Ebonroc\.",
 		wingbuffet_message = "Wing Buffet! Next one in 30 seconds!",
 		wingbuffet_warning = "TAUNT now! Wing Buffet soon!",

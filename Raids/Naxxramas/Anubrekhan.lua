@@ -161,7 +161,7 @@ function module:Event(msg)
 
 	elseif string.find(msg, L["trigger_locustSwarmYou"]) and self.db.profile.locust then
 		self:LocustYou()
-	elseif msg == L["trigger_locustSwarmYouFade"] then
+	elseif string.find(msg, L["trigger_locustSwarmYouFade"]) then
 		self:LocustYouFade()
 
 	elseif string.find(msg, L["trigger_impale"]) then

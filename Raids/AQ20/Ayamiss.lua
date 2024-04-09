@@ -18,7 +18,7 @@ L:RegisterTranslations("enUS", function()
 
 
 		sacrificeother_trigger = "(.*) is afflicted by Paralyze.",
-		sacrificeyou_trigger = BigWigs.AURAHARMFULSELF_PREFIX .. "Paralyze.",
+		sacrificeyou_trigger = BigWigs.AURAHARMFULSELF_PREFIX .. "Paralyze",
 		sacrificeend_trigger = "Paralyze fades from",
 
 		larva_bar = "Larva >Click Me!<",

@@ -17,7 +17,7 @@ L:RegisterTranslations("enUS", function()
 		deathcoil_desc = "Warn for Death Coil",
 
 
-		trigger_deathCoilYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Death Coil.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_deathCoilYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Death Coil", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_deathCoilOther = "(.+) is afflicted by Death Coil.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_deathCoilFade = "Death Coil fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_PARTY_OTHER // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_deathCoil = " Death Coil",

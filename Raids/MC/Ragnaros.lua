@@ -77,7 +77,7 @@ L:RegisterTranslations("enUS", function()
 		trigger_meltWeapon = "Ragnaros casts Melt Weapon on you: (.+) damaged.", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 		bar_melt = "Melt Damage: ",
 
-		trigger_elementalFireYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Elemental Fire.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_elementalFireYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Elemental Fire", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_elementalFireOther = "(.+) is afflicted by Elemental Fire.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE //CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_elementalFireFade = "Elemental Fire fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHERà
 		bar_elementalFire = " Elemental Fire",
@@ -279,7 +279,7 @@ function module:Event(msg)
 		self:MeltWeapon(meltWeapon)
 
 
-	elseif msg == L["trigger_elementalFireYou"] then
+	elseif string.find(msg, L["trigger_elementalFireYou"]) then
 		self:Sync(syncName.elementalFire .. " " .. UnitName("Player"))
 
 	elseif string.find(msg, L["trigger_elementalFireOther"]) then

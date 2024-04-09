@@ -33,7 +33,7 @@ L:RegisterTranslations("enUS", function()
 		icon_desc = "Put a Raid Icon on the person who's the bomb. (Requires assistant or higher)",
 
 
-		trigger_bombYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Living Bomb.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_bombYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Living Bomb", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_bombOther = "(.+) is afflicted by Living Bomb.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_bombFade = "Living Bomb fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_bomb = " Bomb!",
@@ -151,7 +151,7 @@ function module:OnDisengage()
 end
 
 function module:Event(msg)
-	if msg == L["trigger_bombYou"] then
+	if string.find(msg, L["trigger_bombYou"]) then
 		self:Sync(syncName.bomb .. " " .. UnitName("Player"))
 
 	elseif string.find(msg, L["trigger_bombOther"]) then

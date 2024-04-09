@@ -21,12 +21,12 @@ L:RegisterTranslations("enUS", function()
 		consume_desc = "Warns for Consume",
 
 
-		trigger_contagionOfRotYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Contagion of Rot.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_contagionOfRotYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Contagion of Rot", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_contagionOfRotOther = "(.+) is afflicted by Contagion of Rot.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_contagionOfRotFade = "Contagion of Rot fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_contagionOfRot = " Contagion",
 
-		trigger_consumeYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Consume.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_consumeYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Consume", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_consumeOther = "(.+) is afflicted by Consume.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_consumeFade = "Consume fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_consume = " Consumed",
@@ -80,7 +80,7 @@ function module:OnDisengage()
 end
 
 function module:Event(msg)
-	if msg == L["trigger_contagionOfRotYou"] then
+	if string.find(msg, L["trigger_contagionOfRotYou"]) then
 		self:Sync(syncName.contagionOfRot .. " " .. UnitName("Player"))
 
 	elseif string.find(msg, L["trigger_contagionOfRotOther"]) then

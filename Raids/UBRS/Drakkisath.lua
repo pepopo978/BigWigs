@@ -37,13 +37,13 @@ L:RegisterTranslations("enUS", function()
 		adds_desc = "Announces dead Chromatic Elite Guards",
 
 
-		trigger_conflagSelf = BigWigs.AURAHARMFULSELF_PREFIX .. "Conflagration.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_conflagSelf = BigWigs.AURAHARMFULSELF_PREFIX .. "Conflagration", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_conflagOther = "(.+) is afflicted by Conflagration.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_conflagFade = "Conflagration fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_Other
 		bar_conflag = " Conflag",
 		msg_conflag = " Conflag",
 
-		trigger_flamestrike = BigWigs.AURAHARMFULSELF_PREFIX .. "Flamestrike.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_flamestrike = BigWigs.AURAHARMFULSELF_PREFIX .. "Flamestrike", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_flamestrikeFade = "Flamestrike" .. BigWigs.AURAREMOVEDSELF_SUFFIX, --CHAT_MSG_SPELL_AURA_GONE_SELF
 		msg_flamestrike = "Move away from Flamestrike!",
 
@@ -115,9 +115,9 @@ function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
 end
 
 function module:Event(msg)
-	if msg == L["trigger_flamestrike"] then
+	if string.find(msg, L["trigger_flamestrike"]) then
 		self:Flamestrike()
-	elseif msg == L["trigger_flamestrikeFade"] then
+	elseif string.find(msg, L["trigger_flamestrikeFade"]) then
 		self:FlamestrikeFade()
 
 	elseif string.find(msg, L["trigger_conflagProxy"]) then

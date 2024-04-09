@@ -49,7 +49,7 @@ L:RegisterTranslations("enUS", function()
 		msg_enrage10 = "Enrage in 10 seconds",
 		msg_enrage = "Twins are enraged",
 
-		trigger_blizzard = BigWigs.AURAHARMFULSELF_PREFIX .. "Blizzard.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_blizzard = BigWigs.AURAHARMFULSELF_PREFIX .. "Blizzard", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_blizzardFade = "Blizzard" .. BigWigs.AURAREMOVEDSELF_SUFFIX, --CHAT_MSG_SPELL_AURA_GONE_SELF
 		msg_blizzard = "Run from Blizzard!",
 

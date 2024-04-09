@@ -40,7 +40,7 @@ L:RegisterTranslations("enUS", function()
 		trigger_p2 = "It is my duty to protect and watch over this tower, as approved by my master. I shall make sure to endulge in your little spectacle. Why don't we put on a show for those in attendance, hmm? Legalbrow, if you would please, play my theme.", --CHAT_MSG_MONSTER_YELL
 		bar_p2 = "Moroes Phase 2",
 
-		trigger_smokeBombYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Smoke Bomb.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_smokeBombYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Smoke Bomb", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_smokeBombOther = "(.+) is afflicted by Smoke Bomb.", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
 		trigger_smokeBombFade = "Smoke Bomb fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
 		bar_smokeBomb = "Players Smoke Bombed",
@@ -50,7 +50,7 @@ L:RegisterTranslations("enUS", function()
 		bar_reflect = "Spell Reflect!",
 		msg_reflect = "Spell Reflect!",
 
-		trigger_shuffleKickYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Shuffle Kick.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_shuffleKickYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Shuffle Kick", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_shuffleKick = "(.+) is afflicted by Shuffle Kick.", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
 		trigger_shuffleKickFade = "Shuffle Kick fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
 		bar_shuffleKick = " Kicked",
@@ -58,7 +58,7 @@ L:RegisterTranslations("enUS", function()
 		trigger_curse = "afflicted by Moroes Curse.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		msg_curse = "Moroes Curse, Decurse!",
 
-		trigger_dustYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Glittering Dust.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_dustYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Glittering Dust", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_dust = "(.+) is afflicted by Glittering Dust.", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
 		trigger_dustFade = "Glittering Dust fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
 		bar_dust = " Dusted",
@@ -161,7 +161,7 @@ function module:CHAT_MSG_MONSTER_YELL(msg, sender)
 end
 
 function module:Event(msg)
-	if msg == L["trigger_smokeBombYou"] then
+	if string.find(msg, L["trigger_smokeBombYou"]) then
 		self:Sync(syncName.smokeBomb2)
 
 	elseif string.find(msg, L["trigger_smokeBombOther"]) then

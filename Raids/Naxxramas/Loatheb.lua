@@ -51,7 +51,7 @@ L:RegisterTranslations("enUS", function()
 
 		startwarn = "Loatheb engaged, 2 min to Inevitable Doom!",
 
-		trigger_corruptedMind = BigWigs.AURAHARMFULSELF_PREFIX .. "Corrupted Mind.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_corruptedMind = BigWigs.AURAHARMFULSELF_PREFIX .. "Corrupted Mind", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		bar_corruptedMind = "Your Corrupted Mind",
 		trigger_corruptedMindFade = "Corrupted Mind" .. BigWigs.AURAREMOVEDSELF_SUFFIX, --CHAT_MSG_SPELL_AURA_GONE_SELF
 
@@ -292,9 +292,9 @@ end
 function module:Event(msg)
 	if string.find(msg, L["doomtrigger"]) then
 		self:Sync(syncName.doom .. " " .. tostring(numDoom + 1))
-	elseif msg == L["trigger_corruptedMind"] then
+	elseif string.find(msg, L["trigger_corruptedMind"]) then
 		self:Bar(L["bar_corruptedMind"], timer.corruptedMind, icon.corruptedMind, true, color.corruptedMind)
-	elseif msg == L["trigger_corruptedMindFade"] then
+	elseif string.find(msg, L["trigger_corruptedMindFade"]) then
 		self:RemoveBar(L["bar_corruptedMind"])
 		self:WarningSign(icon.corruptedMind, 0.7)
 	end

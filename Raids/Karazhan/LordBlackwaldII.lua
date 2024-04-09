@@ -33,12 +33,12 @@ L:RegisterTranslations("enUS", function()
 		bar_reaverstormCd = "Reaver Storm CD",
 		bar_reaverstormCast = "Reaver Storm Cast",
 
-		trigger_boonYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Blackwalds Boon.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_boonYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Blackwalds Boon", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_boonOther = "(.+) is afflicted by Blackwalds Boon.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_boonFade = "Blackwalds Boon fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_boon = "Boon on ",
 
-		trigger_empoweredSoulYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Empowered Soul.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_empoweredSoulYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Empowered Soul", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_empoweredSoulOther = "(.+) is afflicted by Empowered Soul.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		bar_empoweredSoul = " Empowered",
 
@@ -126,7 +126,7 @@ function module:Event(msg)
 		self:Sync(syncName.reaverstorm)
 
 
-	elseif msg == L["trigger_boonYou"] then
+	elseif string.find(msg, L["trigger_boonYou"]) then
 		self:Sync(syncName.boon .. " " .. UnitName("Player"))
 
 	elseif string.find(msg, L["trigger_boonOther"]) then

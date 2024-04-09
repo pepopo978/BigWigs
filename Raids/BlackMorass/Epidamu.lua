@@ -20,12 +20,12 @@ L:RegisterTranslations("enUS", function()
 		temporalconflux_name = "Temporal Conflux Alert",
 		temporalconflux_desc = "Warns for Temporal Conflux",
 
-		trigger_drainManaYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Drain Mana.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_drainManaYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Drain Mana", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_drainManaOther = "(.+) is afflicted by Drain Mana.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_drainManaFade = "Drain Mana fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_drainMana = " Drain Mana",
 
-		trigger_temporalConfluxYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Temporal Conflux.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_temporalConfluxYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Temporal Conflux", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_temporalConfluxOther = "(.+) is afflicted by Temporal Conflux.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_temporalConfluxFade = "Temporal Conflux fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_temporalConflux = " Temporal Conflux",

@@ -31,7 +31,7 @@ L:RegisterTranslations("enUS", function()
 
 		trigger_engage = "Who dares defile the sanctity of the morass...", --CHAT_MSG_MONSTER_YELL
 
-		trigger_mossCoveredHandsYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Moss Covered Hands.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_mossCoveredHandsYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Moss Covered Hands", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_mossCoveredHandsOther = "(.+) is afflicted by Moss Covered Hands.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_mossCoveredHandsFade = "Moss Covered Hands fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_mossCoveredHands = " Moss",
@@ -124,7 +124,7 @@ function module:CHAT_MSG_MONSTER_YELL(msg, sender)
 end
 
 function module:Event(msg)
-	if msg == L["trigger_mossCoveredHandsYou"] then
+	if string.find(msg, L["trigger_mossCoveredHandsYou"]) then
 		self:Sync(syncName.mossCoveredHands .. " " .. UnitName("Player"))
 
 	elseif string.find(msg, L["trigger_mossCoveredHandsOther"]) then

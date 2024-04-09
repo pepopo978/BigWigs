@@ -149,7 +149,7 @@ L:RegisterTranslations("enUS", function()
 		trigger_mcYell2 = "There will be no escape!",
 		msg_mc = "Mind Control!",
 
-		trigger_mcYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Chains of Kel'Thuzad.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_mcYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Chains of Kel'Thuzad", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_mcOther = "(.+) is afflicted by Chains of Kel'Thuzad.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_mcFade = "Chains of Kel'Thuzad fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_mcAfflic = " MC",
@@ -161,7 +161,7 @@ L:RegisterTranslations("enUS", function()
 		msg_fissure = "Shadow Fissure!",
 
 		trigger_frostBlastYell = "I will freeze the blood in your veins!", --CHAT_MSG_MONSTER_YELL
-		trigger_frostBlastYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Frost Blast.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_frostBlastYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Frost Blast", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_frostBlastOther = "(.+) is afflicted by Frost Blast.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE, CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
 		bar_frostBlastCd = "Frost Blast CD",
 		bar_frostBlastAfflic = "Frost Blast",
@@ -169,7 +169,7 @@ L:RegisterTranslations("enUS", function()
 		--unused
 		trigger_frostBlastFade = "Frost Blast fades from (.+)", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 
-		trigger_detonateYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Detonate Mana.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_detonateYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Detonate Mana", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_detonateOther = "(.+) is afflicted by Detonate Mana.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
 		trigger_detonateFade = "Detonate Mana fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_detonateAfflic = " Detonate",
@@ -519,11 +519,11 @@ function module:ResetModule()
 	numAbomDead = 0
 	numWeaverDead = 0
 	bloodTapCounter = 0
-	
+
 	if self.db.profile.proximity then
 		self:TriggerEvent("BigWigs_HideProximity")
 	end
-	
+
 	if self.db.profile.frostblastframe then
 		BigWigsFrostBlast:FBClose()
 	end
@@ -582,7 +582,7 @@ function module:CHAT_MSG_COMBAT_FRIENDLY_DEATH(msg)
 end
 
 function module:Event(msg)
-	if msg == L["trigger_mcYou"] then
+	if string.find(msg, L["trigger_mcYou"]) then
 		self:Sync(syncName.mc .. " " .. UnitName("Player"))
 
 	elseif string.find(msg, L["trigger_mcOther"]) then

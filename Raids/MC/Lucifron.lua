@@ -44,7 +44,7 @@ L:RegisterTranslations("enUS", function()
 		trigger_shadowShock = "Lucifron(%s?)'s Shadow Shock", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 		bar_shadowShockCd = "Shadow Shock CD",
 
-		trigger_mcYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Dominate Mind.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_mcYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Dominate Mind", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_mcOther = "(.+) is afflicted by Dominate Mind.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
 		trigger_mcFade = "Dominate Mind fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_mcCd = "Next MC",
@@ -197,7 +197,7 @@ function module:Event(msg)
 	elseif msg == L["trigger_mcCast"] then
 		self:Sync(syncName.mcCast)
 
-	elseif msg == L["trigger_mcYou"] then
+	elseif string.find(msg, L["trigger_mcYou"]) then
 		self:Sync(syncName.mc .. " " .. UnitName("Player"))
 
 	elseif string.find(msg, L["trigger_mcOther"]) then

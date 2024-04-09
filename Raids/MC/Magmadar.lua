@@ -34,7 +34,7 @@ L:RegisterTranslations("enUS", function()
 		bar_frenzyDur = "Frenzy!",
 		msg_frenzy = "Frenzy - Tranq now!",
 
-		trigger_conflagYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Conflagration.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_conflagYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Conflagration", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 	}
 end)
 
@@ -127,7 +127,7 @@ function module:Event(msg)
 	elseif msg == L["trigger_frenzyFade"] then
 		self:Sync(syncName.frenzyFade)
 
-	elseif msg == L["trigger_conflagYou"] and self.db.profile.conflagration then
+	elseif string.find(msg, L["trigger_conflagYou"]) and self.db.profile.conflagration then
 		self:Conflagration()
 	end
 end

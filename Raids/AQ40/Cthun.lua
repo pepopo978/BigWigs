@@ -126,7 +126,7 @@ L:RegisterTranslations("enUS", function()
 		msg_weakened = "C'Thun is Weakened!",
 		msg_weakenedFade = "Weaken is Over",
 
-		trigger_digestiveAcid = BigWigs.AURAHARMFULSELF_PREFIX .. "Digestive Acid %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_digestiveAcid = BigWigs.AURAHARMFULSELF_PREFIX .. "Digestive Acid %((.+)%)", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		msg_digestiveAcid = " Acid Stacks - Consider getting out of the Stomach",
 
 		hpBar_firstTentacle = "First Tentacle",

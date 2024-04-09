@@ -32,7 +32,7 @@ L:RegisterTranslations("enUS", function()
 		msg_reflect = "Chronar is reflecting Spells!",
 
 		trigger_msOther = "(.+) is afflicted by Mortal Strike.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
-		trigger_msYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Mortal Strike.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_msYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Mortal Strike", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_msFade = "Mortal Strike fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_ms = " Mortal Strike",
 

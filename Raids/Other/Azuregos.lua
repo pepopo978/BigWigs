@@ -38,8 +38,8 @@ L:RegisterTranslations("enUS", function()
 
 
 		--increasing the time between their attacks by 300%, and movement speed by 40%
-		trigger_chillYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Chill.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
-		trigger_chillOther = "(.+) is afflicted by Chill.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+		trigger_chillYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Chill", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_chillOther = "(.+) is afflicted by Chill", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_chillFade = "Chill fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_chillCd = "Chill CD",
 		bar_chillAfflic = " Chilled",
@@ -64,7 +64,7 @@ L:RegisterTranslations("enUS", function()
 		msg_reflectYou = "Spell Reflect - Stop Killing Yourself!",
 
 		--Blizzard-like AoE but burns mana
-		trigger_manaStormYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Manastorm.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_manaStormYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Manastorm", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_manaStormYouFade = "Manastorm" .. BigWigs.AURAREMOVEDSELF_SUFFIX, --CHAT_MSG_SPELL_AURA_GONE_SELF
 		msg_manaStorm = "Move away from Mana Storm!",
 
@@ -235,7 +235,7 @@ function module:Event(msg)
 		self:SelfReflect()
 	end
 
-	if msg == L["trigger_chillYou"] then
+	if string.find(msg, L["trigger_chillYou"]) then
 		self:Sync(syncName.chill)
 
 	elseif string.find(msg, L["trigger_chillOther"]) then

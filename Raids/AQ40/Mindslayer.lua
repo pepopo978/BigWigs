@@ -25,13 +25,13 @@ L:RegisterTranslations("enUS", function()
 		disorient_desc = "Warn for Mana Burn Disorient",
 
 
-		trigger_mcYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Cause Insanity.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_mcYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Cause Insanity", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_mcOther = "(.+) is afflicted by Cause Insanity.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
 		trigger_mcFade = "Cause Insanity fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_mc = " MC",
 		msg_mc = "MC on ",
 
-		trigger_mindFlayYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Mind Flay.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_mindFlayYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Mind Flay", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_mindFlayOther = "(.*) is afflicted by Mind Flay.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
 		trigger_mindFlayFade = "Mind Flay fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_mindFlay = " Mind Flay",
@@ -171,7 +171,7 @@ function module:UNIT_HEALTH(msg)
 end
 
 function module:Event(msg)
-	if msg == L["trigger_mcYou"] then
+	if string.find(msg, L["trigger_mcYou"]) then
 		self:Sync(syncName.mc .. " " .. UnitName("player"))
 	elseif string.find(msg, L["trigger_mcOther"]) then
 		local _, _, mcPlayer, _ = string.find(msg, L["trigger_mcOther"])
@@ -183,7 +183,7 @@ function module:Event(msg)
 		end
 		self:Sync(syncName.mcFade .. " " .. mcFadePlayer)
 
-	elseif msg == L["trigger_mindFlayYou"] then
+	elseif string.find(msg, L["trigger_mindFlayYou"]) then
 		self:Sync(syncName.mindFlay .. " " .. UnitName("player"))
 	elseif string.find(msg, L["trigger_mindFlayOther"]) then
 		local _, _, mindFlayPlayer, _ = string.find(msg, L["trigger_mindFlayOther"])

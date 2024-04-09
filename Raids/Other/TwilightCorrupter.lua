@@ -27,7 +27,7 @@ L:RegisterTranslations("enUS", function()
 
 		--MC, 1 person, 30sec duration, then 8sec CD
 		trigger_creatureOfNightmare = "(.+) is afflicted by Creature of Nightmare.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
-		trigger_creatureOfNightmareYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Creature of Nightmare.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_creatureOfNightmareYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Creature of Nightmare", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_creatureOfNightmareFade = "Creature of Nightmare fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY //CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_creatureOfNightmareAfflic = " MC",
 		bar_creatureOfNightmareCd = "MC CD",

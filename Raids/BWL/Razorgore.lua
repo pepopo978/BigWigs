@@ -17,16 +17,16 @@ L:RegisterTranslations("enUS", function()
 		mobs_soon = "First Wave in 5sec!",
 		mobs_bar = "First Wave",
 		orbcontrolother_trigger = "(.+) is afflicted by Mind Exhaustion\.",
-		orbcontrolyou_trigger = BigWigs.AURAHARMFULSELF_PREFIX .. "Mind Exhaustion\.",
+		orbcontrolyou_trigger = BigWigs.AURAHARMFULSELF_PREFIX .. "Mind Exhaustion",
 		mindcontrolother_trigger = "(.+) is afflicted by Dominate Mind\.",
-		mindcontrolyou_trigger = BigWigs.AURAHARMFULSELF_PREFIX .. "Dominate Mind\.",
+		mindcontrolyou_trigger = BigWigs.AURAHARMFULSELF_PREFIX .. "Dominate Mind",
 		mindcontrol_message = "%s is mindcontrolled!",
 		mindcontrol_message_you = "You are mindcontrolled!",
 		mindcontrol_bar = "MC: %s",
 		mindcontrolyouend_trigger = "Dominate Mind" .. BigWigs.AURAREMOVEDSELF_SUFFIX,
 		mindcontrolotherend_trigger = "Dominate Mind fades from (.+)\.",
 		polymorphother_trigger = "(.+) is afflicted by Greater Polymorph\.",
-		polymorphyou_trigger = BigWigs.AURAHARMFULSELF_PREFIX .. "Greater Polymorph\.",
+		polymorphyou_trigger = BigWigs.AURAHARMFULSELF_PREFIX .. "Greater Polymorph",
 		polymorph_message = "%s is polymorphed! Dispel!",
 		polymorph_message_you = "You are polymorphed!",
 		polymorph_bar = "Polymorph:%s",
@@ -393,15 +393,15 @@ function module:Events(msg)
 	if self.db.profile.icon then
 		if mcother then
 			self:Icon(mcother)
-		elseif msg == L["mindcontrolyou_trigger"] then
+		elseif string.find(msg, L["mindcontrolyou_trigger"]) then
 			self:Icon(UnitName("player"))
-		elseif mcotherend or msg == L["mindcontrolyouend_trigger"] or deathother or msg == L["deathyou_trigger"] then
+		elseif mcotherend or string.find(msg, L["mindcontrolyouend_trigger"]) or deathother or msg == L["deathyou_trigger"] then
 			self:RemoveIcon()
 		end
 	end
 
 	if self.db.profile.mc then
-		if msg == L["mindcontrolyou_trigger"] then
+		if string.find(msg, L["mindcontrolyou_trigger"]) then
 			self:Message(L["mindcontrol_message_you"], "Important")
 			self:Bar(string.format(L["mindcontrol_bar"], UnitName("player")), timer.mc, "Spell_Shadow_ShadowWordDominate", true, "black")
 			self:SetCandyBarOnClick("BigWigsBar " .. string.format(L["mindcontrol_bar"], UnitName("player")), function(name, button, extra)
@@ -421,7 +421,7 @@ function module:Events(msg)
 	end
 
 	if self.db.profile.polymorph then
-		if msg == L["polymorphyou_trigger"] then
+		if string.find(msg, L["polymorphyou_trigger"]) then
 			self:Message(L["polymorph_message_you"], "Important")
 			self:Bar(string.format(L["polymorph_bar"], UnitName("player")), timer.polymorph, "Spell_Nature_Brilliance", true, "cyan")
 			self:SetCandyBarOnClick("BigWigsBar " .. string.format(L["polymorph_bar"], UnitName("player")), function(name, button, extra)
@@ -433,7 +433,7 @@ function module:Events(msg)
 			self:SetCandyBarOnClick("BigWigsBar " .. string.format(L["polymorph_bar"], polyother), function(name, button, extra)
 				TargetByName(extra, true)
 			end, polyother)
-		elseif msg == L["polymorphyouend_trigger"] then
+		elseif string.find(msg, L["polymorphyouend_trigger"]) then
 			self:RemoveBar(string.format(L["polymorph_bar"], UnitName("player")))
 		elseif polyotherend then
 			self:RemoveBar(string.format(L["polymorph_bar"], polyotherend))
@@ -443,7 +443,7 @@ function module:Events(msg)
 	if self.db.profile.orb then
 		if orbother then
 			self:Sync(syncName.orb .. " " .. orbother)
-		elseif msg == L["orbcontrolyou_trigger"] then
+		elseif string.find(msg, L["orbcontrolyou_trigger"]) then
 			self:Sync(syncName.orb .. " " .. UnitName("player"))
 		end
 	end

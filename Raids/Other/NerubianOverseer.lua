@@ -49,23 +49,23 @@ L:RegisterTranslations("enUS", function()
 		trigger_venomSpit = "afflicted by Venom Spit", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		bar_venomSpit = "Venom Spit",
 
-		trigger_poisonCloud = BigWigs.AURAHARMFULSELF_PREFIX .. "Poison Cloud.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_poisonCloud = BigWigs.AURAHARMFULSELF_PREFIX .. "Poison Cloud", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_poisonCloudFade = "Poison Cloud" .. BigWigs.AURAREMOVEDSELF_SUFFIX, --CHAT_MSG_SPELL_AURA_GONE_SELF
 
 		-- -5k armor, 700dmg/5sec 30sec, poison
 		trigger_corrosivePoison = "(.+) is afflicted by Corrosive Poison.", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
-		trigger_corrosivePoisonYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Corrosive Poison.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_corrosivePoisonYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Corrosive Poison", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_corrosivePoisonFade = "Corrosive Poison fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
 		bar_corrosivePoison = " Corrosive Poison",
 
 		-- -90% healing, 30sec, happens on anyone, often, only warn if on tank
 		trigger_necroticPoison = "(.+) is afflicted by Necrotic Poison.", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
-		trigger_necroticPoisonYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Necrotic Poison.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_necroticPoisonYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Necrotic Poison", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_necroticPoisonFade = "Necrotic Poison fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
 		bar_necroticPoison = " Necrotic Poison",
 
 		trigger_webSpray = "(.+) is afflicted by Web Spray.", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
-		trigger_webSprayYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Web Spray.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_webSprayYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Web Spray", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		bar_webSprayCd = "Next Web Spray",
 		bar_webSprayAfflic = " Web Spray",
 
@@ -194,7 +194,7 @@ function module:Event(msg)
 		local _, _, corrosivePlayer, _ = string.find(msg, L["trigger_corrosivePoison"])
 		self:Sync(syncName.corrosivePoison .. " " .. corrosivePlayer)
 
-	elseif msg == L["trigger_corrosivePoisonYou"] then
+	elseif string.find(msg, L["trigger_corrosivePoisonYou"]) then
 		self:Sync(syncName.corrosivePoison .. " " .. UnitName("Player"))
 
 	elseif string.find(msg, L["trigger_corrosivePoisonFade"]) then

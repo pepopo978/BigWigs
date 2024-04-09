@@ -24,8 +24,8 @@ L:RegisterTranslations("enUS", function()
 		trigger_watchEnd = "Buru Egg(%s?)'s Explosion hits Buru the Gorger for", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 		msg_watchEnd = "Buru stopped following you.",
 
-		trigger_dismemberYouOne = BigWigs.AURAHARMFULSELF_PREFIX .. "Dismember.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
-		trigger_dismemberYouMore = BigWigs.AURAHARMFULSELF_PREFIX .. "Dismember %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_dismemberYouOne = BigWigs.AURAHARMFULSELF_PREFIX .. "Dismember", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_dismemberYouMore = BigWigs.AURAHARMFULSELF_PREFIX .. "Dismember %((.+)%)", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_dismemberOtherOne = "(.+) is afflicted by Dismember.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_dismemberOtherMore = "(.+) is afflicted by Dismember %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		bar_dismember = " Dismember",
@@ -140,12 +140,12 @@ function module:UNIT_HEALTH(arg1)
 end
 
 function module:Event(msg)
-	if msg == L["trigger_dismemberYouOne"] then
+	if string.find(msg, L["trigger_dismemberYouOne"]) then
 		local dismemberPlayerAndDismemberQty = UnitName("Player") .. " " .. "1"
 		self:Sync(syncName.dismember .. " " .. dismemberPlayerAndDismemberQty)
 
 	elseif string.find(msg, L["trigger_dismemberYouMore"]) then
-		local _, _, dismemberQty, _ = string.find(msg, L["trigger_dismemberYouMore"])
+		local _, _, _, dismemberQty, _ = string.find(msg, L["trigger_dismemberYouMore"])
 		local dismemberPlayerAndDismemberQty = UnitName("Player") .. " " .. dismemberQty
 		self:Sync(syncName.dismember .. " " .. dismemberPlayerAndDismemberQty)
 

@@ -17,7 +17,7 @@ L:RegisterTranslations("enUS", function()
 		wyrmkinsvenom_name = "Wyrmkins Venom Alert",
 		wyrmkinsvenom_desc = "Warn for Wyrmkins Venom",
 
-		trigger_wyrmkinsVenomYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Wyrmkins Venom.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_wyrmkinsVenomYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Wyrmkins Venom", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_wyrmkinsVenomFade = "Wyrmkins Venom fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY
 		trigger_wyrmkinsVenomOther = "(.+) is afflicted by Wyrmkins Venom.", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
 
@@ -113,7 +113,7 @@ function module:CheckForBossDeath(msg)
 end
 
 function module:Event(msg)
-	if msg == L["trigger_wyrmkinsVenomYou"] then
+	if string.find(msg, L["trigger_wyrmkinsVenomYou"]) then
 		self:Sync(syncName.wyrmkinsVenomOn .. " " .. UnitName("Player"))
 
 	elseif string.find(msg, L["trigger_wyrmkinsVenomFade"]) then

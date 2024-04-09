@@ -228,7 +228,7 @@ function module:Event(msg)
 	elseif string.find(msg, L["trigger_raidSilence"]) then
 		self:Sync(syncName.raidSilence)
 
-	elseif msg == L["trigger_mcGainYou"] then
+	elseif string.find(msg, L["trigger_mcGainYou"]) then
 		self:Sync(syncName.mc .. " " .. UnitName("Player"))
 	elseif string.find(msg, L["trigger_mcGain"]) then
 		local _, _, mcGainPriest, _ = string.find(msg, L["trigger_mcGain"])

@@ -35,7 +35,7 @@ L:RegisterTranslations("enUS", function()
 		retaliationDownTrigger = "Retaliation fades from Captain Kromcrush",
 		retaliationDownMessage = "Retaliation faded! Go!",
 
-		retaliationHurtTrigger = "Captain Kromcrush's Retaliation" .. BigWigs.COMBATHITOTHERSELF_SUFFIX,
+		retaliationHurtTrigger = "Captain Kromcrush(%s?)'s Retaliation" .. BigWigs.COMBATHITOTHERSELF_SUFFIX,
 		retaliationHurtMessage = "I'm an idiot taking damage from Retaliation",
 
 		addsTrigger = "Help me crush these punys",

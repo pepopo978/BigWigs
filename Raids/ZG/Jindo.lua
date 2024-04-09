@@ -20,19 +20,23 @@ L:RegisterTranslations("enUS", function()
 		brainwash_name = "Brain Wash Totem Alert",
 		brainwash_desc = "Warn when Jin'do summons Brain Wash Totems.",
 
+		healingward_cmd = "healingward",
+		healingward_name = "Healing Totem Alert",
+		healingward_desc = "Warn when Jin'do summons Powerful Healing Wards.",
+
 		autotarget_cmd = "autotarget",
 		autotarget_name = "Autotargetting of Totems",
 		autotarget_desc = "Autotargetting of Totems",
 
 		trigger_engage = "Welcome to the great show, friends. Step right up to die!", --CHAT_MSG_MONSTER_YELL
 
-		trigger_hexYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Hex.", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+		trigger_hexYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Hex", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 		trigger_hexOther = "(.+) is afflicted by Hex.", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
 		trigger_hexFade = "Hex fades from (.+).", ----CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
 		bar_hex = " Hexxed",
 		msg_hex = " is Hexxed - Dispel!",
 
-		trigger_curseYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Delusions of Jin'do.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_curseYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Delusions of Jin'do", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		msg_curseYou = "You are cursed! Kill the Shades!",
 		trigger_curseOther = "(.+) is afflicted by Delusions of Jin'do.", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
 		bar_curse = " Cursed",
@@ -112,7 +116,7 @@ function module:OnDisengage()
 end
 
 function module:Event(msg)
-	if msg == L["trigger_hexYou"] then
+	if string.find(msg, L["trigger_hexYou"]) then
 		self:Sync(syncName.hex .. " " .. UnitName("Player"))
 
 	elseif string.find(msg, L["trigger_hexOther"]) then
@@ -124,7 +128,7 @@ function module:Event(msg)
 		self:Sync(syncName.hexFade .. " " .. hexFadePlayer)
 
 
-	elseif msg == L["trigger_curseYou"] then
+	elseif string.find(msg, L["trigger_curseYou"]) then
 		self:Sync(syncName.curse .. " " .. UnitName("Player"))
 
 	elseif string.find(msg, L["trigger_curseOther"]) then

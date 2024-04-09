@@ -104,28 +104,28 @@ L:RegisterTranslations("enUS", function()
 		trigger_earthShock1 = "Earth Shock hits Zealot Lor'Khan", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
 		trigger_earthShock2 = "Earth Shock crits Zealot Lor'Khan", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
 
-		trigger_silenceYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Silence.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_silenceYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Silence", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_silenceOther = "(.+) is afflicted by Silence.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_silenceFade = "Silence fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_silence = " Silenced",
 		msg_silence = " Silenced - Dispel!",
 
-		trigger_disarmYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Disarm.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_disarmYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Disarm", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_disarmOther = "(.+) is afflicted by Disarm.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_disarmFade = "Disarm fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_disarm = " Disarmed",
 
-		trigger_blindYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Blind.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_blindYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Blind", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_blindOther = "(.+) is afflicted by Blind.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_blindFade = "Blind fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_blind = " Blinded",
 
-		trigger_gougeYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Gouge.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_gougeYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Gouge", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_gougeOther = "(.+) is afflicted by Gouge.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_gougeFade = "Gouge fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_gouge = " Gouged",
 
-		trigger_mortalCleaveYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Mortal Cleave.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_mortalCleaveYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Mortal Cleave", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_mortalCleaveOther = "(.+) is afflicted by Mortal Cleave.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_mortalCleaveFade = "Mortal Cleave fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_mortalCleave = " Mortal Cleave",
@@ -136,10 +136,11 @@ L:RegisterTranslations("enUS", function()
 		bar_bloodlust = " Bloodlust",
 		msg_bloodlust = " Bloodlust - Dispel!",
 
-		trigger_mobDies = "(.+) dies.", --CHAT_MSG_MONSTER_EMOTE --High Priest Thekal // Zealot Zath // Zealot Lor'Khan
+		--unuseable due to %s
+		--trigger_mobDies = "(.+) dies.", --CHAT_MSG_MONSTER_EMOTE --High Priest Thekal // Zealot Zath // Zealot Lor'Khan
 		bar_rezTimer = "Resurrect",
 
-		trigger_resurrection = "(.+) is resurrected by a nearby ally!", --CHAT_MSG_MONSTER_EMOTE --High Priest Thekal // Zealot Zath // Zealot Lor'Khan
+		trigger_resurrection = "is resurrected by a nearby ally!", --CHAT_MSG_MONSTER_EMOTE --High Priest Thekal // Zealot Zath // Zealot Lor'Khan
 
 		trigger_phase2 = "Shirvallah, fill me with your RAGE!", --CHAT_MSG_MONSTER_YELL
 
@@ -289,8 +290,6 @@ function module:OnEnable()
 
 	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE") --trigger_mobDies, trigger_resurrection
 
-	self:RegisterEvent("UNIT_HEALTH") --hpBars
-
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF", "Event") --trigger_heal
 
 	self:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE", "Event") --trigger_kick1-2-3, trigger_pummel1-2-3, trigger_shieldBash1-2-3, trigger_earthShock1-2
@@ -387,9 +386,14 @@ function module:OnEngage()
 
 	self:TriggerEvent("BigWigs_StartHPBar", self, "High Priest Thekal", 100, "Interface\\Icons\\" .. icon.hpBar, true, color.hpBar)
 	self:TriggerEvent("BigWigs_SetHPBar", self, "High Priest Thekal", 0)
+
+	self:ScheduleRepeatingEvent("ThekalCheckHp", self.CheckHp, 0.5, self)
 end
 
 function module:OnDisengage()
+	self:CancelScheduledEvent("Thekal_PhaseChangeCheck")
+
+	self:CancelScheduledEvent("ThekalCheckHp")
 end
 
 function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
@@ -398,57 +402,60 @@ function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
 		if addDead <= 2 then
 			self:Sync(syncName.addDead .. " " .. addDead)
 		end
+
+
+	elseif (msg == string.format(UNITDIESOTHER, "Zealot Zath")) then
+		if lorkhanDead == nil and thekalDead == nil and self.db.profile.reztimer then
+			self:Bar(L["bar_rezTimer"], timer.rezTimer, icon.rezTimer, true, color.rezTimer)
+		end
+
+		zathDead = true
+		if zathDead and lorkhanDead and thekalDead then
+			self:ScheduleRepeatingEvent("Thekal_PhaseChangeCheck", self.PhaseChangeCheck, 1, self)
+		end
+
+		self:RemoveBar("Zealot Zath" .. L["bar_bloodlust"])
+		self:TriggerEvent("BigWigs_StopHPBar", self, "Zealot Zath")
+
+
+	elseif (msg == string.format(UNITDIESOTHER, "Zealot Lor'Khan")) then
+		if zathDead == nil and thekalDead == nil and self.db.profile.reztimer then
+			self:Bar(L["bar_rezTimer"], timer.rezTimer, icon.rezTimer, true, color.rezTimer)
+		end
+
+		lorkhanDead = true
+		castingHeal = nil
+		if zathDead and lorkhanDead and thekalDead then
+			self:ScheduleRepeatingEvent("Thekal_PhaseChangeCheck", self.PhaseChangeCheck, 1, self)
+		end
+
+		self:RemoveBar(L["bar_heal"])
+		self:RemoveBar("Zealot Lor'Khan" .. L["bar_bloodlust"])
+		self:TriggerEvent("BigWigs_StopHPBar", self, "Zealot Lor'Khan")
+
+
+	elseif (msg == string.format(UNITDIESOTHER, "High Priest Thekal")) then
+		if zathDead == nil and lorkhanDead == nil and self.db.profile.reztimer then
+			self:Bar(L["bar_rezTimer"], timer.rezTimer, icon.rezTimer, true, color.rezTimer)
+		end
+
+		thekalDead = true
+		if zathDead and lorkhanDead and thekalDead then
+			self:ScheduleRepeatingEvent("Thekal_PhaseChangeCheck", self.PhaseChangeCheck, 1, self)
+		end
+
+		self:RemoveBar("High Priest Thekal" .. L["bar_bloodlust"])
+		self:TriggerEvent("BigWigs_StopHPBar", self, "High Priest Thekal")
 	end
 end
 
 function module:CHAT_MSG_MONSTER_EMOTE(msg)
-	if string.find(msg, L["trigger_mobDies"]) then
-		local _, _, deadMob, _ = string.find(msg, L["trigger_mobDies"])
-		if deadMob == "Zealot Zath" then
-			if lorkhanDead == nil and thekalDead == nil and self.db.profile.reztimer then
-				self:Bar(L["bar_rezTimer"], timer.rezTimer, icon.rezTimer, true, color.rezTimer)
-			end
+	if UnitName("Player") == "Relar" or UnitName("Player") == "Dreadsome" then
+		DEFAULT_CHAT_FRAME:AddMessage(msg)
+	end
+	--debug
 
-			zathDead = true
-			if zathDead and lorkhanDead and thekalDead then
-				self:ScheduleRepeatingEvent("Thekal_PhaseChangeCheck", self.PhaseChangeCheck, 1, self)
-			end
-
-			self:RemoveBar("Zealot Zath" .. L["bar_bloodlust"])
-			self:TriggerEvent("BigWigs_StopHPBar", self, "Zealot Zath")
-
-
-		elseif deadMob == "Zealot Lor'Khan" then
-			if zathDead == nil and thekalDead == nil and self.db.profile.reztimer then
-				self:Bar(L["bar_rezTimer"], timer.rezTimer, icon.rezTimer, true, color.rezTimer)
-			end
-
-			lorkhanDead = true
-			castingHeal = nil
-			if zathDead and lorkhanDead and thekalDead then
-				self:ScheduleRepeatingEvent("Thekal_PhaseChangeCheck", self.PhaseChangeCheck, 1, self)
-			end
-
-			self:RemoveBar(L["bar_heal"])
-			self:RemoveBar("Zealot Lor'Khan" .. L["bar_bloodlust"])
-			self:TriggerEvent("BigWigs_StopHPBar", self, "Zealot Lor'Khan")
-
-		elseif deadMob == "High Priest Thekal" then
-			if zathDead == nil and lorkhanDead == nil and self.db.profile.reztimer then
-				self:Bar(L["bar_rezTimer"], timer.rezTimer, icon.rezTimer, true, color.rezTimer)
-			end
-
-			thekalDead = true
-			if zathDead and lorkhanDead and thekalDead then
-				self:ScheduleRepeatingEvent("Thekal_PhaseChangeCheck", self.PhaseChangeCheck, 1, self)
-			end
-
-			self:RemoveBar("High Priest Thekal" .. L["bar_bloodlust"])
-			self:TriggerEvent("BigWigs_StopHPBar", self, "High Priest Thekal")
-		end
-
-
-	elseif string.find(msg, L["trigger_resurrection"]) and phase == "phase1" then
+	if string.find(msg, L["trigger_resurrection"]) and phase == "phase1" then
 		local _, _, resMob, _ = string.find(msg, L["trigger_resurrection"])
 		if resMob == "Zealot Zath" then
 			self:CancelScheduledEvent("Thekal_PhaseChangeCheck")
@@ -495,18 +502,43 @@ function module:PhaseChangeCheck()
 	end
 end
 
-function module:UNIT_HEALTH(msg)
-	if UnitName(msg) == "Zealot Zath" then
-		local healthPct = UnitHealth(msg) * 100 / UnitHealthMax(msg)
-		self:TriggerEvent("BigWigs_SetHPBar", self, "Zealot Zath", 100 - healthPct)
+function module:CheckHp()
+	local zathHealth
+	local lorkhanHealth
+	local thekalHealth
 
-	elseif UnitName(msg) == "Zealot Lor'Khan" then
-		local healthPct = UnitHealth(msg) * 100 / UnitHealthMax(msg)
-		self:TriggerEvent("BigWigs_SetHPBar", self, "Zealot Lor'Khan", 100 - healthPct)
+	if UnitName("PlayerTarget") == "Zealot Zath" then
+		zathHealth = math.ceil((UnitHealth("PlayerTarget") / UnitHealthMax("PlayerTarget")) * 100)
+	elseif UnitName("PlayerTarget") == "Zealot Lor'Khan" then
+		lorkhanHealth = math.ceil((UnitHealth("PlayerTarget") / UnitHealthMax("PlayerTarget")) * 100)
+	elseif UnitName("PlayerTarget") == "High Priest Thekal" then
+		thekalHealth = math.ceil((UnitHealth("PlayerTarget") / UnitHealthMax("PlayerTarget")) * 100)
+	end
 
-	elseif UnitName(msg) == "High Priest Thekal" then
-		local healthPct = UnitHealth(msg) * 100 / UnitHealthMax(msg)
-		self:TriggerEvent("BigWigs_SetHPBar", self, "High Priest Thekal", 100 - healthPct)
+	for i = 1, GetNumRaidMembers() do
+		if UnitName("Raid" .. i .. "Target") == "Zealot Zath" then
+			zathHealth = math.ceil((UnitHealth("Raid" .. i .. "Target") / UnitHealthMax("Raid" .. i .. "Target")) * 100)
+		elseif UnitName("Raid" .. i .. "Target") == "Zealot Lor'Khan" then
+			lorkhanHealth = math.ceil((UnitHealth("Raid" .. i .. "Target") / UnitHealthMax("Raid" .. i .. "Target")) * 100)
+		elseif UnitName("Raid" .. i .. "Target") == "High Priest Thekal" then
+			thekalHealth = math.ceil((UnitHealth("Raid" .. i .. "Target") / UnitHealthMax("Raid" .. i .. "Target")) * 100)
+		end
+		if zathHealth and lorkhanHealth and thekalHealth then
+			break
+		end
+	end
+
+	if zathHealth then
+		self.zathHP = zathHealth
+		self:TriggerEvent("BigWigs_SetHPBar", self, "Zealot Zath", 100 - self.zathHP)
+	end
+	if lorkhanHealth then
+		self.lorkhanHP = lorkhanHealth
+		self:TriggerEvent("BigWigs_SetHPBar", self, "Zealot Lor'Khan", 100 - self.lorkhanHP)
+	end
+	if thekalHealth then
+		self.thekalHP = thekalHealth
+		self:TriggerEvent("BigWigs_SetHPBar", self, "High Priest Thekal", 100 - self.thekalHP)
 	end
 end
 
@@ -538,7 +570,7 @@ function module:Event(msg)
 		self:Sync(syncName.healOver)
 
 
-	elseif msg == L["trigger_silenceYou"] then
+	elseif string.find(msg, L["trigger_silenceYou"]) then
 		self:Sync(syncName.silence .. " " .. UnitName("player"))
 
 	elseif string.find(msg, L["trigger_silenceOther"]) then
@@ -556,7 +588,7 @@ function module:Event(msg)
 			self:Sync(syncName.silenceFade .. " " .. silenceFadePerson)
 		end
 
-	elseif msg == L["trigger_disarmYou"] then
+	elseif string.find(msg, L["trigger_disarmYou"]) then
 		self:Sync(syncName.disarm .. " " .. UnitName("player"))
 
 	elseif string.find(msg, L["trigger_disarmOther"]) then
@@ -575,7 +607,7 @@ function module:Event(msg)
 		end
 
 
-	elseif msg == L["trigger_blindYou"] then
+	elseif string.find(msg, L["trigger_blindYou"]) then
 		self:Sync(syncName.blind .. " " .. UnitName("player"))
 
 	elseif string.find(msg, L["trigger_blindOther"]) then
@@ -594,7 +626,7 @@ function module:Event(msg)
 		end
 
 
-	elseif msg == L["trigger_gougeYou"] then
+	elseif string.find(msg, L["trigger_gougeYou"]) then
 		self:Sync(syncName.gouge .. " " .. UnitName("player"))
 
 	elseif string.find(msg, L["trigger_gougeOther"]) then
@@ -612,7 +644,7 @@ function module:Event(msg)
 			self:Sync(syncName.gougeFade .. " " .. gougeFadePerson)
 		end
 
-	elseif msg == L["trigger_mortalCleaveYou"] then
+	elseif string.find(msg, L["trigger_mortalCleaveYou"]) then
 		self:Sync(syncName.mortalCleave .. " " .. UnitName("player"))
 
 	elseif string.find(msg, L["trigger_mortalCleaveOther"]) then
@@ -803,6 +835,7 @@ function module:Phase1End()
 
 	self:CancelScheduledEvent("Thekal_PhaseChangeCheck")
 
+	self:CancelScheduledEvent("ThekalCheckHp")
 	self:TriggerEvent("BigWigs_StopHPBar", self, "Zealot Zath")
 	self:TriggerEvent("BigWigs_StopHPBar", self, "Zealot Lor'Khan")
 	self:TriggerEvent("BigWigs_StopHPBar", self, "High Priest Thekal")
@@ -823,6 +856,7 @@ function module:Phase2()
 
 	self:CancelScheduledEvent("Thekal_PhaseChangeCheck")
 
+	self:CancelScheduledEvent("ThekalCheckHp")
 	self:TriggerEvent("BigWigs_StopHPBar", self, "Zealot Zath")
 	self:TriggerEvent("BigWigs_StopHPBar", self, "Zealot Lor'Khan")
 	self:TriggerEvent("BigWigs_StopHPBar", self, "High Priest Thekal")

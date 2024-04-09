@@ -74,7 +74,7 @@ L:RegisterTranslations("enUS", function()
 		msg_enrage10 = "Enrage in 10 seconds!",
 		msg_enrage = "Enraged!",
 
-		trigger_toxicVapors = BigWigs.AURAHARMFULSELF_PREFIX .. "Toxic Vapors.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_toxicVapors = BigWigs.AURAHARMFULSELF_PREFIX .. "Toxic Vapors", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_toxicVaporsFade = "Toxic Vapors" .. BigWigs.AURAREMOVEDSELF_SUFFIX, --CHAT_MSG_SPELL_AURA_GONE_SELF
 		msg_toxicVapors = "Move away from the Poison Cloud!",
 
@@ -169,7 +169,7 @@ end
 
 function module:OnSetup()
 	self.started = nil
-	
+
 	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
 end
 
@@ -178,15 +178,15 @@ function module:OnEngage()
 	vemDead = nil
 	yaujDead = nil
 	castingHeal = false
-	
+
 	if self.db.profile.panic then
 		self:IntervalBar(L["bar_panic"], timer.earliestFirstPanic, timer.latestFirstPanic, icon.panic, true, color.panic)
 	end
-	
+
 	if self.db.profile.volley then
 		self:IntervalBar(L["bar_volley"], timer.earliestFirstVolley, timer.latestFirstVolley, icon.volley, true, color.volley)
 	end
-	
+
 	if self.db.profile.enrage then
 		self:Bar(L["bar_enrage"], timer.enrage, icon.enrage, true, color.enrage)
 		self:DelayedMessage(timer.enrage - 60, L["msg_enrage60"], "Attention", false, nil, false)
@@ -330,7 +330,7 @@ function module:YaujDead()
 		if self.db.profile.deathspecials then
 			self:Message(L["msg_yaujDead"], "Positive", false, nil, false)
 		end
-	end	
+	end
 end
 
 function module:VemDead()
@@ -341,7 +341,7 @@ function module:VemDead()
 		if self.db.profile.deathspecials then
 			self:Message(L["msg_vemDead"], "Positive", false, nil, false)
 		end
-	end	
+	end
 end
 
 function module:ToxicVapors()

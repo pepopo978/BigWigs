@@ -56,7 +56,7 @@ L:RegisterTranslations("enUS", function()
 		bar_fearCD = "Fear CD",
 		msg_fear = "Fear!",
 
-		trigger_woundYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Mortal Wound %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_woundYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Mortal Wound %((.+)%)", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_woundOther = "(.+) is afflicted by Mortal Wound %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
 		bar_wound = " Wounds",
 	}

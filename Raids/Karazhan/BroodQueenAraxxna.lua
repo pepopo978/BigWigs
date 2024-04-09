@@ -28,7 +28,7 @@ L:RegisterTranslations("enUS", function()
 		trigger_volley = "Brood Queen Araxxna(%s?)'s Brood Venom Volley hits", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 		bar_volley = "Brood Venom Volley",
 
-		trigger_leechingBiteYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Leeching Bite.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_leechingBiteYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Leeching Bite", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_leechingBiteOther = "(.+) is afflicted by Leeching Bite.", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
 		trigger_leechingBiteFade = "Leeching Bite fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
 		bar_leechingBite = " Leeching Bite",
@@ -111,7 +111,7 @@ function module:Event(msg)
 	if string.find(msg, L["trigger_volley"]) then
 		self:Sync(syncName.volley)
 
-	elseif msg == L["trigger_leechingBiteYou"] then
+	elseif string.find(msg, L["trigger_leechingBiteYou"]) then
 		self:Sync(syncName.leechingBite .. " " .. UnitName("Player"))
 
 	elseif string.find(msg, L["trigger_leechingBiteOther"]) then

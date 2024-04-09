@@ -47,7 +47,7 @@ L:RegisterTranslations("enUS", function()
 		msg_tailSweepYou = "Tail Sweep - Don't stand behind Dragons!",
 
 		--self
-		trigger_dreamFogYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Sleep.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_dreamFogYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Sleep", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_dreamFogYouFade = "Sleep" .. BigWigs.AURAREMOVEDSELF_SUFFIX, --CHAT_MSG_SPELL_AURA_GONE_SELF
 		msg_dreamFogYou = "Dream Fog Sleep - Don't stand in the Dream Fog!",
 
@@ -58,7 +58,7 @@ L:RegisterTranslations("enUS", function()
 		msg_noxiousBreathYou = "Noxious Breath - Don't stand in front of Dragons!",
 
 		--if is 3+ then bar
-		trigger_noxiousBreathStackYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Noxious Breath %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_noxiousBreathStackYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Noxious Breath %((.+)%)", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_noxiousBreathStackOther = "(.+) is afflicted by Noxious Breath %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_noxiousBreathFade = "Noxious Breath fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_noxiousBreath = " Noxious Breath",
@@ -67,7 +67,7 @@ L:RegisterTranslations("enUS", function()
 		--Explode? DoT? Afflic?
 		trigger_sporeCloud = "To Be Determined", --TBD
 
-		trigger_volatileInfectionYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Volatile Infection.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_volatileInfectionYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Volatile Infection", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_volatileInfectionOther = "(.+) is afflicted by Volatile Infection.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE //CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_volatileInfectionFade = "Volatile Infection fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_volatileInfection = " Volatile Infection",
@@ -219,9 +219,9 @@ function module:Event(msg)
 	if string.find(msg, L["trigger_tailSweepYou"]) and self.db.profile.tailsweep then
 		self:TailSweep()
 
-	elseif msg == L["trigger_dreamFogYou"] and self.db.profile.dreamfog then
+	elseif string.find(msg, L["trigger_dreamFogYou"]) and self.db.profile.dreamfog then
 		self:DreamFog()
-	elseif msg == L["trigger_dreamFogYouFade"] and self.db.profile.dreamfog then
+	elseif string.find(msg, L["trigger_dreamFogYouFade"]) and self.db.profile.dreamfog then
 		self:DreamFogFade()
 
 	elseif string.find(msg, L["trigger_noxiousBreathStackYou"]) then

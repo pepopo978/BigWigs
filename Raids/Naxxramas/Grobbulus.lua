@@ -39,7 +39,7 @@ L:RegisterTranslations("enUS", function()
 		bar_slimeSprayCD = "Slime Spray CD",
 
 		trigger_injectOther = "(.+) is afflicted by Mutating Injection.", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
-		trigger_injectYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Mutating Injection.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_injectYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Mutating Injection", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_injectFade = "Mutating Injection fades from (.+).,", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_injected = " Injected",
 		msg_inject = " Injected",
@@ -150,7 +150,7 @@ function module:Event(msg)
 		self:Sync(syncName.slimeSpray)
 
 
-	elseif msg == L["trigger_injectYou"] then
+	elseif string.find(msg, L["trigger_injectYou"]) then
 		self:Sync(syncName.inject .. " " .. UnitName("Player"))
 
 	elseif string.find(msg, L["trigger_injectOther"]) then

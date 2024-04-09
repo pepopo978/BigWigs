@@ -30,7 +30,7 @@ L:RegisterTranslations("enUS", function()
 
 
 		trigger_cocoonGain = "(.+) is afflicted by Web Wrap.", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
-		trigger_cocoonGainYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Web Wrap.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_cocoonGainYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Web Wrap", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_cocoonFade = "Web Wrap fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
 		bar_cocoonGain = "Cocoon ",
 		bar_cocoonCD = "Cocoon CD",
@@ -160,7 +160,7 @@ function module:Event(msg)
 	if string.find(msg, L["trigger_cocoonGain"]) then
 		local _, _, cocoonedPlayer, _ = string.find(msg, L["trigger_cocoonGain"])
 		self:Sync(syncName.cocoon .. " " .. cocoonedPlayer)
-	elseif msg == L["trigger_cocoonGainYou"] then
+	elseif string.find(msg, L["trigger_cocoonGainYou"]) then
 		cocoonedPlayer = UnitName("Player")
 		self:Sync(syncName.cocoon .. " " .. cocoonedPlayer)
 	elseif string.find(msg, L["trigger_cocoonFade"]) then

@@ -18,7 +18,7 @@ L:RegisterTranslations("enUS", function()
 		fear_trigger = "Nefarian begins to cast Bellowing Roar",
 		fear_over_trigger = "Bellowing Roar",
 		shadowflame_trigger = "Nefarian begins to cast Shadow Flame",
-		shadowcurseyou_trigger = BigWigs.AURAHARMFULSELF_PREFIX .. "Veil of Shadow\.",
+		shadowcurseyou_trigger = BigWigs.AURAHARMFULSELF_PREFIX .. "Veil of Shadow",
 		shadowcurseother_trigger = "(.+) is afflicted by Veil of Shadow\.",
 
 		triggerfear = "by Panic.",

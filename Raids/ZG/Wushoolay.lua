@@ -16,7 +16,7 @@ L:RegisterTranslations("enUS", function()
 		chainlightning_trigger = "Wushoolay begins to cast Chain Lightning\.",
 		chainlightning_bar = "Chain Lightning",
 		chainlightning_message = "Chain Lightning! Interrupt it!",
-		lightningcloud_trigger = BigWigs.AURAHARMFULSELF_PREFIX .. "Lightning Cloud\.",
+		lightningcloud_trigger = BigWigs.AURAHARMFULSELF_PREFIX .. "Lightning Cloud",
 		lightningcloud_message = "Get out of the Lightning Cloud!",
 
 		chainlightning_cmd = "chainlightning",
@@ -106,7 +106,7 @@ end
 ------------------------------
 
 function module:Event(msg)
-	if msg == L["lightningcloud_trigger"] and self.db.profile.lightningcloud then
+	if string.find(msg, L["lightningcloud_trigger"]) and self.db.profile.lightningcloud then
 		self:Message(L["lightningcloud_message"], "Attention", "Alarm")
 	elseif msg == L["chainlightning_trigger"] then
 		self:Sync(syncName.chainlightning)

@@ -58,13 +58,13 @@ L:RegisterTranslations("enUS", function()
 		trigger_wave2 = "Captain Qeez dies.", --CHAT_MSG_COMBAT_HOSTILE_DEATH
 		msg_wave2 = "Wave 2/8 -- 3 Warriors, 3 Needlers, Tuubid -> Mark",
 		trigger_attackOrder = "(.*) is afflicted by Attack Order.", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
-		trigger_attackOrderYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Attack Order.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_attackOrderYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Attack Order", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		bar_attackOrder = " Marked",
 		trigger_attackOrderFade = "Attack Order fades from (.*).", --CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
 
 		trigger_wave3 = "The time of our retribution is at hand! Let darkness reign in the hearts of our enemies!", --CHAT_MSG_MONSTER_YELL
 		msg_wave3 = "Wave 3/8 -- 1 Warrior, 5 Needlers, Drenn -> Lightning Cloud",
-		trigger_lightningCloud = BigWigs.AURAHARMFULSELF_PREFIX .. "Lightning Cloud.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_lightningCloud = BigWigs.AURAHARMFULSELF_PREFIX .. "Lightning Cloud", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		msg_lightningCloud = "Lightning Cloud, Move!",
 		trigger_lightningCloudFade = "Lightning Cloud" .. BigWigs.AURAREMOVEDSELF_SUFFIX, --CHAT_MSG_SPELL_AURA_GONE_SELF
 
@@ -240,7 +240,7 @@ function module:Event(msg)
 	elseif string.find(msg, L["trigger_attackOrder"]) then
 		local _, _, attackOrderPerson, _ = string.find(msg, L["trigger_attackOrder"])
 		self:Sync(syncName.attackOrder .. " " .. attackOrderPerson)
-	elseif msg == L["trigger_attackOrderYou"] then
+	elseif string.find(msg, L["trigger_attackOrderYou"]) then
 		self:Sync(syncName.attackOrder .. " " .. UnitName("Player"))
 
 	elseif string.find(msg, L["trigger_attackOrderFade"]) then

@@ -49,7 +49,7 @@ L:RegisterTranslations("enUS", function()
 		bar_flamebreathCd = "Casting Flamebreath CD",
 		bar_flamebreathCast = "Flamebreath",
 
-		trigger_freezeYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Freeze.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_freezeYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Freeze", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_freezeOther = "(.+) is afflicted by Freeze.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		msg_freeze = "Dispel freeze!",
 
