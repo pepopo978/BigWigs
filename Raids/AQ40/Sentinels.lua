@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Anubisath Sentinel", "Ahn'Qiraj")
 
-module.revision = 30075
+module.revision = 30081
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"abilities", "selfreflect"}
 module.trashMod = true
@@ -704,8 +704,5 @@ function module:AddDead(rest)
 	if tonumber(rest) == 4 then
 		self:SendBossDeathSync()
 		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
-		if UnitName("Player") == "Relar" or UnitName("Player") == "Dreadsome" then
-			DEFAULT_CHAT_FRAME:AddMessage("   BigWigs - Auto-Rebooting Module: "..module.translatedName)
-		end
 	end
 end
