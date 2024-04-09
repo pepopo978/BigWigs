@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("High Priestess Jeklik", "Zul'Gurub")
 
-module.revision = 30078
+module.revision = 30083
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"heal", "fear", "fire", "mindflay", "silence", "swarm", "phase", "bosskill"}
 
@@ -76,7 +76,7 @@ L:RegisterTranslations("enUS", function() return {
 	msg_liquidFire = "Move away from Fire!",
 	
 	trigger_mindflay = "afflicted by Mind Flay",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE //CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
-		--mindFlay chains, this trigger is unreliable
+		--mindflay chains, this trigger is unreliable
 	--trigger_mindflayFade = "Mind Flay fades",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 	bar_mindflay = "Mind Flay - Interrupt!",
 	
@@ -328,13 +328,13 @@ function module:MindFlay()
 	
 	if UnitClass("Player") == "Mage" then
 		self:Sound("Alarm")
-		self:WarningSign(icon.mindFlay, 0.7)
+		self:WarningSign(icon.mindflay, 0.7)
 	elseif UnitClass("Player") == "Warrior" then
 		self:Sound("Alarm")
-		self:WarningSign(icon.mindFlay, timer.mindFlay)
+		self:WarningSign(icon.mindflay, timer.mindflay)
 	elseif UnitClass("Player") == "Rogue" then
 		self:Sound("Alarm")
-		self:WarningSign(icon.mindFlay, timer.mindFlay)
+		self:WarningSign(icon.mindflay, timer.mindflay)
 	end
 end
 
