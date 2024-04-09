@@ -69,7 +69,7 @@ L:RegisterTranslations("enUS", function()
 		msg_manaStorm = "Move away from Mana Storm!",
 
 		--Frontal Cone, Dmg + slowMove + ManaBurn
-		trigger_frostBreathYou = "Azuregos's Frost Breath" .. BigWigs.COMBATHITOTHERSELF_SUFFIX, --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+		trigger_frostBreathYou = "Azuregos(%s?)'s Frost Breath" .. BigWigs.COMBATHITOTHERSELF_SUFFIX, --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 		trigger_frostBreathCast = "Azuregos begins to perform Frost Breath.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 		bar_frostBreathCd = "Frost Breath CD",
 		bar_frostBreathCast = "Casting Frost Breath!",

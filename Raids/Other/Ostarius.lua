@@ -69,7 +69,7 @@ L:RegisterTranslations("enUS", function()
 		trigger_conflagHitYou = "'s Conflagration" .. BigWigs.COMBATHITOTHERSELF_SUFFIX, --CHAT_MSG_SPELL_SELF_DAMAGE
 		msg_conflagHitYou = "Move away from Conflagration!",
 
-		trigger_chainLightning = "Ostarius's Chain Lightning", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+		trigger_chainLightning = "Ostarius(%s?)'s Chain Lightning", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 		bar_chainLightning = "Next Chain Lightning",
 
 		trigger_blizzardPhase = "Elusive... Then face the might of the frost!", --CHAT_MSG_MONSTER_YELL

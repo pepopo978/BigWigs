@@ -67,7 +67,7 @@ L:RegisterTranslations("enUS", function()
 		trigger_noxiousBreathFade = "Noxious Breath fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_noxiousBreath = " Noxious Breath",
 
-		trigger_lightningWave = "Ysondre's Lightning Wave hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+		trigger_lightningWave = "Ysondre(%s?)'s Lightning Wave hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 		bar_lightningWave = "Lightning Wave CD",
 
 		--Come forth, ye Dreamers â€“ and claim your vengeance!

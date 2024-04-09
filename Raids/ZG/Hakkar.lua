@@ -49,7 +49,7 @@ L:RegisterTranslations("enUS", function()
 
 		mindcontrolyou_trigger = BigWigs.AURAHARMFULSELF_PREFIX .. "Cause Insanity.",
 		mindcontrolother_trigger = "(.+) is afflicted by Cause Insanity.",
-		trigger_mindcontrolTotem = "Hakkar's Cause Insanity fails. Grounding Totem is immune.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE
+		trigger_mindcontrolTotem = "Hakkar(%s?)'s Cause Insanity fails. Grounding Totem is immune.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE
 		mindcontrol_message = "%s is mindcontrolled!",
 		mindcontrol_message_you = "You are mindcontrolled!",
 		mindcontrol_bar = "MC: %s",
@@ -71,23 +71,23 @@ L:RegisterTranslations("enUS", function()
 
 		aspectofmarliyou_trigger = BigWigs.AURAHARMFULSELF_PREFIX .. "Aspect of Mar'li.",
 		aspectofmarliother_trigger = "(.+) is afflicted by Aspect of Mar'li.",
-		trigger_aspectOfMarliFail = "Hakkar's Aspect of Mar'li",
+		trigger_aspectOfMarliFail = "Hakkar(%s?)'s Aspect of Mar'li",
 		aspectmarli_bar = "Next Stun",
 		aspectmarlidebuff_bar = "Stun: %s - Aspect of Mar'li",
 
 		trigger_aspectOfJeklik = "afflicted by Aspect of Jeklik.",
-		trigger_aspectOfJeklikFail = "Hakkar's Aspect of Jeklik",
+		trigger_aspectOfJeklikFail = "Hakkar(%s?)'s Aspect of Jeklik",
 		aspectjeklik_bar = "Next Silence",
 		aspectjeklikdebuff_bar = "Silence - Aspect of Jeklik",
 
 		aspectofarlokkyou_trigger = BigWigs.AURAHARMFULSELF_PREFIX .. "Aspect of Arlokk.",
 		aspectofarlokkother_trigger = "(.+) is afflicted by Aspect of Arlokk.",
-		trigger_aspectOfArlokkFail = "Hakkar's Aspect of Arlokk",
+		trigger_aspectOfArlokkFail = "Hakkar(%s?)'s Aspect of Arlokk",
 		aspectarlokk_bar = "Next Vanish",
 		aspectarlokkdebuff_bar = "Vanish: %s - Aspect of Arlokk",
 
-		trigger_aspectOfVenoxis = "Hakkar's Aspect of Venoxis hit",
-		trigger_aspectOfVenoxisFail = "Hakkar's Aspect of Venoxis was resisted",
+		trigger_aspectOfVenoxis = "Hakkar(%s?)'s Aspect of Venoxis hit",
+		trigger_aspectOfVenoxisFail = "Hakkar(%s?)'s Aspect of Venoxis was resisted",
 		aspectvenoxis_bar = "Next Poison - Aspect of Venoxis",
 		--aspectvenoxisdebuff_bar = "Poison - Aspect of Venoxis",
 	}
@@ -195,24 +195,24 @@ L:RegisterTranslations("deDE", function()
 		aspectofthekal_trigger = "Hakkar gains Aspect of Thekal.",
 		aspectofthekalend_trigger = "Aspect of Thekal fades from Hakkar.",
 		aspectofmarliyou_trigger = BigWigs.AURAHARMFULSELF_PREFIX .. "Aspect of Mar'li.",
-		aspectofmarliyouimmune_trigger = "Hakkar 's Aspect of Mar'li failed. You are immune.",
+		aspectofmarliyouimmune_trigger = "Hakkar(%s?)'s Aspect of Mar'li failed. You are immune.",
 		aspectofmarliother_trigger = "(.+) is afflicted by Aspect of Mar'li.",
-		aspectofmarliotherimmune_trigger = "Hakkar 's Aspect of Mar'li fails. (.+) is immune.",
-		aspectofmarligeneralavoid_trigger = "Hakkar 's Aspect of Mar'li",
+		aspectofmarliotherimmune_trigger = "Hakkar(%s?)'s Aspect of Mar'li fails. (.+) is immune.",
+		aspectofmarligeneralavoid_trigger = "Hakkar(%s?)'s Aspect of Mar'li",
 		aspectofjeklikyou_trigger = BigWigs.AURAHARMFULSELF_PREFIX .. "Aspect of Jeklik.",
-		aspectofjeklikyouimmune_trigger = "Hakkar 's Aspect of Jeklik failed. You are immune.",
+		aspectofjeklikyouimmune_trigger = "Hakkar(%s?)'s Aspect of Jeklik failed. You are immune.",
 		aspectofjeklikother_trigger = "(.+) is afflicted by Aspect of Jeklik.",
-		aspectofjeklikotherimmune_trigger = "Hakkar 's Aspect of Jeklik fails. (.+) is immune.",
-		aspectofjeklikgeneralavoid_trigger = "Hakkar 's Aspect of Jeklik",
+		aspectofjeklikotherimmune_trigger = "Hakkar(%s?)'s Aspect of Jeklik fails. (.+) is immune.",
+		aspectofjeklikgeneralavoid_trigger = "Hakkar(%s?)'s Aspect of Jeklik",
 		aspectofarlokkyou_trigger = BigWigs.AURAHARMFULSELF_PREFIX .. "Aspect of Arlokk.",
-		aspectofarlokkyouimmune_trigger = "Hakkar 's Aspect of Arlokk failed. You are immune.",
+		aspectofarlokkyouimmune_trigger = "Hakkar(%s?)'s Aspect of Arlokk failed. You are immune.",
 		aspectofarlokkother_trigger = "(.+) is afflicted by Aspect of Arlokk.",
-		aspectofarlokkotherimmune_trigger = "Hakkar 's Aspect of Arlokk fails. (.+) is immune.",
-		aspectofarlokkgeneralavoid_trigger = "Hakkar 's Aspect of Arlokk",
-		aspectofvenoxisyou_trigger = "Hakkar 's Aspect of Venoxis" .. BigWigs.COMBATHITOTHERSELF_SUFFIX,
-		aspectofvenoxisyouresist_trigger = "Hakkar 's Aspect of Venoxis was resisted.",
-		aspectofvenoxisother_trigger = "Hakkar 's Aspect of Venoxis hits",
-		aspectofvenoxisotherresist_trigger = "Hakkar 's Aspect of Venoxis was resisted by",
+		aspectofarlokkotherimmune_trigger = "Hakkar(%s?)'s Aspect of Arlokk fails. (.+) is immune.",
+		aspectofarlokkgeneralavoid_trigger = "Hakkar(%s?)'s Aspect of Arlokk",
+		aspectofvenoxisyou_trigger = "Hakkar(%s?)'s Aspect of Venoxis" .. BigWigs.COMBATHITOTHERSELF_SUFFIX,
+		aspectofvenoxisyouresist_trigger = "Hakkar(%s?)'s Aspect of Venoxis was resisted.",
+		aspectofvenoxisother_trigger = "Hakkar(%s?)'s Aspect of Venoxis hits",
+		aspectofvenoxisotherresist_trigger = "Hakkar(%s?)'s Aspect of Venoxis was resisted by",
 
 		siphon_warning = "Blood Siphon in %d seconds!",
 		siphon_message = "Blood Siphon - next one in 90 seconds!",
@@ -368,13 +368,8 @@ function module:Event(msg)
 		self:Sync(syncName.mindcontrol .. " " .. UnitName("player"))
 	elseif msg == L["trigger_mindcontrolTotem"] then
 		self:Sync(syncName.mindcontrol .. " " .. "Grounded!")
-
-
 	elseif msg == L["siphon_trigger"] then
 		self:Sync(syncName.bloodSiphon)
-
-
-
 		-- aspects
 	elseif string.find(msg, L["aspectofmarliother_trigger"]) then
 		local _, _, aspectofmarliother, _ = string.find(msg, L["aspectofmarliother_trigger"])
@@ -497,17 +492,11 @@ function module:AspectVenoxis()
 end
 
 function module:AspectMarli(rest)
-	if UnitName("Player") == "Relar" then
-		DEFAULT_CHAT_FRAME:AddMessage("AspectMarli: " .. rest)
-	end
 	self:Bar(string.format(L["aspectmarlidebuff_bar"], rest), 6, icon.marli, true, "Yellow")
 	self:DelayedBar(6, L["aspectmarli_bar"], 4, icon.marli, true, "Yellow")
 end
 
 function module:AspectMarliAvoid()
-	if UnitName("Player") == "Relar" then
-		DEFAULT_CHAT_FRAME:AddMessage("AspectMarliAvoid")
-	end
 	self:Bar(L["aspectmarli_bar"], 10, icon.marli, true, "Yellow")
 end
 

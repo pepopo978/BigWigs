@@ -49,7 +49,7 @@ L:RegisterTranslations("enUS", function()
 		msg_dndCast = "Casting Death & Decay, Interrupt!",
 
 		--to be confirmed
-		trigger_dndDamage = "You suffer (.+) Shadow damage from Death & Decay.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_dndDamage = BigWigs.SUFFER_PREFIX .. "(.+) Shadow damage from Death & Decay.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 
 		trigger_devouringPlagueYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Devouring Plague.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_devouringPlagueOther = "(.+) is afflicted by Devouring Plague.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE

@@ -14,8 +14,8 @@ L:RegisterTranslations("enUS", function() return {
 	
 	
 	trigger_debuff = "afflicted by (.+).", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
-	trigger_debuffFail = "Ancient Core Hound's (.+) fails.", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
-	trigger_debuffResist = "Ancient Core Hound's (.+) was resisted by", --CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	trigger_debuffFail = "Ancient Core Hound(%s?)'s (.+) fails.", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	trigger_debuffResist = "Ancient Core Hound(%s?)'s (.+) was resisted by", --CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 	bar_debuff = "Debuff",
 	
 	msg_ancientDread = "Ancient Dread - Dispel!",
@@ -94,13 +94,13 @@ function module:Event(msg)
 		end
 	
 	elseif string.find(msg, L["trigger_debuffFail"]) then
-		local _,_, debuff, _ = string.find(msg, L["trigger_debuffFail"])
+		local _,_,_, debuff, _ = string.find(msg, L["trigger_debuffFail"])
 		if debuff == "Ancient Dread" or "Ancient Despair" or "Ground Stomp" or "Cauterizing Flames" or "Withering Heat" or "Ancient Hysteria" then
 			self:Sync(syncName.debuff .. " " .. debuff)
 		end
 	
 	elseif string.find(msg, L["trigger_debuffResist"]) then
-		local _,_, debuff, _ = string.find(msg, L["trigger_debuffResist"])
+		local _,_,_, debuff, _ = string.find(msg, L["trigger_debuffResist"])
 		if debuff == "Ancient Dread" or "Ancient Despair" or "Ground Stomp" or "Cauterizing Flames" or "Withering Heat" or "Ancient Hysteria" then
 			self:Sync(syncName.debuff .. " " .. debuff)
 		end

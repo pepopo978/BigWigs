@@ -40,7 +40,7 @@ L:RegisterTranslations("enUS", function()
 
 		cursewarn = "Curses removed! RENEW CURSES",
 		cursebar = "Remove Curse",
-		cursetrigger = "Loatheb's Curse (.+) is removed.",
+		cursetrigger = "Loatheb(%s?)'s Curse (.+) is removed.",
 
 		doomtimerbar = "Doom every 15sec",
 		doomtimerwarn = "Doom timerchange in %s seconds!",

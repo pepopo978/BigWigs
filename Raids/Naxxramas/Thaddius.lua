@@ -48,8 +48,8 @@ L:RegisterTranslations("enUS", function()
 
 		bar_magneticPull = "Magnetic Pull",
 
-		trigger_manaBurn = "Feugen's Static Field" .. BigWigs.COMBATHITOTHERSELF_SUFFIX, --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
-		trigger_manaBurn2 = "You absorb Feugen's Static Field.", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+		trigger_manaBurn = "Feugen(%s?)'s Static Field" .. BigWigs.COMBATHITOTHERSELF_SUFFIX, --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+		trigger_manaBurn2 = BigWigs.ABSORB_PREFIX .. "Feugen(%s?)'s Static Field.", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 		msg_manaBurn = "Feugen Mana Burned You! 30 yards AoE",
 
 		trigger_feugenDeadYell = "No... more... Feugen...", --CHAT_MSG_MONSTER_YELL

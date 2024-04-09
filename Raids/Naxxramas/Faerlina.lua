@@ -45,8 +45,8 @@ L:RegisterTranslations("enUS", function()
 		trigger_start3 = "You cannot hide from me!",
 		trigger_start4 = "Run while you still can!",
 
-		trigger_rain = "You suffer (.+) Fire damage from Grand Widow Faerlina's Rain of Fire.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE --string find cause could be a partial absorb
-		trigger_rain2 = "You absorb Grand Widow Faerlina's Rain of Fire.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_rain = BigWigs.SUFFER_PREFIX .. "(.+) Fire damage from Grand Widow Faerlina(%s?)'s Rain of Fire.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE --string find cause could be a partial absorb
+		trigger_rain2 = BigWigs.ABSORB_PREFIX .. "Grand Widow Faerlina(%s?)'s Rain of Fire.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 
 		trigger_poison = "is afflicted by Poison Bolt Volley", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
 

@@ -71,7 +71,7 @@ L:RegisterTranslations("enUS", function()
 		bar_fearCast = "Fear!",
 		bar_fearCd = "Fear CD",
 
-		trigger_arcaneBast = "Taerar's Arcane Blast", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+		trigger_arcaneBast = "Taerar(%s?)'s Arcane Blast", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 		bar_arcaneBlast = "Arcane Blast CD",
 
 		trigger_summon = "Children of Madness - I release you upon this world!", --CHAT_MSG_MONSTER_YELL

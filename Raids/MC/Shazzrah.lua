@@ -25,15 +25,15 @@ L:RegisterTranslations("enUS", function() return {
 	blink_desc = "Warn for Blink",
 	
 	
-	trigger_counterspell = "Shazzrah's Counterspell", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	trigger_counterspell = "Shazzrah(%s?)'s Counterspell", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 	trigger_counterspell2 = "Shazzrah interrupt", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 	bar_counterspellCd = "Counterspell CD",
 	bar_counterspellSoon = "Counterspell Soon...",
 	msg_counterspellSoon = "Counterspell Soon - Stop Casting!",
 	msg_counterspell = "Counterspell Done - Start Casting!",	
 	
-	trigger_curse = "afflicted by Shazzrah's Curse.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
-	trigger_curse2 = "Shazzrah's Curse was resisted", --CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	trigger_curse = "afflicted by Shazzrah(%s?)'s Curse.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_curse2 = "Shazzrah(%s?)'s Curse was resisted", --CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 	bar_curseCd = "Shazzrah's Curse CD",
 	msg_curse = "Shazzrah's Curse - Decurse!",
 	

@@ -70,7 +70,7 @@ L:RegisterTranslations("enUS", function()
 
 		trigger_wave4 = "No longer will we wait behind barred doors and walls of stone! No longer will our vengeance be denied! The dragons themselves will tremble before our wrath!", --??\n?? CHAT_MSG_MONSTER_YELL
 		msg_wave4 = "Wave 4/8 -- 2 Warriors, 4 Needlers, Xurrem -> AoE Damage",
-		trigger_shockwave = "Captain Xurrem's Shockwave", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_shockwave = "Captain Xurrem(%s?)'s Shockwave", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		bar_shockwave = "Shockwave CD",
 
 		trigger_wave5 = "Fear is for the enemy! Fear and death!", --CHAT_MSG_MONSTER_YELL
@@ -80,7 +80,7 @@ L:RegisterTranslations("enUS", function()
 
 		trigger_wave6 = "Staghelm will whimper and beg for his life, just as his whelp of a son did! One thousand years of injustice will end this day!", --??\n?? CHAT_MSG_MONSTER_YELL
 		msg_wave6 = "Wave 6/8 -- 4 Warriors, 2 Needlers, Pakkon -> Knockback",
-		trigger_slam = "Major Pakkon's Sweeping Slam", --
+		trigger_slam = "Major Pakkon(%s?)'s Sweeping Slam", --
 		bar_slam = "Slam CD", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 
 		trigger_wave7 = "Fandral! Your time has come! Go and hide in the Emerald Dream and pray we never find you!", --??\n?? CHAT_MSG_MONSTER_YELL

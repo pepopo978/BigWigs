@@ -37,7 +37,7 @@ L:RegisterTranslations("enUS", function()
 
 		trigger_markFade = "Mark of Arlokk fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
 
-		trigger_ww = "High Priestess Arlokk's Whirlwind", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+		trigger_ww = "High Priestess Arlokk(%s?)'s Whirlwind", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 		bar_ww = "Whirlwind",
 
 		msg_trollPhase = "Troll Phase",

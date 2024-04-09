@@ -35,7 +35,7 @@ L:RegisterTranslations("enUS", function()
 		mcLocked_bar = "Can't MC ",
 
 		trigger_unbalance = "afflicted by Unbalancing Strike.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
-		trigger_unbalance2 = "Instructor Razuvious's Unbalancing Strike", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+		trigger_unbalance2 = "Instructor Razuvious(%s?)'s Unbalancing Strike", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 		bar_unbalance = "Unbalancing Strike",
 
 		trigger_shieldWall = "Deathknight Understudy gains Shield Wall.", --CHAT_MSG_SPELL_PERIODIC_PARTY_BUFFS // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_BUFFS

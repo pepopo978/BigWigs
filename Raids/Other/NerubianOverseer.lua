@@ -42,7 +42,7 @@ L:RegisterTranslations("enUS", function()
 
 
 		--750 shadow damage, 10sec CD
-		trigger_shadowShock = "Nerubian Overseer's Shadow Shock hits", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+		trigger_shadowShock = "Nerubian Overseer(%s?)'s Shadow Shock hits", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 		bar_shadowShock = "Shadow Shock",
 
 		--poison dot, 30sec flat

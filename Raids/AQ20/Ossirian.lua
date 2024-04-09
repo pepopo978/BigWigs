@@ -55,7 +55,7 @@ L:RegisterTranslations("enUS", function()
 		warstomp_trigger = "War Stomp",
 		warstomp_bar = "War Stomp",
 
-		sandstorm_trigger = "Sand Vortex's Harsh Winds" .. BigWigs.COMBATHITOTHERSELF_SUFFIX,
+		sandstorm_trigger = "Sand Vortex(%s?)'s Harsh Winds" .. BigWigs.COMBATHITOTHERSELF_SUFFIX,
 
 		clickit_bar = "Crystal or die",
 

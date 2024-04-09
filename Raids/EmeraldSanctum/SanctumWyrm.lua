@@ -17,10 +17,10 @@ L:RegisterTranslations("enUS", function() return {
 	volley_name = "Poison Volley Alert",
 	volley_desc = "Warn for Poison Volley",
 
-	trigger_volley = "Sanctum Wyrm's Poison Bolt Volley",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+	trigger_volley = "Sanctum Wyrm(%s?)'s Poison Bolt Volley",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 	bar_volley = "Poison Bolt Volley",
 	
-	trigger_volleyYou = "Sanctum Wyrm's Poison Bolt Volley hits you",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+	trigger_volleyYou = "Sanctum Wyrm(%s?)'s Poison Bolt Volley hits you",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 	msg_volley = "Get max range to avoid Poison Volley!",
 	
 	["You have slain %s!"] = true,

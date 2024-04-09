@@ -46,7 +46,7 @@ L:RegisterTranslations("enUS", function()
 		msg_eliteDead = "/4 Flamewaker Elite Dead",
 		msg_healerDead = "/4 Flamewaker Healer Dead",
 
-		trigger_firePitYou = "You suffer (.+) points of fire damage.", --CHAT_MSG_COMBAT_SELF_HITS
+		trigger_firePitYou = BigWigs.SUFFER_PREFIX .. "(.+) points of fire damage.", --CHAT_MSG_COMBAT_SELF_HITS
 	}
 end)
 

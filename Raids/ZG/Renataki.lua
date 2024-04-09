@@ -25,14 +25,14 @@ L:RegisterTranslations("enUS", function() return {
 	msg_vanish = "Renataki has Vanished!",
 	bar_nextReturn = "Return",
 	
-	trigger_vanishFade = "Unknown's Ambush", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	trigger_vanishFade = "Unknown(%s?)'s Ambush", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 	msg_vanishFade = "Renataki Appears!",
 	bar_nextVanish = "Vanish",
 	
 	trigger_enrage = "Renataki gains Enrage.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
 	msg_enrage = "Enrage!",
 	
-	trigger_gouge = "Renataki's Gouge", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	trigger_gouge = "Renataki(%s?)'s Gouge", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 	bar_gouge = "Gouge CD",	
 } end )
 

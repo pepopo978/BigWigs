@@ -20,7 +20,7 @@ L:RegisterTranslations("enUS", function()
 		trigger_retaliationGain = "Hive'Zara Soldier gains Retaliation.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
 		msg_retaliationGain = "Hive'Zara Soldier gains Retaliation!",
 
-		trigger_retaliationHitYou = "Hive'Zara Soldier's Retaliation" .. BigWigs.COMBATHITOTHERSELF_SUFFIX, --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+		trigger_retaliationHitYou = "Hive'Zara Soldier(%s?)'s Retaliation" .. BigWigs.COMBATHITOTHERSELF_SUFFIX, --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 		msg_retaliationHitYou = "STOP KILLING YOURSELF!",
 
 		["You have slain %s!"] = true,

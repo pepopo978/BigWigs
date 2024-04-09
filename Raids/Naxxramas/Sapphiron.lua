@@ -77,7 +77,7 @@ L:RegisterTranslations("enUS", function()
 		trigger_blizzardYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Chill.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		trigger_blizzardYouFade = "Chill" .. BigWigs.AURAREMOVEDSELF_SUFFIX, --CHAT_MSG_SPELL_AURA_GONE_SELF
 
-		trigger_tailSweepYou = "Sapphiron's Tail Sweep hits you", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+		trigger_tailSweepYou = "Sapphiron(%s?)'s Tail Sweep hits you", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 		msg_tailSweep = "Tail Sweep hits behind the boss for 30 yards.",
 
 		bar_timeToAirPhase = "Next Air Phase CD",
@@ -233,7 +233,7 @@ function module:MINIMAP_ZONE_CHANGED(msg)
 		self:ResetModule()
 		DEFAULT_CHAT_FRAME:AddMessage("   BigWigs - Auto-Rebooting Module: " .. module.translatedName)
 
-	elseif GetMinimapZoneText() == "Sapphiron's Lair" and not self.core:IsModuleActive(module.translatedName) then
+	elseif GetMinimapZoneText() == "Sapphiron(%s?)'s Lair" and not self.core:IsModuleActive(module.translatedName) then
 		self.core:EnableModule(module.translatedName)
 	end
 end

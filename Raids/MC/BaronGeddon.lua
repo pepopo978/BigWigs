@@ -45,7 +45,7 @@ L:RegisterTranslations("enUS", function()
 		bar_infernoSoon = "Inferno Soon...",
 		bar_infernoChannel = "Inferno!",
 
-		trigger_infernoYou = "Baron Geddon's Inferno" .. BigWigs.COMBATHITOTHERSELF_SUFFIX, --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+		trigger_infernoYou = "Baron Geddon(%s?)'s Inferno" .. BigWigs.COMBATHITOTHERSELF_SUFFIX, --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 		msg_infernoYou = "Get out of Inferno!",
 
 		trigger_armageddon = "Baron Geddon is afflicted by Armageddon.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE

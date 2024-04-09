@@ -22,7 +22,7 @@ L:RegisterTranslations("enUS", function() return {
 	warstomp_name = "Warstomp",
 	warstomp_desc = "Warn for Warstomp.",
 		
-	trigger_warstomp = "Solakar Flamewreath's War Stomp",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+	trigger_warstomp = "Solakar Flamewreath(%s?)'s War Stomp",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 	bar_warstomp = "Stun!",
 	
 	trigger_engage = "Intruders are destroying our eggs!  Stop!!",--CHAT_MSG_MONSTER_YELL

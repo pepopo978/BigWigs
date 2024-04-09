@@ -44,7 +44,7 @@ L:RegisterTranslations("enUS", function()
 		msg_locustYou = "Get  A W A Y  from the boss!",
 		trigger_locustSwarmYouFade = "Locust Swarm" .. BigWigs.AURAREMOVEDSELF_SUFFIX, --CHAT_MSG_SPELL_AURA_GONE_SELF
 
-		trigger_impale = "Anub'Rekhan's Impale hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+		trigger_impale = "Anub'Rekhan(%s?)'s Impale hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 		bar_impale = "Impale CD",
 
 		trigger_enrage = "Crypt Guard gains Enrage.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS

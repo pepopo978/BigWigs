@@ -21,7 +21,7 @@ L:RegisterTranslations("enUS", function()
 
 		trigger_watch = "sets eyes on (.+)!", --CHAT_MSG_MONSTER_EMOTE
 		msg_watch = " is being watched!",
-		trigger_watchEnd = "Buru Egg's Explosion hits Buru the Gorger for", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+		trigger_watchEnd = "Buru Egg(%s?)'s Explosion hits Buru the Gorger for", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 		msg_watchEnd = "Buru stopped following you.",
 
 		trigger_dismemberYouOne = BigWigs.AURAHARMFULSELF_PREFIX .. "Dismember.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE

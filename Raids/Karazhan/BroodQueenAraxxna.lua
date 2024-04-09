@@ -25,7 +25,7 @@ L:RegisterTranslations("enUS", function()
 		egg_desc = "Warns for Egg Spawn",
 
 
-		trigger_volley = "Brood Queen Araxxna's Brood Venom Volley hits", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+		trigger_volley = "Brood Queen Araxxna(%s?)'s Brood Venom Volley hits", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 		bar_volley = "Brood Venom Volley",
 
 		trigger_leechingBiteYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Leeching Bite.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE

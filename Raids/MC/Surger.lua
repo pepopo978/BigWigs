@@ -21,7 +21,7 @@ L:RegisterTranslations("enUS", function() return {
 	surge_desc = "Warn for Surge",
 	
 	
-	trigger_surge = "Lava Surger's Surge hits (.+) for", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	trigger_surge = "Lava Surger(%s?)'s Surge hits (.+) for", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 	msg_surge = " failed to stack on the Surger",
 	msg_surgeYou = "S T A C K on the Surger",
 } end )
@@ -59,7 +59,7 @@ end
 
 function module:Event(msg)
 	if string.find(msg, L["trigger_surge"]) then
-		local _,_, surgePerson, _ = string.find(msg, L["trigger_surge"])
+		local _,_,_, surgePerson, _ = string.find(msg, L["trigger_surge"])
 		if surgePerson == "you" then surgePerson = UnitName("Player") end
 		self:Sync(syncName.surge.. " ".. surgePerson)
 	end

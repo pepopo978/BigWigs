@@ -36,7 +36,7 @@ L:RegisterTranslations("enUS", function() return {
 	
 	--not tracking the afflicted since many mobs do immolate, may cause conflict
 		--instead only showing the message once to remind dispels on Garr
-	trigger_immolate = "Fire damage from Firesworn's Immolate.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_immolate = "Fire damage from Firesworn(%s?)'s Immolate.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 	msg_immolate = "Immolate - Dispel!",
 } end)
 

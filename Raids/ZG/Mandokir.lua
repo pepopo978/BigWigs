@@ -37,7 +37,7 @@ L:RegisterTranslations("enUS", function()
 		watched_warning_other = "%s is being watched!",
 		enraged_message = "Ohgan down! Mandokir enraged!",
 
-		charge_trigger = "Bloodlord Mandokir's Charge",
+		charge_trigger = "Bloodlord Mandokir(%s?)'s Charge",
 		chargecd_bar = "Charge CD",
 
 		announce_cmd = "whispers",

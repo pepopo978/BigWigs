@@ -30,8 +30,8 @@ L:RegisterTranslations("enUS", function()
 		adds_desc = "Warn for Adds Deaths",
 
 
-		trigger_curse = "afflicted by Lucifron's Curse.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
-		trigger_curse2 = "Lucifron's Curse was resisted", --CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+		trigger_curse = "afflicted by Lucifron(%s?)'s Curse.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+		trigger_curse2 = "Lucifron(%s?)'s Curse was resisted", --CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 		bar_curseCd = "Next Lucifron's Curse",
 		msg_curse = "Lucifron's Curse - Decurse!",
 
@@ -41,7 +41,7 @@ L:RegisterTranslations("enUS", function()
 		bar_doomDmg = "Impending Doom!",
 		msg_doom = "Impending Doom - Dispel!",
 
-		trigger_shadowShock = "Lucifron's Shadow Shock", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+		trigger_shadowShock = "Lucifron(%s?)'s Shadow Shock", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 		bar_shadowShockCd = "Shadow Shock CD",
 
 		trigger_mcYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Dominate Mind.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE

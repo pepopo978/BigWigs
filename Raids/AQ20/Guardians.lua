@@ -68,15 +68,15 @@ L:RegisterTranslations("enUS", function()
 		bar_plague = " Plagued",
 		msg_plague = "Plague on ",
 
-		trigger_thunderClap = "Anubisath Guardian's Thunderclap hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+		trigger_thunderClap = "Anubisath Guardian(%s?)'s Thunderclap hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 		bar_thunderClap = "Thunder Clap CD",
 		msg_thunderClap = "Thunder Clap - Ranged get Out!",
 
-		trigger_shadowStorm = "Anubisath Guardian's Shadow Storm hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+		trigger_shadowStorm = "Anubisath Guardian(%s?)'s Shadow Storm hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 		bar_shadowStorm = "Shadow Storm CD",
 		msg_shadowStorm = "Shadow Storm - Ranged get In!",
 
-		trigger_meteor = "Anubisath Guardian's Meteor hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+		trigger_meteor = "Anubisath Guardian(%s?)'s Meteor hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 		bar_meteor = "Meteor CD",
 		msg_meteor = "Meteor!",
 

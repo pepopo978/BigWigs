@@ -41,7 +41,7 @@ L:RegisterTranslations("enUS", function()
 		trigger_websYou = BigWigs.AURAHARMFULSELF_PREFIX .. "Enveloping Webs.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 		bar_websCd = "Enveloping Webs CD",
 
-		trigger_charge = "High Priestess Mar'li's Charge", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+		trigger_charge = "High Priestess Mar'li(%s?)'s Charge", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 		bar_chargeCd = "Charge CD",
 
 		--if registering CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE then will Warlock's...
