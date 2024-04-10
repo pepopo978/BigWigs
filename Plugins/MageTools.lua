@@ -28,6 +28,11 @@ local syncName = {
 
 	ignitePyroRequest = "IgnitePyroRequest",
 	ignitePyroRequestSpace = "IgnitePyroRequest ",
+
+	fetishStart = "FetishStart",
+	fetishFade = "FetishFade",
+	eyeOfDimStart = "eyeOfDimStart",
+	eyeOfDimFade = "eyeOfDimFade",
 }
 
 local scorchIcon = "Interface\\Icons\\Spell_Fire_SoulBurn"
@@ -138,6 +143,11 @@ L:RegisterTranslations("enUS", function()
 		ignite_crit_test = "^(.+) (.+) crits (.+) for .+ Fire damage",
 		ignite_dmg = "^(.+) suffers (.+) Fire damage from (.+) Ignite",
 		ignite_fades_test = "Ignite fades from (.+).",
+
+		arcane_shroud_test = "You gain Arcane Shroud", -- Fetish of the sand reaver
+		arcane_shroud_fades_test = "Arcane Shroud fades from you",
+		eye_of_diminution_test = "You gain The Eye of Diminution", -- Eye of Diminution
+		eye_of_diminution_fades_test = "The Eye of Diminution fades from you",
 
 		slain_test = "(.+) is slain by (.+)",
 		self_slain_test = "You have slain (.+)",
@@ -592,6 +602,8 @@ function BigWigsMageTools:OnEnable()
 		self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
 
 		self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "AuraFadeEvents")
+		self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "TrinketEvents")
+		self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS", "TrinketEvents")
 
 		self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "PlayerDamageEvents")
 		self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE", "PlayerDamageEvents")
@@ -611,10 +623,16 @@ function BigWigsMageTools:OnEnable()
 	self.target = UnitName("target")
 	self:ThrottleSync(warningSyncSpeed, syncName.ignitePlayerWarning)
 	self:ThrottleSync(warningSyncSpeed, syncName.ignitePyroRequest)
+	self:ThrottleSync(1, syncName.eyeOfDimStart)
+	self:ThrottleSync(1, syncName.eyeOfDimFade)
+	self:ThrottleSync(1, syncName.fetishStart)
+	self:ThrottleSync(1, syncName.fetishFade)
 end
 
 function BigWigsMageTools:OnDisable()
 	self:HideAnchors()
+	self:UnregisterAllEvents()
+	self:CancelAllScheduledEvents()
 end
 
 -----------------------------------------------------------------------
@@ -836,6 +854,18 @@ function BigWigsMageTools:AuraFadeEvents(msg)
 	end
 end
 
+function BigWigsMageTools:TrinketEvents(msg)
+	if string.find(msg, L["arcane_shroud_test"]) then
+		self:Sync(syncName.fetishStart .. " " .. self.playerName)
+	elseif string.find(msg, L["arcane_shroud_fades_test"]) then
+		self:Sync(syncName.fetishFade .. " " .. self.playerName)
+	elseif string.find(msg, L["eye_of_diminution_test"]) then
+		self:Sync(syncName.eyeOfDimStart .. " " .. self.playerName)
+	elseif string.find(msg, L["eye_of_diminution_fades_test"]) then
+		self:Sync(syncName.eyeOfDimFade .. " " .. self.playerName)
+	end
+end
+
 function BigWigsMageTools:PLAYER_REGEN_ENABLED()
 	self:StopAllBars()
 
@@ -1007,6 +1037,18 @@ function BigWigsMageTools:BigWigs_RecvSync(sync, arg1, arg2)
 			self:Bar(arg1 .. " has requested pyro!!!", 3, "spell_fire_fireball02", false, "Red")
 			BigWigsSound:BigWigs_Sound("Pyro")
 		end
+	elseif sync == syncName.eyeOfDimStart then
+		if self.db.profile.enable then
+			self:Bar(arg1 .. " used Eye of Dim", 20, "INV_Trinket_Naxxramas02", false, "Blue")
+		end
+	elseif sync == syncName.eyeOfDimFade then
+		self:RemoveBar(arg1 .. " used Eye of Dim")
+	elseif sync == syncName.fetishStart then
+		if self.db.profile.enable then
+			self:Bar(arg1 .. " used Fetish", 20, "INV_Misc_AhnQirajTrinket_03", false, "Blue")
+		end
+	elseif sync == syncName.fetishFade then
+		self:RemoveBar(arg1 .. " used Fetish")
 	end
 end
 
