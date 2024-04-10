@@ -144,10 +144,10 @@ L:RegisterTranslations("enUS", function()
 		ignite_dmg = "^(.+) suffers (.+) Fire damage from (.+) Ignite",
 		ignite_fades_test = "Ignite fades from (.+).",
 
-		arcane_shroud_test = BigWigs.AURAHELPFULSELF_PREFIX .. "Arcane Shroud", -- Fetish of the sand reaver
-		arcane_shroud_fades_test = "Arcane Shroud" .. BigWigs.AURAREMOVEDSELF_SUFFIX,
-		eye_of_diminution_test = BigWigs.AURAHELPFULSELF_PREFIX .. "The Eye of Diminution", -- Eye of Diminution
-		eye_of_diminution_fades_test = "The Eye of Diminution" .. BigWigs.AURAREMOVEDSELF_SUFFIX,
+		arcane_shroud_test = "You gain Arcane Shroud", -- Fetish of the sand reaver
+		arcane_shroud_fades_test = "Arcane Shroud fades from you",
+		eye_of_diminution_test = "You gain The Eye of Diminution", -- Eye of Diminution
+		eye_of_diminution_fades_test = "The Eye of Diminution fades from you",
 
 		slain_test = "(.+) is slain by (.+)",
 		self_slain_test = "You have slain (.+)",
