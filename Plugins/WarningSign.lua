@@ -96,9 +96,8 @@ end)
 
 BigWigsWarningSign = BigWigs:NewModule(name)
 BigWigsWarningSign.defaultDB = {
-	posx = nil,
-	posy = nil,
-	isVisible = nil,
+	posx = 800,
+	posy = 645,
 	disabled = false,
 	scale = 0.8,
 	alpha = 0.8,
