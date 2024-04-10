@@ -1460,7 +1460,7 @@ function CandyBar:AcquireBarFrame(name)
 	f.icon.text:SetFont(font, fontsize * 1.5, "OUTLINE")
 	f.icon.text:SetTextColor(timertextcolor[1], timertextcolor[2], timertextcolor[3], timertextcolor[4])
 	f.icon.text:SetAllPoints(f.icon)
-
+	f.icon.text:SetText("")
 	f.icon:Show()
 
 	if not f.statusbarbg then
