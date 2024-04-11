@@ -117,6 +117,8 @@ function CandyBar:Register(name, time, text, icon, c1, c2, c3, c4, c5, c6, c7, c
 	t.reversed = nil
 	CandyBar.var.handlers[name] = t
 	CandyBar.var.handlers[name].frame = CandyBar:AcquireBarFrame(name)
+	CandyBar:SetIconText(name, "") -- clear out old icon text
+
 	if c1 and c2 then
 		CandyBar:SetGradient(name, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10)
 	end
