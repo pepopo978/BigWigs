@@ -163,11 +163,6 @@ function module:Event(msg)
 		local _,_, injectFadePerson, _ = string.find(msg, L["trigger_injectFade"])
 		if injectFadePerson == "you" then injectFadePerson = UnitName("Player") end
 		self:Sync(syncName.injectFade.." "..injectFadePerson)
-					if UnitName("Player") == "Relar" or UnitName("Player") == "Dreadsome" then
-						DEFAULT_CHAT_FRAME:AddMessage("trigger_injectFade")
-						if injectFadePerson ~= nil then DEFAULT_CHAT_FRAME:AddMessage("injectFadePerson: "..injectFadePerson) end
-					end
-					--debug
 	
 	elseif msg == L["trigger_cloudCast"] then
 		self:Sync(syncName.cloud)
@@ -188,11 +183,6 @@ function module:BigWigs_RecvSync( sync, rest, nick )
 		self:Inject(rest)
 	elseif sync == syncName.injectFade and rest and self.db.profile.inject then
 		self:InjectFade(rest)
-		if UnitName("Player") == "Relar" or UnitName("Player") == "Dreadsome" then
-			DEFAULT_CHAT_FRAME:AddMessage("syncName.injectFade")
-			if rest ~= nil then DEFAULT_CHAT_FRAME:AddMessage("rest: "..rest) end
-		end
-		--debug
 	elseif sync == syncName.cloud and self.db.profile.cloud then
 		self:Cloud()
 	elseif sync == syncName.lowHp and self.db.profile.inject then
@@ -236,11 +226,6 @@ function module:Inject(rest)
 end
 
 function module:InjectFade(rest)
-	if UnitName("Player") == "Relar" or UnitName("Player") == "Dreadsome" then
-		DEFAULT_CHAT_FRAME:AddMessage("InjectFade Function")
-		if rest ~= nil then DEFAULT_CHAT_FRAME:AddMessage("rest: "..rest) end
-	end
-	
 	self:RemoveBar(rest..L["bar_injected"])
 	
 	if (IsRaidLeader() or IsRaidOfficer()) and self.db.profile.icon then

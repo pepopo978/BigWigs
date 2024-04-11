@@ -1,11 +1,7 @@
 
-local __find = string.find
-local __substr = string.sub
-local __tinsert = table.insert
-
 local module, L = BigWigs:ModuleDeclaration("Gothik the Harvester", "Naxxramas")
 
-module.revision = 30079
+module.revision = 30084
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"room", -1, "add", "adddeath", "bosskill"}
 module.wipemobs = {
@@ -62,15 +58,15 @@ L:RegisterTranslations("enUS", function() return {
 } end )
 
 local timer = {
-	inroom = 274,
+	inroom = 274, --4:34
 	
 	firstTrainee = 24,
 	trainee = 20,
 	
-	firstDeathknight = 74,
+	firstDeathknight = 74, --1:14
 	deathknight = 25,
 	
-	firstRider = 134,
+	firstRider = 134, --2:14
 	rider = 30,
 }
 local icon = {
@@ -90,7 +86,6 @@ local syncName = {
 	gateOpen = "GothikGateOpen"..module.revision,
 }
 
-local wave = 1
 local numTrainees = 1
 local numDeathknights = 1
 local numRiders = 1
@@ -101,6 +96,8 @@ function module:OnRegister()
 end
 
 function module:OnEnable()
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event") --Debug
+	
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
 	
 	self:RegisterEvent("UNIT_HEALTH")
@@ -118,7 +115,6 @@ end
 function module:OnEngage()
 	if self.core:IsModuleActive("Deathknight Cavalier", "Naxxramas") then self.core:DisableModule("Deathknight Cavalier", "Naxxramas") end
 	
-	wave = 1
 	numTrainees = 1
 	numDeathknights = 1
 	numRiders = 1
@@ -138,9 +134,9 @@ function module:OnEngage()
 		self:DelayedMessage(timer.firstDeathknight - 3, numDeathknights..L["msg_dkSoon"], "Urgent", false, nil, false)
 		self:DelayedMessage(timer.firstRider - 3, numRiders..L["msg_riderSoon"], "Important", false, nil, false)
 
-		self:ScheduleRepeatingEvent("GothikTraineeRepop", self.Trainee, timer.firstTrainee, self)
-		self:ScheduleRepeatingEvent("GothikDkRepop", self.DeathKnight, timer.firstDeathknight, self)
-		self:ScheduleRepeatingEvent("GothikRiderRepop", self.Rider, timer.firstRider, self)
+		self:ScheduleEvent("GothikTraineeRepop1", self.Trainee, timer.firstTrainee, self)
+		self:ScheduleEvent("GothikDkRepop1", self.DeathKnight, timer.firstDeathknight, self)
+		self:ScheduleEvent("GothikRiderRepop1", self.Rider, timer.firstRider, self)
 	end
 end
 
@@ -156,7 +152,6 @@ function module:MINIMAP_ZONE_CHANGED(msg)
 end
 
 function module:ResetModule()
-	wave = 1
 	numTrainees = 1
 	numDeathknights = 1
 	numRiders = 1
@@ -197,6 +192,14 @@ function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
 	end
 end
 
+--[[--debug
+function module:Event(msg)
+	if msg == "engage" then
+		module:SendEngageSync()
+	end
+	
+end
+]]
 
 function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.inRoom and self.db.profile.room then
@@ -221,10 +224,14 @@ function module:GateOpen()
 end
 
 function module:Trainee()
+	if numTrainees == 1 then
+		self:ScheduleRepeatingEvent("GothikTraineeRepop", self.Trainee, timer.trainee, self)
+	end
+	
 	numTrainees = numTrainees + 1
 	
 	self:Bar(L["bar_trainee"]..numTrainees, timer.trainee, icon.trainee, true, color.trainee)
-	self:DelayedMessage(timer.trainee - 3, L["msg_traineeSoon"], "Attention", false, nil, false)
+	self:DelayedMessage(timer.trainee - 3, numTrainees..L["msg_traineeSoon"], "Attention", false, nil, false)
 	
 	if numTrainees >= 11 then
 		self:CancelScheduledEvent("GothikTraineeRepop")
@@ -232,10 +239,14 @@ function module:Trainee()
 end
 
 function module:DeathKnight()
+	if numDeathknights == 1 then
+		self:ScheduleRepeatingEvent("GothikDkRepop", self.DeathKnight, timer.deathknight, self)
+	end
+	
 	numDeathknights = numDeathknights + 1
 	
 	self:Bar(L["bar_dk"]..numDeathknights, timer.deathknight, icon.deathknight, true, color.deathknight)
-	self:DelayedMessage(timer.deathknight - 3, L["msg_dkSoon"], "Urgent", false, nil, false)
+	self:DelayedMessage(timer.deathknight - 3, numDeathknights..L["msg_dkSoon"], "Urgent", false, nil, false)
 	
 	if numDeathknights >= 7 then
 		self:CancelScheduledEvent("GothikDkRepop")
@@ -243,10 +254,14 @@ function module:DeathKnight()
 end
 
 function module:Rider()
+	if numRiders == 1 then
+		self:ScheduleRepeatingEvent("GothikRiderRepop", self.Rider, timer.rider, self)
+	end
+	
 	numRiders = numRiders + 1
 	
 	self:Bar(L["bar_rider"]..numRiders, timer.rider, icon.rider, true, color.rider)
-	self:DelayedMessage(timer.rider - 3, L["msg_riderSoon"], "Important", false, nil, false)
+	self:DelayedMessage(timer.rider - 3, numRiders..L["msg_riderSoon"], "Important", false, nil, false)
 	
 	if numRiders >= 4 then
 		self:CancelScheduledEvent("GothikRiderRepop")
