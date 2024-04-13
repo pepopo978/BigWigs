@@ -44,7 +44,7 @@ L:RegisterTranslations("enUS", function()
 end)
 
 local timer = {
-	firstShout = 14.5,
+	firstShout = 14, -- 1 sec buffer to be safe
 	shout = 25,
 
 	mc = 60,
@@ -115,18 +115,34 @@ function module:OnEnable()
 end
 
 function module:OnSetup()
+	self:Message("Target Razuvious before pull for accurate first shout timer!", "Attention")
 end
 
 function module:OnEngage()
 	mcIcon = nil
-
+	targetWarningShown = nil
 	if self.db.profile.shout then
-		self:Bar(L["bar_shout"], timer.firstShout, icon.shout, true, color.shout)
-		self:DelayedWarningSign(timer.firstShout - 3, icon.shout, 0.7)
+		-- start checking for razuvious changing targets
+		self:ScheduleRepeatingEvent("bwrazuvioustargetcheck", self.CheckRazuviousTarget, 0.5, self)
 	end
 end
 
 function module:OnDisengage()
+end
+
+function module:CheckRazuviousTarget()
+	-- check that razuvious is targeted
+	if UnitName("target") ~= "Instructor Razuvious" then
+		if not targetWarningShown then
+			self:Message("Not targeting Razuvious, first shout may be off!", "Attention")
+			targetWarningShown = true
+		end
+	elseif UnitName("targettarget") then
+		-- razuvious has a target, start shout timer
+		self:Bar(L["bar_shout"], timer.firstShout, icon.shout, true, color.shout)
+		self:DelayedWarningSign(timer.firstShout - 3, icon.shout, 0.7)
+		self:CancelScheduledEvent("bwrazuvioustargetcheck")
+	end
 end
 
 function module:CHAT_MSG_RAID_BOSS_EMOTE(msg)
