@@ -2,7 +2,7 @@
 local module, L = BigWigs:ModuleDeclaration("Nefarian", "Blackwing Lair")
 local victor = AceLibrary("Babble-Boss-2.2")["Lord Victor Nefarius"]
 
-module.revision = 30084
+module.revision = 30085
 module.enabletrigger = {"Nefarian", "Lord Victor Nefarius"}
 module.toggleoptions = {
 	"mc",
@@ -184,7 +184,7 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_bopNefFade = "Improved Blessing of Protection fades from Nefarian.", --CHAT_MSG_SPELL_AURA_GONE_OTHER
 	bar_bopNef = "Nefarian Blessing of Protection",
 	
-	msg_lowHp = "Nefarian under 35% - Bone Constructs Soon (@ 30%)!",
+	msg_lowHp = "Nefarian under 25% - Bone Constructs Soon (@ 20%)!",
 	
 	trigger_boneConstructs = "Impossible! Rise my minions! Serve your master once more!", --CHAT_MSG_MONSTER_YELL
 	msg_boneConstructs = "Bone Constructs incoming - AOE!",
@@ -200,9 +200,9 @@ local timer = {
 --Phase 1
 	mobSpawn = 10, --ok
 	mcDur = 15, --ok
-	landingParty = 112, --guessing landing is time-based from engage, gives 20sec to get in position
+	landingParty = 115, --guessing landing is time-based from engage, gives 20sec to get in position
 						--if it is kill-based, will put it @ 37 kill
-	
+						--112 was missing 3 sec, adjusted to 115
 --Phase 2	
 	landing = 13, --ok, 1st hit from nef at 13.5
 	landingShadowFlame = 12.4, --doesn't do damage on twow, not showing this bar
@@ -438,8 +438,8 @@ end
 
 function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
 	BigWigs:CheckForBossDeath(msg, self)
-
-	if (msg == string.format(UNITDIESOTHER, " Drakonid")) then
+	
+	if string.find(msg, " Drakonid dies.") then
 		drakonidsSelfCount = drakonidsSelfCount + 1
 		if drakonidsSelfCount <= 46 then
 			self:Sync(syncName.addDead .. " " .. drakonidsSelfCount)
@@ -457,9 +457,9 @@ end
 function module:UNIT_HEALTH(msg)
 	if UnitName(msg) == module.translatedName then
 		local healthPct = UnitHealth(msg) * 100 / UnitHealthMax(msg)
-		if healthPct >= 35 and lowHp ~= nil then
+		if healthPct >= 26 and lowHp ~= nil then
 			lowHp = nil
-		elseif healthPct < 35 and lowHp == nil then
+		elseif healthPct < 25 and lowHp == nil then
 			self:Sync(syncName.lowHp)
 		end
 	end

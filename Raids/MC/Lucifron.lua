@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Lucifron", "Molten Core")
 
-module.revision = 30075
+module.revision = 30085
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"curse", "doom", "mc", -1, "shock", -1, "adds", "bosskill"}
 module.wipemobs = {"Flamewaker Protector"}
@@ -47,7 +47,7 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_mcYou = "You are afflicted by Dominate Mind.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 	trigger_mcOther = "(.+) is afflicted by Dominate Mind.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
 	trigger_mcFade = "Dominate Mind fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
-	bar_mcCd = "Next MC",
+	bar_mcCd = "MC CD",
 	bar_mc = " MC ",
 	msg_mc = " MC - Dispel!",
 	

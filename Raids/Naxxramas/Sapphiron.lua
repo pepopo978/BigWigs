@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Sapphiron", "Naxxramas")
 
-module.revision = 30077
+module.revision = 30085
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"frostbreath", "lifedrain", "block", "enrage", "blizzard", "tailsweep", "phase", -1, "proximity", -1, "parry", "bosskill"}
 
@@ -88,7 +88,7 @@ L:RegisterTranslations("enUS", function() return {
 	
 	msg_lowHp = "Sapphiron under 10% - No more air phases!",
 	
-	trigger_parryYou = "You attack. Sapphiron parries.",
+	trigger_parryYou = "You attack. Sapphiron parries.", --CHAT_MSG_COMBAT_SELF_MISSES
 	msg_parryYou = "Sapphiron Parried your attack - Stop killing the tank you idiot!",
 } end )
 
@@ -171,7 +171,7 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event") --trigger_iceboltFade
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event") --trigger_iceboltFade
 	
-	self:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLYPLAYER_MISSES", "Event") --trigger_parryYou
+	self:RegisterEvent("CHAT_MSG_COMBAT_SELF_MISSES", "Event") --trigger_parryYou
 	
 	
 	self:ThrottleSync(3, syncName.frostBreath)
@@ -473,4 +473,5 @@ end
 function module:ParryYou()
 	self:WarningSign(icon.parry, 0.7)
 	self:Message(L["msg_parryYou"], "Personal", false, nil, false)
+	self:Sound("Info")
 end
