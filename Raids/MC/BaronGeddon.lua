@@ -206,7 +206,7 @@ function module:Bomb(rest)
 	self:Message(rest..L["msg_bomb"], "Urgent", false, nil, false)
 	
 	if rest == UnitName("Player") then
-		SendChatMessage(UnitName("player").." is the Bomb!","SAY")
+		SendChatMessage(UnitName("Player").." is the Bomb!","SAY")
 		self:WarningSign(icon.bomb, timer.bomb)
 		self:Sound("RunAway")
 	end

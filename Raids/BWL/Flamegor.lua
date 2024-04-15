@@ -17,7 +17,7 @@ L:RegisterTranslations("enUS", function() return {
 	shadowflame_desc = "Warn for Shadow Flame",
 
 	frenzy_cmd = "frenzy",
-	frenzy_name = "Frenzy Slert",
+	frenzy_name = "Frenzy Alert",
 	frenzy_desc = "Warn for Frenzy",
 	
 	
@@ -141,7 +141,7 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		self:ShadowFlame()
 	elseif sync == syncName.frenzy and self.db.profile.frenzy then
 		self:Frenzy()
-	elseif sync == syncName.frenzyFade and rest and self.db.profile.frenzy then
+	elseif sync == syncName.frenzyFade and self.db.profile.frenzy then
 		self:FrenzyFade()
 	end
 end
