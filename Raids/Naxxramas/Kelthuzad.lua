@@ -3,7 +3,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Kel'Thuzad", "Naxxramas")
 
-module.revision = 30079
+module.revision = 30086
 module.enabletrigger = module.translatedName
 module.toggleoptions = {
 	"phase",
@@ -441,6 +441,8 @@ function module:OnEngage()
 		self:ScheduleEvent("weaver13", self.WeaverSpawns, 294, self, "13")
 		self:ScheduleEvent("weaver14", self.WeaverSpawns, 300, self, "14")
 	end
+	
+	self:ScheduleRepeatingEvent("Kelthuzad_CheckForRaidWipe", self.CheckForRaidWipe, 60, self)
 end
 
 function module:OnDisengage()
@@ -497,6 +499,24 @@ function module:ResetModule()
 		for i=10, 1000, 10 do
 			self:RemoveBar(L["bar_bloodTapA"]..i..L["bar_bloodTapB"])
 		end
+	end
+	
+	self:CancelScheduledEvent("Kelthuzad_CheckForRaidWipe")
+end
+
+function module:CheckForRaidWipe()
+	local raidWiped = true
+	for i=1,GetNumRaidMembers() do
+		if UnitIsConnected("Raid"..i) and UnitAffectingCombat("Raid"..i) and not UnitIsDeadOrGhost("Raid"..i) then
+			raidWiped = nil
+			break
+		end
+	end
+
+	if raidWiped == true then
+		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
+		self:ResetModule()
+		DEFAULT_CHAT_FRAME:AddMessage("|cff7fff7f   [BigWigs]|r - Auto-Rebooting Module: "..module.translatedName)
 	end
 end
 
