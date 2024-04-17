@@ -267,25 +267,6 @@ BigWigs:RegisterChatCommand({ "/bw", "/BigWigs" }, BigWigs.cmdtable)
 BigWigs.debugFrame = ChatFrame1
 BigWigs.revision = 30075
 
--- Default values
-BigWigs.AURAHARMFULSELF_PREFIX = "You are afflicted by "
-BigWigs.AURAHELPFULSELF_PREFIX = "You gain "
-BigWigs.SUFFER_PREFIX = "You suffer "
-BigWigs.ABSORB_PREFIX = "You absorb "
-BigWigs.AURAREMOVEDSELF_SUFFIX = " fades from you"
-BigWigs.COMBATHITOTHERSELF_SUFFIX = " hits you for "
--- Advanced vanilla combat log modifies the log format replacing 'You' with player name
-if RPLL ~= nil then
-	local player_name = UnitName("player")
-
-	BigWigs.AURAHARMFULSELF_PREFIX = player_name .. " is afflicted by "
-	BigWigs.AURAHELPFULSELF_PREFIX = player_name .. " gains "
-	BigWigs.SUFFER_PREFIX = player_name .. " suffers "
-	BigWigs.ABSORB_PREFIX = player_name .. " absorbs "
-	BigWigs.AURAREMOVEDSELF_SUFFIX = " fades from " .. player_name
-	BigWigs.COMBATHITOTHERSELF_SUFFIX = " hits " .. player_name .. " for "
-end
-
 function BigWigs:EditLayout()
 	BigWigsBars:BigWigs_ShowAnchors()
 	BigWigsMessages:BigWigs_ShowAnchors()
