@@ -76,6 +76,28 @@ L:RegisterTranslations("enUS", function()
 		["Gives timer bars and raid messages about common buffs and debuffs."] = true,
 		["Common Auras"] = true,
 		["commonauras"] = true,
+
+		["Invisibility"] = true,
+		["Lesser Invisibility"] = true,
+		["Limited Invulnerability Potion"] = true,
+		["Blessing of Protection"] = true,
+		["Power Infusion"] = true,
+
+		["di_trigger"] = "You gain Divine Intervention",
+		["invis_trigger"] = "You gain Invisibility",
+		["lesser_invis_trigger"] = "You gain Lesser Invisibility",
+		["cloaking_invis_trigger"] = "You gain Cloaking",
+		["lip_trigger"] = "You gain Invulnerability",
+		["bop_trigger"] = "You gain Blessing of Protection",
+		["powerinfusion_trigger"] = "You gain Power Infusion",
+
+		["di_fades"] = "Divine Intervention fades",
+		["invis_fades"] = "Invisibility fades",
+		["lesser_invis_fades"] = "Lesser Invisibility fades",
+		["cloaking_invis_fades"] = "Cloaking fades",
+		["lip_fades"] = "Invulnerability fades",
+		["bop_fades"] = "Blessing of Protection fades",
+		["powerinfusion_fades"] = "Power Infusion fades",
 	}
 end)
 
@@ -94,6 +116,10 @@ BigWigsCommonAuras.defaultDB = {
 	orange = true,
 	soulwell = true,
 	shutdown = true,
+	invis = true,
+	lip = true,
+	bop = true,
+	powerinfusion = true,
 	broadcast = false,
 }
 BigWigsCommonAuras.consoleCmd = L["commonauras"]
@@ -179,6 +205,50 @@ BigWigsCommonAuras.consoleOptions = {
 			end,
 			set = function(v)
 				BigWigsCommonAuras.db.profile.di = v
+			end,
+		},
+		["invisibility"] = {
+			type = "toggle",
+			name = L["Invisibility"],
+			desc = string.format(L["Toggle %s display."], L["Invisibility"]),
+			get = function()
+				return BigWigsCommonAuras.db.profile.invis
+			end,
+			set = function(v)
+				BigWigsCommonAuras.db.profile.invis = v
+			end,
+		},
+		["lip"] = {
+			type = "toggle",
+			name = L["Limited Invulnerability Potion"],
+			desc = string.format(L["Toggle %s display."], L["Limited Invulnerability Potion"]),
+			get = function()
+				return BigWigsCommonAuras.db.profile.lip
+			end,
+			set = function(v)
+				BigWigsCommonAuras.db.profile.lip = v
+			end,
+		},
+		["bop"] = {
+			type = "toggle",
+			name = L["Blessing of Protection"],
+			desc = string.format(L["Toggle %s display."], L["Blessing of Protection"]),
+			get = function()
+				return BigWigsCommonAuras.db.profile.bop
+			end,
+			set = function(v)
+				BigWigsCommonAuras.db.profile.bop = v
+			end,
+		},
+		["powerinfusion"] = {
+			type = "toggle",
+			name = L["Power Infusion"],
+			desc = string.format(L["Toggle %s display."], L["Power Infusion"]),
+			get = function()
+				return BigWigsCommonAuras.db.profile.powerinfusion
+			end,
+			set = function(v)
+				BigWigsCommonAuras.db.profile.powerinfusion = v
 			end,
 		},
 		["portal"] = {
@@ -294,6 +364,7 @@ function BigWigsCommonAuras:OnEnable()
 	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")--trigger_wormhole, trigger_orange, trigger_soulwell
 	self:RegisterEvent("CHAT_MSG_SYSTEM")--trigger_shutdown, trigger_restart
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS")
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF")
 
 	if UnitClass("player") == "Warrior" or UnitClass("player") == "Druid" then
 		self:RegisterEvent("SpellStatusV2_SpellCastInstant")
@@ -362,8 +433,38 @@ end
 function BigWigsCommonAuras:CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS(msg)
 	if string.find(msg, BS["Gift of Life"]) and (UnitClass("Player") == "Warrior" or UnitClass("Player") == "Druid" or UnitClass("Player") == "Paladin") then
 		self:TriggerEvent("BigWigs_SendSync", "BWCALG")
-	elseif msg == "You gain Divine Intervention." then
+	elseif string.find(msg, L["di_trigger"]) then
 		self:TriggerEvent("BigWigs_SendSync", "BWCADI")
+	elseif string.find(msg, L["invis_trigger"]) and self.db.profile.invis then
+		self:Bar(L["invis_trigger"], 18, "Spell_Magic_LesserInvisibilty", true)
+	elseif string.find(msg, L["lesser_invis_trigger"]) and self.db.profile.invis then
+		self:Bar(L["lesser_invis_trigger"], 15, "Spell_Magic_LesserInvisibilty", true)
+	elseif string.find(msg, L["cloaking_invis_trigger"]) and self.db.profile.invis then
+		self:Bar(L["cloaking_invis_trigger"], 10, "Spell_Magic_LesserInvisibilty", true)
+	elseif string.find(msg, L["lip_trigger"]) and self.db.profile.lip then
+		self:Bar(L["lip_trigger"], 6, "inv_potion_62", true)
+	elseif string.find(msg, L["bop_trigger"]) and self.db.profile.bop then
+		self:Bar(L["bop_trigger"], 10, "Spell_Holy_SealOfProtection", true)
+	elseif string.find(msg, L["powerinfusion_trigger"]) and self.db.profile.powerinfusion then
+		self:Bar(L["powerinfusion_trigger"], 15, "Spell_Holy_PowerInfusion", true)
+	end
+end
+
+function BigWigsCommonAuras:CHAT_MSG_SPELL_AURA_GONE_SELF(msg)
+	if string.find(msg, L["di_fades"]) then
+		self:RemoveBar(L["di_trigger"])
+	elseif string.find(msg, L["invis_fades"]) then
+		self:RemoveBar(L["invis_trigger"])
+	elseif string.find(msg, L["lesser_invis_fades"]) then
+		self:RemoveBar(L["lesser_invis_trigger"])
+	elseif string.find(msg, L["cloaking_invis_fades"]) then
+		self:RemoveBar(L["cloaking_invis_trigger"])
+	elseif string.find(msg, L["lip_fades"]) then
+		self:RemoveBar(L["lip_trigger"])
+	elseif string.find(msg, L["bop_fades"]) then
+		self:RemoveBar(L["bop_trigger"])
+	elseif string.find(msg, L["powerinfusion_fades"]) then
+		self:RemoveBar(L["powerinfusion_trigger"])
 	end
 end
 
