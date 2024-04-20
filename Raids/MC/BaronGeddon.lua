@@ -61,10 +61,10 @@ L:RegisterTranslations("enUS", function() return {
 local timer = {
 	bomb = 8,
 	
-	infernoFirstCd = 18, --{18,24}, saw 23.679
+	infernoFirstCd = 18, --{18,24}, saw 21, 23.679
 	infernoFirstSoon = 6,
 	infernoChannel = 8,
-	infernoCd = 10, --{10,16}, saw 11.766
+	infernoCd = 10, --{10,16}, saw 11.766, 13.2
 	infernoSoon = 6,
 	
 	
@@ -206,7 +206,7 @@ function module:Bomb(rest)
 	self:Message(rest..L["msg_bomb"], "Urgent", false, nil, false)
 	
 	if rest == UnitName("Player") then
-		SendChatMessage(UnitName("player").." is the Bomb!","SAY")
+		SendChatMessage(UnitName("Player").." is the Bomb!","SAY")
 		self:WarningSign(icon.bomb, timer.bomb)
 		self:Sound("RunAway")
 	end

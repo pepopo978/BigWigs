@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Sapphiron", "Naxxramas")
 
-module.revision = 30075
+module.revision = 30085
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"frostbreath", "lifedrain", "block", "enrage", "blizzard", "tailsweep", "phase", -1, "proximity", -1, "parry", "bosskill"}
 
@@ -88,7 +88,7 @@ L:RegisterTranslations("enUS", function() return {
 	
 	msg_lowHp = "Sapphiron under 10% - No more air phases!",
 	
-	trigger_parryYou = "You attack. Sapphiron parries.",
+	trigger_parryYou = "You attack. Sapphiron parries.", --CHAT_MSG_COMBAT_SELF_MISSES
 	msg_parryYou = "Sapphiron Parried your attack - Stop killing the tank you idiot!",
 } end )
 
@@ -140,8 +140,8 @@ local syncName = {
 	enableProximity = "SapphironEnableProximity"..module.revision,
 }
 
-local lastLifeDrainTime = nil
-local airPhaseTime = nil
+--local lastLifeDrainTime = nil
+--local airPhaseTime = nil
 local remainingLifeDrainTimer = nil
 
 local lowHp = nil
@@ -171,7 +171,7 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event") --trigger_iceboltFade
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event") --trigger_iceboltFade
 	
-	self:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLYPLAYER_MISSES", "Event") --trigger_parryYou
+	self:RegisterEvent("CHAT_MSG_COMBAT_SELF_MISSES", "Event") --trigger_parryYou
 	
 	
 	self:ThrottleSync(3, syncName.frostBreath)
@@ -190,8 +190,8 @@ function module:OnSetup()
 end
 
 function module:OnEngage()
-	lastLifeDrainTime = GetTime()
-	airPhaseTime = GetTime()
+	--lastLifeDrainTime = GetTime()
+	--airPhaseTime = GetTime()
 	remainingLifeDrainTimer = 60
 	
 	lowHp = nil
@@ -228,7 +228,7 @@ function module:MINIMAP_ZONE_CHANGED(msg)
 	elseif GetMinimapZoneText() == "Eastern Plaguelands" and self.core:IsModuleActive(module.translatedName) then
 		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
 		self:ResetModule()
-		DEFAULT_CHAT_FRAME:AddMessage("   BigWigs - Auto-Rebooting Module: "..module.translatedName)
+		DEFAULT_CHAT_FRAME:AddMessage("|cff7fff7f   [BigWigs]|r - Auto-Rebooting Module: "..module.translatedName)
 			
 	elseif GetMinimapZoneText() == "Sapphiron's Lair" and not self.core:IsModuleActive(module.translatedName) then
 		self.core:EnableModule(module.translatedName)
@@ -236,12 +236,16 @@ function module:MINIMAP_ZONE_CHANGED(msg)
 end
 
 function module:ResetModule()
-	lastLifeDrainTime = GetTime()
-	airPhaseTime = GetTime()
+	--lastLifeDrainTime = GetTime()
+	--airPhaseTime = GetTime()
 	remainingLifeDrainTimer = 60
 	
 	lowHp = nil
 	phase = "ground"
+	
+	self:CancelDelayedSync(syncName.enableProximity)
+	self:CancelDelayedSync(syncName.groundPhase)
+	self:RemoveProximity()
 end
 
 function module:UNIT_HEALTH(msg)
@@ -344,7 +348,7 @@ function module:FrostBreath()
 end
 
 function module:LifeDrain()
-	lastLifeDrainTime = GetTime()
+	--lastLifeDrainTime = GetTime()
 	self:Bar(L["bar_lifeDrain"], timer.lifeDrain, icon.lifeDrain, true, color.lifeDrain)
 	
 	if UnitClass("Player") == "Mage" or UnitClass("Player") == "Druid" then
@@ -372,16 +376,17 @@ end
 
 function module:IceboltHits()
 	if phase == "ground" then
-		--self:Sync(syncName.airPhase)
 		phase = "air"
-		airPhaseTime = GetTime() - 7
+		--airPhaseTime = GetTime() - 7
 	end
 	
 	self:RemoveBar(L["bar_timeToGroundPhase"])
 	self:RemoveBar(L["bar_lifeDrain"])
 	self:RemoveBar(L["bar_timeToAirPhase"])
 	
-	--self:RemoveBar(L["bar_iceBlock1"])
+	if self.db.profile.proximity then
+		self:TriggerEvent("BigWigs_ShowProximity")
+	end
 	
 	if self.db.profile.phase then
 		self:Bar(L["bar_timeToGroundPhase"], timer.airPhase - timer.iceBlock1, icon.phase, true, color.phase)
@@ -429,13 +434,14 @@ function module:GroundPhase()
 	
 	if self.db.profile.proximity then
 		self:RemoveProximity()
+		self:DelayedSync(timer.groundPhase, syncName.enableProximity)
 	end
 	
 	self:CancelDelayedSync(syncName.groundPhase)
 	
 	if self.db.profile.lifedrain then
-		remainingLifeDrainTimer = timer.lifeDrain - (airPhaseTime - lastLifeDrainTime)
-		self:Bar(L["bar_lifeDrain"], remainingLifeDrainTimer, icon.lifeDrain, true, color.lifeDrain)
+		--remainingLifeDrainTimer = timer.lifeDrain - (airPhaseTime - lastLifeDrainTime)
+		self:Bar(L["bar_lifeDrain"], 6, icon.lifeDrain, true, color.lifeDrain)
 	end
 	
 	if lowHp == nil then
@@ -443,42 +449,22 @@ function module:GroundPhase()
 			self:Bar(L["bar_timeToAirPhase"], timer.groundPhase, icon.phase, true, color.phase)
 			self:Message(L["msg_groundPhase"], "Important", false, nil, false)
 		end
-		
-		--self:DelayedSync(timer.groundPhase, syncName.airPhase)
 	end
 end
 
 function module:EnableProximity()
-	self:Proximity()
+	self:TriggerEvent("BigWigs_ShowProximity")
 end
 
---function module:AirPhase()
-	--phase = "air"
-	
-	--self:RemoveBar(L["bar_lifeDrain"])
-	--self:RemoveBar(L["bar_timeToAirPhase"])
-	--self:CancelDelayedSync(syncName.airPhase)
-	
-	--if self.db.profile.proximity then
-	--	self:Proximity()
-	--end
-	
-	--if self.db.profile.phase then
-		--self:Bar(L["bar_timeToGroundPhase"], timer.airPhase, icon.phase, true, color.phase)
-		--self:Message(L["msg_airPhase"], "Important", false, nil, false)
-	--end
-	
-	--if self.db.profile.block then
-	--	self:Bar(L["bar_iceBlock1"], timer.iceBlock1, icon.iceBlock, true, color.iceBlock)
-	--end
---end
+function module:RemoveProximity()
+	self:TriggerEvent("BigWigs_HideProximity")
+end
 
 function module:LowHp()
 	lowHp = true
 	
 	if phase == "ground" then
 		self:RemoveBar(L["bar_timeToAirPhase"])
-		--self:CancelDelayedSync(syncName.airPhase)
 	end
 	
 	self:Message(L["msg_lowHp"], "Important", false, nil, false)
@@ -487,4 +473,5 @@ end
 function module:ParryYou()
 	self:WarningSign(icon.parry, 0.7)
 	self:Message(L["msg_parryYou"], "Personal", false, nil, false)
+	self:Sound("Info")
 end

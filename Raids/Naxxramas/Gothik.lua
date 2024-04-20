@@ -1,129 +1,72 @@
 
-local __find = string.find
-local __substr = string.sub
-local __tinsert = table.insert
-
 local module, L = BigWigs:ModuleDeclaration("Gothik the Harvester", "Naxxramas")
 
-module.revision = 30074
+module.revision = 30084
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"room", -1, "add", "adddeath", "bosskill"}
+module.wipemobs = {
+	"Unrelenting Rider",
+	"Unrelenting Deathknight",
+	"Unrelenting Trainee",
+	"Spectral Rider",
+	"Spectral Deathknight",
+	"Spectral Trainee",
+}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Gothik",
 
 	room_cmd = "room",
-	room_name = "Room Arrival Warnings",
-	room_desc = "Warn for Gothik's arrival",
+	room_name = "Room Arrival Alert",
+	room_desc = "Warn for Gothik Teleporting in the Room",
 
 	add_cmd = "add",
-	add_name = "Add Warnings",
-	add_desc = "Warn for adds",
+	add_name = "Adds Spawn Alert",
+	add_desc = "Warn for Adds Spawns",
 
 	adddeath_cmd = "adddeath",
-	adddeath_name = "Add Death Alert",
-	adddeath_desc = "Alerts when an add dies.",
+	adddeath_name = "Adds Death Alert",
+	adddeath_desc = "Warn for Adds Deaths",
 
-	disabletrigger = "I... am... undone!",
 
-	starttrigger1 = "Brazenly you have disregarded powers beyond your understanding.",
-	starttrigger2 = "Teamanare shi rikk mannor rikk lok karkun",
-	startwarn = "Gothik the Harvester engaged! 4:35 till he's in the room.",
-
-	trainee_name = "Unrelenting Trainee",
-	spectral_trainee_name = "Spectral Trainee",
-	trawarn = "Trainees in 3 seconds",
-	trabar = "Trainee - %d",
+	trigger_engage = "Brazenly you have disregarded powers beyond your understanding.",
+	trigger_bossDead = "I... am... undone.",
 	
-	deathknight_name = "Unrelenting Deathknight",
-	spectral_deathknight_name = "Spectral Deathknight",
-	dkdiewarn = "Death Knight dead!",
-	dkwarn = "Deathknight in 3 seconds",
-	dkbar = "Deathknight - %d",
+	name_trainee = "Unrelenting Trainee",
+	name_traineeSpectral = "Spectral Trainee",
+	bar_trainee = "Trainee - ",
+	msg_traineeSoon = "/11 Trainees in 3 seconds",
 	
-	rider_name = "Unrelenting Rider",
-	spectral_rider_name = "Spectral Rider",
-	riderdiewarn = "Rider dead!",
-	riderwarn = "Rider in 3 seconds",
-	riderbar = "Rider - %d",
+	name_deathKnight = "Unrelenting Deathknight",
+	name_deathKnightSpectral = "Spectral Deathknight",
+	bar_dk = "Deathknight - ",
+	msg_dkSoon = "/7 Deathknight in 3 seconds",
+	msg_dkDead = "Death Knight dead!",
 	
-	warn_inroom_3m = "In room in 3 minutes",
-	warn_inroom_90 = "In room in 90 seconds",
-	warn_inroom_60 = "In room in 60 seconds",
-	warn_inroom_30 = "In room in 30 seconds",
-	warn_inroom_10 = "Gothik Incoming in 10 seconds",
-
-	wave = "%d/22: ", -- its only 22 waves not 26
-
-	inroomtrigger = "I have waited long enough",
-	inroomwarn = "He's in the room!",
-	inroombartext = "In Room",
-	teleporttext = "Teleport",
+	name_rider = "Unrelenting Rider",
+	name_riderSpectral = "Spectral Rider",
+	bar_rider = "Rider - ",
+	msg_riderSoon = "/4 Rider in 3 seconds",
+	msg_riderDead = "Rider dead!",
+	
+	trigger_inRoom = "I have waited long enough! Now, you face the harvester of souls!",
+	bar_inRoom = "In Room",
+	msg_inRoom = "Gothik the Harvester teleports into the Fray!",
+	msg_inRoom10 = "Gothik Incoming in 10 seconds",
+	
+	msg_gateOpen = "The Central gate opens!",
 } end )
-
-L:RegisterTranslations("esES", function() return {
-	--cmd = "Gothik",
-
-	--room_cmd = "room",
-	room_name = "Alerta de Arribo",
-	room_desc = "Avisa para el arribo de Gothik",
-
-	--add_cmd = "add",
-	add_name = "Alerta de Adds",
-	add_desc = "Avisa para Adds",
-
-	--adddeath_cmd = "adddeath",
-	adddeath_name = "Alerta del Muerte de los Adds",
-	adddeath_desc = "Avisa cuando un add muera.",
-
-	disabletrigger = "Es... mi... fin.",
-
-	starttrigger1 = "Habéis hecho caso omiso de poderes más allá de vuestro entendimiento descaradamente.",
-	starttrigger2 = "Teamanare shi rikk mannor rikk lok karkun",
-	startwarn = "¡Entrando en combate con Gothik el Cosechador! 4:35 hasta que arribe al cuarto.",
-
-	rider_name = "Jinete inflexible",
-	spectral_rider_name = "Jinete espectral",
-	deathknight_name = "Caballero de la Muerte inflexible",
-	spectral_deathknight_name = "Caballero de la Muerte espectral",
-	trainee_name = "Practicante inflexible",
-	spectral_trainee_name = "Practicante espectral",
-
-	riderdiewarn = "¡Jinete muerto!",
-	dkdiewarn = "¡Caballero de la Muerte muerto!",
-
-	warn_inroom_3m = "Entra en 3 minutos",
-	warn_inroom_90 = "Entra en 90 segundos",
-	warn_inroom_60 = "Entra en 60 segundos",
-	warn_inroom_30 = "Entra en 30 segundos",
-	warn_inroom_10 = "Gothik entra en 10 segundos",
-
-	wave = "%d/22: ", -- its only 22 waves not 26
-
-	trawarn = "Practicantes en 3 segundos",
-	dkwarn = "Caballero de la Muerte en 3 segundos",
-	riderwarn = "Jinete en 3 segundos",
-
-	trabar = "Practicante - %d",
-	dkbar = "Caballero de la Muerte - %d",
-	riderbar = "Jinete - %d",
-
-	inroomtrigger = "Ya he esperado suficiente. Ahora os enfrentaréis al Recolector de almas.",
-	inroomwarn = "¡Está en la habitación!",
-
-	inroombartext = "En Habitación",
-} end )
-
-module.wipemobs = { L["rider_name"], L["deathknight_name"], L["trainee_name"],
-	L["spectral_rider_name"], L["spectral_deathknight_name"], L["spectral_trainee_name"] }
 
 local timer = {
-	inroom = 274,
+	inroom = 274, --4:34
+	
 	firstTrainee = 24,
 	trainee = 20,
-	firstDeathknight = 74,
+	
+	firstDeathknight = 74, --1:14
 	deathknight = 25,
-	firstRider = 134,
+	
+	firstRider = 134, --2:14
 	rider = 30,
 	sideteleport = 15,
 }
@@ -133,50 +76,68 @@ local icon = {
 	deathknight = "INV_Boots_Plate_08",
 	rider = "Spell_Shadow_DeathPact",
 }
+local color = {
+	inroom = "White",
+	trainee = "Green",
+	deathknight = "Yellow",
+	rider = "Red",
+}
+local syncName = {
+	inRoom = "GothikInRoom"..module.revision,
+	gateOpen = "GothikGateOpen"..module.revision,
+}
 
-local wave = 0
-local numTrainees = 0
-local numDeathknights = 0
-local numRiders = 0
-
-module:RegisterYellEngage(L["starttrigger1"])
-module:RegisterYellEngage(L["starttrigger2"])
+local numTrainees = 1
+local numDeathknights = 1
+local numRiders = 1
+local gateOpen = nil
 
 function module:OnRegister()
 	self:RegisterEvent("MINIMAP_ZONE_CHANGED")
 end
 
 function module:OnEnable()
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event") --Debug
+	
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
+	
+	self:RegisterEvent("UNIT_HEALTH")
+	
+	self:ThrottleSync(10, syncName.inRoom)
+	self:ThrottleSync(10, syncName.gateOpen)
 end
 
 function module:OnSetup()
-	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
-
 	self.started = nil
-	wave = 0
-	numTrainees = 0
-	numDeathknights = 0
-	numRiders = 0
+	
+	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
 end
 
 function module:OnEngage()
 	if self.core:IsModuleActive("Deathknight Cavalier", "Naxxramas") then self.core:DisableModule("Deathknight Cavalier", "Naxxramas") end
 	
+	numTrainees = 1
+	numDeathknights = 1
+	numRiders = 1
+	
 	if self.db.profile.room then
-		self:Message(L["startwarn"], "Important", false, nil, false)
-		self:Bar(L["inroombartext"], timer.inroom, icon.inroom, true, "White")
-		self:DelayedMessage(timer.inroom - 3 * 60, L["warn_inroom_3m"], "Attention", false, nil, false)
-		self:DelayedMessage(timer.inroom - 90, L["warn_inroom_90"], "Attention", false, nil, false)
-		self:DelayedMessage(timer.inroom - 60, L["warn_inroom_60"], "Urgent", false, nil, false)
-		self:DelayedMessage(timer.inroom - 30, L["warn_inroom_30"], "Important", false, nil, false)
-		self:DelayedMessage(timer.inroom - 10, L["warn_inroom_10"], "Important", false, nil, false)
+		self:Bar(L["bar_inRoom"], timer.inroom, icon.inroom, true, color.inroom)
+		
+		self:DelayedMessage(timer.inroom - 10, L["msg_inRoom10"], "Important", false, nil, false)
 	end
 
 	if self.db.profile.add then
-		self:Trainee()
-		self:DeathKnight()
-		self:Rider()
+		self:Bar(L["bar_trainee"]..numTrainees, timer.firstTrainee, icon.trainee, true, color.trainee)
+		self:Bar(L["bar_dk"]..numDeathknights, timer.firstDeathknight, icon.deathknight, true, color.deathknight)
+		self:Bar(L["bar_rider"]..numRiders, timer.firstRider, icon.rider, true, color.rider)
+		
+		self:DelayedMessage(timer.firstTrainee - 3, numTrainees..L["msg_traineeSoon"], "Attention", false, nil, false)
+		self:DelayedMessage(timer.firstDeathknight - 3, numDeathknights..L["msg_dkSoon"], "Urgent", false, nil, false)
+		self:DelayedMessage(timer.firstRider - 3, numRiders..L["msg_riderSoon"], "Important", false, nil, false)
+
+		self:ScheduleEvent("GothikTraineeRepop1", self.Trainee, timer.firstTrainee, self)
+		self:ScheduleEvent("GothikDkRepop1", self.DeathKnight, timer.firstDeathknight, self)
+		self:ScheduleEvent("GothikRiderRepop1", self.Rider, timer.firstRider, self)
 	end
 end
 
@@ -187,162 +148,123 @@ function module:MINIMAP_ZONE_CHANGED(msg)
 	if GetMinimapZoneText() == "Eastern Plaguelands" and self.core:IsModuleActive(module.translatedName) then
 		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
 		self:ResetModule()
-		DEFAULT_CHAT_FRAME:AddMessage("   Auto-Rebooting Gothik Module")
+		DEFAULT_CHAT_FRAME:AddMessage("|cff7fff7f   [BigWigs]|r - Auto-Rebooting Module: "..module.translatedName)
 	end
 end
 
 function module:ResetModule()
-	wave = 0
-	numTrainees = 0
-	numDeathknights = 0
-	numRiders = 0
+	numTrainees = 1
+	numDeathknights = 1
+	numRiders = 1
 end
 
-function module:CHAT_MSG_MONSTER_YELL( msg )
-	if msg == L["inroomtrigger"] then
-		if self.db.profile.room then
-			self:Message(L["inroomwarn"], "Important", false, nil, false)
+function module:UNIT_HEALTH(msg)
+	if UnitName(msg) == module.translatedName then
+		local healthPct = UnitHealth(msg) * 100 / UnitHealthMax(msg)
+		if healthPct <= 30 and gateOpen == nil then
+			self:Sync(syncName.gateOpen)
+			gateOpen = true
+		elseif healthPct > 30 and gateOpen == true then
+			gateOpen = nil
 		end
-		self:StopRoom()
-		self:Bar(L["teleporttext"], timer.sideteleport, icon.inroom)
-	elseif string.find(msg, L["disabletrigger"]) then
+	end
+end
+
+function module:CHAT_MSG_MONSTER_YELL(msg)
+	if msg == L["trigger_engage"] then
+		module:SendEngageSync()
+		
+	elseif msg == L["trigger_inRoom"] then
+		self:Sync(syncName.inRoom)
+
+	elseif string.find(msg, L["trigger_bossDead"]) then
 		self:SendBossDeathSync()
 	end
 end
 
-function module:CHAT_MSG_COMBAT_HOSTILE_DEATH( msg )
+function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
 	BigWigs:CheckForBossDeath(msg, self)
 
-	if self.db.profile.adddeath and msg == string.format(UNITDIESOTHER, L["rider_name"]) then
-		self:Message(L["riderdiewarn"], "Important", false, nil, false)
-	elseif self.db.profile.adddeath and msg == string.format(UNITDIESOTHER, L["deathknight_name"]) then
-		self:Message(L["dkdiewarn"], "Important", false, nil, false)
+	if msg == string.format(UNITDIESOTHER, "Unrelenting Rider") and self.db.profile.adddeath then
+		self:Message(L["msg_riderDead"], "Important", false, nil, false)
+	
+	elseif msg == string.format(UNITDIESOTHER, "Unrelenting Deathknight") and self.db.profile.adddeath then
+		self:Message(L["msg_dkDead"], "Important", false, nil, false)
 	end
 end
 
-function module:StopRoom()
-	self:RemoveBar(L["inroombartext"])
-	self:CancelDelayedMessage(L["warn_inroom_3m"])
-	self:CancelDelayedMessage(L["warn_inroom_90"])
-	self:CancelDelayedMessage(L["warn_inroom_60"])
-	self:CancelDelayedMessage(L["warn_inroom_30"])
-	self:CancelDelayedMessage(L["warn_inroom_10"])
+--[[--debug
+function module:Event(msg)
+	if msg == "engage" then
+		module:SendEngageSync()
+	end
+	
+end
+]]
 
-	wave = 0
-	numTrainees = 0
-	numDeathknights = 0
-	numRiders = 0
+function module:BigWigs_RecvSync(sync, rest, nick)
+	if sync == syncName.inRoom and self.db.profile.room then
+		self:InRoom()
+	elseif sync == syncName.gateOpen and self.db.profile.room then
+		self:GateOpen()
+	end
 end
 
-function module:WaveWarn(message, L, color)
-	wave = wave + 1
-	if self.db.profile.add then
-		self:Message(string.format(L["wave"], wave) .. message, color)
-	end
+
+function module:InRoom()
+	self:RemoveBar(L["bar_inRoom"])
+	self:CancelDelayedMessage(L["msg_inRoom10"])
+	
+	self:ResetModule()
+	
+	--self:Message(L["msg_inRoom"], "Important", false, nil, false) --useless, there is already an in-game message
+end
+
+function module:GateOpen()
+	--self:Message(L["msg_gateOpen"], "Important", false, nil, false) --useless, there is already an in-game message
 end
 
 function module:Trainee()
-	numTrainees = numTrainees + 1
-	local traineeTime = timer.trainee
 	if numTrainees == 1 then
-		traineeTime = timer.firstTrainee
+		self:ScheduleRepeatingEvent("GothikTraineeRepop", self.Trainee, timer.trainee, self)
 	end
-
-	if self.db.profile.add then
-		self:Bar(string.format(L["trabar"], numTrainees), traineeTime, icon.trainee, true, "Green")
-	end
-	self:ScheduleEvent("bwgothiktrawarn", self.WaveWarn, traineeTime - 3, self, L["trawarn"], L, "Attention")
-	self:ScheduleRepeatingEvent("bwgothiktrarepop", self.Trainee, traineeTime, self)
-
-	if numTrainees >= 12 then  -- cancels bar after wave 11
-		self:RemoveBar(string.format(L["trabar"], numTrainees - 1))
-		self:CancelScheduledEvent("bwgothiktrawarn")
-		self:CancelScheduledEvent("bwgothiktrarepop")
-		numTrainees = 0
-	end
-
-end
-
-local shackles = {}
-for i = 1, 8 do
-	shackles[i] = ''
-end
-SLASH_GOT1 = "/got"
-SlashCmdList["GOT"] = function(cmd)
-	if cmd then
-		if string.sub(cmd, 1, 3) == 'set' then
-			local ex = __explode(cmd, ' ')
-
-			if ex[1] and ex[2] and ex[3] then
-				if tonumber(ex[2]) then
-					shackles[tonumber(ex[2])] = ex[3]
-					DEFAULT_CHAT_FRAME:AddMessage('Gothik set shackle ' .. ex[2] .. ' to ' .. ex[3])
-				else
-					DEFAULT_CHAT_FRAME:AddMessage('Syntax: /got set # Name')
-				end
-			else
-				DEFAULT_CHAT_FRAME:AddMessage('Syntax: /got set # Name')
-			end
-		end
-		if string.sub(cmd, 1, 4) == 'list' then
-			for i = 1, 8 do
-				DEFAULT_CHAT_FRAME:AddMessage('Shackle ' .. i .. ' = ' .. shackles[i])
-			end
-		end
+	
+	numTrainees = numTrainees + 1
+	
+	self:Bar(L["bar_trainee"]..numTrainees, timer.trainee, icon.trainee, true, color.trainee)
+	self:DelayedMessage(timer.trainee - 3, numTrainees..L["msg_traineeSoon"], "Attention", false, nil, false)
+	
+	if numTrainees >= 11 then
+		self:CancelScheduledEvent("GothikTraineeRepop")
 	end
 end
 
 function module:DeathKnight()
-	numDeathknights = numDeathknights + 1
-	local deathknightTime = timer.deathknight
 	if numDeathknights == 1 then
-		deathknightTime = timer.firstDeathknight
+		self:ScheduleRepeatingEvent("GothikDkRepop", self.DeathKnight, timer.deathknight, self)
 	end
-
-	if self.db.profile.add then
-		self:Bar(string.format(L["dkbar"], numDeathknights) .. " " .. shackles[numDeathknights], deathknightTime, icon.deathknight, true, "Yellow")
-	end
-	self:ScheduleEvent("bwgothikdkwarn", self.WaveWarn, deathknightTime - 3, self, L["dkwarn"], L, "Urgent")
-	self:ScheduleRepeatingEvent("bwgothikdkrepop", self.DeathKnight, deathknightTime, self)
-
-	if numDeathknights >= 8 then  -- cancels bar after wave 7
-		self:RemoveBar(string.format(L["dkbar"], numDeathknights - 1))
-		self:CancelScheduledEvent("bwgothikdkwarn")
-		self:CancelScheduledEvent("bwgothikdkrepop")
-		numDeathknights = 0
+	
+	numDeathknights = numDeathknights + 1
+	
+	self:Bar(L["bar_dk"]..numDeathknights, timer.deathknight, icon.deathknight, true, color.deathknight)
+	self:DelayedMessage(timer.deathknight - 3, numDeathknights..L["msg_dkSoon"], "Urgent", false, nil, false)
+	
+	if numDeathknights >= 7 then
+		self:CancelScheduledEvent("GothikDkRepop")
 	end
 end
 
 function module:Rider()
-	numRiders = numRiders + 1
-	local riderTime = timer.rider
 	if numRiders == 1 then
-		riderTime = timer.firstRider
+		self:ScheduleRepeatingEvent("GothikRiderRepop", self.Rider, timer.rider, self)
 	end
-
-	if self.db.profile.add then
-		self:Bar(string.format(L["riderbar"], numRiders), riderTime, icon.rider, true, "Red")
+	
+	numRiders = numRiders + 1
+	
+	self:Bar(L["bar_rider"]..numRiders, timer.rider, icon.rider, true, color.rider)
+	self:DelayedMessage(timer.rider - 3, numRiders..L["msg_riderSoon"], "Important", false, nil, false)
+	
+	if numRiders >= 4 then
+		self:CancelScheduledEvent("GothikRiderRepop")
 	end
-	self:ScheduleEvent("bwgothikriderwarn", self.WaveWarn, riderTime - 3, self, L["riderwarn"], L, "Important")
-	self:ScheduleRepeatingEvent("bwgothikriderrepop", self.Rider, riderTime, self)
-
-	if numRiders >= 5 then  -- cancels bar after wave 4
-		self:RemoveBar(string.format(L["riderbar"], numRiders - 1))
-		self:CancelScheduledEvent("bwgothikriderwarn")
-		self:CancelScheduledEvent("bwgothikriderrepop")
-		numRiders = 0
-	end
-end
-
-function __explode(str, delimiter)
-	local result = {}
-	local from = 1
-	local delim_from, delim_to = __find(str, delimiter, from, 1, true)
-	while delim_from do
-		__tinsert(result, __substr(str, from, delim_from - 1))
-		from = delim_to + 1
-		delim_from, delim_to = __find(str, delimiter, from, true)
-	end
-	__tinsert(result, __substr(str, from))
-	return result
 end

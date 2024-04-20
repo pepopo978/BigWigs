@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Ouro", "Ahn'Qiraj")
 
-module.revision = 30068
+module.revision = 30083
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"sweep", "sandblast", "popcorn", "emerge", "berserk", -1, "targeticon", "bosskill"}
 
@@ -106,7 +106,7 @@ local ouroCurrentTarget = nil
 local phase = nil
 
 function module:OnEnable()
-	self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
 	
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF", "Event") --trigger_engage
 	
@@ -147,7 +147,10 @@ function module:OnEngage()
 	end
 	
 	self:ScheduleEvent("OuroSubmergeCheck", self.StartSubmergeCheck, 5, self)
-	self:ScheduleRepeatingEvent("OuroTargetCheck", self.OuroTarget, 0.5, self)
+	
+	if self.db.profile.targeticon then
+		self:ScheduleRepeatingEvent("OuroTargetCheck", self.OuroTarget, 0.5, self)
+	end
 end
 
 function module:OnDisengage()
