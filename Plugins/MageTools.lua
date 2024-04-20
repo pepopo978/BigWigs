@@ -1143,8 +1143,8 @@ function BigWigsMageTools:Test()
 	self:StartIgniteBar("Ragnaros", "2222 Pepopo", timer.ignite, 5, true)
 	self:StartScorchBar("Thaddius", timer.scorch, 5)
 
-	--	 schedule cancel in 10 sec
-	self:ScheduleEvent("TestStop", self.StopAllBars, 10, self)
+	--	 schedule cancel in 20 sec
+	self:ScheduleEvent("TestStop", self.StopAllBars, 20, self)
 end
 
 ------------------------------
