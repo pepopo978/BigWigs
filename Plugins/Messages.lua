@@ -17,6 +17,7 @@ L:RegisterTranslations("enUS", function()
 
 		["msg"] = true,
 		["anchor"] = true,
+		["reset"] = true,
 		["rw"] = true,
 		["color"] = true,
 		["scale"] = true,
@@ -29,6 +30,9 @@ L:RegisterTranslations("enUS", function()
 		["Use colors"] = true,
 		["Toggles white only messages ignoring coloring."] = true,
 		["Message frame scale"] = true,
+
+		["Reset position"] = true,
+		["Reset the anchor position, moving it to the default location"] = true,
 
 		["Message frame"] = true,
 		["Show anchor"] = true,
@@ -66,6 +70,7 @@ L:RegisterTranslations("esES", function()
 
 		["msg"] = "msg",
 		["anchor"] = "ancla",
+		["reset"] = true,
 		["rw"] = "rw",
 		["color"] = "color",
 		["scale"] = "escala",
@@ -85,6 +90,9 @@ L:RegisterTranslations("esES", function()
 		["Set the message frame scale."] = "Define la escala del marco del mensaje",
 		["Colorize messages"] = "Colorea los mensajes",
 		["Scale"] = "Escala",
+
+		["Reset position"] = true,
+		["Reset the anchor position, moving it to the default location"] = true,
 
 		["|cffff0000Co|cffff00fflo|cff00ff00r|r"] = "|cffff0000Co|cffff00fflo|cff00ff00r|r",
 		["White"] = "Blanco",
@@ -115,6 +123,7 @@ L:RegisterTranslations("deDE", function()
 
 		["msg"] = "msg",
 		["anchor"] = "verankerung",
+		["reset"] = true,
 		["rw"] = "rw",
 		["color"] = "farbe",
 		["scale"] = "skalierung",
@@ -127,6 +136,9 @@ L:RegisterTranslations("deDE", function()
 		["Use colors"] = "Farben benutzen",
 		["Toggles white only messages ignoring coloring."] = "Nachrichten farbig/wei\195\159 anzeigen.",
 		["Message frame scale"] = "Nachrichtenfenster Skalierung",
+
+		["Reset position"] = true,
+		["Reset the anchor position, moving it to the default location"] = true,
 
 		["Message frame"] = "Nachrichtenfenster",
 		["Show anchor"] = "Verankerung anzeigen",
@@ -230,7 +242,15 @@ BigWigsMessages.consoleOptions = {
 			end,
 			message = L["Display is now set to %2$s"],
 			current = L["Display is currently set to %2$s"],
-		}
+		},
+		[L["reset"]] = {
+			type = "execute",
+			name = L["Reset position"],
+			desc = L["Reset the anchor position, moving it to the default location"],
+			func = function()
+				BigWigsMessages:ResetAnchor()
+			end,
+		},
 	},
 }
 
@@ -290,6 +310,12 @@ end
 
 function BigWigsMessages:BigWigs_HideAnchors()
 	self.frames.anchor:Hide()
+end
+
+function BigWigsMessages:ResetAnchor()
+	self.db.profile.posx = 200
+	self.db.profile.posy = 500
+	self:RestorePosition()
 end
 
 function BigWigsMessages:BigWigs_Message(text, color, noraidsay, sound, broadcastonly)
