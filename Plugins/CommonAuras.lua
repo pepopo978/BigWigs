@@ -90,6 +90,7 @@ L:RegisterTranslations("enUS", function()
 		["lip_trigger"] = "You gain Invulnerability",
 		["bop_trigger"] = "You gain Blessing of Protection",
 		["powerinfusion_trigger"] = "You gain Power Infusion",
+		["deepwoodpipe_trigger"] = "You gain Smoke Cloud", -- use this as trigger instead of Stealth due to overlap with rogue ability
 
 		["di_fades"] = "Divine Intervention fades",
 		["invis_fades"] = "Invisibility fades",
@@ -98,6 +99,7 @@ L:RegisterTranslations("enUS", function()
 		["lip_fades"] = "Invulnerability fades",
 		["bop_fades"] = "Blessing of Protection fades",
 		["powerinfusion_fades"] = "Power Infusion fades",
+		["deepwoodpipe_fades"] = "Stealth fades"
 	}
 end)
 
@@ -117,6 +119,7 @@ BigWigsCommonAuras.defaultDB = {
 	soulwell = true,
 	shutdown = true,
 	invis = true,
+	deepwood = true,
 	lip = true,
 	bop = true,
 	powerinfusion = true,
@@ -205,6 +208,17 @@ BigWigsCommonAuras.consoleOptions = {
 			end,
 			set = function(v)
 				BigWigsCommonAuras.db.profile.di = v
+			end,
+		},
+		["deepwood"] = {
+			type = "toggle",
+			name = L["Deepwood Pipe"],
+			desc = string.format(L["Toggle %s display."], L["Deepwood Pipe"]),
+			get = function()
+				return BigWigsCommonAuras.db.profile.deepwood
+			end,
+			set = function(v)
+				BigWigsCommonAuras.db.profile.deepwood = v
 			end,
 		},
 		["invisibility"] = {
@@ -441,6 +455,8 @@ function BigWigsCommonAuras:CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS(msg)
 		self:Bar(L["lesser_invis_trigger"], 15, "Spell_Magic_LesserInvisibilty", true)
 	elseif string.find(msg, L["cloaking_invis_trigger"]) and self.db.profile.invis then
 		self:Bar(L["cloaking_invis_trigger"], 10, "Spell_Magic_LesserInvisibilty", true)
+	elseif string.find(msg, L["deepwoodpipe_trigger"]) and self.db.profile.deepwood then
+		self:Bar(L["deepwoodpipe_trigger"], 30, "ability_stealth", true)
 	elseif string.find(msg, L["lip_trigger"]) and self.db.profile.lip then
 		self:Bar(L["lip_trigger"], 6, "inv_potion_62", true)
 	elseif string.find(msg, L["bop_trigger"]) and self.db.profile.bop then
@@ -459,6 +475,8 @@ function BigWigsCommonAuras:CHAT_MSG_SPELL_AURA_GONE_SELF(msg)
 		self:RemoveBar(L["lesser_invis_trigger"])
 	elseif string.find(msg, L["cloaking_invis_fades"]) then
 		self:RemoveBar(L["cloaking_invis_trigger"])
+	elseif string.find(msg, L["deepwoodpipe_fades"]) then
+		self:RemoveBar(L["deepwoodpipe_trigger"])
 	elseif string.find(msg, L["lip_fades"]) then
 		self:RemoveBar(L["lip_trigger"])
 	elseif string.find(msg, L["bop_fades"]) then
