@@ -1,31 +1,33 @@
-
 local module, L = BigWigs:ModuleDeclaration("Sanctum Dragonkin", "Emerald Sanctum")
 
 module.revision = 30021
 module.enabletrigger = module.translatedName
-module.toggleoptions = {"reflect"}
+module.toggleoptions = { "reflect" }
 module.trashMod = true
 module.zonename = {
 	AceLibrary("AceLocale-2.2"):new("BigWigs")["Emerald Sanctum"],
 	AceLibrary("Babble-Zone-2.2")["Emerald Sanctum"],
 }
 
-L:RegisterTranslations("enUS", function() return {
-	cmd = "SanctumDragonkin",
+L:RegisterTranslations("enUS", function()
+	return {
+		cmd = "SanctumDragonkin",
 
-	reflect_cmd = "reflect",
-	reflect_name = "Reflect Alert",
-	reflect_desc = "Warn for Reflect",
+		reflect_cmd = "reflect",
+		reflect_name = "Reflect Alert",
+		reflect_desc = "Warn for Reflect",
 
-	trigger_reflect = "Sanctum Dragonkin gains Reflection.",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
-	trigger_reflectFade = "Reflection fades from Sanctum Dragonkin.",--CHAT_MSG_SPELL_AURA_GONE_OTHER
-		
-	bar_reflect = "Dragonkin Spell Reflect",
-	msg_reflect = "Dragonkin Spell Reflect",
-	
-	["You have slain %s!"] = true,
-	
-} end )
+		trigger_reflect = "Sanctum Dragonkin gains Reflection.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+		trigger_reflectFade = "Reflection fades from Sanctum Dragonkin.", --CHAT_MSG_SPELL_AURA_GONE_OTHER
+
+		bar_reflect = "Dragonkin Spell Reflect",
+		msg_reflect = "Dragonkin Spell Reflect",
+		next_reflect = "Dragonkin Next Reflect in",
+
+		["You have slain %s!"] = true,
+
+	}
+end)
 
 module.defaultDB = {
 	bosskill = nil,
@@ -41,12 +43,12 @@ local color = {
 	reflect = "Blue",
 }
 local syncName = {
-	reflect = "SanctumDragonkinReflect"..module.revision,
+	reflect = "SanctumDragonkinReflect" .. module.revision,
 }
 
 function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event")--trigger_reflect
-	
+
 	self:ThrottleSync(1, syncName.reflect)
 end
 
@@ -62,11 +64,15 @@ end
 
 function module:CheckForBossDeath(msg)
 	if msg == string.format(UNITDIESOTHER, self:ToString())
-		or msg == string.format(L["You have slain %s!"], self.translatedName) then
+			or msg == string.format(L["You have slain %s!"], self.translatedName) then
 		local function IsBossInCombat()
 			local t = module.enabletrigger
-			if not t then return false end
-			if type(t) == "string" then t = {t} end
+			if not t then
+				return false
+			end
+			if type(t) == "string" then
+				t = { t }
+			end
 
 			if UnitExists("target") and UnitAffectingCombat("target") then
 				local target = UnitName("target")
@@ -104,25 +110,26 @@ function module:Event(msg)
 	end
 end
 
-
 function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.reflect and self.db.profile.reflect then
 		self:Reflect()
 	end
 end
 
-
 function module:Reflect()
 	self:Bar(L["bar_reflect"], timer.reflect, icon.reflect, true, color.reflect)
-	
+	if (UnitClass("Player") ~= "Warrior") and (UnitClass("Player") ~= "Rogue") then
+		self:DelayedBar(timer.reflect, L["next_reflect"], timer.reflect, icon.reflect, true, color.reflect)
+	end
+
 	if UnitName("Target") ~= nil then
 		if UnitName("Target") == "Sanctum Dragonkin" then
 			if UnitClass("Player") == "Mage" then
-				self:WarningSign(icon.reflect,2)
+				self:WarningSign(icon.reflect, 2)
 			elseif UnitClass("Player") == "Warlock" then
-				self:WarningSign(icon.reflect,2)
+				self:WarningSign(icon.reflect, 2)
 			end
-			
+
 			if (UnitClass("Player") ~= "Warrior") and (UnitClass("Player") ~= "Rogue") then
 				self:Message(L["msg_reflect"], "Important", false, nil, false)
 				self:Sound("Long")
