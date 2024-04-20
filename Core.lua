@@ -265,7 +265,7 @@ BigWigs.cmdtable = { type = "group", handler = BigWigs, args = {
 } }
 BigWigs:RegisterChatCommand({ "/bw", "/BigWigs" }, BigWigs.cmdtable)
 BigWigs.debugFrame = ChatFrame1
-BigWigs.revision = 30075
+BigWigs.revision = 30085
 
 function BigWigs:EditLayout()
 	BigWigsBars:BigWigs_ShowAnchors()
@@ -561,6 +561,7 @@ function BigWigs:CheckForWipe(module)
 					return true
 				end
 			end
+
 			return false
 		end
 

@@ -1,363 +1,459 @@
--- tank burn on enable
-
-----------------------------------
---      Module Declaration      --
-----------------------------------
 
 local module, L = BigWigs:ModuleDeclaration("Vaelastrasz the Corrupt", "Blackwing Lair")
 
-
-----------------------------
---      Localization      --
-----------------------------
+module.revision = 30085
+module.enabletrigger = module.translatedName
+module.toggleoptions = {"start", "adrenaline", "icon","flamebreath", "flamebreathdot", "firenova", "tailsweep", "parry", "bosskill"}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Vaelastrasz",
-
-	adrenaline_trigger = "^(.+) (.+) afflicted by Burning Adrenaline\.",
-	start_trigger = "afflicted by Essence of the Red",
-	flamebreath_trigger = "Vaelastrasz the Corrupt begins to cast Flame Breath\.",
-	yell1 = "^Too late, friends",
-	yell2 = "^I beg you, mortals",
-	yell3 = "^FLAME! DEATH! DESTRUCTION!",
-	start_bar = "Start",
-	tankburn_bar = "Tank Burn",
-	adrenaline_bar = "Burning Adrenaline: %s",
-	breath_bar = "Flame Breath",
-	breath_message = "Casting Flame Breath!",
-	tankburnsoon = "Burning Adrenaline on tank in 5 seconds!",
-	adrenaline_message = "%s has Burning Adrenaline!",
-	adrenaline_message_you = "You have Burning Adrenaline! Go away!",
-	deathyou_trigger = "You die\.",
-	deathother_trigger = "(.+) dies\.",
-
-	are = "are",
-
+	
 	start_cmd = "start",
-	start_name = "Start",
-	start_desc = "Starts a bar for estimating the beginning of the fight.",
-
-	flamebreath_cmd = "flamebreath",
-	flamebreath_name = "Flame Breath",
-	flamebreath_desc = "Warns when boss is casting Flame Breath.",
-
+	start_name = "Engage Alert",
+	start_desc = "Warn for Engage",
+	
 	adrenaline_cmd = "adrenaline",
-	adrenaline_name = "Burning Adrenaline",
-	adrenaline_desc = "Announces who received Burning Adrenaline and starts a clickable bar for easier selection.",
-
-	whisper_cmd = "whisper",
-	whisper_name = "Whisper",
-	whisper_desc = "Whispers the players that got Burning Adrenaline, telling them to move away.",
-
-	tankburn_cmd = "tankburn",
-	tankburn_name = "Tank Burn",
-	tankburn_desc = "Shows a bar for the Burning Adrenaline that will be applied on boss' target.",
-
+	adrenaline_name = "Burning Adrenaline Alert",
+	adrenaline_desc = "Warn for Burning Adrenaline",
+	
 	icon_cmd = "icon",
-	icon_name = "Raid Icon",
-	icon_desc = "Marks the player with Burning Adrenaline for easier localization.\n\n(Requires assistant or higher)",
-} end)
-
-L:RegisterTranslations("esES", function() return {
-	--cmd = "Vaelastrasz",
-
-	adrenaline_trigger = "^(.+) (.+) sufre de Adrenalina ardiente\.",
-	start_trigger = "sufre de Esencia de lo Rojo",
-	flamebreath_trigger = "Vaelastrasz el Corrupto comienza a lanzar Aliento de llamarada\.",
-	yell1 = "^Too late, friends",
-	yell2 = "^I beg you, mortals",
-	yell3 = "^FLAME! DEATH! DESTRUCTION!",
-	start_bar = "Empezar",
-	tankburn_bar = "Arde de Tanque",
-	adrenaline_bar = "Adrenalina ardiente: %s",
-	breath_bar = "Aliento de llamarada",
-	breath_message = "¡Lanza Aliento de llamarada!",
-	tankburnsoon = "¡Adrenalina ardiente al tanque en 5 segundos!",
-	adrenaline_message = "¡%s tiene Adrenalina ardiente!",
-	adrenaline_message_you = "¡Tienes Adrenalina ardiente! Váyate!",
-	deathyou_trigger = "Has muerto\.",
-	deathother_trigger = "(.+) ha muerto\.",
-
-	are = "eres",
-
-	--start_cmd = "start",
-	start_name = "Empezar",
-	start_desc = "Muestra una barra para estimar cuando empiece la pelea.",
-
-	--flamebreath_cmd = "flamebreath",
-	flamebreath_name = "Aliento de llamarada",
-	flamebreath_desc = "Avisa cuando el jefe lance Aliento de llamarada.",
-
-	--adrenaline_cmd = "adrenaline",
-	adrenaline_name = "Adrenalina ardiente",
-	adrenaline_desc = "Anuncia quien tiene Adrenalina ardiente y muestra una barra cliqueable para seleccionarlo fácilmente.",
-
-	--whisper_cmd = "whisper",
-	whisper_name = "Susurrar",
-	whisper_desc = "Susurra a los jugadores quien tienen Adrenalina ardiente para moverse.",
-
-	--tankburn_cmd = "tankburn",
-	tankburn_name = "Arde de Tanque",
-	tankburn_desc = "Muestra una barra para Adrenalina ardiente que está aplicado al objetivo del jefe.",
-
-	--icon_cmd = "icon",
-	icon_name = "Marcar para Adrenalina ardiente",
-	icon_desc = "Marca el jugador con Adrenalina ardiente para localizarlo más fácilmente.\n\n(Require asistente o líder)",
-} end)
-
-L:RegisterTranslations("deDE", function() return {
-	cmd = "Vaelastrasz",
-
-	adrenaline_trigger = "^(.+) (.+) von Brennendes Adrenalin betroffen\.",
-	start_trigger = "von Essenz der Roten betroffen",
-	flamebreath_trigger = "Vaelastrasz the Corrupt beginnt Flammenatem zu wirken\.",
-	yell1 = "^Too late, friends",
-	yell2 = "^I beg you, mortals",
-	yell3 = "^FLAME! DEATH! DESTRUCTION!",
-	start_bar = "Start",
-	tankburn_bar = "Tank brennen",
-	adrenaline_bar = "Brennendes Adrenalin: %s",
-	breath_bar = "Flammenatem",
-	breath_message = "Wirkt Flammenatem!",
-	tankburnsoon = "Brennendes Adrenalin am Tank in 5 Sekunden!",
-	adrenaline_message = "%s hat Brennendes Adrenalin!",
-	adrenaline_message_you = "Sie haben Brennendes Adrenalin! Geh weg!",
-	deathyou_trigger = "Du stirbst\.",
-	deathother_trigger = "(.+) stirbt\.",
-
-	are = "seid",
-
-	start_cmd = "start",
-	start_name = "Start",
-	start_desc = "Startet eine Balken f\195\188r die Sch\195\164tzung der Beginn des Kampfes.",
-
+	icon_name = "Burning Adrenaline Raid Icon",
+	icon_desc = "Place a Skull on Burning Adrenaline Target",
+	
 	flamebreath_cmd = "flamebreath",
-	flamebreath_name = "Flammenatem",
-	flamebreath_desc = "Warnt, wenn Boss wirft Flammenatem.",
-
-	adrenaline_cmd = "adrenaline",
-	adrenaline_name = "Brennendes Adrenalin",
-	adrenaline_desc = "Gibt bekannt, die Brennendes Adrenalin empfangen und startet einen anklickbaren Balken f\195\188r eine einfachere Auswahl.",
-
-	whisper_cmd = "whisper",
-	whisper_name = "Fl\195\188stern",
-	whisper_desc = "Fl\195\188stern die Spieler mit Brennendes Adrenalin, ihnen zu sagen, sich zu entfernen.",
-
-	tankburn_cmd = "tankburn",
-	tankburn_name = "Tank brennen",
-	tankburn_desc = "Zeigt eine Balken f\195\188r die Brennendes Adrenalin, die auf Bosses Ziel angewendet wird.",
-
-	icon_cmd = "icon",
-	icon_name = "Schlachtzugsymbol",
-	icon_desc = "Markiert den Spieler mit Brennendes Adrenalin zur leichteren Lokalisierung.\n\n(Ben\195\182tigt Schlachtzugleiter oder Assistent)",
+	flamebreath_name = "Flame Breath Alert",
+	flamebreath_desc = "Warn for Flame Breath",
+	
+	flamebreathdot_cmd = "flamebreathdot",
+	flamebreathdot_name = "Flame Breath DoT Alert",
+	flamebreathdot_desc = "Warn for Flame Breath DoT",
+	
+	firenova_cmd = "firenova",
+	firenova_name = "Fire Nova Alert",
+	firenova_desc = "Warn for Fire Nova",
+	
+	tailsweep_cmd = "tailsweep",
+	tailsweep_name = "Tail Sweep Alert",
+	tailsweep_desc = "Warn for Tail Sweep",
+	
+	parry_cmd = "parry",
+	parry_name = "Parry Alert",
+	parry_desc = "Warn for Parries",
+	
+	
+	trigger_gossip1 = "Too late, friends", --CHAT_MSG_MONSTER_YELL
+	trigger_gossip2 = "I beg you, mortals", --CHAT_MSG_MONSTER_YELL
+	trigger_gossip3 = "FLAME! DEATH! DESTRUCTION!", --CHAT_MSG_MONSTER_YELL
+	bar_gossip = "Engage",
+	msg_gossip = "Vaelastrasz Event Started!",
+	
+	trigger_engage = "afflicted by Essence of the Red.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	
+	--burning adrenaline on mana user every 15sec, every 45s on the tank ALSO
+		-- -5% hp per second
+	trigger_adrenalineYou = "You are afflicted by Burning Adrenaline.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_adrenalineOther = "(.+) is afflicted by Burning Adrenaline.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_adrenalineFade = "Burning Adrenaline fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER --guessing
+	bar_adrenalineCd = "Burning Adrenaline CD",
+	bar_adrenalineDur = " Burning!",
+	msg_adrenaline = " has Burning Adrenaline",
+	
+	trigger_dieYou = "You die.", --CHAT_MSG_COMBAT_FRIENDLY_DEATH
+	trigger_dieOther = "(.+) dies.", --CHAT_MSG_COMBAT_FRIENDLY_DEATH
+	
+	trigger_flameBreath = "Vaelastrasz the Corrupt begins to cast Flame Breath.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_flameBreathCd = "Flame Breath CD",
+	bar_flameBreathCast = "Casting Flame Breath!",
+	
+	trigger_flameBreathDotYou = "You are afflicted by Flame Breath %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_flameBreathDotOther = "(.+) is afflicted by Flame Breath %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_flameBreathDotFade = "Flame Breath fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_flameBreathDot = " Flame Breath DoT",
+	
+	trigger_fireNova = "Vaelastrasz the Corrupt's Fire Nova", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_fireNova = "Fire Nova CD",
+	
+	trigger_tailSweepYou = "Vaelastrasz the Corrupt's Tail Sweep hits you", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+	msg_tailSweep = "Tail Sweep hits behind the boss for 30 yards.",
+	
+	trigger_parryYou = "You attack. Vaelastrasz the Corrupt parries.", --CHAT_MSG_COMBAT_SELF_MISSES
+	msg_parryYou = "Vaelastrasz the Corrupt Parried your attack - Stop killing the tank you idiot!",
 } end)
 
-
----------------------------------
---      	Variables 		   --
----------------------------------
-
--- module variables
-module.revision = 30019 -- To be overridden by the module!
-module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
---module.wipemobs = { L["add_name"] } -- adds which will be considered in CheckForEngage
-module.toggleoptions = {"start", "flamebreath", "adrenaline", "whisper", "tankburn", "icon", "bosskill"}
-
-
--- locals
 local timer = {
-	adrenaline = 20,
-	flamebreath = 2,
-	tankburn = 45,
-	start1 = 36,
-	start2 = 26,
-	start3 = 10,
+	gossip1 = 36,
+	gossip2 = 26,
+	gossip3 = 10,
+	
+	adrenalineCd = 15,
+	adrenalineDur = 20,
+	
+	flameBreathCd = {5,10}, --sqw 5.062 to 9.604
+	flameBreathCast = 2,
+	flameBreathDot = 15,
+	
+	fireNovaCd = {2,4}, --saw from 2 to 3.878, first at 3.966
 }
 local icon = {
+	gossip = "inv_misc_head_dragon_01",
 	adrenaline = "INV_Gauntlets_03",
-	flamebreath = "Spell_Fire_Fire",
-	tankburn = "INV_Gauntlets_03",
-	start = "Spell_Holy_PrayerOfHealing",
+	adrenalineDur = "spell_shadow_mindbomb",
+	flameBreath = "spell_fire_fire",
+	flameBreathDot = "spell_fire_incinerate",
+	tailSweep = "inv_misc_monsterscales_05",
+	fireNova = "spell_fire_sealoffire",
+	parry = "ability_parry",
+}
+local color = {
+	gossip = "White",
+	
+	adrenalineCd = "Orange",
+	adrenalineDur = "Red",
+	
+	flameBreathCd = "Cyan",
+	flameBreathCast = "Blue",
+	flameBreathDot = "Magenta",
+	
+	fireNovaCd = "Black",
 }
 local syncName = {
-	adrenaline = "VaelAdrenaline"..module.revision,
-	flamebreath = "VaelBreath"..module.revision,
-	tankburn = "VaelTankBurn"..module.revision,
+	gossip1 = "VaelGossip1"..module.revision,
+	gossip2 = "VaelGossip2"..module.revision,
+	gossip3 = "VaelGossip3"..module.revision,
+	
+	adrenaline = "VaelAdrenaline2"..module.revision,
+	adrenalinePlayer = "VaelAdrenalinePlayer"..module.revision,
+	adrenalinePlayerFade = "VaelAdrenalinePlayerFade"..module.revision,
+	
+	flameBreath = "VaelBreath"..module.revision,
+	flameBreathDot = "VaelBreathDot"..module.revision,
+	flameBreathDotFade = "VaelBreathDotFade"..module.revision,
+	
+	fireNova = "VaelFireNova"..module.revision,
 }
 
+local engaged = nil
+local adrenalineCount = 1
+local adrenalinePlayers = {}
 
-------------------------------
---      Initialization      --
-------------------------------
-
--- called after module is enabled
 function module:OnEnable()
-	self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE")
-
-
-	self:ThrottleSync(2, syncName.adrenaline)
-	self:ThrottleSync(3, syncName.flamebreath)
-	self:ThrottleSync(5, syncName.tankburn)
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event") --Debug
+	
+	self:RegisterEvent("CHAT_MSG_MONSTER_YELL") --trigger_gossip1,2,3
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event") --trigger_engage, trigger_adrenalineYou, trigger_flameBreathDotYou
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event") --trigger_engage, trigger_adrenalineOther, trigger_flameBreathDotOther
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event") --trigger_engage, trigger_adrenalineOther, trigger_flameBreathDotFade
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event") --trigger_adrenalineFade
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event") --trigger_adrenalineFade
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event") --trigger_adrenalineFade
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event") --trigger_tailSweepYou, trigger_fireNova
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event") --trigger_fireNova
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event") --trigger_flameBreath, trigger_fireNova
+	
+	self:RegisterEvent("CHAT_MSG_COMBAT_SELF_MISSES", "Event") --trigger_parryYou
+	
+	
+	self:ThrottleSync(2, syncName.gossip1)
+	self:ThrottleSync(2, syncName.gossip2)
+	self:ThrottleSync(2, syncName.gossip3)
+	
+	self:ThrottleSync(10, syncName.adrenaline)
+	self:ThrottleSync(0, syncName.adrenalinePlayer)
+	self:ThrottleSync(0, syncName.adrenalinePlayerFade)
+	
+	self:ThrottleSync(3, syncName.flameBreath)
+	self:ThrottleSync(3, syncName.flameBreathDot)
+	self:ThrottleSync(3, syncName.flameBreathDotFade)
+	
+	self:ThrottleSync(1, syncName.fireNova)
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
-	self:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLY_DEATH")
-	self.barstarted = false
-	self.started = false
+	self.started = nil
+	
+	self:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLY_DEATH") --trigger_dieYou, trigger_dieOther
 end
 
--- called after boss is engaged
 function module:OnEngage()
-	self:Tankburn()
+	engaged = true
+	adrenalineCount = 1
+	adrenalinePlayers = {}
+	
+	self:RemoveBar(L["bar_gossip"])
+	
+	if self.db.profile.adrenaline then
+		self:Bar(L["bar_adrenalineCd"], timer.adrenalineCd, icon.adrenaline, true, color.adrenalineCd)
+	end
+	
+	if self.db.profile.flamebreath then
+		self:IntervalBar(L["bar_flameBreathCd"], timer.flameBreathCd[1], timer.flameBreathCd[2], icon.flameBreath, true, color.flameBreathCd)
+	end
+	
+	if self.db.profile.firenova then
+		self:IntervalBar(L["bar_fireNova"], timer.fireNovaCd[1], timer.fireNovaCd[2], icon.fireNova, true, color.fireNovaCd)
+	end
 end
 
--- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
 end
 
-------------------------------
---      Event Handlers      --
-------------------------------
-
-function module:CheckForEngage()
-	local function IsHostile()
-		if UnitExists("target") and UnitName("target") == self:ToString() and UnitIsEnemy("player", "target") then
-			return true
-		end
-
-		local num = GetNumRaidMembers()
-		for i = 1, num do
-			local raidUnit = string.format("raid%starget", i)
-			if UnitExists(raidUnit) and UnitName(raidUnit) == self:ToString() and UnitIsEnemy("raid" .. i, raidUnit) then
-				return true
-			end
-		end
-
-		return false
-	end
-
-	if IsHostile() then
-		BigWigs:CheckForEngage(self)
-	end
-end
-
-function module:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE(msg)
-	if msg == L["flamebreath_trigger"] then
-		self:Sync(syncName.flamebreath)
-	end
-end
-
 function module:CHAT_MSG_COMBAT_FRIENDLY_DEATH(msg)
-	if self.engaged then
+	if engaged then
 		BigWigs:CheckForWipe(self)
 	end
-	local _, _, deathother = string.find(msg, L["deathother_trigger"])
-	if msg == L["deathyou_trigger"] then
-		if self.db.profile.adrenaline then
-			self:RemoveBar(string.format(L["adrenaline_bar"], UnitName("player")))
-		end
-	elseif deathother then
-		if self.db.profile.adrenaline then
-			self:RemoveBar(string.format(L["adrenaline_bar"], deathother))
-		end
+	
+	if msg == L["trigger_dieYou"] then
+		self:Sync(syncName.adrenalinePlayerFade .. " " .. UnitName("Player"))
+	
+	elseif string.find(msg, L["trigger_dieOther"]) then
+		local _, _, deadPerson = string.find(msg, L["trigger_dieOther"])
+		self:Sync(syncName.adrenalinePlayerFade .. " " .. deadPerson)
 	end
 end
 
 function module:CHAT_MSG_MONSTER_YELL(msg)
-	if string.find(msg, L["yell1"]) and self.db.profile.start then
-		self:Bar(L["start_bar"], timer.start1, icon.start, true, "Cyan")
-		self.barstarted = true
-	elseif string.find(msg, L["yell2"]) and self.db.profile.start and not self.barstarted then
-		self:Bar(L["start_bar"], timer.start2, icon.start, true, "Cyan")
-		self.barstarted = true
-	elseif string.find(msg, L["yell3"]) and self.db.profile.start and not self.barstarted then
-		self:Bar(L["start_bar"], timer.start3, icon.start, true, "Cyan")
+	if string.find(msg, L["trigger_gossip1"]) then
+		self:Sync(syncName.gossip1)
+	
+	elseif string.find(msg, L["trigger_gossip2"]) then
+		self:Sync(syncName.gossip2)
+	
+	elseif string.find(msg, L["trigger_gossip3"]) then
+		self:Sync(syncName.gossip3)
 	end
 end
 
 function module:Event(msg)
-	local _, _, name, detect = string.find(msg, L["adrenaline_trigger"])
-	if name and detect then
-		if detect == L["are"] then
-			name = UnitName("player")
+	if string.find(msg, L["trigger_engage"]) then
+		module:SendEngageSync()
+		
+	elseif msg == L["trigger_adrenalineYou"] then
+		self:Sync(syncName.adrenalinePlayer .. " " .. UnitName("Player"))
+	
+	elseif string.find(msg, L["trigger_adrenalineOther"]) then
+		local _,_,adrenalinePlayer,_ = string.find(msg, L["trigger_adrenalineOther"])
+		self:Sync(syncName.adrenalinePlayer .. " " .. adrenalinePlayer)
+		
+	elseif string.find(msg, L["trigger_adrenalineFade"]) then
+		local _,_,adrenalineFadePlayer,_ = string.find(msg, L["trigger_adrenalineFade"])
+		if adrenalineFadePlayer == "you" then adrenalineFadePlayer = UnitName("Player") end
+		self:Sync(syncName.adrenalinePlayerFade .. " " .. adrenalineFadePlayer)
+	
+	
+	elseif msg == L["trigger_flameBreath"] then
+		self:Sync(syncName.flameBreath)
+	
+	
+	elseif string.find(msg, L["trigger_flameBreathDotYou"]) then
+		local _,_,flameBreathDotQty,_ = string.find(msg, L["trigger_flameBreathDotYou"])
+		if tonumber(flameBreathDotQty) >= 3 then
+			local flameBreathDotPlayer = UnitName("Player")
+			local playerAndQuantity = flameBreathDotPlayer .. " " .. flameBreathDotQty
+			self:Sync(syncName.flameBreathDot.." "..playerAndQuantity)
 		end
-		self:CheckTankburn(name)
-	end
-end
-
-
-------------------------------
---      Synchronization	    --
-------------------------------
-
-function module:BigWigs_RecvSync(sync, rest, nick)
-	if sync == syncName.flamebreath then
-		self:Flamebreath()
-	elseif sync == syncName.adrenaline and rest and rest ~= "" then
-		self:Adrenaline(rest)
-	elseif sync == syncName.tankburn and rest and rest ~= ""  then
-		self:Tankburn(rest)
-	end
-end
-
-------------------------------
---      Sync Handlers	    --
-------------------------------
-function module:CheckTankburn(name)
-	-- tank burn
-	for i = 1, GetNumRaidMembers() do
-		if UnitExists("raid" .. i .. "target") and UnitName("raid" .. i .. "target") == self.translatedName and UnitExists("raid" .. i .. "targettarget") and UnitName("raid" .. i .. "targettarget") == name then
-			self:Sync(syncName.tankburn.." "..name)
-			return
+	
+	elseif string.find(msg, L["trigger_flameBreathDotOther"]) then
+		local _,_,flameBreathDotPlayer,flameBreathDotQty = string.find(msg, L["trigger_flameBreathDotOther"])
+		if tonumber(flameBreathDotQty) >= 3 then
+			local playerAndQuantity = flameBreathDotPlayer .. " " .. flameBreathDotQty
+			self:Sync(syncName.flameBreathDot.." "..playerAndQuantity)
 		end
-	end
-	self:Sync(syncName.adrenaline.." "..name)
-end
-
-function module:Tankburn(name)
-	if self.db.profile.tankburn then
-		self:Bar(L["tankburn_bar"], timer.tankburn, icon.tankburn, true, "Black")
-		self:DelayedMessage(timer.tankburn - 5, L["tankburnsoon"], "Urgent", nil, nil, true)
-		if name then
-			self:Bar(string.format(L["adrenaline_bar"], name), timer.adrenaline, icon.adrenaline, true, "Black")
-			self:Message(string.format(L["adrenaline_message"], name), "Urgent")
-		end
-	end
-end
-
-function module:Flamebreath()
-	if self.db.profile.flamebreath then
-		self:Bar(L["breath_bar"], timer.flamebreath, icon.flamebreath, true, "Red")
-	end
-end
-
-function module:Adrenaline(name)
-	if name then
-		-- send whisper
-		if self.db.profile.whisper and name ~= UnitName("player") then
-			self:TriggerEvent("BigWigs_SendTell", name, L["adrenaline_message_you"])
-		end
-
-		-- bar and message
-		if self.db.profile.adrenaline then
-			self:Bar(string.format(L["adrenaline_bar"], name), timer.adrenaline, icon.adrenaline, true, "White")
-			self:SetCandyBarOnClick("BigWigsBar "..string.format(L["adrenaline_bar"], name), function(name, button, extra) TargetByName(extra, true) end, name)
-			if name == UnitName("player") then
-				self:Message(L["adrenaline_message_you"], "Attention", true, "Beware")
-				self:WarningSign(icon.adrenaline, timer.adrenaline)
-			else
-				self:Message(string.format(L["adrenaline_message"], name), "Urgent")
+		
+	elseif string.find(msg, L["trigger_flameBreathDotFade"]) then
+		local _,_,flameBreathDotFadePlayer,_ = string.find(msg, L["trigger_flameBreathDotFade"])
+		if flameBreathDotFadePlayer == "you" then flameBreathDotFadePlayer = UnitName("Player") end
+		self:Sync(syncName.flameBreathDotFade .. " " .. flameBreathDotFadePlayer)
+		
+		
+	elseif string.find(msg, L["trigger_fireNova"]) then
+		self:Sync(syncName.fireNova)
+		
+	elseif string.find(msg, L["trigger_tailSweepYou"]) and self.db.profile.tailsweep then
+		self:TailSweep()
+		
+	elseif string.find(msg, L["trigger_parryYou"]) and self.db.profile.parry then
+		if UnitName("Target") ~= nil and UnitName("TargetTarget") ~= nil then
+			if UnitName("Target") == "Vaelastrasz the Corrupt" and UnitName("TargetTarget") ~= UnitName("Player") then
+				self:ParryYou()
 			end
 		end
+	end
+end
 
-		-- set icon
-		if self.db.profile.icon then
-			self:Icon(name)
+
+function module:BigWigs_RecvSync(sync, rest, nick)
+	if sync == syncName.gossip1 and self.db.profile.start then
+		self:Gossip1()
+	elseif sync == syncName.gossip2 and self.db.profile.start then
+		self:Gossip2()
+	elseif sync == syncName.gossip3 and self.db.profile.start then
+		self:Gossip3()
+	
+	elseif sync == syncName.adrenaline and self.db.profile.adrenaline then
+		self:Adrenaline()
+		
+	elseif sync == syncName.adrenalinePlayer and rest and self.db.profile.adrenaline then
+		self:AdrenalinePlayer(rest)
+	elseif sync == syncName.adrenalinePlayerFade and rest and self.db.profile.adrenaline then
+		self:AdrenalinePlayerFade(rest)
+	
+	elseif sync == syncName.flameBreath and self.db.profile.flamebreath then
+		self:FlameBreath()
+		
+	elseif sync == syncName.flameBreathDot and rest and self.db.profile.flamebreath then
+		self:FlameBreathDot(rest)
+	elseif sync == syncName.flameBreathDotFade and rest and self.db.profile.flamebreath then
+		self:FlameBreathDotFade(rest)
+	
+	elseif sync == syncName.fireNova and self.db.profile.firenova then
+		self:FireNova()
+	end
+end
+
+
+function module:Gossip1()
+	self:Bar(L["bar_gossip"], timer.gossip1, icon.gossip, true, color.gossip)
+	self:Message(L["msg_gossip"], "Attention", false, nil, false)
+end
+function module:Gossip2()
+	self:Bar(L["bar_gossip"], timer.gossip2, icon.gossip, true, color.gossip)
+end
+function module:Gossip3()
+	self:Bar(L["bar_gossip"], timer.gossip3, icon.gossip, true, color.gossip)
+end
+
+function module:Adrenaline()
+	self:RemoveBar(L["bar_adrenalineCd"])
+	self:RemoveBar("2x "..L["bar_adrenalineCd"])
+	
+	adrenalineCount = adrenalineCount + 1
+	
+	if adrenalineCount == 3 or 
+		adrenalineCount == 6 or 
+		adrenalineCount == 9 or 
+		adrenalineCount == 12 or 
+		adrenalineCount == 15 or 
+		adrenalineCount == 18 then
+		self:Bar("2x "..L["bar_adrenalineCd"], timer.adrenalineCd, icon.adrenaline, true, color.adrenalineCd)
+	else
+		self:Bar(L["bar_adrenalineCd"], timer.adrenalineCd, icon.adrenaline, true, color.adrenalineCd)
+	end
+end
+
+function module:AdrenalinePlayer(rest)
+	local foundRest = nil
+	for j,v in ipairs(adrenalinePlayers) do
+		if v == rest then
+			foundRest = true
+			break
 		end
 	end
+	
+	if not foundRest then
+		
+		table.insert(adrenalinePlayers, rest)
+		
+		self:Bar(rest..L["bar_adrenalineDur"], timer.adrenalineDur, icon.adrenalineDur, true, color.adrenalineDur)
+		self:Message(rest..L["msg_adrenaline"], "Urgent", false, nil, false)
+		
+		if rest == UnitName("Player") then
+			SendChatMessage(UnitName("Player").." has Burning Adrenaline!","SAY")
+			self:WarningSign(icon.adrenaline, 1)
+			self:Sound("RunAway")
+		end
+		
+		if self.db.profile.icon and (IsRaidLeader() or IsRaidOfficer()) then
+			for i=1,GetNumRaidMembers() do
+				if UnitName("Raid"..i) == rest then
+					if UnitName("Raid"..i.."Target") == "Vaelastrasz the Corrupt" and UnitName("Raid"..i.."TargetTarget") ~= nil then
+						if UnitName("Raid"..i.."TargetTarget") == rest then
+							SetRaidTarget("Raid"..i, 6)
+						else
+							SetRaidTarget("Raid"..i, 8)
+						end
+					else
+						SetRaidTarget("Raid"..i, 8)
+					end
+				end
+			end
+		end
+		
+		self:Sync(syncName.adrenaline)
+	end
+end
+
+function module:AdrenalinePlayerFade(rest)
+	for j,v in ipairs(adrenalinePlayers) do
+		if v == rest then
+			table.remove(adrenalinePlayers, j)
+			
+			self:RemoveBar(rest..L["bar_adrenalineDur"])
+			
+			if rest == UnitName("Player") then
+				self:RemoveWarningSign(icon.adrenaline)
+			end
+		
+			if self.db.profile.icon and (IsRaidLeader() or IsRaidOfficer()) then
+				for i=1,GetNumRaidMembers() do
+					if UnitName("Raid"..i) == rest then
+						SetRaidTarget("Raid"..i, 0)
+					end
+				end
+			end
+			break
+		end
+	end
+end
+
+function module:FlameBreath()
+	self:RemoveBar(L["bar_flameBreathCd"])
+	
+	self:Bar(L["bar_flameBreathCast"], timer.flameBreathCast, icon.flameBreath, true, color.flameBreathCast)
+	
+	self:DelayedIntervalBar(timer.flameBreathCast, L["bar_flameBreathCd"], timer.flameBreathCd[1], timer.flameBreathCd[2], icon.flameBreath, true, color.flameBreathCd)
+end
+
+function module:FlameBreathDot(rest)
+	local flameBreathDotPlayer = strsub(rest,0,strfind(rest," ") - 1)
+	local flameBreathDotQty = tonumber(strsub(rest,strfind(rest," "),strlen(rest)))
+	
+	self:RemoveBar(flameBreathDotPlayer.." ".."3"..L["bar_flameBreathDot"])
+	self:RemoveBar(flameBreathDotPlayer.." ".."4"..L["bar_flameBreathDot"])
+	self:RemoveBar(flameBreathDotPlayer.." ".."5"..L["bar_flameBreathDot"])
+	self:RemoveBar(flameBreathDotPlayer.." ".."6"..L["bar_flameBreathDot"])
+	self:RemoveBar(flameBreathDotPlayer.." ".."7"..L["bar_flameBreathDot"])
+	self:RemoveBar(flameBreathDotPlayer.." ".."8"..L["bar_flameBreathDot"])
+	self:RemoveBar(flameBreathDotPlayer.." ".."9"..L["bar_flameBreathDot"])
+	self:RemoveBar(flameBreathDotPlayer.." ".."10"..L["bar_flameBreathDot"])
+
+	self:Bar(flameBreathDotPlayer.." "..flameBreathDotQty..L["bar_flameBreathDot"], timer.flameBreathDot, icon.flameBreathDot, true, color.flameBreathDot)
+end
+
+function module:FlameBreathDotFade(rest)
+	self:RemoveBar(rest.." ".."3"..L["bar_flameBreathDot"])
+	self:RemoveBar(rest.." ".."4"..L["bar_flameBreathDot"])
+	self:RemoveBar(rest.." ".."5"..L["bar_flameBreathDot"])
+	self:RemoveBar(rest.." ".."6"..L["bar_flameBreathDot"])
+	self:RemoveBar(rest.." ".."7"..L["bar_flameBreathDot"])
+	self:RemoveBar(rest.." ".."8"..L["bar_flameBreathDot"])
+	self:RemoveBar(rest.." ".."9"..L["bar_flameBreathDot"])
+	self:RemoveBar(rest.." ".."10"..L["bar_flameBreathDot"])
+end
+
+function module:TailSweep()
+	self:Message(L["msg_tailSweep"], "Personal", false, nil, false)
+	self:WarningSign(icon.tailSweep, 1)
+end
+
+function module:FireNova()
+	self:IntervalBar(L["bar_fireNova"], timer.fireNovaCd[1], timer.fireNovaCd[2], icon.fireNova, true, color.fireNovaCd)
+end
+
+function module:ParryYou()
+	self:WarningSign(icon.parry, 0.7)
+	self:Message(L["msg_parryYou"], "Personal", false, nil, false)
+	self:Sound("Info")
 end

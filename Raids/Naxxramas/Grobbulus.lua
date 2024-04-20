@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Grobbulus", "Naxxramas")
 
-module.revision = 30071
+module.revision = 30078
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"slimespray", "inject", "cloud", "icon",  -1, "enrage", "bosskill"}
 
@@ -38,9 +38,9 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_slimeSpray = "Slime Spray",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 	bar_slimeSprayCD = "Slime Spray CD",
 	
-	trigger_injectOther = "(.+) is afflicted by Mutating Injection.",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
 	trigger_injectYou = "You are afflicted by Mutating Injection.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
-	trigger_injectFade = "Mutating Injection fades from (.+).,",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	trigger_injectOther = "(.+) is afflicted by Mutating Injection.",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+	trigger_injectFade = "Mutating Injection fades from (.+).",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 	bar_injected = " Injected",
 	msg_inject = " Injected",
 	
@@ -76,7 +76,7 @@ local syncName = {
 	enrage = "GrobbulusEnrage"..module.revision,
 	slimeSpray = "GrobbulusSlimeSpray"..module.revision,
 	inject = "GrobbulusInject"..module.revision,
-	injectFade = "GrobbulusInjectFade"..module.revision,
+	injectFade = "GrobbulusInjectFade2"..module.revision,
 	cloud = "GrobbulusCloud"..module.revision,
 	lowHp = "GrobbulusLowHp"..module.revision,
 }
@@ -163,7 +163,6 @@ function module:Event(msg)
 		local _,_, injectFadePerson, _ = string.find(msg, L["trigger_injectFade"])
 		if injectFadePerson == "you" then injectFadePerson = UnitName("Player") end
 		self:Sync(syncName.injectFade.." "..injectFadePerson)
-
 	
 	elseif msg == L["trigger_cloudCast"] then
 		self:Sync(syncName.cloud)

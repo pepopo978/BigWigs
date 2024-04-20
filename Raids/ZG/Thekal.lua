@@ -1,200 +1,386 @@
 
 local module, L = BigWigs:ModuleDeclaration("High Priest Thekal", "Zul'Gurub")
 
-module.revision = 30075
+module.revision = 30083
 module.enabletrigger = module.translatedName
-module.toggleoptions = {"bloodlust", "silence", "cleave", "heal", "disarm", -1, "phase", "punch", "tigers", "frenzy", "enraged", "bosskill"}
 module.wipemobs = {"Zealot Zath", "Zealot Lor'Khan"}
+module.toggleoptions = {
+	"heal",
+	"silence",
+	"disarm",
+	"blind",
+	"gouge",
+	"mortalcleave",
+	"bloodlust",
+	-1,
+	"punch",
+	"charge",
+	"frenzy",
+	"enrage",
+	"adds",
+	-1,
+	"hpbars",
+	"reztimer",
+	"bosskill"
+}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Thekal",
 	
 	heal_cmd = "heal",
-	heal_name = "Heal alert",
-	heal_desc = "Warn for Lor'Khan's heals.",
-
-	bloodlust_cmd = "bloodlust",
-	bloodlust_name = "Bloodlust alert",
-	bloodlust_desc = "Announces which boss gets Bloodlust, for easy dispel announce.",
-
+	heal_name = "Great Heal Alert",
+	heal_desc = "Warn for Lor'Khan's Great Heals",
+	
 	silence_cmd = "silence",
-	silence_name = "Silence",
-	silence_desc = "Shows you who gets silenced.",
-
+	silence_name = "Silence Alert",
+	silence_desc = "Warn for Silence",
+	
 	disarm_cmd = "disarm",
-	disarm_name = "Disarm",
-	disarm_desc = "Warn for Zealot Lor'Khan's disarm.",
-
-	cleave_cmd = "cleave",
-	cleave_name = "Mortal Cleave notifications",
-	cleave_desc = "Shows who has Mortal Strike-type debuff.",
+	disarm_name = "Disarm Alert",
+	disarm_desc = "Warn for Disarm",
+	
+	blind_cmd = "blind",
+	blind_name = "Blind Alert",
+	blind_desc = "Warn for Blind",
+	
+	gouge_cmd = "gouge",
+	gouge_name = "Gouge Alert",
+	gouge_desc = "Warn for Gouge",
+	
+	mortalcleave_cmd = "mortalcleave",
+	mortalcleave_name = "Mortal Cleave Alert",
+	mortalcleave_desc = "Warn for Mortal Cleave",
+	
+	bloodlust_cmd = "bloodlust",
+	bloodlust_name = "Bloodlust Alert",
+	bloodlust_desc = "Warn for Bloodlust",
 
 	punch_cmd = "punch",
-	punch_name = "Force Punch alert",
-	punch_desc = "JUMP!",
+	punch_name = "Force Punch Alert",
+	punch_desc = "Warn for Force Punch",
 
-	tigers_cmd = "tigers",
-	tigers_name = "Tiger spawns",
-	tigers_desc = "Warn for incoming tigers.",
-
+	charge_cmd = "charge",
+	charge_name = "Charge Alert",
+	charge_desc = "Warn for Charge",
+	
 	frenzy_cmd = "frenzy",
-	frenzy_name = "Frenzy announce",
-	frenzy_desc = "Warn when High Priest Thekal goes into a frenzy.",
+	frenzy_name = "Frenzy Alert",
+	frenzy_desc = "Warn for Frenzy",
 
-	enraged_cmd = "enraged",
-	enraged_name = "Enrage alert",
-	enraged_desc = "Lets you know when the boss is enraged.",
-
-	phase_cmd = "phase",
-	phase_name = "Phase notification",
-	phase_desc = "Announces the boss' phase transitions.",
+	enrage_cmd = "enrage",
+	enrage_name = "Enrage Alert",
+	enrage_desc = "Warn for Enrage",
 	
-	phase2_trigger = "fill me with your RAGE!",
-
-	phaseone_message = "Troll Phase",
-	phasetwo_message = "Tiger Phase",
-	phasetwo_bar = "Tiger Phase",
+	adds_cmd = "adds",
+	adds_name = "Tiger Adds Alert",
+	adds_desc = "Warn for Tiger Adds",
 	
-	tigers_trigger = "High Priest Thekal performs Summon Zulian Guardians.",
-	tigers_message = "Incoming Tigers!",
+	hpbars_cmd = "hpbars",
+	hpbars_name = "HP Bars in Phase 1",
+	hpbars_desc = "Display HP Bars for Thekal's, Zath's and Lor'Khan's HP",
 	
-	forcepunch_trigger = "High Priest Thekal begins to perform Force Punch.",
-	forcepunch_bar = "Force Punch",
+	reztimer_cmd = "reztimer",
+	reztimer_name = "Timer for Resurrect",
+	reztimer_desc = "Time after one dies before he resurrects",
 	
-	heal_trigger = "Zealot Lor'Khan begins to cast Great Heal.",
-	heal_message = "Zealot Lor'Khan is Healing! Interrupt it!",
-	heal_bar = "Great Heal",
 	
-	enrage_trigger = "High Priest Thekal gains Enrage\.",
-	enrage_message = "Boss is enraged! Spam heals!",
+	trigger_heal = "Zealot Lor'Khan begins to cast Great Heal.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF
+	msg_heal = "Zealot Lor'Khan is Healing - Interrupt!",
+	bar_heal = "Casting Heal",
 	
-	disarmself_trigger = "You are afflicted by Disarm.",
-	disarmother_trigger = "(.+) is afflicted by Disarm.",
-	disarm_bar = "Disarm: %s",
+	trigger_attack1 = "Zealot Lor'Khan attacks", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_MISSES
+	trigger_attack2 = "Zealot Lor'Khan misses", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_MISSES
+	trigger_attack3 = "Zealot Lor'Khan hits", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS
+	trigger_attack4 = "Zealot Lor'Khan crits", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS
+	trigger_kick1 = "Kick hits Zealot Lor'Khan", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_kick2 = "Kick crits Zealot Lor'Khan", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_kick3 = "Kick was blocked by Zealot Lor'Khan", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_pummel1 = "Pummel hits Zealot Lor'Khan", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_pummel2 = "Pummel crits Zealot Lor'Khan", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_pummel3 = "Pummel was blocked by Zealot Lor'Khan", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_shieldBash1 = "Shield Bash hits Zealot Lor'Khan", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_shieldBash2 = "Shield Bash crits Zealot Lor'Khan", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_shieldBash3 = "Shield Bash was blocked by Zealot Lor'Khan", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_earthShock1 = "Earth Shock hits Zealot Lor'Khan", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_earthShock2 = "Earth Shock crits Zealot Lor'Khan", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
 	
-	mortalcleaveself_trigger = "You are afflicted by Mortal Cleave.",
-	mortalcleaveother_trigger = "(.+) is afflicted by Mortal Cleave.",
-	mortalcleave_bar = "Mortal Cleave: %s",
+	trigger_silenceYou = "You are afflicted by Silence.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_silenceOther = "(.+) is afflicted by Silence.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_silenceFade = "Silence fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_silence = " Silenced",
+	msg_silence = " Silenced - Dispel!",
 	
-	silenceself_trigger = "You are afflicted by Silence.",
-	silenceother_trigger = "(.+) is afflicted by Silence.",
-	silenceselfend_trigger = "Silence fades from you.",
-	silenceotherend_trigger = "Silence fades from (.+).",
-	silence_announce = "Silence on %s! Dispel it!",
-	silence_bar = "Silence: %s",
+	trigger_disarmYou = "You are afflicted by Disarm.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_disarmOther = "(.+) is afflicted by Disarm.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_disarmFade = "Disarm fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_disarm = " Disarmed",
 	
-	bloodlustgain = "(.+) gains Bloodlust.",
-	bloodlustend = "Bloodlust fades from (.+).",
-	bloodlust_bar = "Bloodlust: %s",
-	bloodlustannounce = "Dispel Bloodlust from %s!",
+	trigger_blindYou = "You are afflicted by Blind.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_blindOther = "(.+) is afflicted by Blind.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_blindFade = "Blind fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_blind = " Blinded",
 	
-	frenzybegin_trigger = "High Priest Thekal gains Frenzy.",
-	frenzyend_trigger = "Frenzy fades from High Priest Thekal.",
-	frenzyann = "Frenzy! Tranq now!",
-	frenzy_bar = "Frenzy",
+	trigger_gougeYou = "You are afflicted by Gouge.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_gougeOther = "(.+) is afflicted by Gouge.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_gougeFade = "Gouge fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_gouge = " Gouged",
 	
-	death_trigger = "dies.",
-	zath_trigger = "Zealot Zath",
-	lorkhan_trigger = "Zealot Lor'Khan",
-	thekal_trigger = "High Priest Thekal",
+	trigger_mortalCleaveYou = "You are afflicted by Mortal Cleave.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_mortalCleaveOther = "(.+) is afflicted by Mortal Cleave.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_mortalCleaveFade = "Mortal Cleave fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_mortalCleave = " Mortal Cleave",
 	
-	thekalrescast_trigger = "High Priest Thekal begins to cast Resurrection.",
-	zathrescast_trigger = "Zealot Zath begins to cast Resurrection.",
-	lorkhanrescast_trigger = "Zealot Lor'Khan begins to cast Resurrection.",
-
-	["You have slain %s!"] = true,
-	["Knockback"] = true,
-	["New Adds"] = true,
-	["Next Bloodlust"] = true,
+	--to be confirmed
+	trigger_bloodlustGain = "(.+) gains Bloodlust.", --guessing CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	trigger_bloodlustFade = "Bloodlust fades from (.+).", --guessing CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_bloodlust = " Bloodlust",
+	msg_bloodlust = " Bloodlust - Dispel!",
+	
+		--unuseable due to %s
+	--trigger_mobDies = "(.+) dies.", --CHAT_MSG_MONSTER_EMOTE --High Priest Thekal // Zealot Zath // Zealot Lor'Khan
+	bar_rezTimer = "Resurrect",
+	
+	trigger_resurrection = "is resurrected by a nearby ally!", --CHAT_MSG_MONSTER_EMOTE --High Priest Thekal // Zealot Zath // Zealot Lor'Khan
+	
+	trigger_phase2 = "Shirvallah, fill me with your RAGE!", --CHAT_MSG_MONSTER_YELL
+	
+	bar_phase2 = "Tiger Phase",
+	msg_phase2 = "Phase 2 - Tiger Phase",
+	
+	trigger_forcePunch = "High Priest Thekal's Force Punch", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_forcePunch = "Force Punch CD",
+	bar_forcePunchCast = "Casting Force Punch!",
+	
+	trigger_charge = "High Priest Thekal's Charge", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_charge = "Charge CD",
+	
+	--to be confirmed
+	trigger_frenzyGain = "High Priest Thekal gains Frenzy.", --guessing CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	trigger_frenzyFade = "Frenzy fades from High Priest Thekal.", --guessing, CHAT_MSG_SPELL_AURA_GONE_OTHER
+	msg_frenzy = "Frenzy - Tranq!",
+	bar_frenzy = "Frenzy",
+	
+	trigger_enrage = "High Priest Thekal gains Enrage.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	msg_enrage = "High Priest Thekal is Enraged!",
+	
+	--no trigger_tigers
+	bar_tigersCd = "Tigers Spawn CD",
+	msg_tigers = "Tiger adds Spawned!",
+	msg_addDead = "/2 Tiger Adds Dead",
+	
+	trigger_bossDead = "Hakkar binds me no more! Peace at last!", --CHAT_MSG_MONSTER_YELL
 } end )
 
 local timer = {
-	forcePunch = 1,
-	phase2 = 9,
-	knockback = 4,
-	adds = 25,
+	heal = 4,
+	silence = 6,
+	disarm = 6,
+	blind = 10,
+	gouge = 4,
+	mortalCleave = 5,
 	bloodlust = 30,
+	rezTimer = 10, --guessing
+	
+	phase2 = 15, --15sec from thekal's death, not from all 3 dead
+	
+	forcePunchFirst = 5,
+	forcePunch = {12,18}, --saw 12,18
+	charge = {12,18}, --saw 13,15,18
+	frenzy = 10, --is 8 or 10 depending on bosses
+	addsFirst = 25,
+	adds = 20,
 }
 local icon = {
-	forcePunch = "INV_Gauntlets_31",
-	knockback = "Ability_WarStomp",
-	adds = "Ability_Hunter_Pet_Cat",
-	bloodlust = "Spell_Nature_BloodLust",
 	heal = "Spell_Holy_Heal",
-	frenzy = "Ability_Druid_ChallangingRoar",
 	silence = "Spell_Holy_Silence",
-	mortalCleave = "Ability_Warrior_SavageBlow",
 	disarm = "Ability_Warrior_Disarm",
-	phase2 = "Spell_Holy_PrayerOfHealing",
-	
+	blind = "spell_shadow_mindsteal",
+	gouge = "ability_gouge",
+	mortalCleave = "Ability_Warrior_SavageBlow",
+	bloodlust = "Spell_Nature_BloodLust",
 	hpBar = "spell_holy_prayerofspirit",
+	rezTimer = "spell_holy_resurrection",
+	
+	phase = "ability_mount_jungletiger",
+	
+	forcePunch = "ability_smash",
+	charge = "ability_warrior_charge",
+	frenzy = "Ability_Druid_ChallangingRoar",
+	enrage = "Spell_Shadow_UnholyFrenzy",
+	adds = "Ability_Hunter_Pet_Cat",
 }
 local color = {
+	heal = "Green",
+	silence = "Blue",
+	disarm = "Yellow",
+	blind = "Black",
+	gouge = "Red",
+	mortalCleave = "Orange",
+	bloodlust = "Cyan",
 	hpBar = "Magenta",
+	rezTimer = "White",
+	
+	phase = "White",
+	
+	forcePunch = "Black",
+	charge = "White",
+	frenzy = "Red",
+	adds = "Blue",
 }
 local syncName = {
-	phase2 = "ThekalPhaseTwo"..module.revision,
-	phasechange = "ThekalPhaseChange"..module.revision,
 	heal = "ThekalLorkhanHeal"..module.revision,
-	frenzy = "ThekalFrenzyStart"..module.revision,
-	frenzyOver = "ThekalFrenzyStop"..module.revision,
-	bloodlust = "ThekalBloodlustStart"..module.revision,
-	bloodlustOver = "ThekalBloodlustStop"..module.revision,
-	silence = "ThekalSilenceStart"..module.revision,
-	silenceOver = "ThekalSilenceStop"..module.revision,
-	mortalcleave = "ThekalMortalCleave"..module.revision,
+	healOver = "ThekalLorkhanHealOver"..module.revision,
+	
+	silence = "ThekalSilence"..module.revision,
+	silenceFade = "ThekalSilenceFade"..module.revision,
+	
 	disarm = "ThekalDisarm"..module.revision,
+	disarmFade = "ThekalDisarmFade"..module.revision,
+	
+	blind = "ThekalBlind"..module.revision,
+	blindFade = "ThekalBlindFade"..module.revision,
+	
+	gouge = "ThekalGouge"..module.revision,
+	gougeFade = "ThekalGougeFade"..module.revision,
+	
+	mortalCleave = "ThekalMortalCleave"..module.revision,
+	mortalCleaveFade = "ThekalMortalCleaveFade"..module.revision,
+	
+	bloodlust = "ThekalBloodlustStart"..module.revision,
+	bloodlustFade = "ThekalBloodlustStop"..module.revision,
+	
+	
+	
+	phase1End = "ThekalPhase1End"..module.revision,
+	phase2 = "ThekalPhaseTwo"..module.revision,
+	
+	forcePunch = "ThekalForcePunch"..module.revision,
+	
+	charge = "ThekalCharge"..module.revision,
+	
+	frenzy = "ThekalFrenzyStart"..module.revision,
+	frenzyFade = "ThekalFrenzyStop"..module.revision,
+	
 	enrage = "ThekalEnrage"..module.revision,
+	
+	moreAdds = "ThekalMoreAdds"..module.revision,
+	addDead = "ThekalAddDead"..module.revision,
 }
 
-function module:OnEnable()
-	self:RegisterEvent("CHAT_MSG_MONSTER_YELL") -- phase transition
-	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS")
-	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Fades")
-	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Fades")
-	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Fades")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE")
+local zathDead = nil
+local lorkhanDead = nil
+local thekalDead = nil
 
-	self:ThrottleSync(10, syncName.phase2)
-	self:ThrottleSync(10, syncName.phasechange)
-	self:ThrottleSync(5, syncName.heal)
-	self:ThrottleSync(3, syncName.frenzy)
-	self:ThrottleSync(3, syncName.frenzyOver)
-	self:ThrottleSync(3, syncName.bloodlust)
-	self:ThrottleSync(3, syncName.bloodlustOver)
+local zathHp = 100
+local lorkhanHp = 100
+local thekalHp = 100
+
+local phase = "phase1"
+local thekalDeadTime = 0
+
+local doCheckForBossDeath = false
+
+local castingHeal = nil
+
+local addDead = 0
+
+function module:OnEnable()
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event") --Debug
+	
+	self:RegisterEvent("CHAT_MSG_MONSTER_YELL") --trigger_phase2
+	
+	self:RegisterEvent("CHAT_MSG_MONSTER_EMOTE") --trigger_mobDies, trigger_resurrection
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF", "Event") --trigger_heal
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE", "Event") --trigger_kick1-2-3, trigger_pummel1-2-3, trigger_shieldBash1-2-3, trigger_earthShock1-2
+	self:RegisterEvent("CHAT_MSG_SPELL_PARTY_DAMAGE", "Event") --trigger_kick1-2-3, trigger_pummel1-2-3, trigger_shieldBash1-2-3, trigger_earthShock1-2
+	self:RegisterEvent("CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE", "Event") --trigger_kick1-2-3, trigger_pummel1-2-3, trigger_shieldBash1-2-3, trigger_earthShock1-2
+		
+	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS", "Event") --trigger_attack3, trigger_attack4
+	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS", "Event") --trigger_attack3, trigger_attack4
+	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS", "Event") --trigger_attack3, trigger_attack4
+	
+	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES", "Event") --trigger_attack1, trigger_attack2
+	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_PARTY_MISSES", "Event") --trigger_attack1, trigger_attack2
+	self:RegisterEvent("CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_MISSES", "Event") --trigger_attack1, trigger_attack2
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event") --trigger_silenceYou, trigger_disarmYou, trigger_blindYou, trigger_gougeYou, trigger_mortalCleaveYou
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event") --trigger_silenceOther, trigger_disarmOther, trigger_blindOther, trigger_gougeOther, trigger_mortalCleaveOther
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event") --trigger_silenceOther, trigger_disarmOther, trigger_blindOther, trigger_gougeOther, trigger_mortalCleaveOther
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event") --trigger_silenceFade, trigger_disarmFade, trigger_blindFade, trigger_gougeFade, trigger_mortalCleaveFade
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event") --trigger_silenceFade, trigger_disarmFade, trigger_blindFade, trigger_gougeFade, trigger_mortalCleaveFade
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event") --trigger_silenceFade, trigger_disarmFade, trigger_blindFade, trigger_gougeFade, trigger_mortalCleaveFade, trigger_bloodlustFade, trigger_frenzyFade
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event") --trigger_bloodlustGain, trigger_frenzyGain, trigger_enrage
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event") --trigger_forcePunch, trigger_charge
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event") --trigger_forcePunch, trigger_charge
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event") --trigger_forcePunch, trigger_charge
+	
+	
+	self:ThrottleSync(3, syncName.heal)
+	self:ThrottleSync(3, syncName.healOver)
+	
 	self:ThrottleSync(3, syncName.silence)
-	self:ThrottleSync(3, syncName.silenceOver)
-	self:ThrottleSync(5, syncName.mortalcleave)
-	self:ThrottleSync(5, syncName.disarm)
+	self:ThrottleSync(3, syncName.silenceFade)
+	
+	self:ThrottleSync(3, syncName.disarm)
+	self:ThrottleSync(3, syncName.disarmFade)
+	
+	self:ThrottleSync(3, syncName.blind)
+	self:ThrottleSync(3, syncName.blindFade)
+	
+	self:ThrottleSync(3, syncName.gouge)
+	self:ThrottleSync(3, syncName.gougeFade)
+	
+	self:ThrottleSync(3, syncName.mortalCleave)
+	self:ThrottleSync(3, syncName.mortalCleaveFade)
+	
+	self:ThrottleSync(3, syncName.bloodlust)
+	self:ThrottleSync(3, syncName.bloodlustFade)
+	
+	
+	self:ThrottleSync(10, syncName.phase1End)
+	self:ThrottleSync(10, syncName.phase2)
+	
+	
+	self:ThrottleSync(3, syncName.forcePunch)
+	self:ThrottleSync(3, syncName.charge)
+	
+	self:ThrottleSync(3, syncName.frenzy)
+	self:ThrottleSync(1, syncName.frenzyFade)
+	
 	self:ThrottleSync(5, syncName.enrage)
+	
+	self:ThrottleSync(10, syncName.moreAdds)
+	self:ThrottleSync(0.5, syncName.addDead)
 end
 
 function module:OnSetup()
-	zathdead = nil
-	lorkhandead = nil
-	thekaldead = nil
-	
-	self.zathHP = 100
-	self.lorkhanHP = 100
-	self.thekalHP = 100
+	self.started = nil
+
+	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH") --addDead
 end
 
 function module:OnEngage()
-	self.phase = 1
-	self:ScheduleRepeatingEvent("checkphasechange", self.PhaseChangeCheck, 0.5, self)
+	zathDead = nil
+	lorkhanDead = nil
+	thekalDead = nil
 	
-	zathdead = nil
-	lorkhandead = nil
-	thekaldead = nil
+	zathHp = 100
+	lorkhanHp = 100
+	thekalHp = 100
 	
-	self.zathHP = 100
-	self.lorkhanHP = 100
-	self.thekalHP = 100
+	phase = "phase1"
+	thekalDeadTime = 0
+	
+	doCheckForBossDeath = false
+	
+	castingHeal = nil
+	
+	addDead = 0
 	
 	self:TriggerEvent("BigWigs_StartHPBar", self, "Zealot Zath", 100, "Interface\\Icons\\"..icon.hpBar, true, color.hpBar)
 	self:TriggerEvent("BigWigs_SetHPBar", self, "Zealot Zath", 0)
@@ -205,34 +391,137 @@ function module:OnEngage()
 	self:TriggerEvent("BigWigs_StartHPBar", self, "High Priest Thekal", 100, "Interface\\Icons\\"..icon.hpBar, true, color.hpBar)
 	self:TriggerEvent("BigWigs_SetHPBar", self, "High Priest Thekal", 0)
 	
-	self:ScheduleRepeatingEvent("thekalHpCheck", self.CheckHP, 0.5, self)
+	self:ScheduleRepeatingEvent("ThekalCheckHp", self.CheckHp, 0.5, self)
 end
 
 function module:OnDisengage()
+	self:CancelScheduledEvent("Thekal_PhaseChangeCheck")
+	
+	self:CancelScheduledEvent("ThekalCheckHp")
 end
 
-function module:CheckHP()
+function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
+	if (msg == string.format(UNITDIESOTHER, "Zulian Tiger")) or (msg == string.format(UNITDIESOTHER, "Zulian Guardian")) then
+		addDead = addDead + 1
+		if addDead <= 2 then
+			self:Sync(syncName.addDead .. " " .. addDead)
+		end
+	
+	
+	
+	elseif (msg == string.format(UNITDIESOTHER, "Zealot Zath")) then
+		if lorkhanDead == nil and thekalDead == nil and self.db.profile.reztimer then
+			self:Bar(L["bar_rezTimer"], timer.rezTimer, icon.rezTimer, true, color.rezTimer)
+		end
+		
+		zathDead = true
+		if zathDead and lorkhanDead and thekalDead then
+			self:ScheduleRepeatingEvent("Thekal_PhaseChangeCheck", self.PhaseChangeCheck, 1, self)
+		end
+		
+		self:RemoveBar("Zealot Zath"..L["bar_bloodlust"])
+		self:TriggerEvent("BigWigs_StopHPBar", self, "Zealot Zath")
+	
+	
+	elseif (msg == string.format(UNITDIESOTHER, "Zealot Lor'Khan")) then
+		if zathDead == nil and thekalDead == nil and self.db.profile.reztimer then
+			self:Bar(L["bar_rezTimer"], timer.rezTimer, icon.rezTimer, true, color.rezTimer)
+		end
+		
+		lorkhanDead = true
+		castingHeal = nil
+		if zathDead and lorkhanDead and thekalDead then
+			self:ScheduleRepeatingEvent("Thekal_PhaseChangeCheck", self.PhaseChangeCheck, 1, self)
+		end
+		
+		self:RemoveBar(L["bar_heal"])
+		self:RemoveBar("Zealot Lor'Khan"..L["bar_bloodlust"])
+		self:TriggerEvent("BigWigs_StopHPBar", self, "Zealot Lor'Khan")
+	
+	
+	elseif (msg == string.format(UNITDIESOTHER, "High Priest Thekal")) then
+		if zathDead == nil and lorkhanDead == nil and self.db.profile.reztimer then
+			self:Bar(L["bar_rezTimer"], timer.rezTimer, icon.rezTimer, true, color.rezTimer)
+		end
+		
+		thekalDead = true
+		if zathDead and lorkhanDead and thekalDead then
+			self:ScheduleRepeatingEvent("Thekal_PhaseChangeCheck", self.PhaseChangeCheck, 1, self)
+		end
+		
+		self:RemoveBar("High Priest Thekal"..L["bar_bloodlust"])
+		self:TriggerEvent("BigWigs_StopHPBar", self, "High Priest Thekal")
+		
+		thekalDeadTime = GetTime()
+	end
+end
+
+function module:CHAT_MSG_MONSTER_EMOTE(msg)
+	--there is no way to know which mob was resurrected as the emote is "%s is resurrected by a nearby ally!"
+	--if we're in p1 and that happens, consider all alive and reset all bars
+		--the mobs that are still alive will have their bar refreshed on hit
+	if string.find(msg, L["trigger_resurrection"]) and phase == "phase1" then
+		self:CancelScheduledEvent("Thekal_PhaseChangeCheck")
+		
+		if zathDead then zathDead = nil end
+		zathHp = 100
+		self:TriggerEvent("BigWigs_StartHPBar", self, "Zealot Zath", 100, "Interface\\Icons\\"..icon.hpBar, true, color.hpBar)
+		self:TriggerEvent("BigWigs_SetHPBar", self, "Zealot Zath", 0)
+		
+		if lorkhanDead then lorkhanDead = nil end
+		lorkhanHp = 100
+		self:TriggerEvent("BigWigs_StartHPBar", self, "Zealot Lor'Khan", 100, "Interface\\Icons\\"..icon.hpBar, true, color.hpBar)
+		self:TriggerEvent("BigWigs_SetHPBar", self, "Zealot Lor'Khan", 0)
+		
+		if thekalDead then thekalDead = nil end
+		thekalHp = 100
+		self:TriggerEvent("BigWigs_StartHPBar", self, "High Priest Thekal", 100, "Interface\\Icons\\"..icon.hpBar, true, color.hpBar)
+		self:TriggerEvent("BigWigs_SetHPBar", self, "High Priest Thekal", 0)
+	end
+end
+
+function module:PhaseChangeCheck()
+	local zathDeadConfirm = true
+	local lorkhanDeadConfirm = true
+	local thekalDeadConfirm = true
+	
+	for i=1,GetNumRaidMembers() do
+		if UnitName("Raid"..i.."Target") == "Zealot Zath" and not UnitIsDead("Raid"..i.."Target") then
+			zathDeadConfirm = nil
+		elseif UnitName("Raid"..i.."Target") == "Zealot Lor'Khan" and not UnitIsDead("Raid"..i.."Target") then
+			lorkhanDeadConfirm = nil
+		elseif UnitName("Raid"..i.."Target") == "High Priest Thekal" and not UnitIsDead("Raid"..i.."Target") then
+			thekalDeadConfirm = nil
+		end
+	end
+
+	if zathDeadConfirm and lorkhanDeadConfirm and thekalDeadConfirm then
+		self:Sync(syncName.phase1End)
+	end
+end
+
+function module:CheckHp()
 	local zathHealth
 	local lorkhanHealth
 	local thekalHealth
 	
-	if UnitName("playertarget") == "Zealot Zath" then
-		zathHealth = math.ceil((UnitHealth("playertarget") / UnitHealthMax("playertarget")) * 100)
-	elseif UnitName("playertarget") == "Zealot Lor'Khan" then
-		lorkhanHealth = math.ceil((UnitHealth("playertarget") / UnitHealthMax("playertarget")) * 100)
-	elseif UnitName("playertarget") == "High Priest Thekal" then
-		thekalHealth = math.ceil((UnitHealth("playertarget") / UnitHealthMax("playertarget")) * 100)
+	if UnitName("PlayerTarget") == "Zealot Zath" then
+		zathHealth = math.ceil((UnitHealth("PlayerTarget") / UnitHealthMax("PlayerTarget")) * 100)
+	elseif UnitName("PlayerTarget") == "Zealot Lor'Khan" then
+		lorkhanHealth = math.ceil((UnitHealth("PlayerTarget") / UnitHealthMax("PlayerTarget")) * 100)
+	elseif UnitName("PlayerTarget") == "High Priest Thekal" then
+		thekalHealth = math.ceil((UnitHealth("PlayerTarget") / UnitHealthMax("PlayerTarget")) * 100)
 	end
 	
-	for i = 1, GetNumRaidMembers(), 1 do
-		if UnitName("Raid"..i.."target") == "Zealot Zath" then
-			zathHealth = math.ceil((UnitHealth("Raid"..i.."target") / UnitHealthMax("Raid"..i.."target")) * 100)
-		elseif UnitName("Raid"..i.."target") == "Zealot Lor'Khan" then
-			lorkhanHealth = math.ceil((UnitHealth("Raid"..i.."target") / UnitHealthMax("Raid"..i.."target")) * 100)
-		elseif UnitName("Raid"..i.."target") == "High Priest Thekal" then
-			thekalHealth = math.ceil((UnitHealth("Raid"..i.."target") / UnitHealthMax("Raid"..i.."target")) * 100)
+	for i=1,GetNumRaidMembers() do
+		if UnitName("Raid"..i.."Target") == "Zealot Zath" then
+			zathHealth = math.ceil((UnitHealth("Raid"..i.."Target") / UnitHealthMax("Raid"..i.."Target")) * 100)
+		elseif UnitName("Raid"..i.."Target") == "Zealot Lor'Khan" then
+			lorkhanHealth = math.ceil((UnitHealth("Raid"..i.."Target") / UnitHealthMax("Raid"..i.."Target")) * 100)
+		elseif UnitName("Raid"..i.."Target") == "High Priest Thekal" then
+			thekalHealth = math.ceil((UnitHealth("Raid"..i.."Target") / UnitHealthMax("Raid"..i.."Target")) * 100)
 		end
-		if zathHealth and lorkhanHealth and thekalHealth then break; end
+		if zathHealth and lorkhanHealth and thekalHealth then break end
 	end
 	
 	if zathHealth then
@@ -249,170 +538,386 @@ function module:CheckHP()
 	end
 end
 
--- override: only check for boss death in phase 2
 function module:CheckForBossDeath(msg)
-	if self.phase then
-		self:DebugMessage("thekal death; phase: " .. self.phase .. " msg: " .. msg)
-	end
-	if self.phase == 2 then
+	if doCheckForBossDeath then
 		BigWigs:CheckForBossDeath(msg, self)
 	end
 end
 
 function module:CHAT_MSG_MONSTER_YELL(msg)
-	if string.find(msg, L["phase2_trigger"]) then
+	if msg == L["trigger_phase2"] then
 		self:Sync(syncName.phase2)
-	end
-end
-
-function module:PhaseChangeCheck()
-	if self.phase == 1 then
-		self:DebugMessage("PhaseChangeCheck")
-		thekaldead = true
-		zathdead = true
-		lorkhandead = true
-		for i = 1, GetNumRaidMembers(), 1 do
-			if UnitName("Raid"..i.."target") == self.translatedName and not UnitIsDead("Raid"..i.."target") then
-				thekaldead = nil
-			elseif UnitName("Raid"..i.."target") == "Zealot Zath" and not UnitIsDead("Raid"..i.."target") then
-				zathdead = nil
-			elseif UnitName("Raid"..i.."target") == "Zealot Lor'Khan" and not UnitIsDead("Raid"..i.."target") then
-				lorkhandead = nil
-			end
-		end
-
-		if lorkhandead and zathdead and thekaldead then
-			self:Sync(syncName.phasechange)
-		end
+	
+	elseif msg == L["trigger_bossDead"] then
+		self:SendBossDeathSync()
 	end
 end
 
 function module:Event(msg)
-	local _,_,silenceother_triggerword = string.find(msg, L["silenceother_trigger"])
-	local _,_,disarmother_triggerword = string.find(msg, L["disarmother_trigger"])
-	local _,_,mortalcleaveother_triggerword = string.find(msg, L["mortalcleaveother_trigger"])
-	if msg == L["tigers_trigger"] then
-		self:Message(L["tigers_message"], "Important")
-	elseif msg == L["heal_trigger"] then
+	if msg == L["trigger_heal"] then
 		self:Sync(syncName.heal)
-	elseif msg == L["silenceself_trigger"] then
+	
+	elseif castingHeal == true and (string.find(msg, L["trigger_attack1"]) or string.find(msg, L["trigger_attack2"]) or string.find(msg, L["trigger_attack3"]) or string.find(msg, L["trigger_attack4"])
+		or string.find(msg, L["trigger_kick1"]) or string.find(msg, L["trigger_kick2"]) or string.find(msg, L["trigger_kick3"]) -- kicked
+		or string.find(msg, L["trigger_pummel1"]) or string.find(msg, L["trigger_pummel2"]) or string.find(msg, L["trigger_pummel3"]) -- pummeled
+		or string.find(msg, L["trigger_shieldBash1"]) or string.find(msg, L["trigger_shieldBash2"]) or string.find(msg, L["trigger_shieldBash3"]) -- shield bashed
+		or string.find(msg, L["trigger_earthShock1"]) or string.find(msg, L["trigger_earthShock2"])) then -- earth shocked
+		self:Sync(syncName.healOver)
+	
+	
+	elseif msg == L["trigger_silenceYou"] then
 		self:Sync(syncName.silence .. " "..UnitName("player"))
-	elseif silenceother_triggerword then
-		self:Sync(syncName.silence .. " "..silenceother_triggerword)
-	elseif msg == L["disarmself_trigger"] then
-		self:Sync(syncName.disarm .. " "..UnitName("player"))
-	elseif disarmother_triggerword then
-		self:Sync(syncName.disarm .. " "..disarmother_triggerword)
-	elseif msg == L["mortalcleaveself_trigger"] then
-		self:Sync(syncName.mortalcleave .. " "..UnitName("player"))
-	elseif mortalcleaveother_triggerword then
-		self:Sync(syncName.mortalcleave .. " "..mortalcleaveother_triggerword)
-	end
-end
-
-function module:CHAT_MSG_MONSTER_EMOTE(msg)
-	if string.find(msg, L["death_trigger"]) then
-		if arg2 == L["zath_trigger"] then
-			zathdead = true
-			if self.db.profile.bloodlust then
-				self:RemoveBar(string.format(L["bloodlust_bar"], L["zath_trigger"]))
-			end
-		elseif arg2 == L["lorkhan_trigger"] then
-			lorkhandead = true
-			if self.db.profile.heal then
-				self:RemoveBar(L["heal_bar"])
-			end
-			if self.db.profile.bloodlust then
-				self:RemoveBar(string.format(L["bloodlust_bar"], L["lorkhan_trigger"]))
-			end
-		elseif arg2 == L["thekal_trigger"] then
-			thekaldead = true
+	
+	elseif string.find(msg, L["trigger_silenceOther"]) then
+		local _,_,silencePerson, _ = string.find(msg, L["trigger_silenceOther"])
+		if not (silencePerson == "Zealot Zath" or silencePerson == "Zealot Lor'Khan" or silencePerson == "High Priest Thekal") then
+			self:Sync(syncName.silence .. " "..silencePerson)
 		end
-	end
-end
-
-function module:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE(msg)
-	if msg == L["forcepunch_trigger"] then
-		self:Bar(L["forcepunch_bar"], timer.forcePunch, icon.forcePunch, true, "red")
-	end
-end
-
-function module:CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS(msg)
-	local _,_,bloodlustgainword = string.find(msg, L["bloodlustgain"])
-	if msg == L["frenzybegin_trigger"] then
+	
+	elseif string.find(msg, L["trigger_silenceFade"]) then
+		local _,_,silenceFadePerson, _ = string.find(msg, L["trigger_silenceFade"])
+		if silenceFadePerson == "you" then silenceFadePerson = UnitName("Player") end
+		if not (silenceFadePerson == "Zealot Zath" or silenceFadePerson == "Zealot Lor'Khan" or silenceFadePerson == "High Priest Thekal") then
+			self:Sync(syncName.silenceFade .. " "..silenceFadePerson)
+		end
+	
+	elseif msg == L["trigger_disarmYou"] then
+		self:Sync(syncName.disarm .. " "..UnitName("player"))
+	
+	elseif string.find(msg, L["trigger_disarmOther"]) then
+		local _,_,disarmPerson, _ = string.find(msg, L["trigger_disarmOther"])
+		if not (disarmPerson == "Zealot Zath" or disarmPerson == "Zealot Lor'Khan" or disarmPerson == "High Priest Thekal") then
+			self:Sync(syncName.disarm .. " "..disarmPerson)
+		end
+	
+	elseif string.find(msg, L["trigger_disarmFade"]) then
+		local _,_,disarmFadePerson, _ = string.find(msg, L["trigger_disarmFade"])
+		if disarmFadePerson == "you" then disarmFadePerson = UnitName("Player") end
+		if not (disarmFadePerson == "Zealot Zath" or disarmFadePerson == "Zealot Lor'Khan" or disarmFadePerson == "High Priest Thekal") then
+			self:Sync(syncName.disarmFade .. " "..disarmFadePerson)
+		end
+	
+	
+	elseif msg == L["trigger_blindYou"] then
+		self:Sync(syncName.blind .. " "..UnitName("player"))
+	
+	elseif string.find(msg, L["trigger_blindOther"]) then
+		local _,_,blindPerson, _ = string.find(msg, L["trigger_blindOther"])
+		if not (blindPerson == "Zealot Zath" or blindPerson == "Zealot Lor'Khan" or blindPerson == "High Priest Thekal") then
+			self:Sync(syncName.blind .. " "..blindPerson)
+		end
+	
+	elseif string.find(msg, L["trigger_blindFade"]) then
+		local _,_,blindFadePerson, _ = string.find(msg, L["trigger_blindFade"])
+		if blindFadePerson == "you" then blindFadePerson = UnitName("Player") end
+		if not (blindFadePerson == "Zealot Zath" or blindFadePerson == "Zealot Lor'Khan" or blindFadePerson == "High Priest Thekal") then
+			self:Sync(syncName.blindFade .. " "..blindFadePerson)
+		end
+		
+		
+	elseif msg == L["trigger_gougeYou"] then
+		self:Sync(syncName.gouge .. " "..UnitName("player"))
+	
+	elseif string.find(msg, L["trigger_gougeOther"]) then
+		local _,_,gougePerson, _ = string.find(msg, L["trigger_gougeOther"])
+		if not (gougePerson == "Zealot Zath" or gougePerson == "Zealot Lor'Khan" or gougePerson == "High Priest Thekal") then
+			self:Sync(syncName.gouge .. " "..gougePerson)
+		end
+	
+	elseif string.find(msg, L["trigger_gougeFade"]) then
+		local _,_,gougeFadePerson, _ = string.find(msg, L["trigger_gougeFade"])
+		if gougeFadePerson == "you" then gougeFadePerson = UnitName("Player") end
+		if not (gougeFadePerson == "Zealot Zath" or gougeFadePerson == "Zealot Lor'Khan" or gougeFadePerson == "High Priest Thekal") then
+			self:Sync(syncName.gougeFade .. " "..gougeFadePerson)
+		end
+		
+	elseif msg == L["trigger_mortalCleaveYou"] then
+		self:Sync(syncName.mortalCleave .. " "..UnitName("player"))
+	
+	elseif string.find(msg, L["trigger_mortalCleaveOther"]) then
+		local _,_,mortalCleavePerson, _ = string.find(msg, L["trigger_mortalCleaveOther"])
+		self:Sync(syncName.mortalCleave .. " "..mortalCleavePerson)
+	
+	elseif string.find(msg, L["trigger_mortalCleaveFade"]) then
+		local _,_,mortalCleaveFadePerson, _ = string.find(msg, L["trigger_mortalCleaveFade"])
+		if mortalCleaveFadePerson == "you" then mortalCleaveFadePerson = UnitName("Player") end
+		self:Sync(syncName.mortalCleaveFade .. " "..mortalCleaveFadePerson)
+		
+		
+	elseif string.find(msg, L["trigger_bloodlustGain"]) then
+		local _,_,bloodlustPerson, _ = string.find(msg, L["trigger_bloodlustGain"])
+		if (bloodlustPerson == "Zealot Zath" or bloodlustPerson == "Zealot Lor'Khan" or bloodlustPerson == "High Priest Thekal") then
+			self:Sync(syncName.bloodlust .. " "..bloodlustPerson)
+		end
+	elseif string.find(msg, L["trigger_bloodlustFade"]) then
+		local _,_,bloodlustFadePerson, _ = string.find(msg, L["trigger_bloodlustFade"])
+		if (bloodlustFadePerson == "Zealot Zath" or bloodlustFadePerson == "Zealot Lor'Khan" or bloodlustFadePerson == "High Priest Thekal") then
+			self:Sync(syncName.bloodlustFade .. " "..bloodlustFadePerson)
+		end
+		
+		
+	elseif string.find(msg, L["trigger_forcePunch"]) then
+		self:Sync(syncName.forcePunch)
+		
+	elseif string.find(msg, L["trigger_charge"]) then
+		self:Sync(syncName.charge)
+		
+	elseif msg == L["trigger_frenzyGain"] then
 		self:Sync(syncName.frenzy)
-	elseif msg == L["enrage_trigger"] then
+	elseif msg == L["trigger_frenzyFade"] then
+		self:Sync(syncName.frenzyFade)
+	
+	elseif msg == L["trigger_enrage"] then
 		self:Sync(syncName.enrage)
-	elseif bloodlustgainword then
-		self:Sync(syncName.bloodlust .. " " .. bloodlustgainword)
 	end
 end
 
-function module:Fades(msg)
-	local _,_,silenceotherend_triggerword = string.find(msg, L["silenceotherend_trigger"])
-	local _,_,bloodlustendword = string.find(msg, L["bloodlustend"])
-	if bloodlustendword then
-		self:Sync(syncName.bloodlustOver .. " "..bloodlustendword)
-	elseif msg == L["silenceselfend_trigger"] then
-		self:Sync(syncName.silenceOver .. " "..UnitName("player"))
-	elseif silenceotherend_triggerword then
-		self:Sync(syncName.silenceOver .. " "..silenceotherend_triggerword)
-	elseif msg == L["frenzyend_trigger"] then
-		self:Sync(syncName.frenzyOver)
-	end
-end
 
 function module:BigWigs_RecvSync(sync, rest, nick)
-	if sync == syncName.phase2 and self.phase < 2 then
-		self.phase = 2
-		self:RemoveBar(L["phasetwo_bar"])
-		self:TigerPhase()
-	elseif sync == syncName.phasechange then
-		self:CancelScheduledEvent("checkphasechange")
-		self.phase = 1.5
-		self:Bar(L["phasetwo_bar"], timer.phase2, icon.phase2, true, "White")
-	elseif sync == syncName.heal and self.db.profile.heal then
-		self:Message(L["heal_message"], "Attention", "Alarm")
-		self:Bar(L["heal_bar"], 4, icon.heal, true, "Blue")
+	if sync == syncName.heal and self.db.profile.heal then
+		self:Heal()
+	elseif sync == syncName.healOver and self.db.profile.heal then
+		self:HealOver()
+	
+	elseif sync == syncName.silence and rest and self.db.profile.silence then
+		self:Silence(rest)
+	elseif sync == syncName.silenceFade and rest and self.db.profile.silence then
+		self:SilenceFade(rest)
+		
+	elseif sync == syncName.disarm and rest and self.db.profile.disarm then
+		self:Disarm(rest)
+	elseif sync == syncName.disarmFade and rest and self.db.profile.disarm then
+		self:DisarmFade(rest)
+		
+	elseif sync == syncName.blind and rest and self.db.profile.blind then
+		self:Blind(rest)
+	elseif sync == syncName.blindFade and rest and self.db.profile.blind then
+		self:BlindFade(rest)
+		
+	elseif sync == syncName.gouge and rest and self.db.profile.gouge then
+		self:Gouge(rest)
+	elseif sync == syncName.gougeFade and rest and self.db.profile.gouge then
+		self:GougeFade(rest)
+		
+	elseif sync == syncName.mortalCleave and rest and self.db.profile.mortalcleave then
+		self:MortalCleave(rest)
+	elseif sync == syncName.mortalCleaveFade and rest and self.db.profile.mortalcleave then
+		self:MortalCleaveFade(rest)
+		
+	elseif sync == syncName.bloodlust and rest and self.db.profile.bloodlust then
+		self:Bloodlust(rest)
+	elseif sync == syncName.bloodlustFade and rest and self.db.profile.bloodlust then
+		self:BloodlustFade(rest)
+		
+		
+	elseif sync == syncName.phase1End then
+		self:Phase1End()
+	elseif sync == syncName.phase2 then
+		self:Phase2()
+
+	
+	elseif sync == syncName.forcePunch and self.db.profile.punch then
+		self:ForcePunch()
+		
+	elseif sync == syncName.charge and self.db.profile.charge then
+		self:Charge()
+		
 	elseif sync == syncName.frenzy and self.db.profile.frenzy then
-		self:Message(L["frenzyann"], "Important", true, "Alarm")
-		self:Bar(L["frenzy_bar"], 8, icon.frenzy, true, "cyan")
-	elseif sync == syncName.frenzyOver and self.db.profile.frenzy then
-		self:RemoveBar(L["frenzy_bar"])
-	elseif sync == syncName.bloodlust and self.db.profile.bloodlust then
-		self:Message(string.format(L["bloodlustannounce"], rest), "Important")
-		self:Bar(string.format(L["bloodlust_bar"], rest), 30, icon.bloodlust, true, "cyan")
-	elseif sync == syncName.bloodlustOver and self.db.profile.bloodlust then
-		self:RemoveBar(string.format(L["bloodlust_bar"], rest))
-	elseif sync == syncName.silence and self.db.profile.silence then
-		self:Message(string.format(L["silence_announce"], rest), "Attention")
-		self:Bar(string.format(L["silence_bar"], rest), 6, icon.silence, true, "White")
-	elseif sync == syncName.silenceOver and self.db.profile.silence then
-		self:RemoveBar(string.format(L["silence_bar"], rest))
-	elseif sync == syncName.mortalcleave and self.db.profile.cleave then
-		self:Bar(string.format(L["mortalcleave_bar"], rest), 5, icon.mortalCleave, true, "black")
-	elseif sync == syncName.disarm and self.db.profile.disarm then
-		self:Bar(string.format(L["disarm_bar"], rest), 5, icon.disarm, true, "Yellow")
-	elseif sync == syncName.enrage and self.db.profile.enraged then
-		self:Message(L["enrage_message"], "Urgent")
+		self:Frenzy()
+	elseif sync == syncName.frenzyFade and self.db.profile.frenzy then
+		self:FrenzyFade()
+		
+	elseif sync == syncName.enrage and self.db.profile.enrage then
+		self:Enrage()
+	
+	elseif sync == syncName.moreAdds and self.db.profile.adds then
+		self:MoreAdds()
+	elseif sync == syncName.addDead and rest and self.db.profile.adds then
+		self:AddDead(rest)
 	end
 end
 
-function module:TigerPhase()
+
+function module:Heal()
+	castingHeal = true
+	
+	self:Bar(L["bar_heal"], timer.heal, icon.heal, true, color.heal)
+	
+	if UnitClass("Player") == "Shaman" or UnitClass("Player") == "Warrior" or UnitClass("Player") == "Mage" then
+		self:Message(L["msg_heal"], "Urgent", false, nil, false)
+		self:Sound("Beware")
+		self:WarningSign(icon.heal, timer.heal)
+	end
+end
+
+function module:HealOver()
+	castingHeal = nil
+	self:RemoveBar(L["bar_heal"])
+	self:RemoveWarningSign(icon.heal)
+end
+
+function module:Silence(rest)
+	self:Bar(rest..L["bar_silence"], timer.silence, icon.silence, true, color.silence)	
+	
+	if UnitClass("Player") == "Priest" or UnitClass("Player") == "Paladin" then
+		self:Message(rest..L["msg_silence"], "Urgent", false, nil, false)
+		self:Sound("Info")
+		self:WarningSign(icon.silence, 0.7)
+	end
+end
+
+function module:SilenceFade(rest)
+	self:RemoveBar(rest..L["bar_silence"])
+end
+
+function module:Disarm(rest)
+	self:Bar(rest..L["bar_disarm"], timer.disarm, icon.disarm, true, color.disarm)	
+end
+
+function module:DisarmFade(rest)
+	self:RemoveBar(rest..L["bar_disarm"])
+end
+
+function module:Blind(rest)
+	self:Bar(rest..L["bar_blind"], timer.blind, icon.blind, true, color.blind)	
+end
+
+function module:BlindFade(rest)
+	self:RemoveBar(rest..L["bar_blind"])
+end
+
+function module:Gouge(rest)
+	self:Bar(rest..L["bar_gouge"], timer.gouge, icon.gouge, true, color.gouge)	
+end
+
+function module:GougeFade(rest)
+	self:RemoveBar(rest..L["bar_gouge"])
+end
+
+function module:MortalCleave(rest)
+	self:Bar(rest..L["bar_mortalCleave"], timer.mortalCleave, icon.mortalCleave, true, color.mortalCleave)	
+end
+
+function module:MortalCleaveFade(rest)
+	self:RemoveBar(rest..L["bar_mortalCleave"])
+end
+
+function module:Bloodlust(rest)
+	self:Bar(rest..L["bar_bloodlust"], timer.bloodlust, icon.bloodlust, true, color.bloodlust)	
+	
+	if UnitClass("Player") == "Priest" or UnitClass("Player") == "Shaman" then
+		self:Message(rest..L["msg_bloodlust"], "Urgent", false, nil, false)
+		self:Sound("Info")
+		self:WarningSign(icon.bloodlust, 0.7)
+	end
+end
+
+function module:BloodlustFade(rest)
+	self:RemoveBar(rest..L["bar_bloodlust"])
+end
+
+
+function module:Phase1End()
+	phase = "phase2"
+	addDead = 0
+	
+	self:CancelScheduledEvent("Thekal_PhaseChangeCheck")
+	
+	self:CancelScheduledEvent("ThekalCheckHp")
 	self:TriggerEvent("BigWigs_StopHPBar", self, "Zealot Zath")
 	self:TriggerEvent("BigWigs_StopHPBar", self, "Zealot Lor'Khan")
 	self:TriggerEvent("BigWigs_StopHPBar", self, "High Priest Thekal")
-	self:CancelScheduledEvent("thekalHpCheck")
 	
-	if self.db.profile.heal then
-		self:RemoveBar(L["heal_bar"])
+	self:RemoveBar(L["bar_heal"])
+	self:RemoveBar(L["bar_rezTimer"])
+	self:RemoveBar("Zealot Zath"..L["bar_bloodlust"])
+	self:RemoveBar("Zealot Lor'Khan"..L["bar_bloodlust"])
+	self:RemoveBar("High Priest Thekal"..L["bar_bloodlust"])
+	
+	--phase 2 happens 15sec from the moment thekal dies,
+		--if the other die 8sec after thekal, only 7sec timer for p2
+	self:Bar(L["bar_phase2"], timer.phase2 - (GetTime() - thekalDeadTime), icon.phase, true, color.phase)
+	self:Message(L["msg_phase2"], "Attention", false, nil, false)
+end
+
+function module:Phase2()
+	phase = "phase2"
+	addDead = 0
+	
+	self:CancelScheduledEvent("Thekal_PhaseChangeCheck")
+	
+	self:CancelScheduledEvent("ThekalCheckHp")
+	self:TriggerEvent("BigWigs_StopHPBar", self, "Zealot Zath")
+	self:TriggerEvent("BigWigs_StopHPBar", self, "Zealot Lor'Khan")
+	self:TriggerEvent("BigWigs_StopHPBar", self, "High Priest Thekal")
+	
+	self:RemoveBar(L["bar_heal"])
+	self:RemoveBar(L["bar_rezTimer"])
+	self:RemoveBar("Zealot Zath"..L["bar_bloodlust"])
+	self:RemoveBar("Zealot Lor'Khan"..L["bar_bloodlust"])
+	self:RemoveBar("High Priest Thekal"..L["bar_bloodlust"])
+	
+	self:RemoveBar(L["bar_phase2"])
+	
+	doCheckForBossDeath = true
+	
+	if self.db.profile.punch then
+		self:Bar(L["bar_forcePunch"], timer.forcePunchFirst, icon.forcePunch, true, color.forcePunch)
 	end
-	if self.db.profile.bloodlust then
-		self:Bar(L["Next Bloodlust"], timer.bloodlust, icon.bloodlust, true, "cyan")
+	
+	if self.db.profile.charge then
+		self:IntervalBar(L["bar_charge"], timer.charge[1], timer.charge[2], icon.charge, true, color.charge)
 	end
-	if self.db.profile.phase then
-		self:Message(L["phasetwo_message"], "Attention")
+	
+	if self.db.profile.adds then
+		self:Bar(L["bar_tigersCd"], timer.addsFirst, icon.adds, true, color.adds)
+		self:DelayedSync(timer.addsFirst, syncName.moreAdds)
 	end
-	self:Bar(L["New Adds"], timer.adds, icon.adds, true, "blue")
-	self:Bar(L["Knockback"], timer.knockback, icon.knockback, true, "red")
+end
+
+
+function module:ForcePunch()
+	self:RemoveBar(L["bar_forcePunch"])
+	self:IntervalBar(L["bar_forcePunch"], timer.forcePunch[1], timer.forcePunch[2], icon.forcePunch, true, color.forcePunch)
+end
+
+function module:Charge()
+	self:RemoveBar(L["bar_charge"])
+	self:IntervalBar(L["bar_charge"], timer.charge[1], timer.charge[2], icon.charge, true, color.charge)
+end
+
+function module:Frenzy()
+	self:Bar(L["bar_frenzy"], timer.frenzy, icon.frenzy, true, color.frenzy)
+	
+	if UnitClass("Player") == "Hunter" then
+		self:Message(L["msg_frenzy"], "Personal", false, nil, false)
+		self:Sound("Info")
+		self:WarningSign(icon.frenzy, 1)
+	end
+end
+
+function module:FrenzyFade()
+	self:RemoveBar(L["bar_frenzy"])
+	self:RemoveWarningSign(icon.frenzy)
+end
+
+function module:Enrage()
+	self:Message(L["msg_enrage"], "Attention", false, nil, false)
+	self:Sound("Beware")
+	self:WarningSign(icon.enrage, 0.7)
+end
+
+function module:MoreAdds()
+	addDead = 0
+	
+	self:Bar(L["bar_tigersCd"], timer.adds, icon.adds, true, color.adds)
+	self:Message(L["msg_tigers"], "Important", false, nil, false)
+	self:Sound("Alarm")
+	self:WarningSign(icon.adds, 1)
+	
+	self:DelayedSync(timer.adds, syncName.moreAdds)
+end
+
+function module:AddDead(rest)
+	self:Message(rest..L["msg_addDead"], "Positive", false, nil, false)
 end

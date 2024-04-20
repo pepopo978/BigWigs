@@ -1,226 +1,224 @@
 
-----------------------------------
---      Module Declaration      --
-----------------------------------
-
 local module, L = BigWigs:ModuleDeclaration("Broodlord Lashlayer", "Blackwing Lair")
 
-
-----------------------------
---      Localization      --
-----------------------------
+module.revision = 30085
+module.enabletrigger = module.translatedName
+module.toggleoptions = {"ms", "bw", "knock", -1, "targeticon", "bosskill"}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Broodlord",
-
-	engage_trigger = "None of your kind should be here",
-	ms_trigger = "^(.+) (.+) afflicted by Mortal Strike",
-	bw_trigger = "^(.+) (.+) afflicted by Blast Wave",
-	deathyou_trigger = "You die\.",
-	deathother_trigger = "(.+) dies\.",
-	ms_warn_you = "Mortal Strike on you!",
-	ms_warn_other = "Mortal Strike on %s!",
-	bw_warn = "Blast Wave soon!",
-	ms_bar = "Mortal Strike: %s",
-	bw_bar = "Blast Wave",
-	knock_bar = "Knock Away",
-
-	["First Mortal Strike"] = true,
-
-	you = "You",
-	are = "are",
-
+	
 	ms_cmd = "ms",
-	ms_name = "Mortal Strike",
-	ms_desc = "Warn when someone gets Mortal Strike and starts a clickable bar for easy selection.",
-
-	knock_cmd = "knock",
-	knock_name = "Knock Away",
-	knock_desc = "Shows a bar with the possible Knock Away cooldown.",
+	ms_name = "Mortal Strike Alert",
+	ms_desc = "Warn for Mortal Strike",
 
 	bw_cmd = "bw",
-	bw_name = "Blast Wave",
-	bw_desc = "Shows a bar with the possible Blast Wave cooldown.\n\n(Disclaimer: this varies anywhere from 8 to 15 seconds. Chosen shortest interval for safety.)",
+	bw_name = "Blast Wave Alert",
+	bw_desc = "Warn for Blast Wave",
+	
+	knock_cmd = "knock",
+	knock_name = "Knock Away Alert",
+	knock_desc = "Warn for Knock Away",
+	
+	targeticon_cmd = "targeticon",
+	targeticon_name = "Skull Icon on Bloodlord's Target",
+	targeticon_desc = "Put a Skull Raid Icon on Bloodlord's Target",
+	
+	
+	trigger_engage = "None of your kind should be here! You've doomed only yourselves!",
+	
+	trigger_msEvade = "Broodlord Lashlayer's Mortal Strike was", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	msg_msEvade = "Mortal Strike was Dodged!",
+	
+	trigger_msYou = "You are afflicted by Mortal Strike.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_msOther = "(.+) is afflicted by Mortal Strike.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_msFade = "Mortal Strike fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_msCd = "Mortal Strike CD",
+	bar_msSoon = "Mortal Strike Soon...",
+	bar_msDur = " Mortal Strike",
+	msg_ms = " Mortal Strike",
+	
+	trigger_bw = "Broodlord Lashlayer's Blast Wave", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_bwCd = "Blast Wave CD",
+	bar_bwSoon = "Blast Wave Soon...",
+	
+	trigger_knock = "Broodlord Lashlayer's Knock Away", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_knockCd = "Knock Away CD",
+	bar_knockSoon = "Knock Away Soon...",
 } end )
 
-L:RegisterTranslations("esES", function() return {
-	--cmd = "Broodlord",
-
-	engage_trigger = "None of your kind should be here",
-	ms_trigger = "^(.+) (.+) sufre de Golpe mortal",
-	bw_trigger = "^(.+) (.+) sufre de Ola explosiva",
-	deathyou_trigger = "Has muerto\.",
-	deathother_trigger = "(.+) ha muerto\.",
-	ms_warn_you = "¡Golpe mortal a ti!",
-	ms_warn_other = "¡Golpe mortal a %s!",
-	bw_warn = "¡Ola explosiva pronto!",
-	ms_bar = "Golpe mortal: %s",
-	bw_bar = "Ola explosiva",
-	knock_bar = "Empujar",
-
-	["First Mortal Strike"] = "Primer Golpe mortal",
-
-	you = "Tu",
-	are = "eres",
-
-	--ms_cmd = "ms",
-	ms_name = "Golpe mortal",
-	ms_desc = "Avisa cuando alguien reciba Golpe mortal y muestra una barra cliqueable para seleccionarlo fácilmente.",
-
-	--knock_cmd = "knock",
-	knock_name = "Empujar",
-	knock_desc = "Muestra una barra con regeneración de Empujar posible.",
-
-	--bw_cmd = "bw",
-	bw_name = "Ola explosiva",
-	bw_desc = "Muestra una barra con regeneración de Ola explosiva posible.\n\n(Descargo de responsabilidad : esto varia 8 a 15 segundos. Elige el intervalo más corto para seguridad.)",
-} end )
-
-L:RegisterTranslations("deDE", function() return {
-	--cmd = "Broodlord",
-
-	engage_trigger = "Euresgleichen sollte nicht hier sein!",
-	ms_trigger = "^(.+) (.+) von T\195\182dlicher Sto\195\159 betroffen",
-	bw_trigger = "^(.+) (.+) von Druckwelle betroffen",
-	deathyou_trigger = "Ihr sterbt.",
-	deathother_trigger = "(.+) stirbt.",
-	ms_warn_you = "T\195\182dlicher Sto\195\159 auf Dir!",
-	ms_warn_other = "T\195\182dlicher Sto\195\159 auf %s!",
-	bw_warn = "Druckwelle bald!",
-	ms_bar = "T\195\182dlicher Sto\195\159: %s",
-	bw_bar = "Druckwelle",
-
-	you = "Ihr",
-	are = "seid",
-
-	--ms_cmd = "ms",
-	ms_name = "T\195\182dlicher Sto\195\159",
-	ms_desc = "Warnung wenn ein Spieler von Tödlicher Sto\195\159 betroffen ist und startet einen anklickbaren Balken für eine einfache Auswahl.",
-
-	--bw_cmd = "bw",
-	bw_name = "Druckwelle",
-	bw_desc = "Zeigt einen Balken mit der möglichen Druckwellenabklingzeit.\n\n(Hinweis: Diese variiert von 8 bis 15 Sekunden. Zur Sicherheit wurde der kürzeste Intervall gewählt.)",
-} end )
-
-
----------------------------------
---      	Variables 		   --
----------------------------------
-
--- module variables
-module.revision = 20004 -- To be overridden by the module!
-module.enabletrigger = module.translatedName -- string or table {boss, add1, add2}
---module.wipemobs = { L["add_name"] } -- adds which will be considered in CheckForEngage
-module.toggleoptions = {"ms", "bw", "knock", "bosskill"}
-
-
--- locals
 local timer = {
-	firstBlastWave = 20,
-	earliestBlastWave = 20,
-	latestBlastWave = 35,
-	mortalStrike = 5,
-	firstMortal = 25,
-	knockAway = 20
+	msFirstCd = 48,--first supposed to be 25, saw 48!?
+	msCd = 20,--cd supposed to be {20,30}, saw 26, 27
+	msSoon = 10,
+	msDur = 5,
+	
+	bwCd = 20,--first is 20, next are 20 minimum
+	bwSoon = 15,--20+15=35, saw 29, 25, 31, supposed to be {20,35}
+	
+	knockFirstCd = 20,
+	knockFirstSoon = 5,
+	knockCd = 12,--first is 20-25, next are 12,25
+	knockSoon = 13,
 }
 local icon = {
-	blastWave = "Spell_Holy_Excorcism_02",
-	mortalStrike = "Ability_Warrior_SavageBlow",
-	knockAway = "INV_Gauntlets_05"
+	ms = "Ability_Warrior_SavageBlow",
+	bw = "Spell_Holy_Excorcism_02",
+	knock = "INV_Gauntlets_05",
 }
-local syncName = {}
+local color = {
+	msCd = "Black",
+	msSoon = "Black",
+	msDur = "Magenta",
+	
+	bwCd = "Orange",
+	bwSoon = "Red",
+	
+	knockCd = "Cyan",
+	knockSoon = "Blue",
+}
+local syncName = {
+	ms = "BroodlordMs"..module.revision,
+	msFade = "BroodlordMsFade"..module.revision,
+	bw = "BroodlordBlastWave"..module.revision,
+	knock = "BroodlordKnockAway"..module.revision,
+}
 
-local lastBlastWave = 0
-local lastMS = 0
-local MS = ""
+module:RegisterYellEngage(L["trigger_engage"])
 
-
-------------------------------
---      Initialization      --
-------------------------------
-
-module:RegisterYellEngage(L["engage_trigger"])
-
--- called after module is enabled
 function module:OnEnable()
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")
-	self:RegisterEvent("PLAYER_TARGET_CHANGED")
-	--self:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLY_DEATH")
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event") --Debug
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event") --trigger_msYou
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event") --trigger_msOther
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event") --trigger_msOther
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event") --trigger_msFade
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event") --trigger_msFade
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event") --trigger_msFade
+	
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event") --trigger_bw, trigger_knock, trigger_msEvade
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event") --trigger_bw, trigger_knock, trigger_msEvade
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event") --trigger_bw, trigger_knock, trigger_msEvade
+	
+	
+	self:ThrottleSync(3, syncName.ms)
+	self:ThrottleSync(3, syncName.msFade)
+	self:ThrottleSync(3, syncName.bw)
+	self:ThrottleSync(3, syncName.knock)
 end
 
--- called after module is enabled and after each wipe
 function module:OnSetup()
 	self.started = nil
-	lastBlastWave = 0
-	lastMS = 0
-	MS = ""
 end
 
--- called after boss is engaged
 function module:OnEngage()
-
-	if self.db.profile.bw then
-		self:Bar(L["bw_bar"], timer.firstBlastWave, icon.blastWave, true, "Red")
-	end
 	if self.db.profile.ms then
-		self:Bar(L["First Mortal Strike"], timer.firstMortal, icon.mortalStrike, true, "Black")
+		self:Bar(L["bar_msCd"], timer.msFirstCd, icon.ms, true, color.msCd)
 	end
+	
+	if self.db.profile.bw then
+		self:Bar(L["bar_bwCd"], timer.bwCd, icon.bw, true, color.bwCd)
+	end
+	
 	if self.db.profile.knock then
-		self:Bar(L["knock_bar"], timer.knockAway, icon.knockAway, true, "White")
+		self:Bar(L["bar_knockCd"], timer.knockFirstCd, icon.knock, true, color.knockCd)
+		self:DelayedBar(timer.knockFirstCd, L["bar_knockSoon"], timer.knockFirstSoon, icon.knock, true, color.knockSoon)
+	end
+	
+	if self.db.profile.targeticon then
+		self:ScheduleRepeatingEvent("BroodlordTargetCheck", self.BroodlordTarget, 0.5, self)
 	end
 end
 
--- called after boss is disengaged (wipe(retreat) or victory)
 function module:OnDisengage()
+	self:CancelScheduledEvent("BroodlordTargetCheck")
 end
 
-
-------------------------------
---      Event Handlers      --
-------------------------------
+function module:BroodlordTarget()
+	if UnitName("Target") ~= nil and UnitName("TargetTarget") ~= nil and (IsRaidLeader() or IsRaidOfficer()) then
+		if UnitName("Target") == "Broodlord Lashlayer" then
+			SetRaidTarget("TargetTarget",8)
+		end
+	end
+end
 
 function module:Event(msg)
-	local _, _, name, detect = string.find(msg, L["ms_trigger"])
-	if name and detect and self.db.profile.ms then
-		MS = name
-		lastMS = GetTime()
-		if detect == L["are"] then
-			self:Message(L["ms_warn_you"], "Core", true, "Beware")
-			self:Bar(string.format(L["ms_bar"], UnitName("player")), timer.mortalStrike, icon.mortalStrike, true, "Black")
-			self:SetCandyBarOnClick("BigWigsBar "..string.format(L["ms_bar"], UnitName("player")), function(name, button, extra) TargetByName(extra, true) end, UnitName("player"))
-			self:WarningSign(icon.mortalStrike, timer.mortalStrike)
-		else
-			self:Message(string.format(L["ms_warn_other"], name), "Core", true, "Alarm")
-			self:Bar(string.format(L["ms_bar"], name), timer.mortalStrike, icon.mortalStrike, true, "Black")
-			self:SetCandyBarOnClick("BigWigsBar "..string.format(L["ms_bar"], name), function(name, button, extra) TargetByName(extra, true) end, name)
-		end
-	elseif string.find(msg, L["bw_trigger"]) and self.db.profile.bw then
-		if GetTime() - lastBlastWave > 5 then
-			self:IntervalBar(L["bw_bar"], timer.earliestBlastWave, timer.latestBlastWave, icon.blastWave, true, "Red")
-			--self:ScheduleEvent("BigWigs_Message", 24, L["bw_warn"], "Urgent", true, "Alert")
-		end
-		lastBlastWave = GetTime()
+	if msg == L["trigger_msYou"] then
+		self:Sync(syncName.ms .. " "..UnitName("player"))
+	
+	elseif string.find(msg, L["trigger_msOther"]) then
+		local _,_,msPerson, _ = string.find(msg, L["trigger_msOther"])
+		self:Sync(syncName.ms .. " "..msPerson)
+	
+	elseif string.find(msg, L["trigger_msFade"]) then
+		local _,_,msFadePerson, _ = string.find(msg, L["trigger_msFade"])
+		if msFadePerson == "you" then msFadePerson = UnitName("Player") end
+		self:Sync(syncName.msFade .. " "..msFadePerson)
+		
+	elseif string.find(msg, L["trigger_msEvade"]) then
+		self:Sync(syncName.ms .. " ".."msEvade")
+	
+
+	elseif string.find(msg, L["trigger_bw"]) then
+		self:Sync(syncName.bw)
+		
+	elseif string.find(msg, L["trigger_knock"]) then
+		self:Sync(syncName.knock)
 	end
 end
 
---[[function module:CHAT_MSG_COMBAT_FRIENDLY_DEATH(msg)
-if not self.db.profile.bw then return end
-local _, _, deathother = string.find(msg, L["deathother_trigger"])
-if msg == L["deathyou_trigger"] then
-self:RemoveBar(string.format(L["ms_bar"], UnitName("player")))
-elseif deathother then
-self:RemoveBar(string.format(L["ms_bar"], deathother))
-end
-end]]
 
-function module:PLAYER_TARGET_CHANGED()
-	if (lastMS + 5) > GetTime() and UnitName("target") == MS then
-		if self.db.profile.ms then
-			self:WarningSign(icon.mortalStrike, (lastMS + 5) - GetTime())
-		end
+function module:BigWigs_RecvSync(sync, rest, nick)
+	if sync == syncName.ms and rest and self.db.profile.ms then
+		self:Ms(rest)
+	elseif sync == syncName.msFade and rest and self.db.profile.ms then
+		self:MsFade(rest)
+	
+	elseif sync == syncName.bw and self.db.profile.bw then
+		self:BW()
+		
+	elseif sync == syncName.knock and self.db.profile.knock then
+		self:Knock()
+	end
+end
+
+
+function module:Ms(rest)
+	self:CancelDelayedBar(L["bar_msSoon"])
+	self:RemoveBar(L["bar_msSoon"])
+	self:RemoveBar(L["bar_msCd"])
+	
+	if rest ~= "msEvade" then
+		self:Bar(rest..L["bar_msDur"], timer.msDur, icon.ms, true, color.msDur)
+		self:Message(rest..L["msg_ms"], "Urgent", false, nil, false)
+	
+		self:DelayedBar(timer.msDur, L["bar_msCd"], timer.msCd, icon.ms, true, color.msCd)
+		self:DelayedBar(timer.msDur + timer.msCd, L["bar_msSoon"], timer.msSoon, icon.ms, true, color.msSoon)
 	else
-		self:RemoveWarningSign(icon.mortalStrike)
+		self:Message(L["msg_msEvade"], "Urgent", false, nil, false)
+	
+		self:Bar(L["bar_msCd"], timer.msDur + timer.msCd, icon.ms, true, color.msCd)
+		self:DelayedBar(timer.msDur + timer.msCd, L["bar_msSoon"], timer.msSoon, icon.ms, true, color.msSoon)
 	end
+end
+
+function module:MsFade(rest)
+	self:RemoveBar(rest..L["bar_msDur"])
+end
+
+function module:BW()
+	self:CancelDelayedBar(L["bar_bwSoon"])
+	self:RemoveBar(L["bar_bwSoon"])
+	
+	self:Bar(L["bar_bwCd"], timer.bwCd, icon.bw, true, color.bwCd)
+	self:DelayedBar(timer.bwCd, L["bar_bwSoon"], timer.bwSoon, icon.bw, true, color.bwSoon)
+end
+
+function module:Knock()
+	self:CancelDelayedBar(L["bar_knockSoon"])
+	self:RemoveBar(L["bar_knockSoon"])
+	
+	self:Bar(L["bar_knockCd"], timer.knockCd, icon.knock, true, color.knockCd)
+	self:DelayedBar(timer.knockCd, L["bar_knockSoon"], timer.knockSoon, icon.knock, true, color.knockSoon)
 end
