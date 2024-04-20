@@ -78,6 +78,7 @@ L:RegisterTranslations("enUS", function()
 		["commonauras"] = true,
 
 		["Invisibility"] = true,
+		["Deepwood Pipe"] = true,
 		["Lesser Invisibility"] = true,
 		["Limited Invulnerability Potion"] = true,
 		["Blessing of Protection"] = true,
