@@ -52,13 +52,11 @@ L:RegisterTranslations("enUS", function()
 		bar_dancing = "Dancing Ends",
 		bar_dancingSoon = "Dancing Soon",
 
+
 		msg_fightStart = "Fight!",
 		bar_fighting = "Dancing Starts",
 
 		bar_eruption = "Eruption",
-
-		["Eye Stalk"] = true,
-		["Rotting Maggot"] = true,
 	}
 end)
 

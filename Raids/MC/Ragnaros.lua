@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Ragnaros", "Molten Core")
 
-module.revision = 30075
+module.revision = 30078
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"emerge", "wrathofragnaros", "lava", "adds", "melt", "elementalfire", "bosskill"}
 module.wipemobs = {"Son of Flame"}
@@ -206,22 +206,6 @@ function module:OnEngage()
 	lastKnockTime = 0
 	submergeTime = 0
 	emergeTime = 0
-	
-	if self.db.profile.wrathofragnaros then
-		self:Bar(L["bar_knockbackCd"], timer.knockbackCd, icon.knockback, true, color.knockbackCd)
-		self:DelayedBar(timer.knockbackCd, L["bar_knockbackSoon"], timer.knockbackSoon, icon.knockback, true, color.knockbackSoon)
-		
-		if not (UnitClass("Player") == "Mage" or UnitClass("Player") == "Priest" or UnitClass("Player") == "Warlock") then
-			self:DelayedWarningSign(timer.knockbackCd - 3, icon.knockback, 10)
-			self:DelayedMessage(timer.knockbackCd - 3, L["msg_knockbackSoon"], "Urgent", false, nil, false)
-			self:DelayedSound(timer.knockbackCd - 3, "RunAway")
-		end
-	end
-	
-	if self.db.profile.emerge then
-		self:Bar(L["bar_nextSubmerge"], timer.nextSubmerge, icon.submerge, true, color.emerge)
-		self:DelayedMessage(timer.nextSubmerge - 10, L["msg_submergeSoon"], "Attention", false, nil, false)
-	end
 end
 
 function module:OnDisengage()
@@ -266,6 +250,27 @@ function module:CHAT_MSG_MONSTER_YELL(msg)
 	
 	elseif string.find(msg, L["trigger_engage"]) then
 		self:SendEngageSync()
+		
+			--old (bad) BigWigs will send bad engage syncs, this is the fix for it
+		self:TrueEngage()
+	end
+end
+
+function module:TrueEngage()
+	if self.db.profile.wrathofragnaros then
+		self:Bar(L["bar_knockbackCd"], timer.knockbackCd, icon.knockback, true, color.knockbackCd)
+		self:DelayedBar(timer.knockbackCd, L["bar_knockbackSoon"], timer.knockbackSoon, icon.knockback, true, color.knockbackSoon)
+		
+		if not (UnitClass("Player") == "Mage" or UnitClass("Player") == "Priest" or UnitClass("Player") == "Warlock") then
+			self:DelayedWarningSign(timer.knockbackCd - 3, icon.knockback, 10)
+			self:DelayedMessage(timer.knockbackCd - 3, L["msg_knockbackSoon"], "Urgent", false, nil, false)
+			self:DelayedSound(timer.knockbackCd - 3, "RunAway")
+		end
+	end
+	
+	if self.db.profile.emerge then
+		self:Bar(L["bar_nextSubmerge"], timer.nextSubmerge, icon.submerge, true, color.emerge)
+		self:DelayedMessage(timer.nextSubmerge - 10, L["msg_submergeSoon"], "Attention", false, nil, false)
 	end
 end
 

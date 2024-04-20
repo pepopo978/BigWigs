@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Anubisath Sentinel", "Ahn'Qiraj")
 
-module.revision = 30075
+module.revision = 30082
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"abilities", "selfreflect"}
 module.trashMod = true
@@ -138,7 +138,7 @@ local shadowFrostReflectFound = nil
 local addDead = 0
 
 function module:OnEnable()
-	self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
+	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
 	
 	self:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE", "Event") --trigger_selfReflect, reflect type detection
 	self:RegisterEvent("CHAT_MSG_SPELL_PARTY_DAMAGE", "Event") --reflect type detection
@@ -374,18 +374,18 @@ function module:Event(msg)
 	
 	elseif fireArcaneReflectFound == nil and UnitName("Target") == "Anubisath Sentinel" and string.find(msg, L["trigger_fireArcaneReflectOther"]) then
 		local _,_, arcaneFireReflectPerson, _ = string.find(msg, L["trigger_fireArcaneReflectOther"])
-		for i = 1, GetNumRaidMembers(), 1 do
+		for i=1,GetNumRaidMembers() do
 			if UnitName("Raid"..i) == arcaneFireReflectPerson then
 				if UnitName("Raid"..i.."Target") == "Anubisath Sentinel" then
-					if GetRaidTargetIndex("TargetTarget")== nil then raidIcon_fireArcaneReflect = "No Icon"		end
-					if GetRaidTargetIndex("TargetTarget")== 1	then raidIcon_fireArcaneReflect = "Star"		end
-					if GetRaidTargetIndex("TargetTarget")== 2	then raidIcon_fireArcaneReflect = "Circle"		end
-					if GetRaidTargetIndex("TargetTarget")== 3	then raidIcon_fireArcaneReflect = "Diamond"		end
-					if GetRaidTargetIndex("TargetTarget")== 4	then raidIcon_fireArcaneReflect = "Triangle"	end
-					if GetRaidTargetIndex("TargetTarget")== 5	then raidIcon_fireArcaneReflect = "Moon"		end
-					if GetRaidTargetIndex("TargetTarget")== 6	then raidIcon_fireArcaneReflect = "Square"		end
-					if GetRaidTargetIndex("TargetTarget")== 7	then raidIcon_fireArcaneReflect = "Cross"		end
-					if GetRaidTargetIndex("TargetTarget")== 8	then raidIcon_fireArcaneReflect = "Skull"		end
+					if GetRaidTargetIndex("Raid"..i.."Target")== nil then raidIcon_fireArcaneReflect = "No Icon"		end
+					if GetRaidTargetIndex("Raid"..i.."Target")== 1	then raidIcon_fireArcaneReflect = "Star"		end
+					if GetRaidTargetIndex("Raid"..i.."Target")== 2	then raidIcon_fireArcaneReflect = "Circle"		end
+					if GetRaidTargetIndex("Raid"..i.."Target")== 3	then raidIcon_fireArcaneReflect = "Diamond"		end
+					if GetRaidTargetIndex("Raid"..i.."Target")== 4	then raidIcon_fireArcaneReflect = "Triangle"	end
+					if GetRaidTargetIndex("Raid"..i.."Target")== 5	then raidIcon_fireArcaneReflect = "Moon"		end
+					if GetRaidTargetIndex("Raid"..i.."Target")== 6	then raidIcon_fireArcaneReflect = "Square"		end
+					if GetRaidTargetIndex("Raid"..i.."Target")== 7	then raidIcon_fireArcaneReflect = "Cross"		end
+					if GetRaidTargetIndex("Raid"..i.."Target")== 8	then raidIcon_fireArcaneReflect = "Skull"		end
 				end
 				break
 			end
@@ -413,18 +413,18 @@ function module:Event(msg)
 		
 	elseif shadowFrostReflectFound == nil and UnitName("Target") == "Anubisath Sentinel" and string.find(msg, L["trigger_shadowFrostReflectOther"]) then
 		local _,_, shadowFrostReflectPerson, _ = string.find(msg, L["trigger_shadowFrostReflectOther"])
-		for i = 1, GetNumRaidMembers(), 1 do
+		for i=1,GetNumRaidMembers() do
 			if UnitName("Raid"..i) == shadowFrostReflectPerson then
 				if UnitName("Raid"..i.."Target") == "Anubisath Sentinel" then
-					if GetRaidTargetIndex("TargetTarget")== nil then raidIcon_shadowFrostReflect = "No Icon"	end
-					if GetRaidTargetIndex("TargetTarget")== 1	then raidIcon_shadowFrostReflect = "Star"		end
-					if GetRaidTargetIndex("TargetTarget")== 2	then raidIcon_shadowFrostReflect = "Circle"		end
-					if GetRaidTargetIndex("TargetTarget")== 3	then raidIcon_shadowFrostReflect = "Diamond"	end
-					if GetRaidTargetIndex("TargetTarget")== 4	then raidIcon_shadowFrostReflect = "Triangle"	end
-					if GetRaidTargetIndex("TargetTarget")== 5	then raidIcon_shadowFrostReflect = "Moon"		end
-					if GetRaidTargetIndex("TargetTarget")== 6	then raidIcon_shadowFrostReflect = "Square"		end
-					if GetRaidTargetIndex("TargetTarget")== 7	then raidIcon_shadowFrostReflect = "Cross"		end
-					if GetRaidTargetIndex("TargetTarget")== 8	then raidIcon_shadowFrostReflect = "Skull"		end
+					if GetRaidTargetIndex("Raid"..i.."Target")== nil then raidIcon_shadowFrostReflect = "No Icon"	end
+					if GetRaidTargetIndex("Raid"..i.."Target")== 1	then raidIcon_shadowFrostReflect = "Star"		end
+					if GetRaidTargetIndex("Raid"..i.."Target")== 2	then raidIcon_shadowFrostReflect = "Circle"		end
+					if GetRaidTargetIndex("Raid"..i.."Target")== 3	then raidIcon_shadowFrostReflect = "Diamond"	end
+					if GetRaidTargetIndex("Raid"..i.."Target")== 4	then raidIcon_shadowFrostReflect = "Triangle"	end
+					if GetRaidTargetIndex("Raid"..i.."Target")== 5	then raidIcon_shadowFrostReflect = "Moon"		end
+					if GetRaidTargetIndex("Raid"..i.."Target")== 6	then raidIcon_shadowFrostReflect = "Square"		end
+					if GetRaidTargetIndex("Raid"..i.."Target")== 7	then raidIcon_shadowFrostReflect = "Cross"		end
+					if GetRaidTargetIndex("Raid"..i.."Target")== 8	then raidIcon_shadowFrostReflect = "Skull"		end
 				end
 				break
 			end
@@ -704,8 +704,5 @@ function module:AddDead(rest)
 	if tonumber(rest) == 4 then
 		self:SendBossDeathSync()
 		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
-		if UnitName("Player") == "Relar" or UnitName("Player") == "Dreadsome" then
-			DEFAULT_CHAT_FRAME:AddMessage("   BigWigs - Auto-Rebooting Module: "..module.translatedName)
-		end
 	end
 end

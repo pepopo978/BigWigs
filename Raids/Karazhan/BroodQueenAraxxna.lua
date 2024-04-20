@@ -63,8 +63,6 @@ local syncName = {
 	eggSpawn = "BroodQueenAraxxnaEggSpawn"..module.revision,
 }
 
---module:RegisterYellEngage(L["trigger_engage"])
-
 function module:OnEnable()
 	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
 	
