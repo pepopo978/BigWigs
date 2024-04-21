@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Lethon", "Ashenvale")
 
-module.revision = 30072
+module.revision = 30086
 module.enabletrigger = module.translatedName 
 module.toggleoptions = {"tailsweep", "dreamfog", "noxiousbreath", -1, "shadowbolt", "summon", "bosskill"}
 module.zonename = {
@@ -374,16 +374,16 @@ function module:DrawSpiritStun()
 end
 
 function module:SeventyFiveSoon()
-	seventyFiveSoon = nil
+	seventyFiveSoon = true
 	self:Message(L["msg_summonSoon"])
 end
 
 function module:FiftySoon()
-	fiftySoon = nil
+	fiftySoon = true
 	self:Message(L["msg_summonSoon"])
 end
 
 function module:TwentyFiveSoon()
-	twentyFiveSoon = nil
+	twentyFiveSoon = true
 	self:Message(L["msg_summonSoon"])
 end
