@@ -66,8 +66,9 @@ L:RegisterTranslations("enUS", function() return {
 	bar_poly = " Polymorph",
 	msg_poly = " Polymorphed - Dispel!",
 	
-	trigger_mcYou =  "You are afflicted by Dominate Mind.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE --guessing
-	trigger_mcOther = "(.+) is afflicted by Dominate Mind.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE --guessing
+	trigger_mcYou =  "You are afflicted by Dominate Mind", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE --guessing
+	trigger_mcOther2 = "(.+) %(.+%) is afflicted by Dominate Mind", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE --guessing
+	trigger_mcOther = "(.+) is afflicted by Dominate Mind", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE --guessing
 	trigger_mcFade = "Dominate Mind fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY //CHAT_MSG_SPELL_AURA_GONE_OTHER --guessing
 	bar_mc = " MC",
 	msg_mc = " MC - Dispel!",
@@ -356,6 +357,10 @@ function module:Event(msg)
 	elseif msg == L["trigger_mcYou"] then
 		self:Sync(syncName.mc .. " " .. UnitName("Player"))
 	
+	elseif string.find(msg, L["trigger_mcOther2"]) then
+		local _,_,mcPlayer,_ = string.find(msg, L["trigger_mcOther2"])
+		self:Sync(syncName.mc .. " " .. mcPlayer)
+
 	elseif string.find(msg, L["trigger_mcOther"]) then
 		local _,_,mcPlayer,_ = string.find(msg, L["trigger_mcOther"])
 		self:Sync(syncName.mc .. " " .. mcPlayer)

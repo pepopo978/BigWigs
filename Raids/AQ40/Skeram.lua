@@ -18,6 +18,7 @@ L:RegisterTranslations("enUS", function()
 
 
 		trigger_mcYou = "You are afflicted by True Fulfillment", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE (unconfirmed)
+		trigger_mcOther2 = "(.+) %(.+%) is afflicted by True Fulfillment", --CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE new client pet message format
 		trigger_mcOther = "(.+) is afflicted by True Fulfillment", --CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
 		trigger_mcFade = "True Fulfillment fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		msg_mc = " is MC",
@@ -142,6 +143,9 @@ end
 function module:Event(msg)
 	if string.find(msg, L["trigger_mcYou"]) then
 		self:Sync(syncName.mc .. " " .. UnitName("Player"))
+	elseif string.find(msg, L["trigger_mcOther2"]) then
+		local _, _, mcPerson = string.find(msg, L["trigger_mcOther2"])
+		self:Sync(syncName.mc .. " " .. mcPerson)
 	elseif string.find(msg, L["trigger_mcOther"]) then
 		local _, _, mcPerson = string.find(msg, L["trigger_mcOther"])
 		self:Sync(syncName.mc .. " " .. mcPerson)
@@ -170,10 +174,12 @@ function module:MC(rest)
 			end
 		end
 	end
-		
-	self:Bar(rest..L["bar_mc"].. " >Click Me<", timer.mc, icon.mc, true, color.mc)
-	self:SetCandyBarOnClick("BigWigsBar "..rest..L["bar_mc"].. " >Click Me<", function(name, button, extra) TargetByName(extra, true) end, rest)
-	self:Message(rest..L["msg_mc"], "Attention", false, nil, false)
+
+	self:Bar(rest .. L["bar_mc"] .. " >Click Me<", timer.mc, icon.mc, true, color.mc)
+	self:SetCandyBarOnClick("BigWigsBar " .. rest .. L["bar_mc"] .. " >Click Me<", function(name, button, extra)
+		TargetByName(extra, true)
+	end, rest)
+	self:Message(rest .. L["msg_mc"], "Attention", false, nil, false)
 end
 
 function module:McFade(rest)

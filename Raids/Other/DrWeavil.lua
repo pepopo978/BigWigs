@@ -27,7 +27,8 @@ L:RegisterTranslations("enUS", function() return {
 	bar_mindShatterSoon = "Mind Shatter Soon...",
 	
 	trigger_mcYou = "You are afflicted by Mental Domination.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
-	trigger_mcOther = "(.+) is afflicted by Mental Domination.", --CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_mcOther2 = "(.+) %(.+%) is afflicted by Mental Domination", --CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_mcOther = "(.+) is afflicted by Mental Domination", --CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 	trigger_mcFade = "Mental Domination fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 	bar_mc = " MC",
 } end )
@@ -108,13 +109,15 @@ function module:Event(msg)
 		
 	elseif string.find(msg, L["trigger_mcYou"]) then
 		self:Sync(syncName.mc .. " " .. UnitName("Player"))
-	
+
+	elseif string.find(msg, L["trigger_mcOther2"]) then
+		local _,_, mcPlayer, _ = string.find(msg, L["trigger_mcOther2"])
+		self:Sync(syncName.mc .. " " .. mcPlayer)
 	
 	elseif string.find(msg, L["trigger_mcOther"]) then
 		local _,_, mcPlayer, _ = string.find(msg, L["trigger_mcOther"])
 		self:Sync(syncName.mc .. " " .. mcPlayer)
-		
-	
+
 	elseif string.find(msg, L["trigger_mcFade"]) then
 		local _,_, mcFadePlayer, _ = string.find(msg, L["trigger_mcFade"])
 		if mcFadePlayer == "you" then mcFadePlayer = UnitName("Player") end

@@ -150,7 +150,8 @@ L:RegisterTranslations("enUS", function()
 		msg_mc = "Mind Control!",
 
 		trigger_mcYou = "You are afflicted by Chains of Kel'Thuzad.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
-		trigger_mcOther = "(.+) is afflicted by Chains of Kel'Thuzad.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+		trigger_mcOther2 = "(.+) %(.+%) is afflicted by Chains of Kel'Thuzad", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+		trigger_mcOther = "(.+) is afflicted by Chains of Kel'Thuzad", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 		trigger_mcFade = "Chains of Kel'Thuzad fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 		bar_mcAfflic = " MC",
 		bar_mcCd = "MC CD",
@@ -437,15 +438,15 @@ function module:OnEngage()
 	numAbomDead = 0
 	numWeaverDead = 0
 	bloodTapCounter = 0
-	
+
 	if self.db.profile.phase then
 		self:Bar(L["bar_phase1"], timer.phase1, icon.phase, true, color.phase)
 	end
-	
+
 	if self.db.profile.p1adds then
-		self:Bar(numAbomDead..L["bar_abom"], timer.p1adds, icon.abomination, true, color.abomination)
-		self:Bar(numWeaverDead..L["bar_weaver"], timer.p1adds, icon.soulWeaver, true, color.soulWeaver)
-		
+		self:Bar(numAbomDead .. L["bar_abom"], timer.p1adds, icon.abomination, true, color.abomination)
+		self:Bar(numWeaverDead .. L["bar_weaver"], timer.p1adds, icon.soulWeaver, true, color.soulWeaver)
+
 		self:ScheduleEvent("abom1", self.AbominationSpawns, 44, self, "1")
 		self:ScheduleEvent("abom2", self.AbominationSpawns, 72, self, "2")
 		self:ScheduleEvent("abom3", self.AbominationSpawns, 100, self, "3")
@@ -460,7 +461,7 @@ function module:OnEngage()
 		self:ScheduleEvent("abom12", self.AbominationSpawns, 285, self, "12")
 		self:ScheduleEvent("abom13", self.AbominationSpawns, 300, self, "13")
 		self:ScheduleEvent("abom14", self.AbominationSpawns, 318, self, "14")
-		
+
 		self:ScheduleEvent("weaver1", self.WeaverSpawns, 44, self, "1")
 		self:ScheduleEvent("weaver2", self.WeaverSpawns, 68, self, "2")
 		self:ScheduleEvent("weaver3", self.WeaverSpawns, 97, self, "3")
@@ -492,13 +493,13 @@ function module:MINIMAP_ZONE_CHANGED(msg)
 	if GetMinimapZoneText() == "Sapphiron's Lair" and self.core:IsModuleActive(module.translatedName) then
 		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
 		self:ResetModule()
-		DEFAULT_CHAT_FRAME:AddMessage("   BigWigs - Auto-Rebooting Module: "..module.translatedName)
-	
+		DEFAULT_CHAT_FRAME:AddMessage("   BigWigs - Auto-Rebooting Module: " .. module.translatedName)
+
 	elseif GetMinimapZoneText() == "Eastern Plaguelands" and self.core:IsModuleActive(module.translatedName) then
 		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
 		self:ResetModule()
-		DEFAULT_CHAT_FRAME:AddMessage("   BigWigs - Auto-Rebooting Module: "..module.translatedName)
-	
+		DEFAULT_CHAT_FRAME:AddMessage("   BigWigs - Auto-Rebooting Module: " .. module.translatedName)
+
 	elseif GetMinimapZoneText() == "Kel'Thuzad Chamber" and not self.core:IsModuleActive(module.translatedName) then
 		self.core:EnableModule(module.translatedName)
 	end
@@ -576,6 +577,10 @@ end
 function module:Event(msg)
 	if msg == L["trigger_mcYou"] then
 		self:Sync(syncName.mc .. " " .. UnitName("Player"))
+
+	elseif string.find(msg, L["trigger_mcOther2"]) then
+		local _, _, mcPlayer, _ = string.find(msg, L["trigger_mcOther2"])
+		self:Sync(syncName.mc .. " " .. mcPlayer)
 
 	elseif string.find(msg, L["trigger_mcOther"]) then
 		local _, _, mcPlayer, _ = string.find(msg, L["trigger_mcOther"])
