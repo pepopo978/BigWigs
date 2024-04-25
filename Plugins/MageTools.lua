@@ -127,12 +127,12 @@ L:RegisterTranslations("enUS", function()
 		["IgnitePlayerWarning"] = "Ignite player warnings",
 		["IgnitePlayerWarningDesc"] = "Whether to display + play sounds for manual player warnings",
 		["IgnitePlayerWarningTrigger"] = "Trigger ignite warning",
-		["IgnitePlayerWarningTriggerDesc"] = "/bw extra magetools ignite ignitewarningtrigger",
+		["IgnitePlayerWarningTriggerDesc"] = "/bw extra magetools ignitewarningtrigger",
 
 		["IgnitePyroRequest"] = "Pyro sync requests",
 		["IgnitePyroRequestDesc"] = "Whether to display + play sounds for manual player pryo requests",
 		["IgnitePyroRequestTrigger"] = "Trigger pyro request",
-		["IgnitePyroRequestTriggerDesc"] = "/bw extra magetools ignite ignitepyrotrigger",
+		["IgnitePyroRequestTriggerDesc"] = "/bw extra magetools ignitepyrotrigger",
 
 		scorch_afflict_test = "^(.+) is afflicted by Fire Vulnerability(.*)", -- for stacks 2-5 will be "Fire Vulnerability (2)".
 		scorch_gains_test = "^(.+) gains Fire Vulnerability(.*)", -- for stacks 2-5 will be "Fire Vulnerability (2)".
