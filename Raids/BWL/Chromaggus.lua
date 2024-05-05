@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Chromaggus", "Blackwing Lair")
 
-module.revision = 30085
+module.revision = 30088
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"frenzy", "enrage", -1, "breath", "vulnerability", "affliction", "bosskill"}
 
@@ -286,7 +286,7 @@ function module:Event(msg)
 	
 	
 	--check for vulnerability from dots
-	if string.find(msg, L["trigger_dotDamage"]) and currentVulnerability == "???" then
+	if string.find(msg, L["trigger_dotDamage"]) and currentVulnerability == "???" and (GetTime() > (vulnerabilityResetTime + 3)) then
 		local _, _, dmg, school, spellName, partial = string.find(msg, L["trigger_dotDamage"])
 		if hitOrCrit == nil or dmg == nil or school == nil then return end
 		if not type(school) == "string" then return end
@@ -322,7 +322,7 @@ function module:Event(msg)
 	end
 	
 	--check for vulnerability from hits / crits
-	if string.find(msg, L["trigger_directDamage"]) and currentVulnerability == "???" then
+	if string.find(msg, L["trigger_directDamage"]) and currentVulnerability == "???" and (GetTime() > (vulnerabilityResetTime + 3)) then
 		local _, _, spellName, hitOrCrit, dmg, school, partial = string.find(msg, L["trigger_directDamage"])
 		local hit = nil
 		local crit = nil
@@ -516,7 +516,7 @@ function module:Vulnerability(rest)
 	
 	if rest == "???" then
 		vulnerabilityResetTime = GetTime()
-	else
+	elseif (GetTime() > (vulnerabilityResetTime + 3)) then
 		if currentVulnerability == "Arcane" then
 			icon.vulnerability = icon.vulnerability_arcane
 			color.vulnerability = color.vulnerability_arcane
