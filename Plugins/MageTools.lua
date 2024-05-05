@@ -121,15 +121,18 @@ L:RegisterTranslations("enUS", function()
 		["IgniteAutoWarning"] = "Automated ignite warning",
 		["IgniteAutoWarningDesc"] = "Warning message when small number of ignite ticks will pull aggro for the ignite owner",
 
+		["ThreatTrinketAlerts"] = "Threat Trinket Alerts",
+		["ThreatTrinketAlertsDesc"] = "Notify when other mages use Fetish or Eye of Diminution",
+
 		["IgnitePlayerWarning"] = "Ignite player warnings",
 		["IgnitePlayerWarningDesc"] = "Whether to display + play sounds for manual player warnings",
 		["IgnitePlayerWarningTrigger"] = "Trigger ignite warning",
-		["IgnitePlayerWarningTriggerDesc"] = "/bw extra magetools ignite ignitewarningtrigger",
+		["IgnitePlayerWarningTriggerDesc"] = "/bw extra magetools ignitewarningtrigger",
 
 		["IgnitePyroRequest"] = "Pyro sync requests",
 		["IgnitePyroRequestDesc"] = "Whether to display + play sounds for manual player pryo requests",
 		["IgnitePyroRequestTrigger"] = "Trigger pyro request",
-		["IgnitePyroRequestTriggerDesc"] = "/bw extra magetools ignite ignitepyrotrigger",
+		["IgnitePyroRequestTriggerDesc"] = "/bw extra magetools ignitepyrotrigger",
 
 		scorch_afflict_test = "^(.+) is afflicted by Fire Vulnerability(.*)", -- for stacks 2-5 will be "Fire Vulnerability (2)".
 		scorch_gains_test = "^(.+) gains Fire Vulnerability(.*)", -- for stacks 2-5 will be "Fire Vulnerability (2)".
@@ -193,6 +196,7 @@ BigWigsMageTools.defaultDB = {
 	igniteautowarning = true,
 	igniteplayerwarning = true,
 	ignitepyrorequest = true,
+	threattrinketalerts = true,
 }
 
 BigWigsMageTools.consoleCmd = L["MageToolsCmd"]
@@ -503,11 +507,23 @@ BigWigsMageTools.consoleOptions = {
 			name = " ",
 			order = 11,
 		},
+		threattrinketalerts = {
+			type = "toggle",
+			name = L["ThreatTrinketAlerts"],
+			desc = L["ThreatTrinketAlertsDesc"],
+			order = 12,
+			get = function()
+				return BigWigsMageTools.db.profile.threattrinketalerts
+			end,
+			set = function(v)
+				BigWigsMageTools.db.profile.threattrinketalerts = v
+			end,
+		},
 		igniteautowarning = {
 			type = "toggle",
 			name = L["IgniteAutoWarning"],
 			desc = L["IgniteAutoWarningDesc"],
-			order = 12,
+			order = 13,
 			get = function()
 				return BigWigsMageTools.db.profile.igniteautowarning
 			end,
@@ -519,7 +535,7 @@ BigWigsMageTools.consoleOptions = {
 			type = "toggle",
 			name = L["IgnitePlayerWarning"],
 			desc = L["IgnitePlayerWarningDesc"],
-			order = 13,
+			order = 14,
 			get = function()
 				return BigWigsMageTools.db.profile.igniteplayerwarning
 			end,
@@ -1038,13 +1054,13 @@ function BigWigsMageTools:BigWigs_RecvSync(sync, arg1, arg2)
 			BigWigsSound:BigWigs_Sound("Pyro")
 		end
 	elseif sync == syncName.eyeOfDimStart then
-		if self.db.profile.enable then
+		if self.db.profile.enable and self.db.profile.threattrinketalerts then
 			self:Bar(arg1 .. " used Eye of Dim", 20, "INV_Trinket_Naxxramas02", false, "Blue")
 		end
 	elseif sync == syncName.eyeOfDimFade then
 		self:RemoveBar(arg1 .. " used Eye of Dim")
 	elseif sync == syncName.fetishStart then
-		if self.db.profile.enable then
+		if self.db.profile.enable and self.db.profile.threattrinketalerts then
 			self:Bar(arg1 .. " used Fetish", 20, "INV_Misc_AhnQirajTrinket_03", false, "Blue")
 		end
 	elseif sync == syncName.fetishFade then
@@ -1127,8 +1143,8 @@ function BigWigsMageTools:Test()
 	self:StartIgniteBar("Ragnaros", "2222 Pepopo", timer.ignite, 5, true)
 	self:StartScorchBar("Thaddius", timer.scorch, 5)
 
-	--	 schedule cancel in 10 sec
-	self:ScheduleEvent("TestStop", self.StopAllBars, 10, self)
+	--	 schedule cancel in 20 sec
+	self:ScheduleEvent("TestStop", self.StopAllBars, 20, self)
 end
 
 ------------------------------

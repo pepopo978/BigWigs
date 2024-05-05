@@ -265,7 +265,7 @@ BigWigs.cmdtable = { type = "group", handler = BigWigs, args = {
 } }
 BigWigs:RegisterChatCommand({ "/bw", "/BigWigs" }, BigWigs.cmdtable)
 BigWigs.debugFrame = ChatFrame1
-BigWigs.revision = 30086
+BigWigs.revision = 30087
 
 function BigWigs:EditLayout()
 	BigWigsBars:BigWigs_ShowAnchors()
@@ -878,7 +878,9 @@ function BigWigs:RegisterModule(name, module)
 	if module:IsBossModule() and module.toggleoptions then
 		opts = {}
 		for _, v in pairs(module.toggleoptions) do
-			if v ~= -1 then
+			if module.defaultDB and module.defaultDB[v] ~= nil then
+				opts[v] = module.defaultDB[v]
+			elseif v ~= -1 then
 				opts[v] = true
 			end
 		end
