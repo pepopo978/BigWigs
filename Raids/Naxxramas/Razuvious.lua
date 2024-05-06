@@ -115,15 +115,14 @@ function module:OnEnable()
 end
 
 function module:OnSetup()
-	self:Message("Target Razuvious before pull for accurate first shout timer!", "Attention")
+	self:Message("Target Razuvious before pull to help get accurate first shout timer!", "Attention")
 end
 
 function module:OnEngage()
 	mcIcon = nil
-	targetWarningShown = nil
 	if self.db.profile.shout then
 		-- start checking for razuvious changing targets
-		self:ScheduleRepeatingEvent("bwrazuvioustargetcheck", self.CheckRazuviousTarget, 0.5, self)
+		self:ScheduleRepeatingEvent("bwrazuvioustargetcheck", self.CheckRazuviousTarget, 0.2, self)
 	end
 end
 
@@ -131,13 +130,21 @@ function module:OnDisengage()
 end
 
 function module:CheckRazuviousTarget()
-	-- check that razuvious is targeted
-	if UnitName("target") ~= "Instructor Razuvious" then
-		if not targetWarningShown then
-			self:Message("Not targeting Razuvious, first shout may be off!", "Attention")
-			targetWarningShown = true
+	local razuviousTarget = nil
+
+	if UnitName("target") == "Instructor Razuvious" then
+		razuviousTarget = UnitName("targettarget")
+	else
+		-- loop through raid to find someone targeting razuvious
+		for i = 1, GetNumRaidMembers() do
+			if UnitName("raid" .. i .. "target") == "Instructor Razuvious" then
+				razuviousTarget = UnitName("raid" .. i .. "targettarget")
+				break
+			end
 		end
-	elseif UnitName("targettarget") then
+	end
+
+	if razuviousTarget then
 		-- razuvious has a target, start shout timer
 		self:Bar(L["bar_shout"], timer.firstShout, icon.shout, true, color.shout)
 		self:DelayedWarningSign(timer.firstShout - 3, icon.shout, 0.7)
