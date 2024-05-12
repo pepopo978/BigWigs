@@ -2,34 +2,34 @@ local module, L = BigWigs:ModuleDeclaration("The Prophet Skeram", "Ahn'Qiraj")
 
 module.revision = 30067
 module.enabletrigger = module.translatedName
-module.toggleoptions = { "mc", "bosskill" }
+module.toggleoptions = {"mc", "bosskill"}
 
 L:RegisterTranslations("enUS", function()
 	return {
-		cmd = "Skeram",
+	cmd = "Skeram",
 
-		mc_cmd = "mc",
-		mc_name = "Mind Control Alert",
-		mc_desc = "Warn for Mind Control",
+	mc_cmd = "mc",
+	mc_name = "Mind Control Alert",
+	mc_desc = "Warn for Mind Control",
 
-		split_cmd = "split",
-		split_name = "Split Alert",
-		split_desc = "Warn before Splitting",
-
-
+	split_cmd = "split",
+	split_name = "Split Alert",
+	split_desc = "Warn before Splitting",
+	
+	
 		trigger_mcYou = "You are afflicted by True Fulfillment", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE (unconfirmed)
 		trigger_mcOther2 = "(.+) %(.+%) is afflicted by True Fulfillment", --CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE new client pet message format
 		trigger_mcOther = "(.+) is afflicted by True Fulfillment", --CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
-		trigger_mcFade = "True Fulfillment fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
-		msg_mc = " is MC",
-		bar_mc = " MC",
+	trigger_mcFade = "True Fulfillment fades from (.+).",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	msg_mc = " is MC",
+	bar_mc = " MC",
+	
+	trigger_kill = "You only delay... the inevetable.",--CHAT_MSG_MONSTER_YELL
 
-		trigger_kill = "You only delay... the inevetable.", --CHAT_MSG_MONSTER_YELL
-
-		split_message = "Split!",
-		kill_trigger = "You only delay",
-
-		["You have slain %s!"] = true,
+	split_message = "Split!",
+	kill_trigger = "You only delay",
+	
+	["You have slain %s!"] = true,
 	}
 end)
 
@@ -43,20 +43,20 @@ local color = {
 	mc = "White",
 }
 local syncName = {
-	mc = "SkeramMC" .. module.revision,
-	mcFade = "SkeramMcFade" .. module.revision,
+	mc = "SkeramMC"..module.revision,
+	mcFade = "SkeramMcFade"..module.revision,
 }
 
 function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL")--trigger_kill
-
+	
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")--mcYou
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE", "Event")--mcOther
-
+	
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event")--trigger_mcFade
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event")--trigger_mcFade
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event")--trigger_mcFade
-
+	
 	self:ThrottleSync(1, syncName.mc)
 	self:ThrottleSync(1, syncName.mcFade)
 end
@@ -69,7 +69,7 @@ function module:OnEngage()
 	if self.core:IsModuleActive("Anubisath Sentinel", "Ahn'Qiraj") then
 		self.core:DisableModule("Anubisath Sentinel", "Ahn'Qiraj")
 	end
-
+	
 	self:ScheduleRepeatingEvent("CheckTrueSkeram", self.CheckTrueSkeram, 0.5, self)
 end
 
@@ -82,7 +82,7 @@ end
 
 function module:CheckForBossDeath(msg)
 	if msg == string.format(UNITDIESOTHER, self:ToString())
-			or msg == string.format(L["You have slain %s!"], self.translatedName) then
+		or msg == string.format(L["You have slain %s!"], self.translatedName) then
 		local function IsBossInCombat()
 			local t = module.enabletrigger
 			if not t then
@@ -131,11 +131,11 @@ end
 function module:CheckTrueSkeram()
 	if UnitName("Target") == "The Prophet Skeram" and (IsRaidLeader() or IsRaidOfficer()) then
 		--hp scaling is supposed to be linear, based on raid members, from 20 to 40 members
-		--doesn't scale below 20
-		--hp at 40 is 454k and max clone hp is 233k, looking for maxhp > 400k giving a leeway of 54k for adjustments
+			--doesn't scale below 20
+			--hp at 40 is 454k and max clone hp is 233k, looking for maxhp > 400k giving a leeway of 54k for adjustments
 		if GetNumRaidMembers() >= 20 and GetNumRaidMembers() <= 40 and (UnitHealthMax("Target") > (GetNumRaidMembers() * 10000)) or
-				GetNumRaidMembers() < 20 and UnitHealthMax("Target") > 200000 then
-			SetRaidTarget("target", 6)
+		GetNumRaidMembers() < 20 and UnitHealthMax("Target") > 200000 then
+			SetRaidTarget("target",6)
 		end
 	end
 end
@@ -168,27 +168,27 @@ end
 
 function module:MC(rest)
 	if IsRaidLeader() or IsRaidOfficer() then
-		for i = 1, GetNumRaidMembers() do
-			if UnitName("raid" .. i) == rest then
-				SetRaidTarget("raid" .. i, 4)
+		for i=1,GetNumRaidMembers() do
+			if UnitName("raid"..i) == rest then
+				SetRaidTarget("raid"..i, 4)
 			end
 		end
 	end
-
-	self:Bar(rest .. L["bar_mc"] .. " >Click Me<", timer.mc, icon.mc, true, color.mc)
+		
+	self:Bar(rest..L["bar_mc"].. " >Click Me<", timer.mc, icon.mc, true, color.mc)
 	self:SetCandyBarOnClick("BigWigsBar " .. rest .. L["bar_mc"] .. " >Click Me<", function(name, button, extra)
 		TargetByName(extra, true)
 	end, rest)
-	self:Message(rest .. L["msg_mc"], "Attention", false, nil, false)
+	self:Message(rest..L["msg_mc"], "Attention", false, nil, false)
 end
 
 function module:McFade(rest)
-	self:RemoveBar(rest .. L["bar_mc"] .. " >Click Me<")
-
+	self:RemoveBar(rest..L["bar_mc"].. " >Click Me<")
+	
 	if IsRaidLeader() or IsRaidOfficer() then
-		for i = 1, GetNumRaidMembers() do
-			if UnitName("raid" .. i) == rest then
-				SetRaidTargetIcon("raid" .. i, 0)
+		for i=1,GetNumRaidMembers() do
+			if UnitName("raid"..i) == rest then
+				SetRaidTargetIcon("raid"..i, 0)
 			end
 		end
 	end

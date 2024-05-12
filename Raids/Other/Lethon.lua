@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Lethon", "Ashenvale")
 
-module.revision = 30072
+module.revision = 30087
 module.enabletrigger = module.translatedName 
 module.toggleoptions = {"tailsweep", "dreamfog", "noxiousbreath", -1, "shadowbolt", "summon", "bosskill"}
 module.zonename = {
@@ -298,17 +298,30 @@ function module:NoxiousBreathStacks(rest)
 	local stacksPlayer = strsub(rest,0,strfind(rest," ") - 1)
 	local stacksQty = tonumber(strsub(rest,strfind(rest," "),strlen(rest)))
 	
-	if stacksQty >= 3 then
-		self:RemoveBar(stacksPlayer.." ".."3"..L["bar_noxiousBreath"])
-		self:RemoveBar(stacksPlayer.." ".."4"..L["bar_noxiousBreath"])
-		self:RemoveBar(stacksPlayer.." ".."5"..L["bar_noxiousBreath"])
-		self:RemoveBar(stacksPlayer.." ".."6"..L["bar_noxiousBreath"])
-		self:RemoveBar(stacksPlayer.." ".."7"..L["bar_noxiousBreath"])
-		self:RemoveBar(stacksPlayer.." ".."8"..L["bar_noxiousBreath"])
-		self:RemoveBar(stacksPlayer.." ".."9"..L["bar_noxiousBreath"])
-		self:RemoveBar(stacksPlayer.." ".."10"..L["bar_noxiousBreath"])
+	if type(stacksQty) == "number" then
+		if stacksQty >= 3 then
+			for i=1,GetNumRaidMembers() do
+				if UnitName("raid"..i) == stacksPlayer then
+					self:RemoveBar(stacksPlayer.." ".."3"..L["bar_noxiousBreath"])
+					self:RemoveBar(stacksPlayer.." ".."4"..L["bar_noxiousBreath"])
+					self:RemoveBar(stacksPlayer.." ".."5"..L["bar_noxiousBreath"])
+					self:RemoveBar(stacksPlayer.." ".."6"..L["bar_noxiousBreath"])
+					self:RemoveBar(stacksPlayer.." ".."7"..L["bar_noxiousBreath"])
+					self:RemoveBar(stacksPlayer.." ".."8"..L["bar_noxiousBreath"])
+					self:RemoveBar(stacksPlayer.." ".."9"..L["bar_noxiousBreath"])
+					self:RemoveBar(stacksPlayer.." ".."10"..L["bar_noxiousBreath"])
 
-		self:Bar(stacksPlayer.." "..stacksQty..L["bar_noxiousBreath"], timer.noxiousBreathDur, icon.noxiousBreath, true, color.noxiousBreathDur)
+					self:Bar(stacksPlayer.." "..stacksQty..L["bar_noxiousBreath"], timer.noxiousBreathDur, icon.noxiousBreath, true, color.noxiousBreathDur)
+					break
+				end
+			end
+		end
+	end
+	
+	if UnitName("Player") == "Relar" or UnitName("Player") == "Dreadsome" or UnitName("Player") == "Vakos" then
+		if type(stacksQty) ~= "number" then
+			DEFAULT_CHAT_FRAME:AddMessage("|cFFFF8080[BigWigs]|r Send this Screenshot to Relar: "..rest)
+		end
 	end
 end
 
@@ -374,16 +387,16 @@ function module:DrawSpiritStun()
 end
 
 function module:SeventyFiveSoon()
-	seventyFiveSoon = nil
+	seventyFiveSoon = true
 	self:Message(L["msg_summonSoon"])
 end
 
 function module:FiftySoon()
-	fiftySoon = nil
+	fiftySoon = true
 	self:Message(L["msg_summonSoon"])
 end
 
 function module:TwentyFiveSoon()
-	twentyFiveSoon = nil
+	twentyFiveSoon = true
 	self:Message(L["msg_summonSoon"])
 end

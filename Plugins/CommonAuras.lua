@@ -40,6 +40,9 @@ L:RegisterTranslations("enUS", function()
 		msg_challengingRoar = " Challenging Roar",
 		bar_challengingRoar = " Challenging Roar",
 
+		msg_divineIntervention = "Divine Intervention on ",
+		bar_divineIntervention = " Divine Intervention",
+
 		portal_regexp = ".*: (.*)",
 
 		trigger_wormhole = "just opened a wormhole.", --CHAT_MSG_MONSTER_EMOTE
@@ -59,9 +62,6 @@ L:RegisterTranslations("enUS", function()
 		trigger_restartMinSec = "Shutdown in (.+) Minutes (.+) Seconds.", --CHAT_MSG_SYSTEM
 		trigger_shutdownMinSec = "Restart in (.+) Minutes (.+) Seconds.", --CHAT_MSG_SYSTEM
 		bar_shutDown = "Server Shutdown/Restart",
-
-		msg_divineIntervention = "Divine Intervention on ",
-		bar_divineIntervention = " Divine Intervention",
 
 		["Toggle %s display."] = true,
 		["Wormhole"] = true,

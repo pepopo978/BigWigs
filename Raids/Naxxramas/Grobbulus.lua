@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Grobbulus", "Naxxramas")
 
-module.revision = 30078
+module.revision = 30089
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"slimespray", "inject", "cloud", "icon",  -1, "enrage", "bosskill"}
 
@@ -82,6 +82,7 @@ local syncName = {
 }
 
 local lowHp = nil
+local amInjected = nil
 
 function module:OnEnable()
 	self:RegisterEvent("UNIT_HEALTH")
@@ -114,6 +115,7 @@ end
 
 function module:OnEngage()
 	lowHp = nil
+	amInjected = nil
 	
 	if self.db.profile.enrage then
 		self:Bar(L["bar_enrage"], timer.enrage, icon.enrage, true, color.enrage)
@@ -222,6 +224,7 @@ function module:Inject(rest)
 		SendChatMessage("Inject on "..UnitName("Player").."!","SAY")
 		self:Sound("Beware")
 		self:WarningSign(icon.inject, 3)
+		amInjected = true
 	end
 end
 
@@ -236,10 +239,11 @@ function module:InjectFade(rest)
 		end
 	end
 	
-	if rest == UnitName("Player") then
+	if rest == UnitName("Player") and amInjected then
 		SendChatMessage("Poison Cloud under Me!","SAY")
 		self:WarningSign(icon.cleanse, 1)
 		self:Sound("Long")
+		amInjected = nil
 	end
 end
 

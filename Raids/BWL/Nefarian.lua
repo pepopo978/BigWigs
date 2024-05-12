@@ -525,7 +525,6 @@ function module:Event(msg)
 	elseif string.find(msg, L["trigger_mcOther2"]) then
 		local _,_,mcPlayer,_ = string.find(msg, L["trigger_mcOther2"])
 		self:Sync(syncName.mc .. " " .. mcPlayer)
-
 	elseif string.find(msg, L["trigger_mcOther"]) then
 		local _,_,mcPlayer,_ = string.find(msg, L["trigger_mcOther"])
 		self:Sync(syncName.mc .. " " .. mcPlayer)

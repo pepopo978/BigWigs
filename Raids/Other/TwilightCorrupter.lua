@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Twilight Corrupter", "Duskwood")
 
-module.revision = 30073
+module.revision = 30087
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"creatureofnightmare", "soulcorruption", "swellofsouls", "bosskill"}
 module.zonename = {
@@ -113,24 +113,28 @@ end
 function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
 	BigWigs:CheckForBossDeath(msg, self)
 	
-	--this is for removing MC bar if someone dies
-	local _,_, deadPlayer, _ = string.find(msg, L["subStringDead"])
-	self:Sync(syncName.creatureOfNightmareFade .. " " .. deadPlayer)
-	
-	--this is for counting deads for AP buff
-	if GetNumRaidMembers() > 0 then
-		self:CountDeads()
+	if string.find(msg, L["subStringDead"]) then
+		--this is for removing MC bar if someone dies
+		local _,_, deadPlayer, _ = string.find(msg, L["subStringDead"])
+		self:Sync(syncName.creatureOfNightmareFade .. " " .. deadPlayer)
+		
+		--this is for counting deads for AP buff
+		if GetNumRaidMembers() > 0 then
+			self:CountDeads()
+		end
 	end
 end
 
 function module:CHAT_MSG_COMBAT_FRIENDLY_DEATH(msg)
-	--this is for removing MC bar if someone dies
-	local _,_, deadPlayer, _ = string.find(msg, L["subStringDead"])
-	self:Sync(syncName.creatureOfNightmareFade .. " " .. deadPlayer)
-	
-	--this is for counting deads for AP buff
-	if GetNumRaidMembers() > 0 then
-		self:CountDeads()
+	if string.find(msg, L["subStringDead"]) then
+		--this is for removing MC bar if someone dies
+		local _,_, deadPlayer, _ = string.find(msg, L["subStringDead"])
+		self:Sync(syncName.creatureOfNightmareFade .. " " .. deadPlayer)
+		
+		--this is for counting deads for AP buff
+		if GetNumRaidMembers() > 0 then
+			self:CountDeads()
+		end
 	end
 end
 
@@ -229,7 +233,7 @@ end
 
 function module:SwellOfSouls(rest)
 	if tonumber(rest) > deadPlayers then
-		self:RemoveBar(deadPlayers..L["bar_swellOfSouls"])
+		self:RemoveBar(swellOfSoulsAmount..L["bar_swellOfSouls"])
 		
 		deadPlayers = tonumber(rest)
 		swellOfSoulsAmount = deadPlayers * 75

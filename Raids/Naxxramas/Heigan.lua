@@ -53,6 +53,7 @@ L:RegisterTranslations("enUS", function()
 		bar_dancingSoon = "Dancing Soon",
 
 
+
 		msg_fightStart = "Fight!",
 		bar_fighting = "Dancing Starts",
 
