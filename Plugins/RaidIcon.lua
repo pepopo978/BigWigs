@@ -15,11 +15,11 @@ L:RegisterTranslations("enUS", function()
 	return {
 		["Raid Icons"] = true,
 
-	["raidicon"] = true,
-	["place"] = true,
-	["icon"] = true,
-	["sticky"] = true,
-	["chat"] = true,
+		["raidicon"] = true,
+		["place"] = true,
+		["icon"] = true,
+		["sticky"] = true,
+		["chat"] = true,
 
 		["Place"] = true,
 		["Place Raid Icons"] = true,
@@ -29,15 +29,15 @@ L:RegisterTranslations("enUS", function()
 		["Set Icon"] = true,
 		["Set which icon to place on players."] = true,
 
-	["Sticky"] = true,
-	["Sticky Markers"] = true,
-	["Markers are not removed by reapplying the same mark on a unit."] = true,
+		["Sticky"] = true,
+		["Sticky Markers"] = true,
+		["Markers are not removed by reapplying the same mark on a unit."] = true,
 
-	["Chat"] = true,
-	["Chat Markers"] = true,
-	["Type {marker} to post it in chat channels."] = true,
+		["Chat"] = true,
+		["Chat Markers"] = true,
+		["Type {marker} to post it in chat channels."] = true,
 
-	["Options for Raid Icons."] = true,
+		["Options for Raid Icons."] = true,
 
 		["star"] = true,
 		["circle"] = true,
@@ -263,15 +263,23 @@ BigWigsRaidIcon.consoleOptions = {
 			type = "toggle",
 			name = L["Sticky Markers"],
 			desc = L["Markers are not removed by reapplying the same mark on a unit."],
-			get = function() return BigWigsRaidIcon.db.profile.sticky end,
-			set = function(v) BigWigsRaidIcon.db.profile.sticky = v end,
+			get = function()
+				return BigWigsRaidIcon.db.profile.sticky
+			end,
+			set = function(v)
+				BigWigsRaidIcon.db.profile.sticky = v
+			end,
 		},
 		[L["chat"]] = {
 			type = "toggle",
 			name = L["Chat Markers"],
 			desc = L["Type {marker} to post it in chat channels."],
-			get = function() return BigWigsRaidIcon.db.profile.chat end,
-			set = function(v) BigWigsRaidIcon.db.profile.chat = v end,
+			get = function()
+				return BigWigsRaidIcon.db.profile.chat
+			end,
+			set = function(v)
+				BigWigsRaidIcon.db.profile.chat = v
+			end,
 		},
 	}
 }
@@ -300,10 +308,10 @@ function BigWigsRaidIcon:BigWigs_SetRaidIcon(player, iconnumber)
 	for i = 1, GetNumRaidMembers() do
 		if UnitName("raid" .. i) == player then
 			if not iconnumber then
-				SetRaidTarget("raid"..i, icon)
+				SetRaidTarget("raid" .. i, icon)
 				lastplayer = player
 			else
-				SetRaidTarget("raid"..i, iconnumber)
+				SetRaidTarget("raid" .. i, iconnumber)
 				lastplayer = player
 			end
 		end
@@ -312,16 +320,26 @@ function BigWigsRaidIcon:BigWigs_SetRaidIcon(player, iconnumber)
 end
 
 function BigWigsRaidIcon:BigWigs_RemoveRaidIcon()
-	if not self.db.profile.place or not lastplayer then return end
-	for i=1,GetNumRaidMembers() do
-		if UnitName("raid"..i) == lastplayer then
-			SetRaidTarget("raid"..i, 0)
+	if not self.db.profile.place or not lastplayer then
+		return
+	end
+	for i = 1, GetNumRaidMembers() do
+		if UnitName("raid" .. i) == lastplayer then
+			SetRaidTarget("raid" .. i, 0)
 		end
 	end
 	lastplayer = nil
 end
 
 function BigWigsRaidIcon:StickySetRaidTarget(unit, index)
+	-- skull mark
+	if index == 8 then
+		local _, guid = UnitExists(unit)
+		if guid then
+			self:TriggerEvent("BigWigs_SendSync", "BWCAAF " .. guid)
+		end
+	end
+
 	self.hooks["SetRaidTargetIcon"](unit, index)
 	if self.db.profile.sticky then
 		SetRaidTarget(unit, index);

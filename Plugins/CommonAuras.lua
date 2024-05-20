@@ -74,6 +74,8 @@ L:RegisterTranslations("enUS", function()
 
 		["Toggle %s display."] = true,
 		["Wormhole"] = true,
+		["Spells"] = "Important spells",
+		["SpellsDesc"] = "Notification bars during important spells",
 		["Orange"] = true,
 		["Soulwell"] = true,
 		["Portal"] = true,
@@ -81,6 +83,9 @@ L:RegisterTranslations("enUS", function()
 		["broadcast"] = true,
 		["Broadcast"] = true,
 		["Toggle broadcasting the messages to the raidwarning channel."] = true,
+
+		["AutoFocus"] = true,
+		["AutoFocusDesc"] = "Automatically sets focus target to skull marks",
 
 		["Gives timer bars and raid messages about common buffs and debuffs."] = true,
 		["Common Auras"] = true,
@@ -139,6 +144,7 @@ BigWigsCommonAuras.defaultDB = {
 	broadcast = false,
 	aq40artifact = true,
 	aq40insignia = true,
+	autofocus = true
 }
 BigWigsCommonAuras.consoleCmd = L["commonauras"]
 BigWigsCommonAuras.revision = 30064
@@ -170,17 +176,6 @@ BigWigsCommonAuras.consoleOptions = {
 				BigWigsCommonAuras.db.profile.aq40artifact = v
 			end,
 		},
-		["bop"] = {
-			type = "toggle",
-			name = L["Blessing of Protection"],
-			desc = string.format(L["Toggle %s display."], L["Blessing of Protection"]),
-			get = function()
-				return BigWigsCommonAuras.db.profile.bop
-			end,
-			set = function(v)
-				BigWigsCommonAuras.db.profile.bop = v
-			end,
-		},
 		["broadcast"] = {
 			type = "toggle",
 			name = L["Broadcast"],
@@ -192,114 +187,15 @@ BigWigsCommonAuras.consoleOptions = {
 				BigWigsCommonAuras.db.profile.broadcast = v
 			end,
 		},
-		["challengingshout"] = {
+		["autofocus"] = {
 			type = "toggle",
-			name = BS["Challenging Shout"],
-			desc = string.format(L["Toggle %s display."], BS["Challenging Shout"]),
+			name = L["AutoFocus"],
+			desc = L["AutoFocusDesc"],
 			get = function()
-				return BigWigsCommonAuras.db.profile.challengingshout
+				return BigWigsCommonAuras.db.profile.autofocus
 			end,
 			set = function(v)
-				BigWigsCommonAuras.db.profile.challengingshout = v
-			end,
-		},
-		["challengingroar"] = {
-			type = "toggle",
-			name = BS["Challenging Roar"],
-			desc = string.format(L["Toggle %s display."], BS["Challenging Roar"]),
-			get = function()
-				return BigWigsCommonAuras.db.profile.challengingroar
-			end,
-			set = function(v)
-				BigWigsCommonAuras.db.profile.challengingroar = v
-			end,
-		},
-		["di"] = {
-			type = "toggle",
-			name = BS["Divine Intervention"],
-			desc = string.format(L["Toggle %s display."], BS["Divine Intervention"]),
-			get = function()
-				return BigWigsCommonAuras.db.profile.di
-			end,
-			set = function(v)
-				BigWigsCommonAuras.db.profile.di = v
-			end,
-		},
-		["deepwood"] = {
-			type = "toggle",
-			name = L["Deepwood Pipe"],
-			desc = string.format(L["Toggle %s display."], L["Deepwood Pipe"]),
-			get = function()
-				return BigWigsCommonAuras.db.profile.deepwood
-			end,
-			set = function(v)
-				BigWigsCommonAuras.db.profile.deepwood = v
-			end,
-		},
-		["fearward"] = {
-			type = "toggle",
-			name = BS["Fear Ward"],
-			desc = string.format(L["Toggle %s display."], BS["Fear Ward"]),
-			get = function()
-				return BigWigsCommonAuras.db.profile.fearward
-			end,
-			set = function(v)
-				BigWigsCommonAuras.db.profile.fearward = v
-			end,
-		},
-		["invisibility"] = {
-			type = "toggle",
-			name = L["Invisibility"],
-			desc = string.format(L["Toggle %s display."], L["Invisibility"]),
-			get = function()
-				return BigWigsCommonAuras.db.profile.invis
-			end,
-			set = function(v)
-				BigWigsCommonAuras.db.profile.invis = v
-			end,
-		},
-		["laststand"] = {
-			type = "toggle",
-			name = BS["Last Stand"],
-			desc = string.format(L["Toggle %s display."], BS["Last Stand"]),
-			get = function()
-				return BigWigsCommonAuras.db.profile.laststand
-			end,
-			set = function(v)
-				BigWigsCommonAuras.db.profile.laststand = v
-			end,
-		},
-		["lip"] = {
-			type = "toggle",
-			name = L["Limited Invulnerability Potion"],
-			desc = string.format(L["Toggle %s display."], L["Limited Invulnerability Potion"]),
-			get = function()
-				return BigWigsCommonAuras.db.profile.lip
-			end,
-			set = function(v)
-				BigWigsCommonAuras.db.profile.lip = v
-			end,
-		},
-		["lifegivinggem"] = {
-			type = "toggle",
-			name = BS["Lifegiving Gem"],
-			desc = string.format(L["Toggle %s display."], BS["Lifegiving Gem"]),
-			get = function()
-				return BigWigsCommonAuras.db.profile.lifegivinggem
-			end,
-			set = function(v)
-				BigWigsCommonAuras.db.profile.lifegivinggem = v
-			end,
-		},
-		["powerinfusion"] = {
-			type = "toggle",
-			name = L["Power Infusion"],
-			desc = string.format(L["Toggle %s display."], L["Power Infusion"]),
-			get = function()
-				return BigWigsCommonAuras.db.profile.powerinfusion
-			end,
-			set = function(v)
-				BigWigsCommonAuras.db.profile.powerinfusion = v
+				BigWigsCommonAuras.db.profile.autofocus = v
 			end,
 		},
 		["portal"] = {
@@ -322,17 +218,6 @@ BigWigsCommonAuras.consoleOptions = {
 			end,
 			set = function(v)
 				BigWigsCommonAuras.db.profile.orange = v
-			end,
-		},
-		["shieldwall"] = {
-			type = "toggle",
-			name = BS["Shield Wall"],
-			desc = string.format(L["Toggle %s display."], BS["Shield Wall"]),
-			get = function()
-				return BigWigsCommonAuras.db.profile.shieldwall
-			end,
-			set = function(v)
-				BigWigsCommonAuras.db.profile.shieldwall = v
 			end,
 		},
 		["soulwell"] = {
@@ -368,6 +253,146 @@ BigWigsCommonAuras.consoleOptions = {
 				BigWigsCommonAuras.db.profile.wormhole = v
 			end,
 		},
+		["spells"] = {
+			type = "group",
+			name = L["Spells"],
+			desc = L["SpellsDesc"],
+			order = 6,
+			args = {
+				["bop"] = {
+					type = "toggle",
+					name = L["Blessing of Protection"],
+					desc = string.format(L["Toggle %s display."], L["Blessing of Protection"]),
+					get = function()
+						return BigWigsCommonAuras.db.profile.bop
+					end,
+					set = function(v)
+						BigWigsCommonAuras.db.profile.bop = v
+					end,
+				},
+				["challengingshout"] = {
+					type = "toggle",
+					name = BS["Challenging Shout"],
+					desc = string.format(L["Toggle %s display."], BS["Challenging Shout"]),
+					get = function()
+						return BigWigsCommonAuras.db.profile.challengingshout
+					end,
+					set = function(v)
+						BigWigsCommonAuras.db.profile.challengingshout = v
+					end,
+				},
+				["challengingroar"] = {
+					type = "toggle",
+					name = BS["Challenging Roar"],
+					desc = string.format(L["Toggle %s display."], BS["Challenging Roar"]),
+					get = function()
+						return BigWigsCommonAuras.db.profile.challengingroar
+					end,
+					set = function(v)
+						BigWigsCommonAuras.db.profile.challengingroar = v
+					end,
+				},
+				["di"] = {
+					type = "toggle",
+					name = BS["Divine Intervention"],
+					desc = string.format(L["Toggle %s display."], BS["Divine Intervention"]),
+					get = function()
+						return BigWigsCommonAuras.db.profile.di
+					end,
+					set = function(v)
+						BigWigsCommonAuras.db.profile.di = v
+					end,
+				},
+				["deepwood"] = {
+					type = "toggle",
+					name = L["Deepwood Pipe"],
+					desc = string.format(L["Toggle %s display."], L["Deepwood Pipe"]),
+					get = function()
+						return BigWigsCommonAuras.db.profile.deepwood
+					end,
+					set = function(v)
+						BigWigsCommonAuras.db.profile.deepwood = v
+					end,
+				},
+				["fearward"] = {
+					type = "toggle",
+					name = BS["Fear Ward"],
+					desc = string.format(L["Toggle %s display."], BS["Fear Ward"]),
+					get = function()
+						return BigWigsCommonAuras.db.profile.fearward
+					end,
+					set = function(v)
+						BigWigsCommonAuras.db.profile.fearward = v
+					end,
+				},
+				["invisibility"] = {
+					type = "toggle",
+					name = L["Invisibility"],
+					desc = string.format(L["Toggle %s display."], L["Invisibility"]),
+					get = function()
+						return BigWigsCommonAuras.db.profile.invis
+					end,
+					set = function(v)
+						BigWigsCommonAuras.db.profile.invis = v
+					end,
+				},
+				["laststand"] = {
+					type = "toggle",
+					name = BS["Last Stand"],
+					desc = string.format(L["Toggle %s display."], BS["Last Stand"]),
+					get = function()
+						return BigWigsCommonAuras.db.profile.laststand
+					end,
+					set = function(v)
+						BigWigsCommonAuras.db.profile.laststand = v
+					end,
+				},
+				["lip"] = {
+					type = "toggle",
+					name = L["Limited Invulnerability Potion"],
+					desc = string.format(L["Toggle %s display."], L["Limited Invulnerability Potion"]),
+					get = function()
+						return BigWigsCommonAuras.db.profile.lip
+					end,
+					set = function(v)
+						BigWigsCommonAuras.db.profile.lip = v
+					end,
+				},
+				["lifegivinggem"] = {
+					type = "toggle",
+					name = BS["Lifegiving Gem"],
+					desc = string.format(L["Toggle %s display."], BS["Lifegiving Gem"]),
+					get = function()
+						return BigWigsCommonAuras.db.profile.lifegivinggem
+					end,
+					set = function(v)
+						BigWigsCommonAuras.db.profile.lifegivinggem = v
+					end,
+				},
+				["powerinfusion"] = {
+					type = "toggle",
+					name = L["Power Infusion"],
+					desc = string.format(L["Toggle %s display."], L["Power Infusion"]),
+					get = function()
+						return BigWigsCommonAuras.db.profile.powerinfusion
+					end,
+					set = function(v)
+						BigWigsCommonAuras.db.profile.powerinfusion = v
+					end,
+				},
+				["shieldwall"] = {
+					type = "toggle",
+					name = BS["Shield Wall"],
+					desc = string.format(L["Toggle %s display."], BS["Shield Wall"]),
+					get = function()
+						return BigWigsCommonAuras.db.profile.shieldwall
+					end,
+					set = function(v)
+						BigWigsCommonAuras.db.profile.shieldwall = v
+					end,
+				},
+			}
+		}
 	}
 }
 
@@ -450,6 +475,7 @@ function BigWigsCommonAuras:OnEnable()
 	self:TriggerEvent("BigWigs_ThrottleSync", "BWCAWH", .4) -- Wormhole
 	self:TriggerEvent("BigWigs_ThrottleSync", "BWCAOR", .4) -- Orange
 	self:TriggerEvent("BigWigs_ThrottleSync", "BWCAWL", .4) -- Soulwell
+	self:TriggerEvent("BigWigs_ThrottleSync", "BWCAAF", .4) -- AutoFocus
 
 	self:TriggerEvent("BigWigs_ThrottleSync", "BWCAAQ40INSIGNIA", 60) -- AQ40 boss insignia
 	self:TriggerEvent("BigWigs_ThrottleSync", "BWCAAQ40ARTIFACT", 60) -- Artifact
@@ -679,16 +705,27 @@ function BigWigsCommonAuras:ExaltedForFaction(factionName)
 	return nil
 end
 
+function BigWigsCommonAuras:PFUIFocus(guid)
+	if not pfUI.uf or not pfUI.uf.focus then
+		return
+	end
+
+	pfUI.uf.focus.label = nil
+	pfUI.uf.focus.guid = guid
+	pfUI.uf.focus.unitname = strlower(UnitName(guid))
+end
+
 function BigWigsCommonAuras:BigWigs_RecvSync(sync, rest, nick)
 	if not nick then
 		nick = UnitName("player")
 	end
-
-	if self.db.profile.fearward and sync == "BWCAFW" and rest then
+	if self.db.profile.autofocus and sync == "BWCAAF" then
+		if pfUI then
+			self:PFUIFocus(rest)
+		end
+	elseif self.db.profile.fearward and sync == "BWCAFW" and rest then
 		self:TriggerEvent("BigWigs_Message", nick .. L["msg_fearward"] .. rest, "Positive", false, nil, false)
 		self:TriggerEvent("BigWigs_StartBar", self, nick .. L["bar_fearward"], timer.fearward, icon.fearward, true, color.fearward)
-
-
 	elseif self.db.profile.shieldwall and sync == "BWCASW" then
 		local swTime = tonumber(rest)
 		if not swTime then
