@@ -144,7 +144,7 @@ BigWigsCommonAuras.defaultDB = {
 	broadcast = false,
 	aq40artifact = true,
 	aq40insignia = true,
-	autofocus = true
+	autofocus = false
 }
 BigWigsCommonAuras.consoleCmd = L["commonauras"]
 BigWigsCommonAuras.revision = 30064
@@ -720,7 +720,7 @@ function BigWigsCommonAuras:BigWigs_RecvSync(sync, rest, nick)
 		nick = UnitName("player")
 	end
 	if self.db.profile.autofocus and sync == "BWCAAF" then
-		if pfUI then
+		if pfUI and rest then
 			self:PFUIFocus(rest)
 		end
 	elseif self.db.profile.fearward and sync == "BWCAFW" and rest then
