@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Grand Widow Faerlina", "Naxxramas")
 
-module.revision = 30038
+module.revision = 30090
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"mc", "sounds", "bigicon", "raidSilence", "poison", "silence", "enrage", "rain", "bosskill"}
 
@@ -45,8 +45,8 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_start3 = "You cannot hide from me!",
 	trigger_start4 = "Run while you still can!",
 
-	trigger_rain = "You suffer (.+) Fire damage from Grand Widow Faerlina's Rain of Fire.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE --string find cause could be a partial absorb
-	trigger_rain2 = "You absorb Grand Widow Faerlina's Rain of Fire.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_rain = "You are afflicted by Rain of Fire",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_rainFade = "Rain of Fire fades from you", --CHAT_MSG_SPELL_AURA_GONE_SELF
 	
 	trigger_poison = "is afflicted by Poison Bolt Volley",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
 	
@@ -82,40 +82,6 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_dispel = "(.+) casts Dispel Magic on Naxxramas Worshipper.",--CHAT_MSG_SPELL_FRIENDLYPLAYER_BUFF
 	msg_dispelCast = " Dispelled a Worshipper! Don't Dispel MC!",
 } end )
-
-L:RegisterTranslations("esES", function() return {
-	--cmd = "Faerlina",
-
-	--silence_cmd = "silence",
-	silence_name = "Alerta de Silencio",
-	silence_desc = "Avisa para silencio",
-
-	--enrage_cmd = "enrage",
-	enrage_name = "Alerta de Enfurecer",
-	enrage_desc = "Avisa para Enfurecer",
-
-	trigger_start1 = "¡MUERE... o arrodíllate ante mí!",
-	trigger_start2 = "¡Matadlos en el nombre del maestro!",
-	trigger_start3 = "¡No puedes esconderte de mí!",
-	trigger_start4 = "¡Corred mientras podáis!",
-
-	silencetrigger = "Grand Viuda Faerlina sufre de Abrazo de la viuda.", -- EDITED it affects her too.
-	enragetrigger = "Grand Viuda Faerlina gana Enfurecer.",
-	enragefade = "Enfurecer desaparece de Grand Viuda Faerlina.",
-
-	silencewarn = "¡Silencio! Demora Enfurecer!",
-	silencewarnnodelay = "¡Silencio!",
-	silencewarn5sec = "Silencio desaparece en 5 secgundos",
-
-	enragebar = "Enfurecer",
-	silencebar = "Silencio",
-
-	--rain_cmd = "rain",
-	rain_name = "Alerta de Lluvia de Fuego",
-	rain_desc = "Avisa si estás en Lluvia de Fuego",
-	trigger_rain = "Sufres de Lluvia de Fuego",
-} end )
-
 local timer = {
 	silencedEnrage = 61,
 	silencedWithoutEnrage = 30,
@@ -155,7 +121,7 @@ module:RegisterYellEngage(L["trigger_start4"])
 
 function module:OnEnable()
 	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")--trigger_rain, trigger_rain2, trigger_raidSilence
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")--trigger_rain, trigger_raidSilence
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")--trigger_poison, trigger_raidSilence
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")--trigger_poison, trigger_raidSilence
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_BUFFS", "Event")--trigger_mcGain
@@ -164,7 +130,7 @@ function module:OnEnable()
 	
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event")--trigger_mcFade, trigger_enrageFade
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event")--trigger_mcFade
-	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event")--trigger_mcFade
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event")--trigger_mcFade, trigger_rainFade
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event")--trigger_enrage
 	self:RegisterEvent("CHAT_MSG_SPELL_FRIENDLYPLAYER_BUFF", "Event")--trigger_dispel
 	
@@ -216,9 +182,12 @@ function module:CHAT_MSG_COMBAT_FRIENDLY_DEATH(msg)
 end
 
 function module:Event(msg)
-	if (msg == L["trigger_rain2"] or string.find(msg, L["trigger_rain"])) and self.db.profile.rain then
-		self:Sound("Info")
-		self:WarningSign(icon.rain, 0.7)
+	if string.find(msg, L["trigger_rain"])) and self.db.profile.rain then
+		self:Rain()
+		
+	elseif string.find(msg, L["trigger_rainFade"])) and self.db.profile.rain then
+		self:RainFade()
+		
 	
 	elseif string.find(msg, L["trigger_poison"]) then
 		self:Sync(syncName.poison)
@@ -268,6 +237,15 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 	end
 end
 
+
+function module:Rain()
+	self:WarningSign(icon.rain, 10)
+	self:Sound("Info")
+end
+
+function module:RainFade()
+	self:RemoveWarningSign(icon.rain)
+end
 
 
 function module:Poison()

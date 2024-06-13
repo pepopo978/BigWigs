@@ -2,7 +2,7 @@ local module, L = BigWigs:ModuleDeclaration("Thaddius", "Naxxramas")
 local feugen = AceLibrary("Babble-Boss-2.2")["Feugen"]
 local stalagg = AceLibrary("Babble-Boss-2.2")["Stalagg"]
 
-module.revision = 30076
+module.revision = 30090
 module.enabletrigger = { module.translatedName, feugen, stalagg }
 module.toggleoptions = { "power", "magneticPull", "manaburn", -1, "phase", -1, "enrage", "selfcharge", "polarity", "bosskill" }
 
@@ -60,7 +60,7 @@ L:RegisterTranslations("enUS", function()
 		msg_phase2 = "Phase 2",
 		msg_positionReminder = "- - - - -  Thaddius  + + + + +",
 
-		trigger_enrage = "%s goes into a berserker rage!", --to confirm
+		trigger_enrage = "Thaddius gains Berserk", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
 		bar_enrage = "Enrage",
 		msg_enrage = "Enrage!",
 		msg_enrage60 = "Enrage in 60 seconds",
@@ -118,7 +118,7 @@ local icon = {
 	negative = "Spell_ChargeNegative",
 
 	manaBurn = "Spell_Shadow_ManaBurn",
-	
+
 	hpBar = "spell_shadow_raisedead",
 }
 local color = {
@@ -134,7 +134,7 @@ local color = {
 
 	positive = "Blue",
 	negative = "Red",
-	
+
 	hpBar = "Magenta"
 }
 local syncName = {
@@ -166,7 +166,7 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "Event") --trigger_polarityShiftCast
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event") --trigger_manaBurn, trigger_manaBurn2
 
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event") --trigger_powerSurge
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event") --trigger_powerSurge, trigger_enrage
 
 	self:ThrottleSync(4, syncName.powerSurge)
 
@@ -196,9 +196,9 @@ function module:OnEngage()
 
 	self.feugenHP = 100
 	self.stalaggHP = 100
-	self:TriggerEvent("BigWigs_StartHPBar", self, "Feugen", 100, "Interface\\Icons\\"..icon.hpBar, true, color.hpBar)
+	self:TriggerEvent("BigWigs_StartHPBar", self, "Feugen", 100, "Interface\\Icons\\" .. icon.hpBar, true, color.hpBar)
 	self:TriggerEvent("BigWigs_SetHPBar", self, "Feugen", 0)
-	self:TriggerEvent("BigWigs_StartHPBar", self, "Stalagg", 100, "Interface\\Icons\\"..icon.hpBar, true, color.hpBar)
+	self:TriggerEvent("BigWigs_StartHPBar", self, "Stalagg", 100, "Interface\\Icons\\" .. icon.hpBar, true, color.hpBar)
 	self:TriggerEvent("BigWigs_SetHPBar", self, "Stalagg", 0)
 
 	self:ScheduleRepeatingEvent("CheckAddHP", self.CheckAddHP, 0.5, self)
