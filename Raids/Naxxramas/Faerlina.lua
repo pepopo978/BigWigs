@@ -182,10 +182,10 @@ function module:CHAT_MSG_COMBAT_FRIENDLY_DEATH(msg)
 end
 
 function module:Event(msg)
-	if string.find(msg, L["trigger_rain"])) and self.db.profile.rain then
+	if string.find(msg, L["trigger_rain"]) and self.db.profile.rain then
 		self:Rain()
 		
-	elseif string.find(msg, L["trigger_rainFade"])) and self.db.profile.rain then
+	elseif string.find(msg, L["trigger_rainFade"]) and self.db.profile.rain then
 		self:RainFade()
 		
 	
