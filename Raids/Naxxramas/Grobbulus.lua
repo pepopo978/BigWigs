@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Grobbulus", "Naxxramas")
 
-module.revision = 30089
+module.revision = 30090
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"slimespray", "inject", "cloud", "icon",  -1, "enrage", "bosskill"}
 
@@ -240,6 +240,7 @@ function module:InjectFade(rest)
 	end
 	
 	if rest == UnitName("Player") and amInjected then
+		self:RemoveWarningSign(icon.inject)
 		SendChatMessage("Poison Cloud under Me!","SAY")
 		self:WarningSign(icon.cleanse, 1)
 		self:Sound("Long")
