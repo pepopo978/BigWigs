@@ -45,8 +45,8 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_start3 = "You cannot hide from me!",
 	trigger_start4 = "Run while you still can!",
 
-	trigger_rain = "You are afflicted by Rain of Fire",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
-	trigger_rainFade = "Rain of Fire fades from you", --CHAT_MSG_SPELL_AURA_GONE_SELF
+	trigger_rain = "You suffer (.+) Fire damage from Grand Widow Faerlina's Rain of Fire.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE --string find cause could be a partial absorb
+	trigger_rain2 = "You absorb Grand Widow Faerlina's Rain of Fire.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 	
 	trigger_poison = "is afflicted by Poison Bolt Volley",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
 	
@@ -121,7 +121,7 @@ module:RegisterYellEngage(L["trigger_start4"])
 
 function module:OnEnable()
 	--self:RegisterEvent("CHAT_MSG_SAY", "Event")--Debug
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")--trigger_rain, trigger_raidSilence
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "Event")--trigger_rain, trigger_rain2, trigger_raidSilence
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "Event")--trigger_poison, trigger_raidSilence
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "Event")--trigger_poison, trigger_raidSilence
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_BUFFS", "Event")--trigger_mcGain
@@ -130,7 +130,7 @@ function module:OnEnable()
 	
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Event")--trigger_mcFade, trigger_enrageFade
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Event")--trigger_mcFade
-	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event")--trigger_mcFade, trigger_rainFade
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Event")--trigger_mcFade
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Event")--trigger_enrage
 	self:RegisterEvent("CHAT_MSG_SPELL_FRIENDLYPLAYER_BUFF", "Event")--trigger_dispel
 	
@@ -182,13 +182,9 @@ function module:CHAT_MSG_COMBAT_FRIENDLY_DEATH(msg)
 end
 
 function module:Event(msg)
-	if string.find(msg, L["trigger_rain"]) and self.db.profile.rain then
-		self:Rain()
-		
-	elseif string.find(msg, L["trigger_rainFade"]) and self.db.profile.rain then
-		self:RainFade()
-		
-	
+	if (msg == L["trigger_rain2"] or string.find(msg, L["trigger_rain"])) and self.db.profile.rain then
+		self:Sound("Info")
+		self:WarningSign(icon.rain, 2, true, "Move!")
 	elseif string.find(msg, L["trigger_poison"]) then
 		self:Sync(syncName.poison)
 	elseif string.find(msg, L["trigger_raidSilence"]) then
