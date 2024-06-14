@@ -707,8 +707,10 @@ function BigWigsMageTools:ScorchEvent(msg)
 		-- update scorch timer after a half second to give time to check if fire vulnerability was resisted
 		self:ScheduleEvent(scorchTimerUpdateEvent .. scorchTarget, self.UpdateScorchTimer, 0.2, self, scorchTarget, GetTime())
 
+		local igniteStacks = self.igniteStacks[scorchTarget] or 1
+
 		--check if scorch crit got into the ignite
-		if hitType == "crit" and self.igniteStacks[scorchTarget] or 1 < 5 then
+		if hitType == "crit" and igniteStacks < 5 then
 			self.igniteHasScorch[scorchTarget] = true
 		end
 
