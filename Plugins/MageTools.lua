@@ -707,8 +707,10 @@ function BigWigsMageTools:ScorchEvent(msg)
 		-- update scorch timer after a half second to give time to check if fire vulnerability was resisted
 		self:ScheduleEvent(scorchTimerUpdateEvent .. scorchTarget, self.UpdateScorchTimer, 0.2, self, scorchTarget, GetTime())
 
+		local igniteStacks = self.igniteStacks[scorchTarget] or 1
+
 		--check if scorch crit got into the ignite
-		if hitType == "crit" and self.igniteStacks[scorchTarget] or 1 < 5 then
+		if hitType == "crit" and igniteStacks < 5 then
 			self.igniteHasScorch[scorchTarget] = true
 		end
 
@@ -916,7 +918,7 @@ function BigWigsMageTools:ResyncStacks()
 		local foundScorch = false
 		local foundIgnite = false
 		-- check debuffs
-		for i = 1, 24 do
+		for i = 1, 16 do
 			local texture, stacks = UnitDebuff("target", i)
 			if (texture and stacks) then
 				if texture == scorchIcon then
@@ -933,7 +935,7 @@ function BigWigsMageTools:ResyncStacks()
 		end
 		-- if we didn't find it check buffs as well
 		if not foundScorch or not foundIgnite then
-			for i = 1, 24 do
+			for i = 1, 32 do
 				local texture, stacks = UnitBuff("target", i)
 				if (texture and stacks) then
 					if texture == scorchIcon then

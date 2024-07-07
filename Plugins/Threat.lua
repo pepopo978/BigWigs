@@ -41,23 +41,6 @@ BigWigsThreat.consoleOptions = {
 	name = L["Threat"],
 	desc = L["ThreatDesc"],
 	args = {
-		active = {
-			type = "toggle",
-			name = L["Active"],
-			desc = L["Activate the plugin."],
-			order = 1,
-			get = function()
-				return BigWigsThreat.db.profile.active
-			end,
-			set = function(v)
-				BigWigsThreat.db.profile.active = v
-				if v then
-					BigWigsThreat:Enable()
-				else
-					BigWigsThreat:Disable()
-				end
-			end,
-		},
 		debug = {
 			type = "toggle",
 			name = L["Debug"],
