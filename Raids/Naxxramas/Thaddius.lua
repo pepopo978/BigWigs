@@ -177,6 +177,8 @@ function module:OnEnable()
 	self:ThrottleSync(5, syncName.polarityShiftCast)
 	self:ThrottleSync(5, syncName.polarity)
 	self:ThrottleSync(2, syncName.checkAuras)
+
+	self.checkAuras = true
 end
 
 function module:OnSetup()
@@ -371,6 +373,8 @@ function module:Enrage()
 end
 
 function module:PolarityShiftCast()
+	self.checkAuras = true
+
 	self:RemoveBar(L["bar_polarityShiftCd"])
 	self:Message(L["msg_polarityShift"], "Important", false, nil, false)
 	self:Bar(L["bar_polarityShiftCast"], timer.polarityShiftCast, icon.polarityShift, true, color.polarityShiftCast)
@@ -386,6 +390,10 @@ function module:PLAYER_AURAS_CHANGED(msg)
 end
 
 function module:CheckAuras(msg)
+	if self.checkAuras == false then
+		return
+	end
+
 	local chargetype = nil
 	local iIterator = 1
 	while UnitDebuff("Player", iIterator) do
@@ -403,6 +411,7 @@ function module:CheckAuras(msg)
 	end
 	if self.db.profile.selfcharge then
 		self:NewPolarity(chargetype)
+		self.checkAuras = false
 	end
 end
 
