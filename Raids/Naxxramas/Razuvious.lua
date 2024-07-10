@@ -85,6 +85,8 @@ local syncName = {
 	unbalance = "RazuviousUnbalance" .. module.revision,
 
 	shieldwall = "RazuviousShieldwall" .. module.revision,
+
+	targetrazuvious = "RazuviousTarget" .. module.revision,
 }
 
 local mcIcon = nil
@@ -112,10 +114,11 @@ function module:OnEnable()
 	self:ThrottleSync(0, syncName.mcLocked)
 	self:ThrottleSync(5, syncName.unbalance)
 	self:ThrottleSync(5, syncName.shieldwall)
+	self:ThrottleSync(60, syncName.targetrazuvious)
 end
 
 function module:OnSetup()
-	self:Message("Target Razuvious before pull to help get accurate first shout timer!", "Attention")
+	self:Sync(syncName.targetrazuvious)
 end
 
 function module:OnEngage()
@@ -217,6 +220,8 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 
 	elseif sync == syncName.shieldwall and self.db.profile.shieldwall then
 		self:Shieldwall()
+	elseif sync == syncName.targetrazuvious then
+		self:Message("Target Razuvious before pull to help get accurate first shout timer!", "Attention")
 	end
 end
 
