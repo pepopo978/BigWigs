@@ -132,6 +132,7 @@ local syncName = {
 	healeronerotate = "HorsemenHealerOneRotate" .. module.revision,
 	healertworotate = "HorsemenHealerTwoRotate" .. module.revision,
 	healerthreerotate = "HorsemenHealerThreeRotate" .. module.revision,
+	targetchanged = "HorsemenTargetChanged" .. module.revision,
 }
 
 local void_trigger = "Lady Blaumeux casts Void Zone"
@@ -150,6 +151,11 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "MarkEvent")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "MarkEvent")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "MarkEvent")
+	self:RegisterEvent("PLAYER_TARGET_CHANGED", "TargetChangedEvent")
+
+	self.lastVoidZone = nil
+	self.lastMeteor = nil
+	self.lastWrath = nil
 
 	self:ThrottleSync(3, syncName.shieldwall)
 	self:ThrottleSync(8, syncName.mark)
@@ -160,6 +166,7 @@ function module:OnEnable()
 	self:ThrottleSync(5, syncName.voidzonetimer)
 	self:ThrottleSync(5, syncName.wrathtimer)
 	self:ThrottleSync(5, syncName.meteortimer)
+	self:ThrottleSync(.2, syncName.targetchanged)
 end
 
 function module:OnSetup()
@@ -217,20 +224,17 @@ end)
 function module:OnEngage()
 	self.marks = 0
 
+	-- the initial timers are longer so set lastXXX in the future to accommodate for this
+	self.lastVoidZone = GetTime() + (timer.firstVoid - timer.void[1])
+	self.lastMeteor = GetTime() + (timer.firstMeteor - timer.meteor[1])
+	self.lastWrath = GetTime() + (timer.firstWrath - timer.wrath[1])
+
 	globalMarks = 0
 
 	if self.db.profile.mark then
 		self:Message(L["startwarn"], "Attention")
 		self:Bar(string.format(L["markbar"], self.marks + 1), timer.firstMark, icon.mark, true, "White")
 		self:DelayedMessage(timer.firstMark - 5, string.format(L["mark_warn_5"], self.marks + 1), "Urgent")
-	end
-
-	if self.db.profile.meteortimer then
-		self:Bar(L["meteorbar"], timer.firstMeteor, icon.meteor, true, "Red")
-	end
-
-	if self.db.profile.proximity then
-		self:Proximity()
 	end
 
 	for i = 0, GetNumRaidMembers() do
@@ -240,6 +244,10 @@ function module:OnEngage()
 				playerGroup = group
 			end
 		end
+	end
+
+	if UnitName("target") or UnitName("targettarget") then
+		self:TargetChanged()
 	end
 end
 
@@ -266,6 +274,39 @@ end
 function module:MarkEvent(msg)
 	if string.find(msg, L["marktrigger1"]) or string.find(msg, L["marktrigger2"]) or string.find(msg, L["marktrigger3"]) or string.find(msg, L["marktrigger4"]) then
 		self:Sync(syncName.mark)
+	end
+end
+
+function module:TargetChangedEvent(msg)
+	self:Sync(syncName.targetchanged)
+end
+
+function module:TargetChanged()
+	local target = UnitName("target")
+	local targettarget = UnitName("targettarget")
+	if self.lastVoidZone and self.db.profile.voidtimer then
+		if target == blaumeux or targettarget == blaumeux then
+			local elapsed = GetTime() - self.lastVoidZone
+			self:IntervalBar(L["voidbar"], timer.void[1] - elapsed, timer.void[2] - elapsed, icon.void, true, "Black")
+		end
+	end
+	if self.lastMeteor and self.db.profile.meteortimer then
+		if target == thane or targettarget == thane then
+			local elapsed = GetTime() - self.lastMeteor
+			self:IntervalBar(L["meteorbar"], timer.meteor[1] - elapsed, timer.meteor[2] - elapsed, icon.meteor, true, "Red")
+		end
+	end
+	if self.lastWrath and self.db.profile.wrathtimer then
+		if target == zeliek or targettarget == zeliek then
+			local elapsed = GetTime() - self.lastWrath
+			self:IntervalBar(L["wrathbar"], timer.wrath[1] - elapsed, timer.wrath[2] - elapsed, icon.wrath, true, "Yellow")
+		end
+	end
+
+	if target == zeliek or targettarget == zeliek and self.db.profile.proximity then
+		self:Proximity()
+	else
+		self:RemoveProximity()
 	end
 end
 
@@ -318,10 +359,13 @@ end
 
 function module:CHAT_MSG_MONSTER_SAY(msg)
 	if string.find(msg, L["voidtrigger"]) then
+		self.lastVoidZone = GetTime()
 		self:Sync(syncName.voidzonealert)
 	elseif string.find(msg, L["meteortrigger2"]) then
+		self.lastMeteor = GetTime()
 		self:Sync(syncName.meteortimer)
 	elseif string.find(msg, L["wrathtrigger2"]) then
+		self.lastWrath = GetTime()
 		self:Sync(syncName.wrathtimer)
 	end
 end
@@ -340,7 +384,9 @@ function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
 end
 
 function module:BigWigs_RecvSync(sync, rest, nick)
-	if sync == syncName.mark then
+	if sync == syncName.targetchanged then
+		self:TargetChanged()
+	elseif sync == syncName.mark then
 		self:Mark()
 	elseif sync == syncName.meteortimer then
 		self:Meteor()
