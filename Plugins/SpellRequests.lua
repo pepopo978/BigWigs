@@ -63,13 +63,7 @@ L:RegisterTranslations("enUS", function()
 		requestpi = "Trigger request for PI",
 		requestbl = "Trigger request for BL",
 
-		powerinfusion_trigger = "You gain Power Infusion",
-		bop_trigger = "You gain Blessing of Protection",
-		bl_trigger = "You gain Bloodlust",
-
-		bop_fades = "Blessing of Protection fades",
-		powerinfusion_fades = "Power Infusion fades",
-		bl_fades = "Bloodlust fades",
+		spell_trigger = "You gain %s",
 
 		forbearance = "Cannot request BOP while you have Forbearance",
 	}
@@ -225,12 +219,10 @@ function BigWigsSpellRequests:OnEnable()
 end
 
 function BigWigsSpellRequests:CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS(msg)
-	if string.find(msg, L["bop_trigger"]) and self.db.profile[Spells.bop.shortName] then
-		self:TriggerEvent("BigWigs_SendSync", self.sync.receivedBOP .. " " .. self.playerName)
-	elseif string.find(msg, L["powerinfusion_trigger"]) and self.db.profile[Spells.pi.shortName] then
-		self:TriggerEvent("BigWigs_SendSync", self.sync.receivedPI .. " " .. self.playerName)
-	elseif string.find(msg, L["bl_trigger"]) and self.db.profile[Spells.bl.shortName] then
-		self:TriggerEvent("BigWigs_SendSync", self.sync.receivedBL .. " " .. self.playerName)
+	for _, spellData in pairs(Spells) do
+		if string.find(msg, string.format(L["spell_trigger"], BS[spellData.spellName])) then
+			self:TriggerEvent("BigWigs_SendSync", spellData.receivedSync .. " " .. self.playerName)
+		end
 	end
 end
 
