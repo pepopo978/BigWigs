@@ -5,6 +5,7 @@ local BS = AceLibrary("Babble-Spell-2.2")
 local Spells = {
 	pi = {
 		spellName = "Power Infusion",
+		shortName = "pi",
 		requestSync = "BWREQPI",
 		receivedSync = "BWRECVPI",
 		cooldownSync = "BWREQCDPI",
@@ -15,6 +16,7 @@ local Spells = {
 	},
 	bop = {
 		spellName = "Blessing of Protection",
+		shortName = "bop",
 		requestSync = "BWREQBOP",
 		receivedSync = "BWRECVBOP",
 		cooldownSync = "BWREQCDBOP",
@@ -25,6 +27,7 @@ local Spells = {
 	},
 	bl = {
 		spellName = "Bloodlust",
+		shortName = "bl",
 		requestSync = "BWREQBL",
 		receivedSync = "BWRECVBL",
 		cooldownSync = "BWREQCDBL",
@@ -125,10 +128,10 @@ BigWigsSpellRequests.consoleOptions = {
 			desc = L["bopdesc"],
 			order = 1,
 			get = function()
-				return BigWigsSpellRequests.db.profile.bop
+				return BigWigsSpellRequests.db.profile[Spells.bop.shortName]
 			end,
 			set = function(v)
-				BigWigsSpellRequests.db.profile.bop = v
+				BigWigsSpellRequests.db.profile[Spells.bop.shortName] = v
 			end,
 		},
 		powerinfusion = {
@@ -137,10 +140,10 @@ BigWigsSpellRequests.consoleOptions = {
 			desc = L["powerinfusiondesc"],
 			order = 10,
 			get = function()
-				return BigWigsSpellRequests.db.profile.powerinfusion
+				return BigWigsSpellRequests.db.profile[Spells.pi.shortName]
 			end,
 			set = function(v)
-				BigWigsSpellRequests.db.profile.powerinfusion = v
+				BigWigsSpellRequests.db.profile[Spells.pi.shortName] = v
 			end,
 		},
 		bloodlust = {
@@ -149,10 +152,10 @@ BigWigsSpellRequests.consoleOptions = {
 			desc = L["bloodlustdesc"],
 			order = 15,
 			get = function()
-				return BigWigsSpellRequests.db.profile.bloodlust
+				return BigWigsSpellRequests.db.profile[Spells.bl.shortName]
 			end,
 			set = function(v)
-				BigWigsSpellRequests.db.profile.bloodlust = v
+				BigWigsSpellRequests.db.profile[Spells.bl.shortName] = v
 			end,
 		},
 		spacer = {
@@ -222,11 +225,11 @@ function BigWigsSpellRequests:OnEnable()
 end
 
 function BigWigsSpellRequests:CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS(msg)
-	if string.find(msg, L["bop_trigger"]) and self.db.profile.bop then
+	if string.find(msg, L["bop_trigger"]) and self.db.profile[Spells.bop.shortName] then
 		self:TriggerEvent("BigWigs_SendSync", self.sync.receivedBOP .. " " .. self.playerName)
-	elseif string.find(msg, L["powerinfusion_trigger"]) and self.db.profile.powerinfusion then
+	elseif string.find(msg, L["powerinfusion_trigger"]) and self.db.profile[Spells.pi.shortName] then
 		self:TriggerEvent("BigWigs_SendSync", self.sync.receivedPI .. " " .. self.playerName)
-	elseif string.find(msg, L["bl_trigger"]) and self.db.profile.bloodlust then
+	elseif string.find(msg, L["bl_trigger"]) and self.db.profile[Spells.bl.shortName] then
 		self:TriggerEvent("BigWigs_SendSync", self.sync.receivedBL .. " " .. self.playerName)
 	end
 end
@@ -250,7 +253,7 @@ end
 function BigWigsSpellRequests:BigWigs_RecvSync(sync, data)
 	for _, spellData in pairs(Spells) do
 		-- if this is a request check if we have the spell
-		if sync == spellData.requestSync and spellData.hasSpell then
+		if sync == spellData.requestSync and spellData.hasSpell and self.db.profile[spellData.shortName] then
 			local playerName = data
 			-- check cooldown
 			local cd = self:CheckCooldown(spellData.spellSlot)
@@ -285,7 +288,7 @@ function BigWigsSpellRequests:BigWigs_RecvSync(sync, data)
 				self:Message(string.format("%s CD for %s: %d seconds", cooldownPlayerName, spellName, cooldown),
 						"Personal", false)
 			end
-		elseif sync == spellData.receivedSync then
+		elseif sync == spellData.receivedSync and self.db.profile[spellData.shortName] then
 			local playerName = data
 
 			-- player has received the spell, hide the bar if visible
