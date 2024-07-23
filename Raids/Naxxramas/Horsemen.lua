@@ -4,11 +4,12 @@ local mograine = AceLibrary("Babble-Boss-2.2")["Highlord Mograine"]
 local zeliek = AceLibrary("Babble-Boss-2.2")["Sir Zeliek"]
 local blaumeux = AceLibrary("Babble-Boss-2.2")["Lady Blaumeux"]
 
-module.revision = 20005
+module.revision = 20006
 module.enabletrigger = { thane, mograine, zeliek, blaumeux }
-module.toggleoptions = { "mark", "marksounds", "shieldwall", -1, "meteor", "void", "wrath",
-                         "bosskill", "proximity", -1, "healeronerotate",
-                         "healertworotate", "healerthreerotate" }
+module.toggleoptions = { "mark", "marksounds", "shieldwall", -1,
+                         "meteortimer", "voidtimer", "wrathtimer", "voidalert", -1,
+                         "bosskill", "proximity", -1,
+                         "healeronerotate", "healertworotate", "healerthreerotate" }
 -- Proximity Plugin
 module.proximityCheck = function(unit)
 	return CheckInteractDistance(unit, 2)
@@ -36,17 +37,21 @@ L:RegisterTranslations("enUS", function()
 		shieldwall_name = "Shieldwall Alerts",
 		shieldwall_desc = "Warn for shieldwall",
 
-		void_cmd = "void",
-		void_name = "Void Zone Alerts",
-		void_desc = "Warn on Lady Blaumeux casting Void Zone.",
+		meteortimer_cmd = "meteortimer",
+		meteortimer_name = "Meteor Window Timer",
+		meteortimer_desc = "Timer till next Meteor (every 12-15 sec).",
 
-		meteor_cmd = "meteor",
-		meteor_name = "Meteor Alerts",
-		meteor_desc = "Warn on Thane casting Meteor.",
+		voidtimer_cmd = "voidtimer",
+		voidtimer_name = "Void Zone Timer",
+		voidtimer_desc = "Timer till next Void Zone (every 12 sec).",
 
-		wrath_cmd = "wrath",
-		wrath_name = "Holy Wrath Alerts",
-		wrath_desc = "Warn on Zeliek casting Wrath.",
+		wrathtimer_cmd = "wrath",
+		wrathtimer_name = "Holy Wrath Window Timer",
+		wrathtimer_desc = "Timer till next holy wrath (every 10-14 sec).",
+
+		voidalert_cmd = "void",
+		voidalert_name = "Void Zone Alerts",
+		voidalert_desc = "Warn on Lady Blaumeux casting Void Zone.",
 
 		markbar = "Mark %d",
 		mark_warn = "Mark %d!",
@@ -120,9 +125,10 @@ local icon = {
 local syncName = {
 	shieldwall = "HorsemenShieldWall" .. module.revision,
 	mark = "HorsemenMark" .. module.revision,
-	DelayedVoidZone = "HorsemenDelayedVoidZone" .. module.revision,
-	wrath = "HorsemenWrath" .. module.revision,
-	meteor = "HorsemenMeteor" .. module.revision,
+	voidzonealert = "HorsemenDelayedVoidZone" .. module.revision,
+	voidzonetimer = "HorsemenVoidZoneTimer" .. module.revision,
+	wrathtimer = "HorsemenWrath" .. module.revision,
+	meteortimer = "HorsemenMeteor" .. module.revision,
 	healeronerotate = "HorsemenHealerOneRotate" .. module.revision,
 	healertworotate = "HorsemenHealerTwoRotate" .. module.revision,
 	healerthreerotate = "HorsemenHealerThreeRotate" .. module.revision,
@@ -150,9 +156,10 @@ function module:OnEnable()
 	self:ThrottleSync(8, syncName.healeronerotate)
 	self:ThrottleSync(8, syncName.healertworotate)
 	self:ThrottleSync(8, syncName.healerthreerotate)
-	self:ThrottleSync(5, syncName.DelayedVoidZone)
-	self:ThrottleSync(5, syncName.wrath)
-	self:ThrottleSync(5, syncName.meteor)
+	self:ThrottleSync(5, syncName.voidzonealert)
+	self:ThrottleSync(5, syncName.voidzonetimer)
+	self:ThrottleSync(5, syncName.wrathtimer)
+	self:ThrottleSync(5, syncName.meteortimer)
 end
 
 function module:OnSetup()
@@ -217,15 +224,11 @@ function module:OnEngage()
 		self:Bar(string.format(L["markbar"], self.marks + 1), timer.firstMark, icon.mark, true, "White")
 		self:DelayedMessage(timer.firstMark - 5, string.format(L["mark_warn_5"], self.marks + 1), "Urgent")
 	end
-	if self.db.profile.meteor then
+
+	if self.db.profile.meteortimer then
 		self:Bar(L["meteorbar"], timer.firstMeteor, icon.meteor, true, "Red")
 	end
-	if self.db.profile.wrath then
-		self:Bar(L["wrathbar"], timer.firstWrath, icon.wrath, true, "Yellow")
-	end
-	if self.db.profile.void then
-		self:Bar(L["voidbar"], timer.firstVoid, icon.void, true, "Black")
-	end
+
 	if self.db.profile.proximity then
 		self:Proximity()
 	end
@@ -266,16 +269,16 @@ function module:MarkEvent(msg)
 	end
 end
 
-function module:DelayedVoidZone(msg)
-	if string.find(msg, void_trigger) then
-		self:Sync(syncName.DelayedVoidZone)
-	end
-end
-
 function module:VoidZoneEvent()
-	self:ScheduleEvent("DelayedVoidZoneEvent", self.DelayedVoidZoneEvent, 0.2, self)
-	self:WarningSign(icon.void, 3)
-	self:IntervalBar(L["voidbar"], timer.void[1], timer.void[2], icon.void, true, "Black")
+	if self.db.profile.voidalert then
+		self:ScheduleEvent("DelayedVoidZoneEvent", self.DelayedVoidZoneEvent, 0.2, self)
+		self:WarningSign(icon.void, 3)
+	end
+	if self.db.profile.voidtimer then
+		if UnitName("target") == blaumeux or UnitName("targettarget") == blaumeux then
+			self:IntervalBar(L["voidbar"], timer.void[1], timer.void[2], icon.void, true, "Black")
+		end
+	end
 end
 
 function module:DelayedVoidZoneEvent()
@@ -294,7 +297,6 @@ function module:DelayedVoidZoneEvent()
 end
 
 function module:CheckTarget()
-
 	if UnitName("target") == blaumeux then
 		return UnitName("targettarget")
 	else
@@ -316,11 +318,11 @@ end
 
 function module:CHAT_MSG_MONSTER_SAY(msg)
 	if string.find(msg, L["voidtrigger"]) then
-		self:Sync(syncName.DelayedVoidZone)
+		self:Sync(syncName.voidzonealert)
 	elseif string.find(msg, L["meteortrigger2"]) then
-		self:Sync(syncName.meteor)
+		self:Sync(syncName.meteortimer)
 	elseif string.find(msg, L["wrathtrigger2"]) then
-		self:Sync(syncName.wrath)
+		self:Sync(syncName.wrathtimer)
 	end
 end
 
@@ -340,11 +342,11 @@ end
 function module:BigWigs_RecvSync(sync, rest, nick)
 	if sync == syncName.mark then
 		self:Mark()
-	elseif sync == syncName.meteor then
+	elseif sync == syncName.meteortimer then
 		self:Meteor()
-	elseif sync == syncName.wrath then
+	elseif sync == syncName.wrathtimer then
 		self:Wrath()
-	elseif sync == syncName.DelayedVoidZone then
+	elseif sync == syncName.voidzonealert or sync == syncName.voidzonetimer then
 		self:VoidZoneEvent()
 	elseif sync == syncName.shieldwall and rest then
 		self:Shieldwall(rest)
@@ -467,16 +469,20 @@ function module:HealerThree()
 end
 
 function module:Meteor()
-	if self.db.profile.meteor then
-		self:Message(L["meteorwarn"], "Important")
-		self:IntervalBar(L["meteorbar"], timer.meteor[1], timer.meteor[2], icon.meteor, true, "Red")
+	if self.db.profile.meteortimer then
+		-- show meteor timer only if Thane is target or targettarget
+		if UnitName("target") == thane or UnitName("targettarget") == thane then
+			self:IntervalBar(L["meteorbar"], timer.meteor[1], timer.meteor[2], icon.meteor, true, "Red")
+		end
 	end
 end
 
 function module:Wrath()
-	if self.db.profile.wrath then
-		self:Message(L["wrathwarn"], "Important")
-		self:IntervalBar(L["wrathbar"], timer.wrath[1], timer.wrath[2], icon.wrath, true, "Yellow")
+	if self.db.profile.wrathtimer then
+		-- show holy wrath timer only if Thane is target or targettarget
+		if UnitName("target") == zeliek or UnitName("targettarget") == zeliek then
+			self:IntervalBar(L["wrathbar"], timer.wrath[1], timer.wrath[2], icon.wrath, true, "Yellow")
+		end
 	end
 end
 
