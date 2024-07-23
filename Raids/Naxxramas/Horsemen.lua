@@ -303,8 +303,10 @@ function module:TargetChanged()
 		end
 	end
 
-	if target == zeliek or targettarget == zeliek and self.db.profile.proximity then
-		self:Proximity()
+	if self.db.profile.proximity then
+		if target == zeliek or targettarget == zeliek then
+			self:Proximity()
+		end
 	else
 		self:RemoveProximity()
 	end
