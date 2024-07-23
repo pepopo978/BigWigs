@@ -84,6 +84,7 @@ Plugins\Farclip.lua
 Plugins\FrostBlast.lua
 Plugins\Pulltimer.lua
 Plugins\CombatAnnouncement.lua
+Plugins\SpellRequests.lua
 
 Raids\ZG\Arlokk.lua
 Raids\ZG\Jeklik.lua
