@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Atiesh", "Stratholme")
 
-module.revision = 30091
+module.revision = 30092
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"unholyaura", "shadowbolt", "breathofsargeras", "bosskill"}
 module.zonename = {
@@ -148,15 +148,7 @@ function module:OnDisengage()
 end
 
 function module:MINIMAP_ZONE_CHANGED(msg)
-	if GetMinimapZoneText() == "Stratholme" and self.core:IsModuleActive(module.translatedName) then
-		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
-		DEFAULT_CHAT_FRAME:AddMessage("|cff7fff7f   [BigWigs]|r - Auto-Rebooting Module: "..module.translatedName)
-	
-	elseif GetMinimapZoneText() == "Eastern Plaguelands" and self.core:IsModuleActive(module.translatedName) then
-		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
-		DEFAULT_CHAT_FRAME:AddMessage("|cff7fff7f   [BigWigs]|r - Auto-Rebooting Module: "..module.translatedName)
-	
-	elseif GetMinimapZoneText() == "Elders' Square" and not self.core:IsModuleActive(module.translatedName) then
+	if GetMinimapZoneText() == "Elders' Square" and not self.core:IsModuleActive(module.translatedName) then
 		self.core:EnableModule(module.translatedName)
 	end
 end
