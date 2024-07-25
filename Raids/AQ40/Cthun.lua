@@ -29,6 +29,7 @@ module.defaultDB = {
 	mapAlpha = 1,
 	mapScale = 1,
 	autotarget = false,
+	window = false,
 }
 
 L:RegisterTranslations("enUS", function()

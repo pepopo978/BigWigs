@@ -4,9 +4,9 @@ local mograine = AceLibrary("Babble-Boss-2.2")["Highlord Mograine"]
 local zeliek = AceLibrary("Babble-Boss-2.2")["Sir Zeliek"]
 local blaumeux = AceLibrary("Babble-Boss-2.2")["Lady Blaumeux"]
 
-module.revision = 20006
+module.revision = 20007
 module.enabletrigger = { thane, mograine, zeliek, blaumeux }
-module.toggleoptions = { "mark", "marksounds", "shieldwall", -1,
+module.toggleoptions = { "mark", "marksounds", "shieldwall", "hpframe", -1,
                          "meteortimer", "voidtimer", "wrathtimer", "voidalert", -1,
                          "bosskill", "proximity", -1,
                          "healeronerotate", "healertworotate", "healerthreerotate" }
@@ -19,6 +19,8 @@ module.defaultDB = {
 	healeronerotate = false,
 	healertworotate = false,
 	healerthreerotate = false,
+	bossframeposx = 100,
+	bossframeposy = 500,
 }
 
 L:RegisterTranslations("enUS", function()
@@ -36,6 +38,10 @@ L:RegisterTranslations("enUS", function()
 		shieldwall_cmd = "shieldwall",
 		shieldwall_name = "Shieldwall Alerts",
 		shieldwall_desc = "Warn for shieldwall",
+
+		hpframe_cmd = "hpframe",
+		hpframe_name = "Boss HP Frame",
+		hpframe_desc = "Shows a frame with the bosses' HP",
 
 		meteortimer_cmd = "meteortimer",
 		meteortimer_name = "Meteor Window Timer",
@@ -157,6 +163,13 @@ function module:OnEnable()
 	self.lastMeteor = nil
 	self.lastWrath = nil
 
+	self.shieldWallTimers = {}
+
+	self.thaneHp = 100
+	self.mograineHp = 100
+	self.zeliekHp = 100
+	self.blaumeuxHp = 100
+
 	self:ThrottleSync(3, syncName.shieldwall)
 	self:ThrottleSync(8, syncName.mark)
 	self:ThrottleSync(8, syncName.healeronerotate)
@@ -167,6 +180,8 @@ function module:OnEnable()
 	self:ThrottleSync(5, syncName.wrathtimer)
 	self:ThrottleSync(5, syncName.meteortimer)
 	self:ThrottleSync(.2, syncName.targetchanged)
+
+	self:UpdateBossStatusFrame()
 end
 
 function module:OnSetup()
@@ -180,48 +195,8 @@ function module:OnSetup()
 	times = {}
 end
 
-local fhAlert = CreateFrame("Frame", "fhAlert");
-
-fhAlert:RegisterEvent("CHAT_MSG_ADDON")
-
-fhAlert:SetPoint("CENTER", UIParent, "CENTER", 0, -100);
-
-fhAlert.text = fhAlert:CreateFontString("$parentText", "OVERLAY");
-fhAlert.text:Hide()
-fhAlert.text:SetWidth(800);
-fhAlert.text:SetHeight(108);
-fhAlert.text:SetFont(STANDARD_TEXT_FONT, 50, "OUTLINE");
-fhAlert.text:SetPoint("CENTER", UIParent, 0, 100);
-fhAlert.text:SetJustifyV("MIDDLE");
-fhAlert.text:SetJustifyH("CENTER");
-
-local fh_alert = CreateFrame('Frame')
-fh_alert:Hide()
-function fh_alert_marks(message)
-	fhAlert.text:SetText(message);
-	fh_alert:Show()
-end
-
-fhAlert.healerIndex = 0
-
-fhAlert:SetScript("OnEvent", function()
-	if event then
-		if event == 'CHAT_MSG_ADDON' and arg1 == "TWABW" then
-			local data = string.split(arg2, ' ')
-			for _, d in data do
-				for healerIndex = 1, 3 do
-					if string.find(d, '[' .. healerIndex .. ']' .. UnitName('player'), 1, true) then
-						fhAlert.healerIndex = healerIndex
-						DEFAULT_CHAT_FRAME:AddMessage("4HM Healer index set to " .. healerIndex)
-						break
-					end
-				end
-			end
-		end
-	end
-end)
-
 function module:OnEngage()
+	self.shieldWallTimers = {}
 	self.marks = 0
 
 	-- the initial timers are longer so set lastXXX in the future to accommodate for this
@@ -249,26 +224,247 @@ function module:OnEngage()
 	if UnitName("target") or UnitName("targettarget") then
 		self:TargetChanged()
 	end
+
+	self.thaneHp = 100
+	self.mograineHp = 100
+	self.zeliekHp = 100
+	self.blaumeuxHp = 100
+
+	self.thaneDied = false
+	self.mograineDied = false
+	self.zeliekDied = false
+	self.blaumeuxDied = false
+
+	if self.db.profile.hpframe then
+		self:ScheduleRepeatingEvent("CheckHps", self.CheckHps, 1, self)
+	end
 end
 
-fh_alert:SetScript("OnShow", function()
-	this.startTime = GetTime()
-	fhAlert.text:Show()
-end)
-fh_alert:SetScript("OnHide", function()
-	fhAlert.text:Hide()
-end)
-fh_alert:SetScript("OnUpdate", function()
-	local plus = 5
-	local gt = GetTime() * 1000
-	local st = (this.startTime + plus) * 1000
-	if gt >= st then
-		fh_alert:Hide()
-	end
-end)
-
 function module:OnDisengage()
+	self.thaneHp = 100
+	self.mograineHp = 100
+	self.zeliekHp = 100
+	self.blaumeuxHp = 100
+
+	self.thaneDied = false
+	self.mograineDied = false
+	self.zeliekDied = false
+	self.blaumeuxDied = false
+
+	self.shieldWallTimers = {}
+
 	self:RemoveProximity()
+
+	self:CancelScheduledEvent("CheckHps")
+
+	self.bossStatusFrame:Hide()
+end
+
+function module:UpdateBossStatusFrame()
+	if not self.db.profile.hpframe then
+		return
+	end
+
+	-- create frame if needed
+	if not self.bossStatusFrame then
+		self.bossStatusFrame = CreateFrame("Frame", "HorsemenBossStatusFrame", UIParent)
+		self.bossStatusFrame.module = self
+		self.bossStatusFrame:SetWidth(150)
+		self.bossStatusFrame:SetHeight(70)
+		self.bossStatusFrame:ClearAllPoints()
+		local s = self.bossStatusFrame:GetEffectiveScale()
+		self.bossStatusFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", (self.db.profile.bossframeposx or 100) / s, (self.db.profile.bossframeposy or 500) / s)
+		self.bossStatusFrame:SetBackdrop({
+			bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+			edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+			tile = true,
+			tileSize = 16,
+			edgeSize = 16,
+			insets = { left = 8, right = 8, top = 8, bottom = 8 }
+		})
+		self.bossStatusFrame:SetBackdropColor(0, 0, 0, 1)
+
+		-- allow dragging
+		self.bossStatusFrame:SetMovable(true)
+		self.bossStatusFrame:EnableMouse(true)
+		self.bossStatusFrame:RegisterForDrag("LeftButton")
+		self.bossStatusFrame:SetScript("OnDragStart", function()
+			this:StartMoving()
+		end)
+		self.bossStatusFrame:SetScript("OnDragStop", function()
+			this:StopMovingOrSizing()
+
+			local scale = this:GetEffectiveScale()
+			this.module.db.profile.bossframeposx = this:GetLeft() * scale
+			this.module.db.profile.bossframeposy = this:GetTop() * scale
+		end)
+
+		local font = "Fonts\\FRIZQT__.TTF"
+		local fontSize = 9
+
+		self.bossStatusFrame.thane = self.bossStatusFrame:CreateFontString(nil, "ARTWORK")
+		self.bossStatusFrame.thane:SetFontObject(GameFontNormal)
+		self.bossStatusFrame.thane:SetPoint("TOPLEFT", self.bossStatusFrame, "TOPLEFT", 10, -10)
+		self.bossStatusFrame.thane:SetText("Thane:")
+		self.bossStatusFrame.thane:SetFont(font, fontSize)
+
+		self.bossStatusFrame.thaneHp = self.bossStatusFrame:CreateFontString(nil, "ARTWORK")
+		self.bossStatusFrame.thaneHp:SetFontObject(GameFontNormal)
+		self.bossStatusFrame.thaneHp:SetPoint("TOP", self.bossStatusFrame, "TOP", 0, -10)
+		self.bossStatusFrame.thaneHp:SetJustifyH("CENTER")
+		self.bossStatusFrame.thaneHp:SetFont(font, fontSize)
+
+		self.bossStatusFrame.thaneShieldWall = self.bossStatusFrame:CreateFontString(nil, "ARTWORK")
+		self.bossStatusFrame.thaneShieldWall:SetFontObject(GameFontNormal)
+		self.bossStatusFrame.thaneShieldWall:SetPoint("TOPLEFT", self.bossStatusFrame.thaneHp, "TOPRIGHT", 5, 0)
+		self.bossStatusFrame.thaneShieldWall:SetJustifyH("RIGHT")
+		self.bossStatusFrame.thaneShieldWall:SetTextColor(1, 0, 0)
+		self.bossStatusFrame.thaneShieldWall:SetFont(font, fontSize)
+
+		self.bossStatusFrame.mograine = self.bossStatusFrame:CreateFontString(nil, "ARTWORK")
+		self.bossStatusFrame.mograine:SetFontObject(GameFontNormal)
+		self.bossStatusFrame.mograine:SetPoint("TOPLEFT", self.bossStatusFrame.thane, "BOTTOMLEFT", 0, -5)
+		self.bossStatusFrame.mograine:SetText("Mograine:")
+		self.bossStatusFrame.mograine:SetFont(font, fontSize)
+
+		self.bossStatusFrame.mograineHp = self.bossStatusFrame:CreateFontString(nil, "ARTWORK")
+		self.bossStatusFrame.mograineHp:SetFontObject(GameFontNormal)
+		self.bossStatusFrame.mograineHp:SetPoint("TOPLEFT", self.bossStatusFrame.thaneHp, "BOTTOMLEFT", 0, -5)
+		self.bossStatusFrame.mograineHp:SetJustifyH("CENTER")
+		self.bossStatusFrame.mograineHp:SetFont(font, fontSize)
+
+		self.bossStatusFrame.mograineShieldWall = self.bossStatusFrame:CreateFontString(nil, "ARTWORK")
+		self.bossStatusFrame.mograineShieldWall:SetFontObject(GameFontNormal)
+		self.bossStatusFrame.mograineShieldWall:SetPoint("TOPLEFT", self.bossStatusFrame.mograineHp, "TOPRIGHT", 5, 0)
+		self.bossStatusFrame.mograineShieldWall:SetJustifyH("RIGHT")
+		self.bossStatusFrame.mograineShieldWall:SetTextColor(1, 0, 0)
+		self.bossStatusFrame.mograineShieldWall:SetFont(font, fontSize)
+
+		self.bossStatusFrame.blaumeux = self.bossStatusFrame:CreateFontString(nil, "ARTWORK")
+		self.bossStatusFrame.blaumeux:SetFontObject(GameFontNormal)
+		self.bossStatusFrame.blaumeux:SetPoint("TOPLEFT", self.bossStatusFrame.mograine, "BOTTOMLEFT", 0, -5)
+		self.bossStatusFrame.blaumeux:SetText("Blaumeux:")
+		self.bossStatusFrame.blaumeux:SetFont(font, fontSize)
+
+		self.bossStatusFrame.blaumeuxHp = self.bossStatusFrame:CreateFontString(nil, "ARTWORK")
+		self.bossStatusFrame.blaumeuxHp:SetFontObject(GameFontNormal)
+		self.bossStatusFrame.blaumeuxHp:SetPoint("TOPLEFT", self.bossStatusFrame.mograineHp, "BOTTOMLEFT", 0, -5)
+		self.bossStatusFrame.blaumeuxHp:SetJustifyH("CENTER")
+		self.bossStatusFrame.blaumeuxHp:SetFont(font, fontSize)
+
+		self.bossStatusFrame.blaumeuxShieldWall = self.bossStatusFrame:CreateFontString(nil, "ARTWORK")
+		self.bossStatusFrame.blaumeuxShieldWall:SetFontObject(GameFontNormal)
+		self.bossStatusFrame.blaumeuxShieldWall:SetPoint("TOPLEFT", self.bossStatusFrame.blaumeuxHp, "TOPRIGHT", 5, 0)
+		self.bossStatusFrame.blaumeuxShieldWall:SetJustifyH("RIGHT")
+		self.bossStatusFrame.blaumeuxShieldWall:SetTextColor(1, 0, 0)
+		self.bossStatusFrame.blaumeuxShieldWall:SetFont(font, fontSize)
+
+		self.bossStatusFrame.zeliek = self.bossStatusFrame:CreateFontString(nil, "ARTWORK")
+		self.bossStatusFrame.zeliek:SetFontObject(GameFontNormal)
+		self.bossStatusFrame.zeliek:SetPoint("TOPLEFT", self.bossStatusFrame.blaumeux, "BOTTOMLEFT", 0, -5)
+		self.bossStatusFrame.zeliek:SetText("Zeliek:")
+		self.bossStatusFrame.zeliek:SetFont(font, fontSize)
+
+		self.bossStatusFrame.zeliekHp = self.bossStatusFrame:CreateFontString(nil, "ARTWORK")
+		self.bossStatusFrame.zeliekHp:SetFontObject(GameFontNormal)
+		self.bossStatusFrame.zeliekHp:SetPoint("TOPLEFT", self.bossStatusFrame.blaumeuxHp, "BOTTOMLEFT", 0, -5)
+		self.bossStatusFrame.zeliekHp:SetJustifyH("CENTER")
+		self.bossStatusFrame.zeliekHp:SetFont(font, fontSize)
+
+		self.bossStatusFrame.zeliekShieldWall = self.bossStatusFrame:CreateFontString(nil, "ARTWORK")
+		self.bossStatusFrame.zeliekShieldWall:SetFontObject(GameFontNormal)
+		self.bossStatusFrame.zeliekShieldWall:SetPoint("TOPLEFT", self.bossStatusFrame.zeliekHp, "TOPRIGHT", 5, 0)
+		self.bossStatusFrame.zeliekShieldWall:SetJustifyH("RIGHT")
+		self.bossStatusFrame.zeliekShieldWall:SetTextColor(1, 0, 0)
+		self.bossStatusFrame.zeliekShieldWall:SetFont(font, fontSize)
+	end
+	self.bossStatusFrame:Show()
+
+	self.bossStatusFrame.thaneHp:SetText(string.format("%d%%", self.thaneHp))
+	self.bossStatusFrame.mograineHp:SetText(string.format("%d%%", self.mograineHp))
+	self.bossStatusFrame.blaumeuxHp:SetText(string.format("%d%%", self.blaumeuxHp))
+	self.bossStatusFrame.zeliekHp:SetText(string.format("%d%%", self.zeliekHp))
+
+	self.bossStatusFrame.zeliekShieldWall:SetText("")
+	self.bossStatusFrame.blaumeuxShieldWall:SetText("")
+	self.bossStatusFrame.mograineShieldWall:SetText("")
+	self.bossStatusFrame.thaneShieldWall:SetText("")
+
+	-- check for shield walls
+	local now = GetTime()
+	for mob, time in pairs(self.shieldWallTimers) do
+		if mob == thane then
+			if now < time + timer.shieldwall then
+				self.bossStatusFrame.thaneShieldWall:SetText(string.format("SWall: %.0fs", time + timer.shieldwall - now))
+			end
+		elseif mob == mograine then
+			if now < time + timer.shieldwall then
+				self.bossStatusFrame.mograineShieldWall:SetText(string.format("SWall: %.0fs", time + timer.shieldwall - now))
+			end
+		elseif mob == blaumeux then
+			if now < time + timer.shieldwall then
+				self.bossStatusFrame.blaumeuxShieldWall:SetText(string.format("SWall: %.0fs", time + timer.shieldwall - now))
+			end
+		elseif mob == zeliek then
+			if now < time + timer.shieldwall then
+				self.bossStatusFrame.zeliekShieldWall:SetText(string.format("SWall: %.0fs", time + timer.shieldwall - now))
+			end
+		end
+	end
+end
+
+function module:CheckHps()
+	local thaneHp, mograineHp, zeliekHp, blaumeuxHp
+
+	-- check if dead
+	if self.thaneDied then
+		thaneHp = 0
+	end
+	if self.mograineDied then
+		mograineHp = 0
+	end
+	if self.zeliekDied then
+		zeliekHp = 0
+	end
+	if self.blaumeuxDied then
+		blaumeuxHp = 0
+	end
+
+	for i = 1, GetNumRaidMembers() do
+		local targetString = "Raid" .. i .. "Target"
+		local targetName = UnitName(targetString)
+		if targetName == thane and not thaneHp then
+			thaneHp = math.ceil((UnitHealth(targetString) / UnitHealthMax(targetString)) * 100)
+		elseif targetName == mograine and not mograineHp then
+			mograineHp = math.ceil((UnitHealth(targetString) / UnitHealthMax(targetString)) * 100)
+		elseif targetName == zeliek and not zeliekHp then
+			zeliekHp = math.ceil((UnitHealth(targetString) / UnitHealthMax(targetString)) * 100)
+		elseif targetName == blaumeux and not blaumeuxHp then
+			blaumeuxHp = math.ceil((UnitHealth(targetString) / UnitHealthMax(targetString)) * 100)
+		end
+
+		if thaneHp and mograineHp and zeliekHp and blaumeuxHp then
+			break
+		end
+	end
+
+	if thaneHp then
+		self.thaneHp = thaneHp
+	end
+
+	if mograineHp then
+		self.mograineHp = mograineHp
+	end
+
+	if zeliekHp then
+		self.zeliekHp = zeliekHp
+	end
+
+	if blaumeuxHp then
+		self.blaumeuxHp = blaumeuxHp
+	end
+
+	self:UpdateBossStatusFrame()
 end
 
 function module:MarkEvent(msg)
@@ -355,6 +551,7 @@ end
 function module:CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS(msg)
 	local _, _, mob = string.find(msg, L["shieldwalltrigger"])
 	if mob then
+		self.shieldWallTimers[mob] = GetTime()
 		self:Sync(syncName.shieldwall .. " " .. mob)
 	end
 end
@@ -373,11 +570,28 @@ function module:CHAT_MSG_MONSTER_SAY(msg)
 end
 
 function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
-	if msg == string.format(UNITDIESOTHER, thane) or
-			msg == string.format(UNITDIESOTHER, zeliek) or
-			msg == string.format(UNITDIESOTHER, mograine) or
-			msg == string.format(UNITDIESOTHER, blaumeux) then
+	local thaneDied = string.find(msg, string.format(UNITDIESOTHER, thane))
+	local mograineDied = string.find(msg, string.format(UNITDIESOTHER, mograine))
+	local zeliekDied = string.find(msg, string.format(UNITDIESOTHER, zeliek))
+	local blaumeuxDied = string.find(msg, string.format(UNITDIESOTHER, blaumeux))
 
+	if thaneDied then
+		self.thaneDied = true
+	end
+
+	if mograineDied then
+		self.mograineDied = true
+	end
+
+	if zeliekDied then
+		self.zeliekDied = true
+	end
+
+	if blaumeuxDied then
+		self.blaumeuxDied = true
+	end
+
+	if thaneDied or mograineDied or zeliekDied or blaumeuxDied then
 		self.deaths = self.deaths + 1
 		if self.deaths == 4 then
 			self:SendBossDeathSync()
