@@ -7,7 +7,7 @@ local blaumeux = AceLibrary("Babble-Boss-2.2")["Lady Blaumeux"]
 module.revision = 20007
 module.enabletrigger = { thane, mograine, zeliek, blaumeux }
 module.toggleoptions = { "mark", "marksounds", "shieldwall", "hpframe", -1,
-                         "meteortimer", "voidtimer", "wrathtimer", "voidalert", -1,
+                         "alwaysshowmeteor", "meteortimer", "voidtimer", "wrathtimer", "voidalert", -1,
                          "bosskill", "proximity", -1,
                          "healeronerotate", "healertworotate", "healerthreerotate" }
 -- Proximity Plugin
@@ -21,6 +21,7 @@ module.defaultDB = {
 	healerthreerotate = false,
 	bossframeposx = 100,
 	bossframeposy = 500,
+	alwaysshowmeteor = false,
 }
 
 L:RegisterTranslations("enUS", function()
@@ -43,17 +44,21 @@ L:RegisterTranslations("enUS", function()
 		hpframe_name = "Boss HP Frame",
 		hpframe_desc = "Shows a frame with the bosses' HP",
 
+		alwaysshowmeteor_cmd = "alwaysshowmeteor",
+		alwaysshowmeteor_name = "Always Show Meteor Timer",
+		alwaysshowmeteor_desc = "Show Meteor Timer even if Thane is not target",
+
 		meteortimer_cmd = "meteortimer",
 		meteortimer_name = "Meteor Window Timer",
-		meteortimer_desc = "Timer till next Meteor (every 12-15 sec).",
+		meteortimer_desc = "Timer till next Meteor (every 12-15 sec).  Requires Thane to be target or targettarget.",
 
 		voidtimer_cmd = "voidtimer",
 		voidtimer_name = "Void Zone Timer",
-		voidtimer_desc = "Timer till next Void Zone (every 12 sec).",
+		voidtimer_desc = "Timer till next Void Zone (every 12 sec).  Requires Lady Blaumeux to be target or targettarget.",
 
 		wrathtimer_cmd = "wrath",
 		wrathtimer_name = "Holy Wrath Window Timer",
-		wrathtimer_desc = "Timer till next holy wrath (every 10-14 sec).",
+		wrathtimer_desc = "Timer till next holy wrath (every 10-14 sec).  Requires Sir Zeliek to be target or targettarget.",
 
 		voidalert_cmd = "void",
 		voidalert_name = "Void Zone Alerts",
@@ -210,6 +215,10 @@ function module:OnEngage()
 		self:Message(L["startwarn"], "Attention")
 		self:Bar(string.format(L["markbar"], self.marks + 1), timer.firstMark, icon.mark, true, "White")
 		self:DelayedMessage(timer.firstMark - 5, string.format(L["mark_warn_5"], self.marks + 1), "Urgent")
+	end
+
+	if self.db.profile.alwaysshowmeteor then
+		self:Bar(L["meteorbar"], timer.firstMeteor, icon.meteor, true, "Red")
 	end
 
 	for i = 0, GetNumRaidMembers() do
@@ -486,12 +495,16 @@ function module:TargetChanged()
 			self:IntervalBar(L["voidbar"], timer.void[1] - elapsed, timer.void[2] - elapsed, icon.void, true, "Black")
 		end
 	end
-	if self.lastMeteor and self.db.profile.meteortimer then
-		if target == thane or targettarget == thane then
-			local elapsed = GetTime() - self.lastMeteor
-			self:IntervalBar(L["meteorbar"], timer.meteor[1] - elapsed, timer.meteor[2] - elapsed, icon.meteor, true, "Red")
+
+	if self.db.profile.alwaysshowmeteor ~= true then
+		if self.lastMeteor and self.db.profile.meteortimer then
+			if target == thane or targettarget == thane then
+				local elapsed = GetTime() - self.lastMeteor
+				self:IntervalBar(L["meteorbar"], timer.meteor[1] - elapsed, timer.meteor[2] - elapsed, icon.meteor, true, "Red")
+			end
 		end
 	end
+
 	if self.lastWrath and self.db.profile.wrathtimer then
 		if target == zeliek or targettarget == zeliek then
 			local elapsed = GetTime() - self.lastWrath
@@ -733,7 +746,7 @@ end
 function module:Meteor()
 	if self.db.profile.meteortimer then
 		-- show meteor timer only if Thane is target or targettarget
-		if UnitName("target") == thane or UnitName("targettarget") == thane then
+		if self.db.profile.alwaysshowmeteor or UnitName("target") == thane or UnitName("targettarget") == thane then
 			self:IntervalBar(L["meteorbar"], timer.meteor[1], timer.meteor[2], icon.meteor, true, "Red")
 		end
 	end
