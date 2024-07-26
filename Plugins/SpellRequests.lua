@@ -41,6 +41,14 @@ local Spells = {
 		targetRequester = true,
 		allowRequests = true,
 	},
+	ivate = {
+		spellName = "Innervate",
+		spellIcon = "Spell_Nature_Lightning",
+		spellSlot = nil,
+		hasSpell = nil,
+		targetRequester = true,
+		allowRequests = true,
+	},
 	-- check cooldowns only
 	cshout = {
 		spellName = "Challenging Shout",
@@ -74,7 +82,8 @@ L:RegisterTranslations("enUS", function()
 		allowedrequests = "Allowed Requests",
 		triggerrequests = "Trigger Requests",
 		checkcooldowns = "Check Cooldowns",
-		userinterface = "User Interface",
+		requestsuserinterface = "Requests UI",
+		cooldownsuserinterface = "Cooldowns UI",
 		userinterfaceoptions = "UI Options",
 
 		showrequeststitle = "Show/Hide Requests Frame",
@@ -117,7 +126,6 @@ local function GetSpellSlot(targetSpellName)
 				break
 			end
 		end
-
 		if spellName == targetSpellName then
 			return spellSlot;
 		end
@@ -143,6 +151,11 @@ BigWigsSpellRequests.defaultDB = {
 	headerHeight = 18,
 	buttonPadding = 5,
 }
+-- add spell keys to defaultDB
+for spellKey, _ in pairs(Spells) do
+	BigWigsSpellRequests.defaultDB[spellKey] = true
+end
+
 BigWigsSpellRequests.timeoutEvent = "BigWigsSpellRequestsTimeout"
 BigWigsSpellRequests.consoleCmd = L["spellrequests"]
 BigWigsSpellRequests.revision = 30064
@@ -207,10 +220,10 @@ BigWigsSpellRequests.consoleOptions = {
 
 			}
 		},
-		userinterface = {
+		requestsuserinterface = {
 			type = "group",
-			name = L["userinterface"],
-			desc = L["userinterface"],
+			name = L["requestsuserinterface"],
+			desc = L["requestsuserinterface"],
 			order = 40,
 			args = {
 				-- show ui frame toggle
@@ -227,11 +240,24 @@ BigWigsSpellRequests.consoleOptions = {
 						BigWigsSpellRequests:UpdateRequestsFrame()
 					end
 				},
+				spacer = {
+					type = "header",
+					order = 4,
+					name = " ",
+				},
+			}
+		},
+		cooldownsuserinterface = {
+			type = "group",
+			name = L["cooldownsuserinterface"],
+			desc = L["cooldownsuserinterface"],
+			order = 50,
+			args = {
 				showcooldownsframe = {
 					type = "toggle",
 					name = L["showcooldownstitle"],
 					desc = L["showcooldownsdesc"],
-					order = 2,
+					order = 1,
 					get = function()
 						return BigWigsSpellRequests.db.profile.showcooldownsframe
 					end,
@@ -240,114 +266,109 @@ BigWigsSpellRequests.consoleOptions = {
 						BigWigsSpellRequests:UpdateCooldownsFrame()
 					end
 				},
-				userinterface = {
-					type = "group",
-					name = L["userinterfaceoptions"],
-					desc = L["userinterfaceoptions"],
-					order = 3,
-					args = {
-						resetrequestsframe = {
-							type = "execute",
-							name = "Reset Requests Frame",
-							desc = "Resets the position of the requests frame",
-							func = function()
-								BigWigsSpellRequests.db.profile.reqframex = 200
-								BigWigsSpellRequests.db.profile.reqframey = 200
-								BigWigsSpellRequests:UpdateRequestsFrame()
-							end,
-						},
-						resetcooldownsframe = {
-							type = "execute",
-							name = "Reset Cooldowns Frame",
-							desc = "Resets the position of the cooldowns frame",
-							func = function()
-								BigWigsSpellRequests.db.profile.cdframex = 300
-								BigWigsSpellRequests.db.profile.cdframey = 300
-								BigWigsSpellRequests:UpdateCooldownsFrame()
-							end,
-						},
-						buttonwidth = {
-							type = "range",
-							name = "Button Width",
-							desc = "Width of the buttons",
-							order = 1,
-							min = 15,
-							max = 100,
-							step = 1,
-							get = function()
-								return BigWigsSpellRequests.db.profile.buttonwidth
-							end,
-							set = function(v)
-								BigWigsSpellRequests.db.profile.buttonwidth = v
-								BigWigsSpellRequests:UpdateRequestsFrame()
-								BigWigsSpellRequests:UpdateCooldownsFrame()
-							end
-						},
-						buttonheight = {
-							type = "range",
-							name = "Button Height",
-							desc = "Height of the buttons",
-							order = 2,
-							min = 15,
-							max = 50,
-							step = 1,
-							get = function()
-								return BigWigsSpellRequests.db.profile.buttonheight
-							end,
-							set = function(v)
-								BigWigsSpellRequests.db.profile.buttonheight = v
-								BigWigsSpellRequests:UpdateRequestsFrame()
-								BigWigsSpellRequests:UpdateCooldownsFrame()
-							end
-						},
-						buttonPadding = {
-							type = "range",
-							name = "Button Padding",
-							desc = "Padding between buttons",
-							order = 3,
-							min = 0,
-							max = 10,
-							step = 1,
-							get = function()
-								return BigWigsSpellRequests.db.profile.buttonPadding
-							end,
-							set = function(v)
-								BigWigsSpellRequests.db.profile.buttonPadding = v
-								BigWigsSpellRequests:UpdateRequestsFrame()
-								BigWigsSpellRequests:UpdateCooldownsFrame()
-							end
-						},
-						headerHeight = {
-							type = "range",
-							name = "Header Height",
-							desc = "Height of the header",
-							order = 4,
-							min = 10,
-							max = 50,
-							step = 1,
-							get = function()
-								return BigWigsSpellRequests.db.profile.headerHeight
-							end,
-							set = function(v)
-								BigWigsSpellRequests.db.profile.headerHeight = v
-								BigWigsSpellRequests:UpdateRequestsFrame()
-								BigWigsSpellRequests:UpdateCooldownsFrame()
-							end
-						},
-					},
-				},
 				spacer = {
 					type = "header",
 					order = 4,
 					name = " ",
 				},
-				spacer2 = {
-					type = "header",
-					order = 20,
-					name = " ",
-				},
 			}
-		}
+		},
+		userinterfaceoptions = {
+			type = "group",
+			name = L["userinterfaceoptions"],
+			desc = L["userinterfaceoptions"],
+			order = 60,
+			args = {
+				resetrequestsframe = {
+					type = "execute",
+					name = "Reset Requests Frame",
+					desc = "Resets the position of the requests frame",
+					func = function()
+						BigWigsSpellRequests.db.profile.reqframex = 200
+						BigWigsSpellRequests.db.profile.reqframey = 200
+						BigWigsSpellRequests:UpdateRequestsFrame()
+					end,
+				},
+				resetcooldownsframe = {
+					type = "execute",
+					name = "Reset Cooldowns Frame",
+					desc = "Resets the position of the cooldowns frame",
+					func = function()
+						BigWigsSpellRequests.db.profile.cdframex = 300
+						BigWigsSpellRequests.db.profile.cdframey = 300
+						BigWigsSpellRequests:UpdateCooldownsFrame()
+					end,
+				},
+				buttonwidth = {
+					type = "range",
+					name = "Button Width",
+					desc = "Width of the buttons",
+					order = 1,
+					min = 15,
+					max = 100,
+					step = 1,
+					get = function()
+						return BigWigsSpellRequests.db.profile.buttonwidth
+					end,
+					set = function(v)
+						BigWigsSpellRequests.db.profile.buttonwidth = v
+						BigWigsSpellRequests:UpdateRequestsFrame()
+						BigWigsSpellRequests:UpdateCooldownsFrame()
+					end
+				},
+				buttonheight = {
+					type = "range",
+					name = "Button Height",
+					desc = "Height of the buttons",
+					order = 2,
+					min = 15,
+					max = 50,
+					step = 1,
+					get = function()
+						return BigWigsSpellRequests.db.profile.buttonheight
+					end,
+					set = function(v)
+						BigWigsSpellRequests.db.profile.buttonheight = v
+						BigWigsSpellRequests:UpdateRequestsFrame()
+						BigWigsSpellRequests:UpdateCooldownsFrame()
+					end
+				},
+				buttonPadding = {
+					type = "range",
+					name = "Button Padding",
+					desc = "Padding between buttons",
+					order = 3,
+					min = 0,
+					max = 10,
+					step = 1,
+					get = function()
+						return BigWigsSpellRequests.db.profile.buttonPadding
+					end,
+					set = function(v)
+						BigWigsSpellRequests.db.profile.buttonPadding = v
+						BigWigsSpellRequests:UpdateRequestsFrame()
+						BigWigsSpellRequests:UpdateCooldownsFrame()
+					end
+				},
+				headerHeight = {
+					type = "range",
+					name = "Header Height",
+					desc = "Height of the header",
+					order = 4,
+					min = 10,
+					max = 50,
+					step = 1,
+					get = function()
+						return BigWigsSpellRequests.db.profile.headerHeight
+					end,
+					set = function(v)
+						BigWigsSpellRequests.db.profile.headerHeight = v
+						BigWigsSpellRequests:UpdateRequestsFrame()
+						BigWigsSpellRequests:UpdateCooldownsFrame()
+					end
+				},
+			},
+		},
 	}
 }
 
@@ -376,7 +397,7 @@ for spellKey, spellData in pairs(Spells) do
 			end
 		}
 
-		BigWigsSpellRequests.consoleOptions.args.userinterface.args[spellShortName .. "reqbutton"] = {
+		BigWigsSpellRequests.consoleOptions.args.requestsuserinterface.args[spellShortName .. "reqbutton"] = {
 			type = "toggle",
 			name = string.format(L["showreqbuttontitle"], BS[spellData.spellName]),
 			desc = string.format(L["showreqbuttontitle"], BS[spellData.spellName]),
@@ -404,7 +425,7 @@ for spellKey, spellData in pairs(Spells) do
 		end
 	}
 
-	BigWigsSpellRequests.consoleOptions.args.userinterface.args[spellShortName .. "cdbutton"] = {
+	BigWigsSpellRequests.consoleOptions.args.cooldownsuserinterface.args[spellShortName .. "cdbutton"] = {
 		type = "toggle",
 		name = string.format(L["showcdbuttontitle"], BS[spellData.spellName]),
 		desc = string.format(L["showcdbuttontitle"], BS[spellData.spellName]),
