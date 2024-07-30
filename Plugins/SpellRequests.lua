@@ -49,6 +49,22 @@ local Spells = {
 		targetRequester = true,
 		allowRequests = true,
 	},
+	fearward = {
+		spellName = "Fear Ward",
+		spellIcon = "Spell_Holy_Excorcism",
+		spellSlot = nil,
+		hasSpell = nil,
+		targetRequester = true,
+		allowRequests = true,
+	},
+	sunwell = {
+		spellName = "Grace of the Sunwell",
+		spellIcon = "Spell_Holy_Mindvision",
+		spellSlot = nil,
+		hasSpell = nil,
+		targetRequester = false,
+		allowRequests = false,
+	},
 	-- check cooldowns only
 	cshout = {
 		spellName = "Challenging Shout",
