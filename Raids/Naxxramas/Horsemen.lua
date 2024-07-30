@@ -4,7 +4,7 @@ local mograine = AceLibrary("Babble-Boss-2.2")["Highlord Mograine"]
 local zeliek = AceLibrary("Babble-Boss-2.2")["Sir Zeliek"]
 local blaumeux = AceLibrary("Babble-Boss-2.2")["Lady Blaumeux"]
 
-module.revision = 20007
+module.revision = 30094
 module.enabletrigger = { thane, mograine, zeliek, blaumeux }
 module.toggleoptions = { "mark", "marksounds", "shieldwall", "hpframe", -1,
                          "alwaysshowmeteor", "meteortimer", "voidtimer", "wrathtimer", "voidalert", -1,
@@ -143,7 +143,6 @@ local syncName = {
 	healeronerotate = "HorsemenHealerOneRotate" .. module.revision,
 	healertworotate = "HorsemenHealerTwoRotate" .. module.revision,
 	healerthreerotate = "HorsemenHealerThreeRotate" .. module.revision,
-	targetchanged = "HorsemenTargetChanged" .. module.revision,
 }
 
 local void_trigger = "Lady Blaumeux casts Void Zone"
@@ -184,7 +183,6 @@ function module:OnEnable()
 	self:ThrottleSync(5, syncName.voidzonetimer)
 	self:ThrottleSync(5, syncName.wrathtimer)
 	self:ThrottleSync(5, syncName.meteortimer)
-	self:ThrottleSync(.2, syncName.targetchanged)
 
 	self:UpdateBossStatusFrame()
 end
@@ -483,7 +481,9 @@ function module:MarkEvent(msg)
 end
 
 function module:TargetChangedEvent(msg)
-	self:Sync(syncName.targetchanged)
+	if not self:IsEventScheduled("HorsemenTargetChanged") then
+		self:ScheduleEvent("HorsemenTargetChanged", self.TargetChanged, 0.1, self)
+	end
 end
 
 function module:TargetChanged()
@@ -613,9 +613,7 @@ function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
 end
 
 function module:BigWigs_RecvSync(sync, rest, nick)
-	if sync == syncName.targetchanged then
-		self:TargetChanged()
-	elseif sync == syncName.mark then
+	if sync == syncName.mark then
 		self:Mark()
 	elseif sync == syncName.meteortimer then
 		self:Meteor()
