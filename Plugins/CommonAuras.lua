@@ -1,6 +1,6 @@
 local name = "Common Auras"
 local L = AceLibrary("AceLocale-2.2"):new("BigWigs" .. name)
-local BS = AceLibrary("Babble-Spell-2.2")
+local BS = AceLibrary("Babble-Spell-2.3")
 
 local spellStatus = nil
 

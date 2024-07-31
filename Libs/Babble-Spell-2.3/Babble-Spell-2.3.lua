@@ -1,15 +1,15 @@
 ﻿--[[
-Name: Babble-Spell-2.2
+Name: Babble-Spell-2.3
 Revision: $Rev: 25188 $
 Author(s): ckknight (ckknight@gmail.com)
 Website: http://ckknight.wowinterface.com/
-Documentation: http://wiki.wowace.com/index.php/Babble-Spell-2.2
-SVN: http://svn.wowace.com/root/trunk/Babble-2.2/Babble-Spell-2.2
+Documentation: http://wiki.wowace.com/index.php/Babble-Spell-2.3
+SVN: http://svn.wowace.com/root/trunk/Babble-2.2/Babble-Spell-2.3
 Description: A library to provide localizations for spells.
 Dependencies: AceLibrary, AceLocale-2.2
 ]]
 
-local MAJOR_VERSION = "Babble-Spell-2.2"
+local MAJOR_VERSION = "Babble-Spell-2.3"
 local MINOR_VERSION = tonumber(string.sub("$Revision: 25189 $", 12, -3))
 
 if not AceLibrary then error(MAJOR_VERSION .. " requires AceLibrary") end
@@ -583,6 +583,7 @@ BabbleSpell:RegisterTranslations("enUS", function()
 		["Goblin Sapper Charge"] = true,
 		["Gouge"] = true,
 		["Grace of Air Totem"] = true,
+		["Grace of the Sunwell"] = true,
 		["Grasping Vines"] = true,
 		["Great Stamina"] = true,
 		["Greater Blessing of Kings"] = true,
@@ -2012,6 +2013,7 @@ BabbleSpell:RegisterTranslations("esES", function()
 		["Goblin Sapper Charge"] = "Carga de zapador goblin",
 		["Gouge"] = "Incapacitación",
 		["Grace of Air Totem"] = "Tótem gracia del aire",
+		["Grace of the Sunwell"] = true,
 		["Grasping Vines"] = "Parras enredadoras",
 		["Great Stamina"] = "Gran fortaleza",
 		["Greater Blessing of Kings"] = "Bendición superior de reyes",
@@ -3441,6 +3443,7 @@ BabbleSpell:RegisterTranslations("ruRU", function()
 		["Goblin Sapper Charge"] = "Гоблинская мина",
 		["Gouge"] = "Парализующий удар",
 		["Grace of Air Totem"] = "Тотем легкости воздуха",
+		["Grace of the Sunwell"] = true,
 		["Grasping Vines"] = "Хваткие лозы",
 		["Great Stamina"] = "Повышенная выносливость",
 		["Greater Blessing of Kings"] = "Великое благословение королей",
@@ -4830,6 +4833,7 @@ BabbleSpell:RegisterTranslations("deDE", function()
 		["Goblin Sapper Charge"]="Goblinpioniersprengladung",
 		["Gouge"]="Solarplexus",
 		["Grace of Air Totem"]="Totem der luftgleichen Anmut",
+		["Grace of the Sunwell"] = true,
 		["Grasping Vines"]="Greifende Ranken",
 		["Great Stamina"]="Gro\195\159e Ausdauer",
 		["Greater Blessing of Kings"]="Gro\195\159er Segen der K\195\182nige",
@@ -6136,6 +6140,7 @@ BabbleSpell:RegisterTranslations("frFR", function()
 		["Gift of the Wild"] = "Don du fauve",
 		["Gouge"] = "Suriner",
 		["Grace of Air Totem"] = "Totem de Gr\195\162ce a\195\169rienne",
+		["Grace of the Sunwell"] = true,
 		["Great Stamina"] = "Endurance sup\195\169rieure",
 		["Greater Blessing of Kings"] = "B\195\169n\195\169diction des rois sup\195\169rieure",
 		["Greater Blessing of Light"] = "B\195\169n\195\169diction de lumi\195\168re sup\195\169rieure",
@@ -7306,6 +7311,7 @@ BabbleSpell:RegisterTranslations("zhCN", function()
 		["Gift of the Wild"] = "野性赐福",
 		["Gouge"] = "凿击",
 		["Grace of Air Totem"] = "风之优雅图腾",
+		["Grace of the Sunwell"] = true,
 		["Great Stamina"] = "持久耐力",
 		["Greater Blessing of Kings"] = "强效王者祝福",
 		["Greater Blessing of Light"] = "强效光明祝福",
@@ -8469,6 +8475,7 @@ BabbleSpell:RegisterTranslations("zhTW", function()
 		["Gift of the Wild"]="野性賜福",
 		["Gouge"]="鑿擊",
 		["Grace of Air Totem"]="風之優雅圖騰",
+		["Grace of the Sunwell"] = true,
 		["Great Stamina"]="強效耐力",
 		["Greater Blessing of Kings"]="強效王者祝福",
 		["Greater Blessing of Light"]="強效光明祝福",
@@ -9660,6 +9667,7 @@ BabbleSpell:RegisterTranslations("koKR", function()
 		["Gift of the Wild"] = "야생의 선물",
 		["Gouge"] = "후려치기",
 		["Grace of Air Totem"] = "은총의 토템",
+		["Grace of the Sunwell"] = true,
 		["Great Stamina"] = "강인한 체력",
 		["Greater Blessing of Kings"] = "상급 왕의 축복",
 		["Greater Blessing of Light"] = "상급 빛의 축복",
@@ -10998,6 +11006,7 @@ local spellIcons = {
 	["Goblin Sapper Charge"]="Spell_Fire_SelfDestruct",
 	["Gouge"]="Ability_Gouge",
 	["Grace of Air Totem"]="Spell_Nature_InvisibilityTotem",
+	["Grace of the Sunwell"] = true,
 	["Grasping Vines"]="Spell_Nature_StrangleVines",
 	["Great Stamina"]="Spell_Nature_UnyeildingStamina",
 	["Greater Blessing of Kings"]="Spell_Magic_GreaterBlessingofKings",
