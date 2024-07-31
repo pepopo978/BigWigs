@@ -89,6 +89,8 @@ L:RegisterTranslations("enUS", function()
 		spellrequests = "spellrequests",
 		iconPrefix = "Interface\\Icons\\",
 
+		enable = "Enable",
+
 		title = "Spell Requests",
 		desc = "Spell Requests",
 
@@ -114,6 +116,9 @@ L:RegisterTranslations("enUS", function()
 		showreqbuttontitle = "Show %s request button",
 
 		showcdbuttontitle = "Show %s cooldown button",
+
+		ignorelisttitle = "Player Ignore List (Enter to save)",
+		ignorelistdesc = "Comma separated list of player names to ignore requests from.  Hit enter to save changes.",
 
 		triggerrequesttitle = "Request %s",
 		triggerrequestdesc = "Will notify players that can cast %s that you want it.  To use in a macro /bw extra spellrequests triggerrequests request%s.",
@@ -154,6 +159,7 @@ end
 BigWigsSpellRequests = BigWigs:NewModule(name)
 BigWigsSpellRequests.synctoken = myname
 BigWigsSpellRequests.defaultDB = {
+	enabled = true,
 	shownreqbuttons = {},
 	showncdbuttons = {},
 	showrequestsframe = false,
@@ -166,6 +172,7 @@ BigWigsSpellRequests.defaultDB = {
 	buttonheight = 22,
 	headerHeight = 18,
 	buttonPadding = 5,
+	ignorelist = {},
 }
 -- add spell keys to defaultDB
 for spellKey, _ in pairs(Spells) do
@@ -187,13 +194,61 @@ BigWigsSpellRequests.consoleOptions = {
 	name = L["title"],
 	desc = L["desc"],
 	args = {
+		enable = {
+			type = "toggle",
+			name = L["enable"],
+			desc = L["enable"],
+			order = 1,
+			get = function()
+				return BigWigsSpellRequests.db.profile.enabled
+			end,
+			set = function(v)
+				if v == true then
+					BigWigsSpellRequests.db.profile.enabled = true
+					BigWigsSpellRequests:OnEnable()
+				else
+					BigWigsSpellRequests.db.profile.enabled = false
+					BigWigsSpellRequests:OnDisable()
+				end
+			end
+		},
 		allowedrequests = {
 			type = "group",
 			name = L["allowedrequests"],
 			desc = L["allowedrequests"],
 			order = 10,
 			args = {
+				ignorelist = {
+					type = "text",
+					name = L["ignorelisttitle"],
+					desc = L["ignorelistdesc"],
+					order = 1,
+					usage = "player1, player2, player3",
+					get = function()
+						-- convert table to comma separated string
+						local ignorelist = ""
+						for playerName, _ in pairs(BigWigsSpellRequests.db.profile.ignorelist) do
+							if ignorelist == "" then
+								ignorelist = playerName
+							else
+								ignorelist = ignorelist .. ", " .. playerName
+							end
+						end
+						return ignorelist
+					end,
+					set = function(v)
+						BigWigsSpellRequests.db.profile.ignorelist = {}
 
+						-- convert comma separated string to table
+						local playernames = string.split(v, ",")
+						for key, val in pairs(playernames) do
+							if val and val ~= "" then
+								local trimmedName = string.gsub(val, "%s+", "")
+								BigWigsSpellRequests.db.profile.ignorelist[trimmedName] = true
+							end
+						end
+					end
+				}
 			}
 		},
 		triggerrequests = {
@@ -686,9 +741,21 @@ function BigWigsSpellRequests:UpdateCooldownsFrame()
 	end
 end
 
+function BigWigsSpellRequests:ScanForSpells()
+	for _, spellData in pairs(Spells) do
+		spellData.spellSlot = GetSpellSlot(BS[spellData.spellName])
+		if spellData.spellSlot then
+			spellData.hasSpell = true
+		else
+			spellData.hasSpell = false
+		end
+	end
+end
+
 function BigWigsSpellRequests:OnEnable()
 	self:RegisterEvent("BigWigs_RecvSync")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS")
+	self:RegisterEvent("LEARNED_SPELL_IN_TAB", "ScanForSpells")
 
 	self.playerName = UnitName("player")
 
@@ -697,15 +764,21 @@ function BigWigsSpellRequests:OnEnable()
 	self:ThrottleSync(0.1, modulePrefix .. cooldownRequestCommand)
 	self:ThrottleSync(0, modulePrefix .. cooldownResponseCommand)
 
-	for _, spellData in pairs(Spells) do
-		spellData.spellSlot = GetSpellSlot(BS[spellData.spellName])
-		if spellData.spellSlot then
-			spellData.hasSpell = true
-		end
-	end
+	self:ScanForSpells()
 
 	self:UpdateRequestsFrame()
 	self:UpdateCooldownsFrame()
+end
+
+function BigWigsSpellRequests:OnDisable()
+	self:UnregisterAllEvents()
+	self:CancelAllScheduledEvents()
+	if self.requestsFrame then
+		self.requestsFrame:Hide()
+	end
+	if self.cooldownsFrame then
+		self.cooldownsFrame:Hide()
+	end
 end
 
 function BigWigsSpellRequests:CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS(msg)
@@ -756,6 +829,11 @@ function BigWigsSpellRequests:BigWigs_RecvSync(sync, data)
 	-- if this is a request check if we have the spell and haven't disabled requests for it
 	if command == spellRequestCommand and spellData.hasSpell then
 		local requestingPlayerName = self:ParseRequestSpell(spellArgs)
+		-- check ignore list
+		if self.db.profile.ignorelist and self.db.profile.ignorelist[requestingPlayerName] then
+			return
+		end
+
 		-- check cooldown
 		local cd = self:CheckCooldown(spellData.spellSlot)
 		self:SendCooldownResponse(spellShortName, requestingPlayerName, self.playerName, cd)
@@ -778,6 +856,11 @@ function BigWigsSpellRequests:BigWigs_RecvSync(sync, data)
 		-- if this is a cooldown request
 	elseif command == cooldownRequestCommand and spellData.hasSpell then
 		local requestingPlayerName = self:ParseRequestCooldown(spellArgs)
+		-- check ignore list
+		if self.db.profile.ignorelist and self.db.profile.ignorelist[requestingPlayerName] then
+			return
+		end
+
 		local cd = self:CheckCooldown(spellData.spellSlot)
 		self:SendCooldownResponse(spellShortName, requestingPlayerName, self.playerName, cd)
 	elseif command == spellReceivedCommand and spellData.hasSpell then
