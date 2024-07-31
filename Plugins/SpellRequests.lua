@@ -514,18 +514,13 @@ function BigWigsSpellRequests:HasForbearance()
 end
 
 -- replace bop function
-BigWigsSpellRequests.consoleOptions.args.triggerrequests.args["requestbop"] = {
-	type = "execute",
-	name = string.format(L["showrequesttitle"], BS["Blessing of Protection"]),
-	desc = string.format(L["showrequestdesc"], BS["Blessing of Protection"]),
-	func = function()
-		if BigWigsSpellRequests:HasForbearance() then
-			BigWigsSpellRequests:Message(L["forbearance"], "Red", false)
-		else
-			BigWigsSpellRequests:SendRequestSpell("bop", UnitName("player"))
-		end
-	end,
-}
+BigWigsSpellRequests.consoleOptions.args.triggerrequests.args["requestbop"].func = function()
+	if BigWigsSpellRequests:HasForbearance() then
+		BigWigsSpellRequests:Message(L["forbearance"], "Red", false)
+	else
+		BigWigsSpellRequests:SendRequestSpell("bop", UnitName("player"))
+	end
+end
 
 function BigWigsSpellRequests:SendRequestSpell(spellShortName, requestingPlayerName)
 	if self.lastSpellRequest and GetTime() - self.lastSpellRequest < 1 then
