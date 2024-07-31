@@ -1,6 +1,6 @@
 local name = "Spell Requests"
 local L = AceLibrary("AceLocale-2.2"):new("BigWigs" .. name)
-local BS = AceLibrary("Babble-Spell-2.2")
+local BS = AceLibrary("Babble-Spell-2.3")
 
 local hasSuperWow = nil;
 if SetAutoLoot then
@@ -257,29 +257,6 @@ BigWigsSpellRequests.consoleOptions = {
 			desc = L["triggerrequests"],
 			order = 20,
 			args = {
-				-- custom trigger for bop since it has a forbearance check
-				requestbop = {
-					type = "execute",
-					name = string.format(L["showrequesttitle"], BS["Blessing of Protection"]),
-					desc = string.format(L["showrequestdesc"], BS["Blessing of Protection"]),
-					func = function()
-						local forbearanceTexture = "Interface\\Icons\\Spell_Holy_RemoveCurse"
-						-- check if they have forbearance
-						for i = 1, 16 do
-							local texture = UnitDebuff("player", i)
-							if not texture then
-								break
-							end
-							if texture == forbearanceTexture then
-								BigWigsSpellRequests:Message(L["forbearance"], "Attention", false)
-								return
-							end
-							i = i + 1
-						end
-
-						BigWigsSpellRequests:SendRequestSpell("bop", UnitName("player"))
-					end,
-				},
 			}
 		},
 		checkcooldowns = {
@@ -446,11 +423,14 @@ BigWigsSpellRequests.consoleOptions = {
 -- add options for each spell
 for spellKey, spellData in pairs(Spells) do
 	local spellShortName = spellKey -- need to store this for the closure
+	local localizedSpellName = BS[spellData.spellName]
+	spellData.localizedSpellName = localizedSpellName
+
 	if spellData.allowRequests then
 		BigWigsSpellRequests.consoleOptions.args.allowedrequests.args[spellShortName] = {
 			type = "toggle",
-			name = string.format(L["showrequesttitle"], BS[spellData.spellName]),
-			desc = string.format(L["showrequestdesc"], BS[spellData.spellName]),
+			name = string.format(L["showrequesttitle"], localizedSpellName),
+			desc = string.format(L["showrequestdesc"], localizedSpellName),
 			get = function()
 				return BigWigsSpellRequests.db.profile[spellShortName]
 			end,
@@ -461,8 +441,8 @@ for spellKey, spellData in pairs(Spells) do
 
 		BigWigsSpellRequests.consoleOptions.args.triggerrequests.args["request" .. spellShortName] = {
 			type = "execute",
-			name = string.format(L["triggerrequesttitle"], BS[spellData.spellName]),
-			desc = string.format(L["triggerrequestdesc"], BS[spellData.spellName], spellShortName),
+			name = string.format(L["triggerrequesttitle"], localizedSpellName),
+			desc = string.format(L["triggerrequestdesc"], localizedSpellName, spellShortName),
 			func = function()
 				BigWigsSpellRequests:SendRequestSpell(spellShortName, UnitName("player"))
 			end
@@ -470,8 +450,8 @@ for spellKey, spellData in pairs(Spells) do
 
 		BigWigsSpellRequests.consoleOptions.args.requestsuserinterface.args[spellShortName .. "reqbutton"] = {
 			type = "toggle",
-			name = string.format(L["showreqbuttontitle"], BS[spellData.spellName]),
-			desc = string.format(L["showreqbuttontitle"], BS[spellData.spellName]),
+			name = string.format(L["showreqbuttontitle"], localizedSpellName),
+			desc = string.format(L["showreqbuttontitle"], localizedSpellName),
 			order = 10,
 			get = function()
 				return BigWigsSpellRequests.db.profile.shownreqbuttons[spellShortName]
@@ -489,7 +469,7 @@ for spellKey, spellData in pairs(Spells) do
 
 	BigWigsSpellRequests.consoleOptions.args.checkcooldowns.args["check" .. spellShortName .. "cooldowns"] = {
 		type = "execute",
-		name = string.format(L["triggercooldownchecktitle"], BS[spellData.spellName]),
+		name = string.format(L["triggercooldownchecktitle"], localizedSpellName),
 		desc = string.format(L["triggercooldowncheckdesc"], spellShortName),
 		func = function()
 			BigWigsSpellRequests:SendRequestCooldown(spellShortName, UnitName("player"))
@@ -498,8 +478,8 @@ for spellKey, spellData in pairs(Spells) do
 
 	BigWigsSpellRequests.consoleOptions.args.cooldownsuserinterface.args[spellShortName .. "cdbutton"] = {
 		type = "toggle",
-		name = string.format(L["showcdbuttontitle"], BS[spellData.spellName]),
-		desc = string.format(L["showcdbuttontitle"], BS[spellData.spellName]),
+		name = string.format(L["showcdbuttontitle"], localizedSpellName),
+		desc = string.format(L["showcdbuttontitle"], localizedSpellName),
 		order = 30,
 		get = function()
 			return BigWigsSpellRequests.db.profile.showncdbuttons[spellShortName]
@@ -513,8 +493,39 @@ for spellKey, spellData in pairs(Spells) do
 			BigWigsSpellRequests:UpdateCooldownsFrame()
 		end
 	}
-
 end
+
+function BigWigsSpellRequests:HasForbearance()
+	local forbearanceTexture = "Interface\\Icons\\Spell_Holy_RemoveCurse"
+
+	-- check if they have forbearance
+	for i = 1, 16 do
+		local texture = UnitDebuff("player", i)
+		if not texture then
+			break
+		end
+		if texture == forbearanceTexture then
+			return true
+		end
+		i = i + 1
+	end
+
+	return nil
+end
+
+-- replace bop function
+BigWigsSpellRequests.consoleOptions.args.triggerrequests.args["requestbop"] = {
+	type = "execute",
+	name = string.format(L["showrequesttitle"], BS["Blessing of Protection"]),
+	desc = string.format(L["showrequestdesc"], BS["Blessing of Protection"]),
+	func = function()
+		if BigWigsSpellRequests:HasForbearance() then
+			BigWigsSpellRequests:Message(L["forbearance"], "Red", false)
+		else
+			BigWigsSpellRequests:SendRequestSpell("bop", UnitName("player"))
+		end
+	end,
+}
 
 function BigWigsSpellRequests:SendRequestSpell(spellShortName, requestingPlayerName)
 	if self.lastSpellRequest and GetTime() - self.lastSpellRequest < 1 then
@@ -640,7 +651,11 @@ function BigWigsSpellRequests:UpdateRequestsFrame()
 			requestButton:SetPoint("TOPLEFT", self.requestsFrame, "TOPLEFT", self.db.profile.buttonPadding, (-1 * self.db.profile.headerHeight) - self.db.profile.buttonheight * (i - 1))
 			requestButton:SetText("REQ " .. spellShortName)
 			requestButton:SetScript("OnClick", function()
-				BigWigsSpellRequests:SendRequestSpell(spellShortName, UnitName("player"))
+				if spellShortName == "bop" and BigWigsSpellRequests:HasForbearance() then
+					BigWigsSpellRequests:Message(L["forbearance"], "Red", false)
+				else
+					BigWigsSpellRequests:SendRequestSpell(spellShortName, UnitName("player"))
+				end
 			end)
 			requestButton:Show()
 			i = i + 1
@@ -783,7 +798,7 @@ end
 
 function BigWigsSpellRequests:CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS(msg)
 	for spellShortName, spellData in pairs(Spells) do
-		if string.find(msg, string.format(L["spell_trigger"], BS[spellData.spellName])) then
+		if string.find(msg, string.format(L["spell_trigger"], spellData.localizedSpellName)) then
 			-- player has received the spell, send a sync
 			BigWigsSpellRequests:SendReceivedSpell(spellShortName, self.playerName)
 		end
@@ -838,7 +853,7 @@ function BigWigsSpellRequests:BigWigs_RecvSync(sync, data)
 		local cd = self:CheckCooldown(spellData.spellSlot)
 		self:SendCooldownResponse(spellShortName, requestingPlayerName, self.playerName, cd)
 		-- show candybar saying that playername wants spellname
-		local barTitle = self:GetBarTitle(BS[spellData.spellName], requestingPlayerName)
+		local barTitle = self:GetBarTitle(spellData.localizedSpellName, requestingPlayerName)
 
 		self:TriggerEvent("BigWigs_StartBar", self, barTitle, 5, spellData.spellIcon, true, "white")
 		if spellData.targetRequester then
@@ -851,7 +866,7 @@ function BigWigsSpellRequests:BigWigs_RecvSync(sync, data)
 					TargetByName(pName, true)
 					CastSpellByName(sName)
 				end
-			end, requestingPlayerName, BS[spellData.spellName])
+			end, requestingPlayerName, spellData.localizedSpellName)
 		end
 		-- if this is a cooldown request
 	elseif command == cooldownRequestCommand and spellData.hasSpell then
@@ -866,7 +881,7 @@ function BigWigsSpellRequests:BigWigs_RecvSync(sync, data)
 	elseif command == spellReceivedCommand and spellData.hasSpell then
 		local playerName = self:ParseReceivedSpell(spellArgs)
 		-- player has received the spell, hide the bar if visible
-		local barTitle = self:GetBarTitle(BS[spellData.spellName], playerName)
+		local barTitle = self:GetBarTitle(spellData.localizedSpellName, playerName)
 		self:TriggerEvent("BigWigs_StopBar", self, barTitle)
 	elseif command == cooldownResponseCommand then
 		local requestingPlayerName, cooldownPlayerName, cooldown = self:ParseCooldownResponse(spellArgs)

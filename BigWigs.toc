@@ -35,7 +35,7 @@ Libs\AceEvent-2.0\AceEvent-2.0.lua
 Libs\AceLocale-2.2\AceLocale-2.2.lua
 Libs\AceModuleCore-2.0\AceModuleCore-2.0.lua
 Libs\Babble-Boss-2.2\Babble-Boss-2.2.lua
-Libs\Babble-Spell-2.2\Babble-Spell-2.2.lua
+Libs\Babble-Spell-2.3\Babble-Spell-2.3.lua
 Libs\Babble-Zone-2.2\Babble-Zone-2.2.lua
 Libs\Dewdrop-2.0\Dewdrop-2.0.lua
 Libs\Tablet-2.0\Tablet-2.0.lua
