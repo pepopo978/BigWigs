@@ -8,6 +8,10 @@ local L = AceLibrary("AceLocale-2.2"):new("BigWigs" .. boss)
 module.enabletrigger = {veklor, veknilash}
 module.toggleoptions = {"teleport", "enrage", "blizzard", "bug", "heal", "targeticon", "bosskill"}
 
+module.defaultDB = {
+	enrage = false,
+}
+
 L:RegisterTranslations("enUS", function()
 	return {
 	cmd = "Twins",

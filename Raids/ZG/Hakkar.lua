@@ -4,6 +4,10 @@ module.revision = 30077
 module.enabletrigger = module.translatedName
 module.toggleoptions = { "mc", "siphon", "enrage", -1, "aspectjeklik", "aspectvenoxis", "aspectmarli", "aspectthekal", "aspectarlokk", "bosskill" }
 
+module.defaultDB = {
+	enrage = false,
+}
+
 L:RegisterTranslations("enUS", function()
 	return {
 		cmd = "Hakkar",

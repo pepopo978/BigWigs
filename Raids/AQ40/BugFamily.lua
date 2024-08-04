@@ -9,6 +9,10 @@ module.revision = 30077
 module.enabletrigger = {kri, yauj, vem}
 module.toggleoptions = {"panic", "volley", "heal", "enrage", "vapors", "deathspecials", "bosskill"}
 
+module.defaultDB = {
+	enrage = false,
+}
+
 L:RegisterTranslations("enUS", function() return {
 	cmd = "BugFamily",
 	

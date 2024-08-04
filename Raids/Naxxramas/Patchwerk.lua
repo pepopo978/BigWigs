@@ -5,6 +5,10 @@ module.revision = 30077
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"enrage", "bosskill"}
 
+module.defaultDB = {
+	enrage = false,
+}
+
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Patchwerk",
 

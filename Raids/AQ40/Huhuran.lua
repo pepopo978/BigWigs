@@ -5,6 +5,10 @@ module.revision = 30033
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"wyvernsting", "frenzy", "noxiouspoison", "berserk", "enrage", "bosskill"}
 
+module.defaultDB = {
+	enrage = false,
+}
+
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Huhuran",
 

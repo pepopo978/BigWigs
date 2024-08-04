@@ -6,6 +6,10 @@ module.revision = 30090
 module.enabletrigger = { module.translatedName, feugen, stalagg }
 module.toggleoptions = { "power", "magneticPull", "manaburn", -1, "phase", -1, "enrage", "selfcharge", "polarity", "bosskill" }
 
+module.defaultDB = {
+	enrage = false,
+}
+
 L:RegisterTranslations("enUS", function()
 	return {
 		cmd = "Thaddius",

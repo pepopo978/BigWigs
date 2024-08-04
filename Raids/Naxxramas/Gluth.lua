@@ -5,6 +5,13 @@ module.revision = 30069
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"frenzy", "fear", "decimate", "enrage", "zombies", "wound", -1, "bosskill"}
 
+local _, englishClass = UnitClass("player");
+
+module.defaultDB = {
+	enrage = false,
+	frenzy = englishClass == "HUNTER",
+}
+
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Gluth",
 

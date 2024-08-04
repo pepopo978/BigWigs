@@ -4,6 +4,9 @@ local module, L = BigWigs:ModuleDeclaration("Grobbulus", "Naxxramas")
 module.revision = 30090
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"slimespray", "inject", "cloud", "icon",  -1, "enrage", "bosskill"}
+module.defaultDB = {
+	enrage = false,
+}
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Grobbulus",
