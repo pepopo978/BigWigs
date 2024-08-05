@@ -169,6 +169,7 @@ Raids\Other\NerubianOverseer.lua
 Raids\Other\TwilightCorrupter.lua
 Raids\Other\Ostarius.lua
 Raids\Other\DrWeavil.lua
+Raids\Other\Atiesh.lua
 
 Raids\Onyxia\Onyxia.lua
 
