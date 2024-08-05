@@ -1,6 +1,6 @@
 ## Interface: 11200
 
-## Title: |cFFFF8080Relar|r Big Wigs |cff7fff7f30090|r |cffabd473Turtle-WoW|r
+## Title: |cFFFF8080Relar|r Big Wigs |cff7fff7f30092|r |cffabd473Turtle-WoW|r
 ## Title-zhCN: |cffabd473Turtle-WoW|r Big Wigs
 ## Notes: Boss Mods with Timer bars.
 ## Notes-esES: Módulos para Jefes con barras temporizadoras.
@@ -166,6 +166,7 @@ Raids\Other\NerubianOverseer.lua
 Raids\Other\TwilightCorrupter.lua
 Raids\Other\Ostarius.lua
 Raids\Other\DrWeavil.lua
+Raids\Other\Atiesh.lua
 
 Raids\Onyxia\Onyxia.lua
 
