@@ -3,7 +3,7 @@ local L = AceLibrary("AceLocale-2.2"):new("BigWigs" .. name)
 local BS = AceLibrary("Babble-Spell-2.3")
 
 local hasSuperWow = nil;
-if SetAutoLoot then
+if CombatLogAdd then
 	hasSuperWow = true;
 end
 
@@ -62,8 +62,8 @@ local Spells = {
 		spellIcon = "Spell_Holy_Mindvision",
 		spellSlot = nil,
 		hasSpell = nil,
-		targetRequester = false,
-		allowRequests = false,
+		targetRequester = true,
+		allowRequests = true,
 	},
 	-- check cooldowns only
 	cshout = {
@@ -96,6 +96,9 @@ L:RegisterTranslations("enUS", function()
 
 		enabledtitle = "Enable",
 		enableddesc = "Enables/Disables the spell requests module.",
+
+		fulfillrequest = "Fulfill Request",
+		fulfillrequestdesc = "Will fulfill the oldest request you have received.  To use in a macro /bw extra spellrequests fulfillrequest",
 
 		allowedrequests = "Allowed Requests",
 		triggerrequests = "Trigger Requests",
@@ -133,6 +136,8 @@ L:RegisterTranslations("enUS", function()
 
 		spell_trigger = "You gain %s",
 
+		friendly_death_playername = "(.+) dies",
+
 		forbearance = "Cannot request BOP while you have Forbearance",
 	}
 end)
@@ -160,6 +165,7 @@ BigWigsSpellRequests = BigWigs:NewModule(name)
 BigWigsSpellRequests.synctoken = myname
 BigWigsSpellRequests.defaultDB = {
 	enabled = true,
+	barDuration = 5,
 	shownreqbuttons = {},
 	showncdbuttons = {},
 	showrequestsframe = false,
@@ -168,20 +174,23 @@ BigWigsSpellRequests.defaultDB = {
 	reqframey = 200,
 	cdframex = 300,
 	cdframey = 300,
-	buttonwidth = 45,
+	buttonwidth = 55,
 	buttonheight = 22,
 	headerHeight = 18,
 	buttonPadding = 5,
 	ignorelist = {},
+	buttonfont = "Fonts\\FRIZQT__.TTF",
+	buttonfontsize = 8,
 }
 -- add spell keys to defaultDB
 for spellKey, _ in pairs(Spells) do
 	BigWigsSpellRequests.defaultDB[spellKey] = true
 end
 
+BigWigsSpellRequests.playerNameToGuidCache = {}
 BigWigsSpellRequests.timeoutEvent = "BigWigsSpellRequestsTimeout"
 BigWigsSpellRequests.consoleCmd = L["spellrequests"]
-BigWigsSpellRequests.revision = 30064
+BigWigsSpellRequests.revision = 30065
 BigWigsSpellRequests.external = true
 BigWigsSpellRequests.playerThrottles = {
 	[spellRequestCommand] = {},
@@ -189,6 +198,7 @@ BigWigsSpellRequests.playerThrottles = {
 	[cooldownRequestCommand] = {},
 	[cooldownResponseCommand] = {},
 }
+BigWigsSpellRequests.receivedRequests = {}
 BigWigsSpellRequests.consoleOptions = {
 	type = "group",
 	name = L["title"],
@@ -210,6 +220,48 @@ BigWigsSpellRequests.consoleOptions = {
 					BigWigsSpellRequests.db.profile.enabled = false
 					BigWigsSpellRequests:OnDisable()
 				end
+			end
+		},
+		fulfillrequest = {
+			type = "execute",
+			name = L["fulfillrequest"],
+			desc = L["fulfillrequest"],
+			order = 5,
+			func = function()
+				-- loop through received requests and fulfill the first one
+				for i = BigWigsSpellRequests:GetTableLength(BigWigsSpellRequests.receivedRequests), 1, -1 do
+					local request = BigWigsSpellRequests.receivedRequests[i]
+					local spellData = Spells[request.spellShortName]
+					if spellData.hasSpell then
+						-- check cooldown
+						local cd = BigWigsSpellRequests:CheckCooldown(spellData.spellSlot)
+						if cd == 0 then
+							-- check if time within barDuration
+							if GetTime() - request.receivedTime < BigWigsSpellRequests.db.profile.barDuration then
+								BigWigsSpellRequests:CastSpellOnPlayer(BS[spellData.spellName], request.requestingPlayerName)
+								break
+							else
+								-- remove the request
+								table.remove(BigWigsSpellRequests.receivedRequests, i)
+							end
+						end
+					end
+				end
+			end
+		},
+		barduration = {
+			type = "range",
+			name = "Request Bar Duration",
+			desc = "Duration of request bars",
+			order = 6,
+			min = 1,
+			max = 30,
+			step = 1,
+			get = function()
+				return BigWigsSpellRequests.db.profile.barDuration
+			end,
+			set = function(v)
+				BigWigsSpellRequests.db.profile.barDuration = v
 			end
 		},
 		allowedrequests = {
@@ -331,6 +383,7 @@ BigWigsSpellRequests.consoleOptions = {
 					type = "execute",
 					name = "Reset Requests Frame",
 					desc = "Resets the position of the requests frame",
+					order = 1,
 					func = function()
 						BigWigsSpellRequests.db.profile.reqframex = 200
 						BigWigsSpellRequests.db.profile.reqframey = 200
@@ -341,17 +394,35 @@ BigWigsSpellRequests.consoleOptions = {
 					type = "execute",
 					name = "Reset Cooldowns Frame",
 					desc = "Resets the position of the cooldowns frame",
+					order = 11,
 					func = function()
 						BigWigsSpellRequests.db.profile.cdframex = 300
 						BigWigsSpellRequests.db.profile.cdframey = 300
 						BigWigsSpellRequests:UpdateCooldownsFrame()
 					end,
 				},
+				buttonfontsize = {
+					type = "range",
+					name = "Button Font Size",
+					desc = "Font size of the buttons",
+					order = 22,
+					min = 5,
+					max = 15,
+					step = 1,
+					get = function()
+						return BigWigsSpellRequests.db.profile.buttonfontsize
+					end,
+					set = function(v)
+						BigWigsSpellRequests.db.profile.buttonfontsize = v
+						BigWigsSpellRequests:UpdateRequestsFrame()
+						BigWigsSpellRequests:UpdateCooldownsFrame()
+					end
+				},
 				buttonwidth = {
 					type = "range",
 					name = "Button Width",
 					desc = "Width of the buttons",
-					order = 1,
+					order = 33,
 					min = 15,
 					max = 100,
 					step = 1,
@@ -368,7 +439,7 @@ BigWigsSpellRequests.consoleOptions = {
 					type = "range",
 					name = "Button Height",
 					desc = "Height of the buttons",
-					order = 2,
+					order = 44,
 					min = 15,
 					max = 50,
 					step = 1,
@@ -385,7 +456,7 @@ BigWigsSpellRequests.consoleOptions = {
 					type = "range",
 					name = "Button Padding",
 					desc = "Padding between buttons",
-					order = 3,
+					order = 55,
 					min = 0,
 					max = 10,
 					step = 1,
@@ -402,7 +473,7 @@ BigWigsSpellRequests.consoleOptions = {
 					type = "range",
 					name = "Header Height",
 					desc = "Height of the header",
-					order = 4,
+					order = 66,
 					min = 10,
 					max = 50,
 					step = 1,
@@ -513,6 +584,14 @@ function BigWigsSpellRequests:HasForbearance()
 	return nil
 end
 
+function BigWigsSpellRequests:GetTableLength(T)
+	local count = 0
+	for _ in pairs(T) do
+		count = count + 1
+	end
+	return count
+end
+
 -- replace bop function
 BigWigsSpellRequests.consoleOptions.args.triggerrequests.args["requestbop"].func = function()
 	if BigWigsSpellRequests:HasForbearance() then
@@ -520,6 +599,53 @@ BigWigsSpellRequests.consoleOptions.args.triggerrequests.args["requestbop"].func
 	else
 		BigWigsSpellRequests:SendRequestSpell("bop", UnitName("player"))
 	end
+end
+
+function BigWigsSpellRequests:RemoveDeadPlayerRequests(playerName)
+	for i = self:GetTableLength(self.receivedRequests), 1, -1 do
+		local request = self.receivedRequests[i]
+		if request.requestingPlayerName == playerName then
+			table.remove(self.receivedRequests, i)
+
+			local spellData = Spells[request.spellShortName]
+			local barTitle = self:GetBarTitle(spellData.localizedSpellName, request.requestingPlayerName)
+			self:TriggerEvent("BigWigs_StopBar", self, barTitle)
+		end
+	end
+end
+
+function BigWigsSpellRequests:CastSpellOnPlayer(spellName, playerName)
+	if hasSuperWow then
+		local exists = nil
+		local guid = self.playerNameToGuidCache[playerName]
+		if not guid then
+			for i = 1, GetNumRaidMembers() do
+				local r_name = GetRaidRosterInfo(i)
+				if r_name == playerName then
+					exists, guid = UnitExists("raid" .. i)
+					-- cache the guid
+					self.playerNameToGuidCache[playerName] = guid
+
+					-- check if dead
+					if UnitIsDeadOrGhost(guid) then
+						BigWigsSpellRequests:RemoveDeadPlayerRequests(playerName)
+						return
+					end
+
+					CastSpellByName(spellName, guid)
+					break
+				end
+			end
+		end
+		if guid then
+			CastSpellByName(spellName, guid)
+			return
+		end
+	end
+
+	-- default to targeting playerName and casting
+	TargetByName(playerName, true)
+	CastSpellByName(spellName)
 end
 
 function BigWigsSpellRequests:SendRequestSpell(spellShortName, requestingPlayerName)
@@ -641,10 +767,15 @@ function BigWigsSpellRequests:UpdateRequestsFrame()
 			local spellShortName = k
 			local requestButton = CreateFrame("Button", "BigWigsSpellRequests" .. spellShortName .. "RequestButton", self.requestsFrame, "UIPanelButtonTemplate")
 			self.requestsFrame.buttons[k] = requestButton
+			requestButton:SetFont(self.db.profile.buttonfont, self.db.profile.buttonfontsize)
 			requestButton:SetWidth(self.db.profile.buttonwidth)
 			requestButton:SetHeight(self.db.profile.buttonheight)
 			requestButton:SetPoint("TOPLEFT", self.requestsFrame, "TOPLEFT", self.db.profile.buttonPadding, (-1 * self.db.profile.headerHeight) - self.db.profile.buttonheight * (i - 1))
-			requestButton:SetText("REQ " .. spellShortName)
+			if spellShortName == "fearward" then
+				requestButton:SetText("REQ fearwd") -- fearward is too long but don't want to change the spellShortName
+			else
+				requestButton:SetText("REQ " .. spellShortName)
+			end
 			requestButton:SetScript("OnClick", function()
 				if spellShortName == "bop" and BigWigsSpellRequests:HasForbearance() then
 					BigWigsSpellRequests:Message(L["forbearance"], "Red", false)
@@ -732,16 +863,21 @@ function BigWigsSpellRequests:UpdateCooldownsFrame()
 		local i = 1
 		for k, v in pairs(self.db.profile.showncdbuttons) do
 			local spellShortName = k
-			local requestButton = CreateFrame("Button", "BigWigsSpellRequests" .. spellShortName .. "CooldownButton", self.cooldownsFrame, "UIPanelButtonTemplate")
-			self.cooldownsFrame.buttons[k] = requestButton
-			requestButton:SetWidth(self.db.profile.buttonwidth)
-			requestButton:SetHeight(self.db.profile.buttonheight)
-			requestButton:SetPoint("TOPLEFT", self.cooldownsFrame, "TOPLEFT", self.db.profile.buttonPadding, (-1 * self.db.profile.headerHeight) - self.db.profile.buttonheight * (i - 1))
-			requestButton:SetText("CD " .. spellShortName)
-			requestButton:SetScript("OnClick", function()
+			local cooldownButton = CreateFrame("Button", "BigWigsSpellRequests" .. spellShortName .. "CooldownButton", self.cooldownsFrame, "UIPanelButtonTemplate")
+			self.cooldownsFrame.buttons[k] = cooldownButton
+			cooldownButton:SetFont(self.db.profile.buttonfont, self.db.profile.buttonfontsize)
+			cooldownButton:SetWidth(self.db.profile.buttonwidth)
+			cooldownButton:SetHeight(self.db.profile.buttonheight)
+			cooldownButton:SetPoint("TOPLEFT", self.cooldownsFrame, "TOPLEFT", self.db.profile.buttonPadding, (-1 * self.db.profile.headerHeight) - self.db.profile.buttonheight * (i - 1))
+			if spellShortName == "fearward" then
+				cooldownButton:SetText("CD fearwd") -- fearward is too long but don't want to change the spellShortName
+			else
+				cooldownButton:SetText("CD " .. spellShortName)
+			end
+			cooldownButton:SetScript("OnClick", function()
 				BigWigsSpellRequests:SendRequestCooldown(spellShortName, UnitName("player"))
 			end)
-			requestButton:Show()
+			cooldownButton:Show()
 			i = i + 1
 		end
 	else
@@ -762,10 +898,18 @@ function BigWigsSpellRequests:ScanForSpells()
 	end
 end
 
+function BigWigsSpellRequests:FriendlyDeath(msg)
+	local _, _, playerName = string.find(msg, L["friendly_death_playername"])
+	if playerName then
+		self:RemoveDeadPlayerRequests(playerName)
+	end
+end
+
 function BigWigsSpellRequests:OnEnable()
 	self:RegisterEvent("BigWigs_RecvSync")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS")
 	self:RegisterEvent("LEARNED_SPELL_IN_TAB", "ScanForSpells")
+	self:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLY_DEATH", "FriendlyDeath")
 
 	self.playerName = UnitName("player")
 
@@ -812,6 +956,16 @@ function BigWigsSpellRequests:CheckCooldown(spellSlot)
 	return cd
 end
 
+function BigWigsSpellRequests:CleanupOldRequests()
+	local currentTime = GetTime()
+	for i = self:GetTableLength(self.receivedRequests), 1, -1 do
+		local request = self.receivedRequests[i]
+		if currentTime - request.receivedTime > self.db.profile.barDuration then
+			table.remove(self.receivedRequests, i)
+		end
+	end
+end
+
 function BigWigsSpellRequests:GetBarTitle(spellName, playerName)
 	return playerName .. " wants " .. spellName .. " CLICK HERE"
 end
@@ -847,20 +1001,30 @@ function BigWigsSpellRequests:BigWigs_RecvSync(sync, data)
 		-- check cooldown
 		local cd = self:CheckCooldown(spellData.spellSlot)
 		self:SendCooldownResponse(spellShortName, requestingPlayerName, self.playerName, cd)
+
+		-- don't show the bar if we have the spell and it's on cooldown
+		if cd > 0 then
+			return
+		end
+
 		-- show candybar saying that playername wants spellname
 		local barTitle = self:GetBarTitle(spellData.localizedSpellName, requestingPlayerName)
 
-		self:TriggerEvent("BigWigs_StartBar", self, barTitle, 5, spellData.spellIcon, true, "white")
+		-- save request
+		table.insert(self.receivedRequests, {
+			spellShortName = spellShortName,
+			requestingPlayerName = requestingPlayerName,
+			receivedTime = GetTime(),
+		})
+
+		-- trigger event to cleanup old requests
+		self:ScheduleEvent("BigWigsSpellRequestsCleanup", self.CleanupOldRequests, self.db.profile.barDuration + 1, self)
+
+		self:TriggerEvent("BigWigs_StartBar", self, barTitle, self.db.profile.barDuration, "Interface\\Icons\\" .. spellData.spellIcon, true, "white")
 		if spellData.targetRequester then
 			-- enable clicking on the bar to cast on that player
 			self:SetCandyBarOnClick("BigWigsBar " .. barTitle, function(_, _, pName, sName)
-				if hasSuperWow then
-					local _, guid = UnitExists(pName)
-					CastSpellByName(sName, guid)
-				else
-					TargetByName(pName, true)
-					CastSpellByName(sName)
-				end
+				BigWigsSpellRequests:CastSpellOnPlayer(sName, pName)
 			end, requestingPlayerName, spellData.localizedSpellName)
 		end
 		-- if this is a cooldown request
@@ -878,6 +1042,14 @@ function BigWigsSpellRequests:BigWigs_RecvSync(sync, data)
 		-- player has received the spell, hide the bar if visible
 		local barTitle = self:GetBarTitle(spellData.localizedSpellName, playerName)
 		self:TriggerEvent("BigWigs_StopBar", self, barTitle)
+		-- remove from received requests
+		for i = self:GetTableLength(self.receivedRequests), 1, -1 do
+			local request = self.receivedRequests[i]
+			if request.spellShortName == spellShortName and request.requestingPlayerName == playerName then
+				table.remove(self.receivedRequests, i)
+				break
+			end
+		end
 	elseif command == cooldownResponseCommand then
 		local requestingPlayerName, cooldownPlayerName, cooldown = self:ParseCooldownResponse(spellArgs)
 		if requestingPlayerName == self.playerName then
