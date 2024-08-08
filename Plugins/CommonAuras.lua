@@ -617,7 +617,28 @@ function BigWigsCommonAuras:CHAT_MSG_MONSTER_EMOTE(msg, sender)
 
 
 	elseif string.find(msg, L["trigger_orange"]) then
-		self:TriggerEvent("BigWigs_SendSync", "BWCAOR")
+		local zone = nil -- GetRealZoneText()
+		if GetNumRaidMembers() > 0 then
+			for i = 1, GetNumRaidMembers() do
+				if UnitName("raid" .. i) == sender then
+					zone = GetRealZoneText()
+					break
+				end
+			end
+		elseif GetNumPartyMembers() > 0 then
+			for i = 1, GetNumPartyMembers() do
+				if UnitName("party" .. i) == sender then
+					zone = GetRealZoneText()
+					break
+				end
+			end
+		elseif sender == UnitName("player") then
+			zone = GetRealZoneText()
+		end
+
+		if zone ~= nil then
+			self:TriggerEvent("BigWigs_SendSync", "BWCAOR ".. zone)
+		end
 
 	elseif string.find(msg, L["trigger_soulwell"]) then
 		self:TriggerEvent("BigWigs_SendSync", "BWCAWL")
@@ -818,11 +839,13 @@ function BigWigsCommonAuras:BigWigs_RecvSync(sync, rest, nick)
 
 
 	elseif self.db.profile.orange and sync == "BWCAOR" then
-		self:TriggerEvent("BigWigs_Message", L["msg_orange"], "Positive", false, nil, false)
-		self:TriggerEvent("BigWigs_StartBar", self, L["bar_orange"], timer.orange, icon.orange, true, color.orange)
-		self:TriggerEvent("BigWigs_Sound", "Info")
-		self:TriggerEvent("BigWigs_ShowWarningSign", icon.orange, 5)
-
+		local zone = GetRealZoneText()
+		if rest and rest == GetRealZoneText() then
+			self:TriggerEvent("BigWigs_Message", L["msg_orange"], "Positive", false, nil, false)
+			self:TriggerEvent("BigWigs_StartBar", self, L["bar_orange"], timer.orange, icon.orange, true, color.orange)
+			self:TriggerEvent("BigWigs_Sound", "Info")
+			self:TriggerEvent("BigWigs_ShowWarningSign", icon.orange, 5)
+		end
 
 	elseif self.db.profile.orange and sync == "BWCAWL" then
 		self:TriggerEvent("BigWigs_Message", L["msg_soulwell"], "Positive", false, nil, false)
