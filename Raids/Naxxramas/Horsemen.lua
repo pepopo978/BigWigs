@@ -4,7 +4,7 @@ local mograine = AceLibrary("Babble-Boss-2.2")["Highlord Mograine"]
 local zeliek = AceLibrary("Babble-Boss-2.2")["Sir Zeliek"]
 local blaumeux = AceLibrary("Babble-Boss-2.2")["Lady Blaumeux"]
 
-module.revision = 30094
+module.revision = 30096
 module.enabletrigger = { thane, mograine, zeliek, blaumeux }
 module.toggleoptions = { "mark", "marksounds", "shieldwall", "hpframe", -1,
                          "alwaysshowmeteor", "meteortimer", "voidtimer", "wrathtimer", "voidalert", -1,
@@ -201,6 +201,7 @@ end
 function module:OnEngage()
 	self.shieldWallTimers = {}
 	self.marks = 0
+	self.previousTarget = ""
 
 	-- the initial timers are longer so set lastXXX in the future to accommodate for this
 	self.lastVoidZone = GetTime() + (timer.firstVoid - timer.void[1])
@@ -242,6 +243,10 @@ function module:OnEngage()
 	self.zeliekDied = false
 	self.blaumeuxDied = false
 
+	if self.db.profile.proximity then
+		self:Proximity()
+	end
+
 	if self.db.profile.hpframe then
 		self:ScheduleRepeatingEvent("CheckHps", self.CheckHps, 1, self)
 	end
@@ -264,7 +269,9 @@ function module:OnDisengage()
 
 	self:CancelScheduledEvent("CheckHps")
 
-	self.bossStatusFrame:Hide()
+	if self.bossStatusFrame then
+		self.bossStatusFrame:Hide()
+	end
 end
 
 function module:UpdateBossStatusFrame()
@@ -489,35 +496,33 @@ end
 function module:TargetChanged()
 	local target = UnitName("target")
 	local targettarget = UnitName("targettarget")
-	if self.lastVoidZone and self.db.profile.voidtimer then
+	if self.lastVoidZone and self.db.profile.voidtimer and self.previousTarget ~= blaumeux then
 		if target == blaumeux or targettarget == blaumeux then
 			local elapsed = GetTime() - self.lastVoidZone
 			self:IntervalBar(L["voidbar"], timer.void[1] - elapsed, timer.void[2] - elapsed, icon.void, true, "Black")
+			self.previousTarget = blaumeux
+			return
 		end
 	end
 
 	if self.db.profile.alwaysshowmeteor ~= true then
-		if self.lastMeteor and self.db.profile.meteortimer then
+		if self.lastMeteor and self.db.profile.meteortimer and self.previousTarget ~= thane then
 			if target == thane or targettarget == thane then
 				local elapsed = GetTime() - self.lastMeteor
 				self:IntervalBar(L["meteorbar"], timer.meteor[1] - elapsed, timer.meteor[2] - elapsed, icon.meteor, true, "Red")
+				self.previousTarget = thane
+				return
 			end
 		end
 	end
 
-	if self.lastWrath and self.db.profile.wrathtimer then
+	if self.lastWrath and self.db.profile.wrathtimer and self.previousTarget ~= zeliek then
 		if target == zeliek or targettarget == zeliek then
 			local elapsed = GetTime() - self.lastWrath
 			self:IntervalBar(L["wrathbar"], timer.wrath[1] - elapsed, timer.wrath[2] - elapsed, icon.wrath, true, "Yellow")
+			self.previousTarget = zeliek
+			return
 		end
-	end
-
-	if self.db.profile.proximity then
-		if target == zeliek or targettarget == zeliek then
-			self:Proximity()
-		end
-	else
-		self:RemoveProximity()
 	end
 end
 
@@ -632,7 +637,7 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 	end
 end
 
-function horsemenIsRL()
+local function horsemenIsRL()
 	if not UnitInRaid('player') then
 		return false
 	end
