@@ -292,7 +292,7 @@ function BigWigsVersionQuery:NotifyOldVersions()
 			end
 		end
 	end
-	SendChatMessage(L["People with outdated Pepo BigWigs:"], "RAID")
+	SendChatMessage("People with outdated Pepo BigWigs:", "RAID")
 	SendChatMessage(line, "RAID")
 	SendChatMessage("Download newest version from https://github.com/pepopo978/BigWigs", "RAID")
 end
