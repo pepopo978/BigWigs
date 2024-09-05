@@ -2,12 +2,14 @@ local module, L = BigWigs:ModuleDeclaration("Thaddius", "Naxxramas")
 local feugen = AceLibrary("Babble-Boss-2.2")["Feugen"]
 local stalagg = AceLibrary("Babble-Boss-2.2")["Stalagg"]
 
-module.revision = 30090
+module.revision = 30091
 module.enabletrigger = { module.translatedName, feugen, stalagg }
-module.toggleoptions = { "power", "magneticPull", "manaburn", -1, "phase", -1, "enrage", "selfcharge", "polarity", "bosskill" }
+module.toggleoptions = { "power", "magneticPull", "manaburn", "tankthreat", -1, "phase", -1, "enrage", "selfcharge", "polarity", "bosskill" }
 
 module.defaultDB = {
 	enrage = false,
+	tankframeposx = 100,
+	tankframeposy = 500,
 }
 
 L:RegisterTranslations("enUS", function()
@@ -25,6 +27,10 @@ L:RegisterTranslations("enUS", function()
 		manaburn_cmd = "manaburn",
 		manaburn_name = "Mana Burn Alerts",
 		manaburn_desc = "Warn for Mana Burn",
+
+		tankthreat_cmd = "tankthreat",
+		tankthreat_name = "Tank Threat Status",
+		tankthreat_desc = "Displays the threat of both tanks on Feugen and Stalagg so you aren't caught off guard on magnetic pull.",
 
 		phase_cmd = "phase",
 		phase_name = "Phase Alerts",
@@ -152,6 +158,9 @@ local syncName = {
 
 	checkAuras = "ThaddiusCheckAuras" .. module.revision,
 
+	feuganTankThreat = "feuganTankThreat" .. module.revision,
+	stalaggTankThreat = "stalaggTankThreat" .. module.revision,
+
 	polarityShiftCast = "ThaddiusPolarityShiftCast" .. module.revision,
 	polarity = "ThaddiusPolarity" .. module.revision,
 }
@@ -164,6 +173,8 @@ module:RegisterYellEngage(L["trigger_engage"])
 module:RegisterYellEngage(L["trigger_engage1"])
 
 function module:OnEnable()
+	self.threatWasListening = BigWigsThreat:IsListening()
+
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL") --trigger_engage, trigger_engage1, trigger_feugenDeadYell, trigger_stalaggDeadYell, trigger_polarityShiftAfflic
 	self:RegisterEvent("CHAT_MSG_RAID_BOSS_EMOTE") --trigger_3sec
 	self:RegisterEvent("PLAYER_AURAS_CHANGED")
@@ -182,7 +193,12 @@ function module:OnEnable()
 	self:ThrottleSync(5, syncName.polarity)
 	self:ThrottleSync(2, syncName.checkAuras)
 
+	self:ThrottleSync(0.5, syncName.feuganTankThreat)
+	self:ThrottleSync(0.5, syncName.stalaggTankThreat)
+
 	self.checkAuras = true
+
+	self:UpdateTankStatusFrame()
 end
 
 function module:OnSetup()
@@ -193,6 +209,12 @@ function module:OnSetup()
 end
 
 function module:OnEngage()
+	if self.db.profile.tankthreat then
+		BigWigsThreat:StartListening()
+		BigWigsThreat:EnableEventsForTank()
+		self:RegisterEvent("BigWigs_ThreatUpdate", "ThreatUpdate")
+	end
+
 	phase2started = false
 
 	self.previousCharge = ""
@@ -202,10 +224,10 @@ function module:OnEngage()
 
 	self.feugenHP = 100
 	self.stalaggHP = 100
-	self:TriggerEvent("BigWigs_StartHPBar", self, "Feugen", 100, "Interface\\Icons\\" .. icon.hpBar, true, color.hpBar)
-	self:TriggerEvent("BigWigs_SetHPBar", self, "Feugen", 0)
-	self:TriggerEvent("BigWigs_StartHPBar", self, "Stalagg", 100, "Interface\\Icons\\" .. icon.hpBar, true, color.hpBar)
-	self:TriggerEvent("BigWigs_SetHPBar", self, "Stalagg", 0)
+	self:TriggerEvent("BigWigs_StartHPBar", self, feugen, 100, "Interface\\Icons\\" .. icon.hpBar, true, color.hpBar)
+	self:TriggerEvent("BigWigs_SetHPBar", self, feugen, 0)
+	self:TriggerEvent("BigWigs_StartHPBar", self, stalagg, 100, "Interface\\Icons\\" .. icon.hpBar, true, color.hpBar)
+	self:TriggerEvent("BigWigs_SetHPBar", self, stalagg, 0)
 
 	self:ScheduleRepeatingEvent("CheckAddHP", self.CheckAddHP, 0.5, self)
 
@@ -216,6 +238,112 @@ function module:OnEngage()
 end
 
 function module:OnDisengage()
+	-- stop listening for tank threat updates when combat ends
+	if self.threatWasListening == false then
+		BigWigsThreat:StopListening()
+	end
+
+	if self.tankStatusFrame then
+		self.tankStatusFrame:Hide()
+	end
+end
+
+function module:UpdateTankStatusFrame()
+	if not self.db.profile.tankthreat then
+		return
+	end
+
+	-- create frame if needed
+	if not self.tankStatusFrame then
+		self.tankStatusFrame = CreateFrame("Frame", "ThaddiusTankStatusFrame", UIParent)
+		self.tankStatusFrame.module = self
+		self.tankStatusFrame:SetWidth(250)
+		self.tankStatusFrame:SetHeight(50)
+		self.tankStatusFrame:ClearAllPoints()
+		local s = self.tankStatusFrame:GetEffectiveScale()
+		self.tankStatusFrame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", (self.db.profile.tankframeposx or 100) / s, (self.db.profile.tankframeposy or 500) / s)
+		self.tankStatusFrame:SetBackdrop({
+			bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+			edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+			tile = true,
+			tileSize = 16,
+			edgeSize = 16,
+			insets = { left = 8, right = 8, top = 8, bottom = 8 }
+		})
+		self.tankStatusFrame:SetBackdropColor(0, 0, 0, 1)
+
+		-- allow dragging
+		self.tankStatusFrame:SetMovable(true)
+		self.tankStatusFrame:EnableMouse(true)
+		self.tankStatusFrame:RegisterForDrag("LeftButton")
+		self.tankStatusFrame:SetScript("OnDragStart", function()
+			this:StartMoving()
+		end)
+		self.tankStatusFrame:SetScript("OnDragStop", function()
+			this:StopMovingOrSizing()
+
+			local scale = this:GetEffectiveScale()
+			this.module.db.profile.tankframeposx = this:GetLeft() * scale
+			this.module.db.profile.tankframeposy = this:GetTop() * scale
+		end)
+
+		local font = "Fonts\\FRIZQT__.TTF"
+		local fontSize = 9
+
+		self.tankStatusFrame.feugen = self.tankStatusFrame:CreateFontString(nil, "ARTWORK")
+		self.tankStatusFrame.feugen:SetFontObject(GameFontNormal)
+		self.tankStatusFrame.feugen:SetPoint("TOPLEFT", self.tankStatusFrame, "TOPLEFT", 10, -10)
+		self.tankStatusFrame.feugen:SetText("Feugan Tank:")
+		self.tankStatusFrame.feugen:SetFont(font, fontSize)
+
+		self.tankStatusFrame.feugenTank = self.tankStatusFrame:CreateFontString(nil, "ARTWORK")
+		self.tankStatusFrame.feugenTank:SetFontObject(GameFontNormal)
+		self.tankStatusFrame.feugenTank:SetPoint("TOP", self.tankStatusFrame, "TOP", 0, -10)
+		self.tankStatusFrame.feugenTank:SetJustifyH("CENTER")
+		self.tankStatusFrame.feugenTank:SetFont(font, fontSize)
+
+		self.tankStatusFrame.feugenTankThreat = self.tankStatusFrame:CreateFontString(nil, "ARTWORK")
+		self.tankStatusFrame.feugenTankThreat:SetFontObject(GameFontNormal)
+		self.tankStatusFrame.feugenTankThreat:SetPoint("TOPRIGHT", self.tankStatusFrame, "TOPRIGHT", -10, -10)
+		self.tankStatusFrame.feugenTankThreat:SetJustifyH("RIGHT")
+		self.tankStatusFrame.feugenTankThreat:SetFont(font, fontSize)
+
+		self.tankStatusFrame.stalagg = self.tankStatusFrame:CreateFontString(nil, "ARTWORK")
+		self.tankStatusFrame.stalagg:SetFontObject(GameFontNormal)
+		self.tankStatusFrame.stalagg:SetPoint("TOPLEFT", self.tankStatusFrame.feugen, "BOTTOMLEFT", 0, -10)
+		self.tankStatusFrame.stalagg:SetText("Stalagg Tank:")
+		self.tankStatusFrame.stalagg:SetFont(font, fontSize)
+
+		self.tankStatusFrame.stalaggTank = self.tankStatusFrame:CreateFontString(nil, "ARTWORK")
+		self.tankStatusFrame.stalaggTank:SetFontObject(GameFontNormal)
+		self.tankStatusFrame.stalaggTank:SetPoint("TOP", self.tankStatusFrame.feugenTank, "BOTTOM", 0, -10)
+		self.tankStatusFrame.stalaggTank:SetJustifyH("CENTER")
+		self.tankStatusFrame.stalaggTank:SetFont(font, fontSize)
+
+		self.tankStatusFrame.stalaggTankThreat = self.tankStatusFrame:CreateFontString(nil, "ARTWORK")
+		self.tankStatusFrame.stalaggTankThreat:SetFontObject(GameFontNormal)
+		self.tankStatusFrame.stalaggTankThreat:SetPoint("TOPRIGHT", self.tankStatusFrame.feugenTankThreat, "BOTTOMRIGHT", 0, -10)
+		self.tankStatusFrame.stalaggTankThreat:SetJustifyH("RIGHT")
+		self.tankStatusFrame.stalaggTankThreat:SetFont(font, fontSize)
+	end
+	self.tankStatusFrame:Show()
+
+	self.tankStatusFrame.feugenTank:SetText(self.feugenTank or "?")
+
+	if self.feugenTankThreat and type(self.feugenTankThreat) == "number" then
+		-- divide by 1000 and round to 1 decimal
+		self.tankStatusFrame.feugenTankThreat:SetText(string.format("%.1f k", self.feugenTankThreat / 1000))
+	else
+		self.tankStatusFrame.feugenTankThreat:SetText("?")
+	end
+
+	self.tankStatusFrame.stalaggTank:SetText(self.stalaggTank or "?")
+
+	if self.stalaggTankThreat and type(self.stalaggTankThreat) == "number" then
+		self.tankStatusFrame.stalaggTankThreat:SetText(string.format("%.1f k", self.stalaggTankThreat / 1000))
+	else
+		self.tankStatusFrame.stalaggTankThreat:SetText("?")
+	end
 end
 
 function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
@@ -259,9 +387,9 @@ function module:CheckAddHP()
 	local stalaggHealth
 
 	for i = 1, GetNumRaidMembers() do
-		if UnitName("Raid" .. i .. "Target") == "Feugen" then
+		if UnitName("Raid" .. i .. "Target") == feugen then
 			feugenHealth = math.ceil((UnitHealth("Raid" .. i .. "Target") / UnitHealthMax("Raid" .. i .. "Target")) * 100)
-		elseif UnitName("Raid" .. i .. "Target") == "Stalagg" then
+		elseif UnitName("Raid" .. i .. "Target") == stalagg then
 			stalaggHealth = math.ceil((UnitHealth("Raid" .. i .. "Target") / UnitHealthMax("Raid" .. i .. "Target")) * 100)
 		end
 		if feugenHealth and stalaggHealth then
@@ -271,12 +399,30 @@ function module:CheckAddHP()
 
 	if feugenHealth then
 		self.feugenHP = feugenHealth
-		self:TriggerEvent("BigWigs_SetHPBar", self, "Feugen", 100 - self.feugenHP)
+		self:TriggerEvent("BigWigs_SetHPBar", self, feugen, 100 - self.feugenHP)
 	end
 
 	if stalaggHealth then
 		self.stalaggHP = stalaggHealth
-		self:TriggerEvent("BigWigs_SetHPBar", self, "Stalagg", 100 - self.stalaggHP)
+		self:TriggerEvent("BigWigs_SetHPBar", self, stalagg, 100 - self.stalaggHP)
+	end
+end
+
+function module:ThreatUpdate(player, threat, perc, tank, melee)
+	-- ignore other threat updates
+	if not tank then
+		return
+	end
+
+	local currentTarget = UnitName("target")
+	if not currentTarget then
+		return
+	end
+
+	if currentTarget == feugen then
+		self:Sync(syncName.feuganTankThreat .. " " .. player .. " " .. threat)
+	elseif currentTarget == stalagg then
+		self:Sync(syncName.stalaggTankThreat .. " " .. player .. " " .. threat)
 	end
 end
 
@@ -296,9 +442,22 @@ function module:Event(msg)
 end
 
 function module:BigWigs_RecvSync(sync, rest, nick)
-	if sync == syncName.powerSurge and self.db.profile.power then
+	if sync == syncName.feuganTankThreat and self.db.profile.tankthreat then
+		local _, _, tankName, threat = string.find(rest, "(.+) (%d+)")
+		if tankName and threat then
+			self.feugenTank = tankName
+			self.feugenTankThreat = tonumber(threat)
+			self:UpdateTankStatusFrame()
+		end
+	elseif sync == syncName.stalaggTankThreat and self.db.profile.tankthreat then
+		local _, _, tankName, threat = string.find(rest, "(.+) (%d+)")
+		if tankName and threat then
+			self.stalaggTank = tankName
+			self.stalaggTankThreat = tonumber(threat)
+			self:UpdateTankStatusFrame()
+		end
+	elseif sync == syncName.powerSurge and self.db.profile.power then
 		self:PowerSurge()
-
 	elseif sync == syncName.phase2 and self.db.profile.phase then
 		self:Phase2()
 	elseif sync == syncName.teslaOverload and self.db.profile.phase then
@@ -335,8 +494,8 @@ end
 function module:Phase2()
 	phase2started = true
 
-	self:TriggerEvent("BigWigs_StopHPBar", self, "Feugen")
-	self:TriggerEvent("BigWigs_StopHPBar", self, "Stalagg")
+	self:TriggerEvent("BigWigs_StopHPBar", self, feugen)
+	self:TriggerEvent("BigWigs_StopHPBar", self, stalagg)
 	self:CancelScheduledEvent("CheckAddHP")
 	self:CancelScheduledEvent("MagneticPull")
 	self:RemoveBar(L["bar_magneticPull"])

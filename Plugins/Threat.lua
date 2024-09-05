@@ -63,7 +63,8 @@ BigWigsThreat.prefix = 'TWT'
 BigWigsThreat.channel = ''
 BigWigsThreat.threats = {}
 
-BigWigsThreat.playerNamesToNotify = {} -- c
+BigWigsThreat.playerNamesToNotify = {}
+BigWigsThreat.tankNotify = false
 
 ------------------------------
 --      Initialization      --
@@ -90,6 +91,20 @@ end
 function BigWigsThreat:StopListening()
 	if self:IsListening() then
 		self:UnregisterEvent("CHAT_MSG_ADDON")
+	end
+end
+
+function BigWigsThreat:EnableEventsForTank()
+	if self.tankNotify == false then
+		self:Debug('Enabling events for tank')
+		self.tankNotify = true
+	end
+end
+
+function BigWigsThreat:DisableEventsForTank()
+	if self.tankNotify == true then
+		self:Debug('Disabling events for tank')
+		self.tankNotify = false
 	end
 end
 
@@ -168,6 +183,10 @@ function BigWigsThreat:handleThreatPacket(packet)
 
 			if tank then
 				self.tankName = player
+				if self.tankNotify == true then
+					self:Debug('Notifying for tank {' .. player .. '}')
+					self:TriggerEvent("BigWigs_ThreatUpdate", player, threat, perc, tank, melee)
+				end
 			end
 
 			if self.playerNamesToNotify[player] then
