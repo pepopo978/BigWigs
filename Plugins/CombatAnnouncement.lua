@@ -53,6 +53,7 @@ local RaidMarkerIndexToText = {
 
 local SpellTranslation = {
 	["pummel"] = BS["Pummel"],
+	["shieldbash"] = BS["Shield Bash"],
 	["taunt"] = BS["Taunt"],
 	["disarm"] = BS["Disarm"],
 	["challengingshout"] = BS["Challenging Shout"],
@@ -79,11 +80,12 @@ local SpellTranslation = {
 BigWigsCombatAnnouncement.defaultDB = {
 	-- Warrior
 	pummel = true,
+	shieldbash = true,
 	taunt = true,
 	disarm = true,
 	challengingshout = true,
 	intimidatingshout = false,
-	concussionblow = false,
+	concussionblow = true,
 	-- Rogue
 	kick = true,
 	kidneyshot = true,
@@ -126,9 +128,9 @@ if class == "WARRIOR" then
 		args = {
 			pummel = {
 				type = "toggle",
-				name = "Pummel",
+				name = BS["Pummel"],
 				order = 1,
-				desc = string.format(L["Toggle %s display."], "Pummel"),
+				desc = string.format(L["Toggle %s display."], BS["Pummel"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.pummel
 				end,
@@ -136,11 +138,23 @@ if class == "WARRIOR" then
 					BigWigsCombatAnnouncement.db.profile.pummel = v
 				end,
 			},
+			shieldbash = {
+				type = "toggle",
+				name = BS["Shield Bash"],
+				order = 2,
+				desc = string.format(L["Toggle %s display."], BS["Shield Bash"]),
+				get = function()
+					return BigWigsCombatAnnouncement.db.profile.shieldbash
+				end,
+				set = function(v)
+					BigWigsCombatAnnouncement.db.profile.shieldbash = v
+				end,
+			},
 			taunt = {
 				type = "toggle",
-				name = "Taunt",
-				order = 2,
-				desc = string.format(L["Toggle %s display."], "Taunt"),
+				name = BS["Taunt"],
+				order = 3,
+				desc = string.format(L["Toggle %s display."], BS["Taunt"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.taunt
 				end,
@@ -150,9 +164,9 @@ if class == "WARRIOR" then
 			},
 			disarm = {
 				type = "toggle",
-				name = "Disarm",
-				order = 2,
-				desc = string.format(L["Toggle %s display."], "Disarm"),
+				name = BS["Disarm"],
+				order = 4,
+				desc = string.format(L["Toggle %s display."], BS["Disarm"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.disarm
 				end,
@@ -162,9 +176,9 @@ if class == "WARRIOR" then
 			},
 			challengingshout = {
 				type = "toggle",
-				name = "Challenging Shout",
-				order = 4,
-				desc = string.format(L["Toggle %s display."], "Challenging Shout"),
+				name = BS["Challenging Shout"],
+				order = 5,
+				desc = string.format(L["Toggle %s display."], BS["Challenging Shout"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.challengingshout
 				end,
@@ -174,9 +188,9 @@ if class == "WARRIOR" then
 			},
 			intimidatingshout = {
 				type = "toggle",
-				name = "Intimidating Shout",
-				order = 5,
-				desc = string.format(L["Toggle %s display."], "Intimidating Shout"),
+				name = BS["Intimidating Shout"],
+				order = 6,
+				desc = string.format(L["Toggle %s display."], BS["Intimidating Shout"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.intimidatingshout
 				end,
@@ -186,9 +200,9 @@ if class == "WARRIOR" then
 			},
 			concussionblow = {
 				type = "toggle",
-				name = "Concussion Blow",
-				order = 6,
-				desc = string.format(L["Toggle %s display."], "Concussion Blow"),
+				name = BS["Concussion Blow"],
+				order = 7,
+				desc = string.format(L["Toggle %s display."], BS["Concussion Blow"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.concussionblow
 				end,
@@ -260,9 +274,9 @@ elseif class == "ROGUE" then
 		args = {
 			kick = {
 				type = "toggle",
-				name = "Kick",
+				name = BS["Kick"],
 				order = 1,
-				desc = string.format(L["Toggle %s display."], "Kick"),
+				desc = string.format(L["Toggle %s display."], BS["Kick"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.kick
 				end,
@@ -272,9 +286,9 @@ elseif class == "ROGUE" then
 			},
 			kidneyshot = {
 				type = "toggle",
-				name = "Kidney Shot",
+				name = BS["Kidney Shot"],
 				order = 2,
-				desc = string.format(L["Toggle %s display."], "Kidney Shot"),
+				desc = string.format(L["Toggle %s display."], BS["Kidney Shot"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.kidneyshot
 				end,
@@ -284,9 +298,9 @@ elseif class == "ROGUE" then
 			},
 			cheapshot = {
 				type = "toggle",
-				name = "Cheapshot",
+				name = BS["Cheap Shot"],
 				order = 2,
-				desc = string.format(L["Toggle %s display."], "Cheapshot"),
+				desc = string.format(L["Toggle %s display."], BS["Cheap Shot"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.cheapshot
 				end,
@@ -296,9 +310,9 @@ elseif class == "ROGUE" then
 			},
 			blind = {
 				type = "toggle",
-				name = "Blind",
+				name = BS["Blind"],
 				order = 4,
-				desc = string.format(L["Toggle %s display."], "Blind"),
+				desc = string.format(L["Toggle %s display."], BS["Blind"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.blind
 				end,
@@ -308,9 +322,9 @@ elseif class == "ROGUE" then
 			},
 			gouge = {
 				type = "toggle",
-				name = "Gouge",
+				name = BS["Gouge"],
 				order = 5,
-				desc = string.format(L["Toggle %s display."], "Gouge"),
+				desc = string.format(L["Toggle %s display."], BS["Gouge"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.gouge
 				end,
@@ -382,9 +396,9 @@ elseif class == "DRUID" then
 		args = {
 			pounce = {
 				type = "toggle",
-				name = "Pounce",
+				name = BS["Pounce"],
 				order = 1,
-				desc = string.format(L["Toggle %s display."], "Pounce"),
+				desc = string.format(L["Toggle %s display."], BS["Pounce"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.pounce
 				end,
@@ -394,9 +408,9 @@ elseif class == "DRUID" then
 			},
 			bash = {
 				type = "toggle",
-				name = "Bash",
+				name = BS["Bash"],
 				order = 2,
-				desc = string.format(L["Toggle %s display."], "Bash"),
+				desc = string.format(L["Toggle %s display."], BS["Bash"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.bash
 				end,
@@ -406,9 +420,9 @@ elseif class == "DRUID" then
 			},
 			growl = {
 				type = "toggle",
-				name = "Growl",
+				name = BS["Growl"],
 				order = 2,
-				desc = string.format(L["Toggle %s display."], "Growl"),
+				desc = string.format(L["Toggle %s display."], BS["Growl"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.growl
 				end,
@@ -480,9 +494,9 @@ elseif class == "HUNTER" then
 		args = {
 			wyvernsting = {
 				type = "toggle",
-				name = "Wyvern Sting",
+				name = BS["Wyvern Sting"],
 				order = 1,
-				desc = string.format(L["Toggle %s display."], "Wyvern Sting"),
+				desc = string.format(L["Toggle %s display."], BS["Wyvern Sting"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.wyvernsting
 				end,
@@ -492,9 +506,9 @@ elseif class == "HUNTER" then
 			},
 			scattershot = {
 				type = "toggle",
-				name = "Scatter Shot",
+				name = BS["Scatter Shot"],
 				order = 2,
-				desc = string.format(L["Toggle %s display."], "Scatter Shot"),
+				desc = string.format(L["Toggle %s display."], BS["Scatter Shot"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.scattershot
 				end,
@@ -504,9 +518,9 @@ elseif class == "HUNTER" then
 			},
 			tranquilshot = {
 				type = "toggle",
-				name = "Tranquil Shot",
+				name = BS["Tranquilizing Shot"],
 				order = 3,
-				desc = string.format(L["Toggle %s display."], "Tranquil Shot"),
+				desc = string.format(L["Toggle %s display."], BS["Tranquilizing Shot"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.tranquilshot
 				end,
@@ -578,9 +592,9 @@ elseif class == "MAGE" then
 		args = {
 			counterspell = {
 				type = "toggle",
-				name = "Counterspell",
+				name = BS["Counterspell"],
 				order = 1,
-				desc = string.format(L["Toggle %s display."], "Counterspell"),
+				desc = string.format(L["Toggle %s display."], BS["Counterspell"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.counterspell
 				end,
@@ -652,9 +666,9 @@ elseif class == "PALADIN" then
 		args = {
 			hammerofjustice = {
 				type = "toggle",
-				name = "Hammer of Justice",
+				name = BS["Hammer of Justice"],
 				order = 1,
-				desc = string.format(L["Toggle %s display."], "Hammer of Justice"),
+				desc = string.format(L["Toggle %s display."], BS["Hammer of Justice"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.hammerofjustice
 				end,
@@ -726,9 +740,9 @@ elseif class == "PRIEST" then
 		args = {
 			psychicscream = {
 				type = "toggle",
-				name = "Psychic Scream",
+				name = BS["Psychic Scream"],
 				order = 1,
-				desc = string.format(L["Toggle %s display."], "Psychic Scream"),
+				desc = string.format(L["Toggle %s display."], BS["Psychic Scream"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.psychicscream
 				end,
@@ -800,9 +814,9 @@ elseif class == "SHAMAN" then
 		args = {
 			earthshock = {
 				type = "toggle",
-				name = "Earthshock",
+				name = BS["Earth Shock"],
 				order = 1,
-				desc = string.format(L["Toggle %s display."], "Earthshock"),
+				desc = string.format(L["Toggle %s display."], BS["Earth Shock"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.earthshock
 				end,
@@ -874,9 +888,9 @@ elseif class == "WARLOCK" then
 		args = {
 			deathcoil = {
 				type = "toggle",
-				name = "Death Coil",
+				name = BS["Death Coil"],
 				order = 1,
-				desc = string.format(L["Toggle %s display."], "Death Coil"),
+				desc = string.format(L["Toggle %s display."], BS["Death Coil"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.deathcoil
 				end,
@@ -998,7 +1012,7 @@ else
 	}
 end
 
-BigWigsCombatAnnouncement.revision = 20005
+BigWigsCombatAnnouncement.revision = 20006
 BigWigsCombatAnnouncement.external = true
 
 ------------------------------
