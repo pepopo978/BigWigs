@@ -192,6 +192,7 @@ Raids\Naxxramas\Kelthuzad.lua
 Raids\Naxxramas\DeathknightCaptain.lua
 Raids\Naxxramas\LivingMonstrosity.lua
 Raids\Naxxramas\SpiderTrash.lua
+Raids\Naxxramas\ConstructTrash.lua
 Raids\Naxxramas\DeathknightCavalier.lua
 
 Raids\UBRS\Beast.lua
