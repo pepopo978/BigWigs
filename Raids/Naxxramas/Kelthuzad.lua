@@ -489,6 +489,12 @@ function module:OnDisengage()
 	end
 end
 
+function module:Victory()
+	-- reset farclip back to saved value
+	SetCVar("farclip", BigWigsFarclip.db.profile.defaultFarclip)
+end
+
+
 function module:MINIMAP_ZONE_CHANGED(msg)
 	if GetMinimapZoneText() == "Sapphiron's Lair" and self.core:IsModuleActive(module.translatedName) then
 		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)

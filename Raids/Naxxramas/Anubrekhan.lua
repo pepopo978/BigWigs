@@ -145,6 +145,8 @@ function module:OnEngage()
 	if self.db.profile.web then
 		self:Bar(L["bar_webCd"], timer.webCd, icon.web, true, color.webCd)
 	end
+
+	SetCVar("farclip", 777) -- increase farclip to maximum to make sure maexxna portal loads
 end
 
 function module:OnDisengage()
