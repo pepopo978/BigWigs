@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Ouro", "Ahn'Qiraj")
 
-module.revision = 30083
+module.revision = 30093
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"sweep", "sandblast", "popcorn", "emerge", "berserk", -1, "targeticon", "bosskill"}
 
@@ -64,12 +64,12 @@ L:RegisterTranslations("enUS", function() return {
 } end )
 
 local timer = {
-	firstSweep = {30,40},
-	sweepCd = 15,
+	firstSweep = {20.5,25},
+	sweepCd = 20.5,
 	sweepCast = 1.5,
 	
-	firstSandBlast = {30,45},
-	sandBlastCd = {12,17},
+	firstSandBlast = {20,25},
+	sandBlastCd = {20,25},
 	sandBlastCast = 2,
 	
 	berserkPopcorn = 10,
