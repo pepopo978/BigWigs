@@ -265,7 +265,7 @@ BigWigs.cmdtable = { type = "group", handler = BigWigs, args = {
 } }
 BigWigs:RegisterChatCommand({ "/bw", "/BigWigs" }, BigWigs.cmdtable)
 BigWigs.debugFrame = ChatFrame1
-BigWigs.revision = 30100
+BigWigs.revision = 30101
 
 function BigWigs:EditLayout()
 	BigWigsBars:BigWigs_ShowAnchors()
