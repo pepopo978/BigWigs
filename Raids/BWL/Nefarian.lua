@@ -2,7 +2,7 @@
 local module, L = BigWigs:ModuleDeclaration("Nefarian", "Blackwing Lair")
 local victor = AceLibrary("Babble-Boss-2.2")["Lord Victor Nefarius"]
 
-module.revision = 30085
+module.revision = 30086
 module.enabletrigger = {"Nefarian", "Lord Victor Nefarius"}
 module.toggleoptions = {
 	"mc",
@@ -112,16 +112,16 @@ L:RegisterTranslations("enUS", function() return {
 	msg_black = "Black Drakonids - Does: Fire Attack - Resist: Shadow & Fire",
 	msg_bronze = "Bronze Drakonids - Does: Slow Atk & Cast Speed - Resist: Arcane",
 	
-	msg_landingParty = "Nefarian Lands in 20 seconds - Landing Party, get in position!",
+	msg_landingParty = "Nefarian Lands very soon, Landing Party, get in position!", -- this is based on kills not time on twow/vmangos
 	
 --Phase 2
---there are 46 drakonids total
+	--nefarion engages at 40 dead drakonids, summoning stops one loop after 42 die, ending typically with 44 drakonid summoned total
 	trigger_landingStart = "Well done, my minions. The mortals' courage begins to wane! Now, let's see how they contend with the true Lord of Blackrock Spire!!!", --CHAT_MSG_MONSTER_YELL
 	bar_landingShadowFlame = "AoE Shadow Flame", --doesn't do damage on twow, not showing this bar
 	bar_landingStart = "Nefarian Lands",
 	msg_landingStart = "Nefarian is landing!",
 	
-		--ShadowFlame 12.5sec after landingStart, lands 0.5-1sec after
+	--ShadowFlame 12.5sec after landingStart, lands 0.5-1sec after
 	trigger_landingNow = "BURN! You wretches! BURN!", --CHAT_MSG_MONSTER_YELL 22:14:23.782
 	
 	trigger_shadowFlame = "Nefarian begins to cast Shadow Flame.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
@@ -201,7 +201,7 @@ local timer = {
 --Phase 1
 	mobSpawn = 10, --ok
 	mcDur = 15, --ok
-	landingParty = 115, --guessing landing is time-based from engage, gives 20sec to get in position
+	-- landingParty = 115, --guessing landing is time-based from engage, gives 20sec to get in position
 						--if it is kill-based, will put it @ 37 kill
 						--112 was missing 3 sec, adjusted to 115
 --Phase 2	
@@ -301,6 +301,7 @@ local syncName = {
 	mcFade = "NefarianMcFade"..module.revision,
 	addDead = "NefarianDrakonidDead"..module.revision,
 	drakonidColor = "NefarianDrakonidColor"..module.revision,
+	landingParty = "NefarianLandingParty"..module.revision,
 	
 --Phase 2
 	landingStart = "NefarianLandingStart"..module.revision,
@@ -330,6 +331,7 @@ local syncName = {
 
 local drakonidsSelfCount = 0
 local drakonidsDead = 0
+local drakonidsDeadMax = 44 -- nef spawns at 40 dead, add stop summoning at 44
 local lowHp = nil
 local phase = "phase1"
 local redFound = nil
@@ -373,6 +375,7 @@ function module:OnEnable()
 	self:ThrottleSync(3, syncName.mcFade)
 	self:ThrottleSync(0, syncName.addDead)
 	self:ThrottleSync(0.5, syncName.drakonidColor)
+	self:ThrottleSync(120, syncName.landingParty)
 	
 --Phase 2
 	self:ThrottleSync(3, syncName.landingStart)
@@ -422,14 +425,8 @@ function module:OnEngage()
 	
 	self:Bar(L["bar_mobsSpawn"], timer.mobSpawn, icon.phase, true, color.phase)
 	
-	if self.db.profile.landingparty then
-		self:DelayedMessage(timer.landingParty, L["msg_landingParty"], "Urgent", false, nil, false)
-		self:DelayedSound(timer.landingParty, "Long")
-		self:DelayedBar(timer.landingParty, L["bar_landingStart"], timer.landing + 7, icon.phase, true, color.phase)
-	end
-	
 	if self.db.profile.drakonidcounter then
-		self:TriggerEvent("BigWigs_StartCounterBar", self, L["bar_addCounter"], 46, "Interface\\Icons\\"..icon.addCounter, true, color.addCounter)
+		self:TriggerEvent("BigWigs_StartCounterBar", self, L["bar_addCounter"], drakonidsDeadMax, "Interface\\Icons\\"..icon.addCounter, true, color.addCounter)
 		self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_addCounter"], drakonidsDead)
 	end
 end
@@ -442,8 +439,11 @@ function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
 	
 	if string.find(msg, " Drakonid dies.") then
 		drakonidsSelfCount = drakonidsSelfCount + 1
-		if drakonidsSelfCount <= 46 then
+		if drakonidsSelfCount <= drakonidsDeadMax then
 			self:Sync(syncName.addDead .. " " .. drakonidsSelfCount)
+		end
+		if drakonidsSelfCount >= drakonidsDeadMax - 8 then -- warn landing party 4 adds (2 per side) before nef begins to land
+			self:Sync(syncName.landingParty)
 		end
 	end
 end
@@ -606,7 +606,9 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		
 	elseif sync == syncName.drakonidColor and rest and self.db.profile.drakonidcolor then
 		self:DrakonidColor(rest)
-		
+
+	elseif sync == syncName.landingParty then
+		self:LandingWarn()
 		
 --Phase 2
 	elseif sync == syncName.landingStart then
@@ -686,7 +688,7 @@ function module:DrakonidCounter(rest)
 		drakonidsDead = tonumber(rest)
 		self:TriggerEvent("BigWigs_SetCounterBar", self, L["bar_addCounter"], drakonidsDead)
 	end
-	if tonumber(rest) >= 46 then
+	if tonumber(rest) >= drakonidsDeadMax then
 		self:TriggerEvent("BigWigs_StopCounterBar", self, L["bar_addCounter"])
 	end
 end
@@ -712,6 +714,12 @@ function module:DrakonidColor(rest)
 		bronzeFound = true
 		self:Message(L["msg_bronze"], "Yellow", false, nil, false)
 	end
+end
+
+function module:LandingWarn(rest)
+	self:Message(L["msg_landingParty"], "Important", false, nil, false)
+	self:WarningSign(icon.phase, 1)
+	self:Sound("Beware")
 end
 
 --Phase 2
