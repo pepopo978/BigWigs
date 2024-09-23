@@ -19,7 +19,7 @@ L:RegisterTranslations("enUS", function() return {
 	respawn_cmd = "respawn",
 	respawn_name = "Respawn Alert",
 	respawn_desc = "Warn for Respawn",
-	
+
 	bar_respawn = " Respawn",
 	msg_respawn = "Imp Pack will respawn in 7 minutes - Right-click the BigWigs icon to remove the bar",
 } end )
@@ -79,5 +79,5 @@ end
 function module:StartTimer()
 	packDeadCount = packDeadCount + 1
 	-- self:Message(L["msg_respawn"])
-	self:Bar("Imp Pack# "..packDeadCount..L["bar_respawn"], timer.respawn, icon.respawn, true, color.respawn)
+	self:Bar("Imp Pack "..packDeadCount..L["bar_respawn"], timer.respawn, icon.respawn, true, color.respawn)
 end
