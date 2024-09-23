@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Flame Imp", "Molten Core")
 
-module.revision = 30073
+module.revision = 30074
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"respawn"}
 module.trashMod = true
@@ -21,7 +21,7 @@ L:RegisterTranslations("enUS", function() return {
 	respawn_desc = "Warn for Respawn",
 	
 	bar_respawn = " Respawn",
-	msg_respawn = "Imp Pack will respawn in 7 minutes - Click the BigWigs icon to remove the bar",
+	msg_respawn = "Imp Pack will respawn in 7 minutes - Right-click the BigWigs icon to remove the bar",
 } end )
 
 local timer = {
@@ -56,6 +56,10 @@ end
 function module:OnDisengage()
 end
 
+-- noop, over-rides normal 'wipe' bar clearing
+function module:CheckForWipe()
+end
+
 function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
 	if (msg == string.format(UNITDIESOTHER, "Flame Imp")) then
 		self:Sync(syncName.dead)
@@ -74,6 +78,6 @@ end
 
 function module:StartTimer()
 	packDeadCount = packDeadCount + 1
-	self:Message(L["msg_respawn"])
+	-- self:Message(L["msg_respawn"])
 	self:Bar("Imp Pack# "..packDeadCount..L["bar_respawn"], timer.respawn, icon.respawn, true, color.respawn)
 end
