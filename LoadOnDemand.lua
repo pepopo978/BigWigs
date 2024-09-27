@@ -9,6 +9,8 @@ local withcore = {}
 local inzone = {}
 local zonelist = {}
 
+local bwAvReboot = nil
+
 local function Split(str, sep)
 	local x, y = string.find(str, sep) or 0, string.len(sep) or 1
 	return tonumber(string.sub(str, 1, x - 1)) or string.sub(str, 1, x - 1), tonumber(string.sub(str, x + y)) or string.sub(str, x + y)
@@ -54,6 +56,7 @@ function BigWigsLoD:OnEnable()
 		self:ZONE_CHANGED_NEW_AREA()
 	else
 		self:RegisterEvent("AceEvent_FullyInitialized", "ZONE_CHANGED_NEW_AREA")
+		self:RegisterEvent("AceEvent_FullyInitialized", "MINIMAP_ZONE_CHANGED")
 	end
 end
 
@@ -84,6 +87,22 @@ function BigWigsLoD:ZONE_CHANGED_NEW_AREA()
 	
 	if GetZoneText() == "The Black Morass" or GetZoneText() == "Dire Maul" or GetZoneText() == "Stratholme" then
 		BigWigs:ToggleActive(true)
+	end
+	
+	if GetZoneText() == "Alterac Valley" and not BigWigs:IsModuleActive("Alterac Valley", "Alterac Valley") then
+		BigWigs:EnableModule("Alterac Valley", "Alterac Valley")
+		bwAvReboot = true
+	end
+	
+	if GetZoneText() == "Alterac Valley" and BigWigs:IsModuleActive("Alterac Valley", "Alterac Valley") and bwAvReboot == true then
+		self:TriggerEvent("BigWigs_RebootModule", "Alterac Valley", "Alterac Valley")
+		bwAvReboot = nil
+	end
+end
+
+function BigWigsLoD:MINIMAP_ZONE_CHANGED()
+	if GetZoneText() == "Alterac Valley" then
+		BigWigsLoD:ZONE_CHANGED_NEW_AREA()
 	end
 end
 
