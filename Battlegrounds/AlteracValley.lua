@@ -127,8 +127,8 @@ local syncName = {
 local mustRebootModule = nil
 
 function module:OnRegister()
-	self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-	self:RegisterEvent("MINIMAP_ZONE_CHANGED")
+	--self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+	--self:RegisterEvent("MINIMAP_ZONE_CHANGED")
 end
 
 function module:OnEnable()
@@ -183,45 +183,6 @@ function module:OnDisengage()
 end
 
 function module:CheckForWipe(event)
-end
-
-function module:ZONE_CHANGED_NEW_AREA(msg)
-	if GetZoneText() ~= "Alterac Valley" and self.core:IsModuleActive(module.translatedName) and mustRebootModule == true then
-		mustRebootModule = nil
-		if UnitName("Player") == "Dreadsome" then DEFAULT_CHAT_FRAME:AddMessage("Debug: Rebooted AV Module") end
-		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
-	
-	elseif GetZoneText() == "Alterac Valley" and not self.core:IsModuleActive(module.translatedName) then
-		mustRebootModule = true
-		if UnitName("Player") == "Dreadsome" then DEFAULT_CHAT_FRAME:AddMessage("Debug: Enabled AV Module") end
-		self.core:EnableModule(module.translatedName)
-		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
-	
-	--debug
-	elseif GetZoneText() ~= "Alterac Valley" and self.core:IsModuleActive(module.translatedName) and mustRebootModule ~= true then
-		if UnitName("Player") == "Dreadsome" then DEFAULT_CHAT_FRAME:AddMessage("Debug: 3rd option") end
-	
-	--debug
-	elseif GetZoneText() ~= "Alterac Valley" and not self.core:IsModuleActive(module.translatedName) and mustRebootModule == true then
-		if UnitName("Player") == "Dreadsome" then DEFAULT_CHAT_FRAME:AddMessage("Debug: 4th option") end
-	
-	else
-		return
-		
-	end
-end
-
-function module:MINIMAP_ZONE_CHANGED(msg)
-	self:ZONE_CHANGED_NEW_AREA()
-end
-
-function module:CHAT_MSG_SAY(msg)
-	--debug
-	if UnitName("Player") == "Dreadsome" then
-		if msg == "test" then
-			self:Sync(syncName.gameEnd .. " " .. 68)
-		end
-	end
 end
 
 function module:CHAT_MSG_MONSTER_YELL(msg)
