@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Alterac Valley", "Alterac Valley")
 
-module.revision = 30062
+module.revision = 30094
 module.enabletrigger = {}
 module.toggleoptions = {"towers", "gy", "mine", "rez", "start", "captain", "korrak", "gameend", "lord", "boss"}
 
@@ -124,6 +124,8 @@ local syncName = {
 	countPlayers = "AV_CountPlayers"..module.revision,
 }
 
+local mustRebootModule = nil
+
 function module:OnRegister()
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 	self:RegisterEvent("MINIMAP_ZONE_CHANGED")
@@ -184,16 +186,29 @@ function module:CheckForWipe(event)
 end
 
 function module:ZONE_CHANGED_NEW_AREA(msg)
+	if GetZoneText() ~= "Alterac Valley" and self.core:IsModuleActive(module.translatedName) and mustRebootModule == true then
+		mustRebootModule = nil
+		if UnitName("Player") == "Dreadsome" then DEFAULT_CHAT_FRAME:AddMessage("Debug: Rebooted AV Module") end
+		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
 	
-	if UnitName("Player") == "Dreadsome" then DEFAULT_CHAT_FRAME:AddMessage("ZONE_CHANGED_NEW_AREA") end
+	elseif GetZoneText() == "Alterac Valley" and not self.core:IsModuleActive(module.translatedName) then
+		mustRebootModule = true
+		if UnitName("Player") == "Dreadsome" then DEFAULT_CHAT_FRAME:AddMessage("Debug: Enabled AV Module") end
+		self.core:EnableModule(module.translatedName)
+		self:TriggerEvent("BigWigs_RebootModule", module.translatedName)
 	
-	if GetZoneText() ~= "Alterac Valley" or self.core:IsModuleActive(module.translatedName) then
-		if UnitName("Player") == "Dreadsome" then DEFAULT_CHAT_FRAME:AddMessage("return") end
+	--debug
+	elseif GetZoneText() ~= "Alterac Valley" and self.core:IsModuleActive(module.translatedName) and mustRebootModule ~= true then
+		if UnitName("Player") == "Dreadsome" then DEFAULT_CHAT_FRAME:AddMessage("Debug: 3rd option") end
+	
+	--debug
+	elseif GetZoneText() ~= "Alterac Valley" and not self.core:IsModuleActive(module.translatedName) and mustRebootModule == true then
+		if UnitName("Player") == "Dreadsome" then DEFAULT_CHAT_FRAME:AddMessage("Debug: 4th option") end
+	
+	else
 		return
+		
 	end
-
-	if UnitName("Player") == "Dreadsome" then DEFAULT_CHAT_FRAME:AddMessage("enable") end
-	self.core:EnableModule(module.translatedName)
 end
 
 function module:MINIMAP_ZONE_CHANGED(msg)
@@ -272,7 +287,6 @@ function module:CHAT_MSG_BG_SYSTEM_NEUTRAL(msg)
 	end
 end
 
-
 function module:CHAT_MSG_SYSTEM(msg)
 	if string.find(msg, L["trigger_gameEnd"]) then
 		local _, _, endTime, minSec = string.find(msg, L["trigger_gameEnd"])
@@ -287,31 +301,32 @@ end
 
 function module:UNIT_HEALTH(msg)
 	if UnitName(msg) == "Drek'Thar" then
-		local health = UnitHealth(msg)
-		if UnitName("Player") == "Dreadsome" then DEFAULT_CHAT_FRAME:AddMessage("Drek'Thar: "..health) end
-		if health >= 48 and health <= 52 then
+		local healthPct = UnitHealth(msg) * 100 / UnitHealthMax(msg)
+		
+		if healthPct >= 48 and healthPct <= 52 then
 			self:Sync(syncName.drek50)
-		elseif health >= 38 and health <= 42 then
+		elseif healthPct >= 38 and healthPct <= 42 then
 			self:Sync(syncName.drek40)
-		elseif health >= 28 and health <= 32 then
+		elseif healthPct >= 28 and healthPct <= 32 then
 			self:Sync(syncName.drek30)
-		elseif health >= 18 and health <= 22 then
+		elseif healthPct >= 18 and healthPct <= 22 then
 			self:Sync(syncName.drek20)
-		elseif health >= 8 and health <= 12 then
+		elseif healthPct >= 8 and healthPct <= 12 then
 			self:Sync(syncName.drek10)
 		end
+	
 	elseif UnitName(msg) == "Vanndar Stormpike" then
-		local health = UnitHealth(msg)
-		if UnitName("Player") == "Dreadsome" then DEFAULT_CHAT_FRAME:AddMessage("Vanndar Stormpike: "..health) end
-		if health >= 48 and health <= 52 then
+		local healthPct = UnitHealth(msg) * 100 / UnitHealthMax(msg)
+		
+		if healthPct >= 48 and healthPct <= 52 then
 			self:Sync(syncName.vann50)
-		elseif health >= 38 and health <= 42 then
+		elseif healthPct >= 38 and healthPct <= 42 then
 			self:Sync(syncName.vann40)
-		elseif health >= 28 and health <= 32 then
+		elseif healthPct >= 28 and healthPct <= 32 then
 			self:Sync(syncName.vann30)
-		elseif health >= 18 and health <= 22 then
+		elseif healthPct >= 18 and healthPct <= 22 then
 			self:Sync(syncName.vann20)
-		elseif health >= 8 and health <= 12 then
+		elseif healthPct >= 8 and healthPct <= 12 then
 			self:Sync(syncName.vann10)
 		end
 	end

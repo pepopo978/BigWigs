@@ -36,6 +36,7 @@ BabbleBoss:RegisterTranslations("enUS", function()
 		["Death Lord"] = true,
 		["Doctor Weavil"] = true,
 		["Ostarius"] = true,
+		["Concavius"] = true,
 		["Rotmaw"] = true,
 		["Antnormi"] = true,
 		["Mossheart"] = true,
