@@ -112,7 +112,8 @@ local timer = {
 	tailSweep = 1,
 	
 	firstGroundPhase = 40,
-	groundPhase = 61, --70 was 8.7-9sec too long
+	groundPhaseMin = 50,
+	groundPhaseMax = 70,
 	airPhase = 30,
 }
 local icon = {
@@ -438,7 +439,7 @@ function module:GroundPhase()
 	
 	if self.db.profile.proximity then
 		self:RemoveProximity()
-		self:DelayedSync(timer.groundPhase, syncName.enableProximity)
+		self:DelayedSync(timer.groundPhaseMin, syncName.enableProximity)
 	end
 	
 	self:CancelDelayedSync(syncName.groundPhase)
@@ -450,7 +451,7 @@ function module:GroundPhase()
 	
 	if lowHp == nil then
 		if self.db.profile.phase then
-			self:Bar(L["bar_timeToAirPhase"], timer.groundPhase, icon.phase, true, color.phase)
+			self:IntervalBar(L["bar_timeToAirPhase"], timer.groundPhaseMin, timer.groundPhaseMax, icon.phase, true, color.phase)
 			self:Message(L["msg_groundPhase"], "Important", false, nil, false)
 		end
 	end
