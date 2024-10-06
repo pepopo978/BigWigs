@@ -141,7 +141,7 @@ function module:OnEngage()
 		self:Bar(L["bar_webSprayCD"], timer.websprayCD, icon.webspray, true, color.webspray)
 	end
 
-	SetCVar("farclip", 177) -- lower farclip for rest of naxx until KT
+	SetCVar("farclip", 250) -- lower farclip for rest of naxx until KT
 end
 
 function module:OnDisengage()
