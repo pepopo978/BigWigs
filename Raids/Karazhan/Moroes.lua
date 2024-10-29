@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Moroes", "Karazhan")
 
-module.revision = 30025
+module.revision = 30026
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"smokebomb", "reflect", "shufflekick", "curse", "dust", "bosskill"}
 module.zonename = {
@@ -63,6 +63,7 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_dust = "(.+) is afflicted by Glittering Dust.",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
 	trigger_dustFade = "Glittering Dust fades from (.+).",--CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
 	bar_dust = " Dusted",
+	bar_dust_cd = "Tank Stun (use fap soon)",
 	
 	trigger_yellSmt = "Most impressive, it would appear your skills do match your bravery.",-- CHAT_MSG_MONSTER_YELL
 } end )
@@ -74,6 +75,7 @@ local timer = {
 	reflect = 5,
 	shuffleKick = 4,
 	dust = 10,
+	dust_cd = 20, -- 20-26
 }
 local icon = {
 	p1 = "Inv_Misc_Pocketwatch_01",
@@ -82,7 +84,8 @@ local icon = {
 	reflect = "Spell_Arcane_Blink",
 	shuffleKick = "Ability_Kick",
 	curse = "Spell_Shadow_GatherShadows",
-	dust = "inv_misc_dust_02",--unknown
+	dust = "Ability_Hibernation",--unknown
+	dust_cd = "Inv_Potion_04"
 }
 local color = {
 	p1 = "White",
@@ -141,6 +144,9 @@ function module:OnSetup()
 end
 
 function module:OnEngage()
+	if self.db.profile.dust then
+		self:Bar(L["bar_dust_cd"], timer.dust_cd, icon.dust_cd, true, color.dust)
+	end
 end
 
 function module:OnDisengage()
