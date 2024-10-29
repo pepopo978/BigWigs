@@ -1,4 +1,3 @@
-
 ------------------------------
 --      Are you local?      --
 ------------------------------
@@ -10,6 +9,7 @@ local inzone = {}
 local zonelist = {}
 
 local bwAvReboot = nil
+local bwAbReboot = nil
 
 local function Split(str, sep)
 	local x, y = string.find(str, sep) or 0, string.len(sep) or 1
@@ -24,8 +24,12 @@ end
 
 local function Explode(str, sep)
 	local a, b = Split(str, sep)
-	if not b or b == "" then return Trim(a) end
-	if not string.find(b, sep) then return Trim(a), Trim(b) end
+	if not b or b == "" then
+		return Trim(a)
+	end
+	if not string.find(b, sep) then
+		return Trim(a), Trim(b)
+	end
 	return Trim(a), Explode(b, sep)
 end
 
@@ -67,10 +71,10 @@ end
 function BigWigsLoD:BigWigs_CoreEnabled()
 
 	local loaded = false
-	for k,v in pairs( withcore ) do
-		if not IsAddOnLoaded( v ) then
+	for k, v in pairs(withcore) do
+		if not IsAddOnLoaded(v) then
 			loaded = true
-			LoadAddOn( v )
+			LoadAddOn(v)
 		end
 	end
 
@@ -83,20 +87,30 @@ function BigWigsLoD:BigWigs_CoreEnabled()
 end
 
 function BigWigsLoD:ZONE_CHANGED_NEW_AREA()
-	self:LoadZone( GetRealZoneText() )
-	
+	self:LoadZone(GetRealZoneText())
+
 	if GetZoneText() == "The Black Morass" or GetZoneText() == "Dire Maul" or GetZoneText() == "Stratholme" then
 		BigWigs:ToggleActive(true)
 	end
-	
+
 	if GetZoneText() == "Alterac Valley" and not BigWigs:IsModuleActive("Alterac Valley", "Alterac Valley") then
 		BigWigs:EnableModule("Alterac Valley", "Alterac Valley")
 		bwAvReboot = true
 	end
-	
+
 	if GetZoneText() == "Alterac Valley" and BigWigs:IsModuleActive("Alterac Valley", "Alterac Valley") and bwAvReboot == true then
 		self:TriggerEvent("BigWigs_RebootModule", "Alterac Valley", "Alterac Valley")
 		bwAvReboot = nil
+	end
+
+	if GetZoneText() == "Arathi Basin" and not BigWigs:IsModuleActive("Arathi Basin", "Arathi Basin") then
+		BigWigs:EnableModule("Arathi Basin", "Arathi Basin")
+		bwAbReboot = true
+	end
+
+	if GetZoneText() == "Arathi Basin" and BigWigs:IsModuleActive("Arathi Basin", "Arathi Basin") and bwAbReboot == true then
+		self:TriggerEvent("BigWigs_RebootModule", "Arathi Basin", "Arathi Basin")
+		bwAbReboot = nil
 	end
 end
 
@@ -104,10 +118,14 @@ function BigWigsLoD:MINIMAP_ZONE_CHANGED()
 	if GetZoneText() == "Alterac Valley" then
 		BigWigsLoD:ZONE_CHANGED_NEW_AREA()
 	end
+
+	if GetZoneText() == "Arathi Basin" then
+		BigWigsLoD:ZONE_CHANGED_NEW_AREA()
+	end
 end
 
-function BigWigsLoD:CHAT_MSG_SYSTEM( msg )
-	if string.find(msg, "^"..ERR_RAID_YOU_LEFT) then
+function BigWigsLoD:CHAT_MSG_SYSTEM(msg)
+	if string.find(msg, "^" .. ERR_RAID_YOU_LEFT) then
 		self:TriggerEvent("BigWigs_LeftGroup")
 	elseif string.find(msg, ERR_RAID_YOU_JOINED) then
 		self:TriggerEvent("BigWigs_JoinedGroup")
@@ -132,18 +150,24 @@ function BigWigsLoD:InitializeLoD()
 		if not IsAddOnLoaded(i) and IsAddOnLoadOnDemand(i) then
 			local meta = GetAddOnMetadata(i, "X-BigWigs-LoadInZone")
 			if meta then
-				local ignorezone = string.find( meta, LC["Outdoor Raid Bosses Zone"] )
-				for k, v in pairs({Explode(meta, ",")}) do
+				local ignorezone = string.find(meta, LC["Outdoor Raid Bosses Zone"])
+				for k, v in pairs({ Explode(meta, ",") }) do
 					local zone
-					if BZ:HasTranslation(v) then zone = BZ[v] end
+					if BZ:HasTranslation(v) then
+						zone = BZ[v]
+					end
 					-- elseif LC:HasTranslation(v) then zone = LC[v] end
 					if zone then
-						if not inzone[zone] then inzone[zone] = {} end
-						table.insert( inzone[zone], i)
+						if not inzone[zone] then
+							inzone[zone] = {}
+						end
+						table.insert(inzone[zone], i)
 						if not ignorezone then
 							zonelist[zone] = true
 						else
-							if not zonelist[LC["Other"]] then zonelist[LC["Other"]] = {} end
+							if not zonelist[LC["Other"]] then
+								zonelist[LC["Other"]] = {}
+							end
 							zonelist[LC["Other"]][zone] = true
 						end
 					end
@@ -152,19 +176,19 @@ function BigWigsLoD:InitializeLoD()
 			meta = GetAddOnMetadata(i, "X-BigWigs-LoadWithCore")
 			if meta then
 				-- register this addon for loading with core
-				table.insert( withcore, i )
+				table.insert(withcore, i)
 			end
 		end
 	end
 end
 
-function BigWigsLoD:LoadZone( zone )
+function BigWigsLoD:LoadZone(zone)
 	if inzone[zone] then
 		local loaded = false
-		for k,v in pairs( inzone[zone] ) do
-			if not IsAddOnLoaded( v ) then
+		for k, v in pairs(inzone[zone]) do
+			if not IsAddOnLoaded(v) then
 				loaded = true
-				LoadAddOn( v )
+				LoadAddOn(v)
 			end
 		end
 		inzone[zone] = nil
