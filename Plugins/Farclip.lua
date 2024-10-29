@@ -16,26 +16,16 @@ local L = AceLibrary("AceLocale-2.2"):new("BigWigsFarclip")
 
 L:RegisterTranslations("enUS", function()
 	return {
+		["Active"] = true,
 		["Farclip"] = true,
 		["farclip"] = true,
-		["NaxxFarclip"] = "Reduce farclip to 250 in Naxx.",
-		["Active"] = true,
-		["Activate the plugin."] = true,
-		["Default Value"] = true,
-		["Set the default farclip value."] = true,
-	}
-end)
-
-L:RegisterTranslations("esES", function()
-	return {
-		["Farclip"] = "Farclip",
-		["farclip"] = "farclip",
-		["NaxxFarclip"] = "Reduce farclip to 250 in Naxx.",
-		["Reduces the terrain distance to the minimum in Naxxramas to avoid screen freezes."] = "Reduce la distancia de terreno al mínimo en Naxxramas para evitar colgarse la pantalla.",
-		["Active"] = "Activo",
-		["Activate the plugin."] = "Activa el plugin",
-		["Default Value"] = "Valor Defecto",
-		["Set the default farclip value."] = "Define el valor farclip por defecto.",
+		["notify"] = "Notify when raising/lowering farclip",
+		["NaxxFarclip"] = "Whether to lower farclip in Naxx.",
+		["Farclip value outside Naxx"] = true,
+		["Naxx farclip value"] = true,
+		["lowering_farclip"] = "Lowering farclip for Naxxramas to %d and saving your current farclip of %d.  You can configure this in the Farclip plugin in BigWigs.",
+		["restoring_farclip"] = "Restoring lowered farclip to your saved value of %d.",
+		["Reduces the terrain distance to the minimum in Naxxramas to avoid screen freezes."] = true,
 	}
 end)
 
@@ -51,6 +41,7 @@ BigWigsFarclip = BigWigs:NewModule(L["Farclip"])
 BigWigsFarclip.revision = 20012
 BigWigsFarclip.defaultDB = {
 	active = false,
+	notify = true,
 	defaultFarclip = 777,
 	lowFarClip = 250, -- using 177 will cause invisible mobs and portals to not load
 }
@@ -74,20 +65,50 @@ BigWigsFarclip.consoleOptions = {
 			end,
 			--passValue = "reverse",
 		},
-		default = {
+		notify = {
+			type = "toggle",
+			name = L["notify"],
+			desc = L["notify"],
+			order = 5,
+			get = function()
+				return BigWigsFarclip.db.profile.notify
+			end,
+			set = function(v)
+				BigWigsFarclip.db.profile.notify = v
+			end,
+		},
+		defaultfarclip = {
 			type = "range",
-			name = L["Default Value"],
-			desc = L["Set the default farclip value."],
-			order = 2,
+			name = L["Farclip value outside Naxx"],
+			desc = L["Farclip value outside Naxx"],
+			order = 10,
 			min = 177,
 			max = 777,
-			step = 60,
+			step = 1,
 			get = function()
 				return BigWigsFarclip.db.profile.defaultFarclip
 			end,
 			set = function(v)
 				BigWigsFarclip.db.profile.defaultFarclip = v
-				SetCVar("farclip", v)
+
+				if not BigWigsFarclip.db.profile.active or AceLibrary("Babble-Zone-2.2")["Naxxramas"] ~= GetRealZoneText() then
+					SetCVar("farclip", v)
+				end
+			end,
+		},
+		naxxfarclip = {
+			type = "range",
+			name = L["Naxx farclip value"],
+			desc = L["Naxx farclip value"],
+			order = 15,
+			min = 177,
+			max = 777,
+			step = 1,
+			get = function()
+				return BigWigsFarclip.db.profile.lowFarClip
+			end,
+			set = function(v)
+				BigWigsFarclip.db.profile.lowFarClip = v
 			end,
 		},
 	}
@@ -102,16 +123,27 @@ function BigWigsFarclip:OnEnable()
 end
 
 function BigWigsFarclip:ZONE_CHANGED_NEW_AREA()
-	self:DebugMessage(1)
 	if self.db.profile.active then
-		self:DebugMessage(2)
+		local farclip = GetCVar("farclip")
+		local isAtLowFarclip = tonumber(farclip) == tonumber(self.db.profile.lowFarClip)
+
 		if AceLibrary("Babble-Zone-2.2")["Naxxramas"] == GetRealZoneText() then
-			self.db.profile.defaultFarclip = GetCVar("farclip")
-			SetCVar("farclip", lowFarClip) -- http://wowwiki.wikia.com/wiki/CVar_farclip
+			if not isAtLowFarclip then
+				if self.db.profile.notify then
+					local msg = string.format(L["lowering_farclip"], tonumber(self.db.profile.lowFarClip), tonumber(farclip))
+					self:Message(msg, "Cyan", false, nil, false)
+				end
+
+				self.db.profile.defaultFarclip = GetCVar("farclip")
+				SetCVar("farclip", self.db.profile.lowFarClip) -- http://wowwiki.wikia.com/wiki/CVar_farclip
+			end
 		else
-			self:DebugMessage(3)
-			if tonumber(GetCVar("farclip")) == lowFarClip then
-				self:DebugMessage(4)
+			if isAtLowFarclip then
+				if self.db.profile.notify then
+					local msg = string.format(L["restoring_farclip"], tonumber(self.db.profile.defaultFarclip))
+					self:Message(msg, "Cyan", false, nil, false)
+				end
+
 				SetCVar("farclip", self.db.profile.defaultFarclip)
 			end
 		end
