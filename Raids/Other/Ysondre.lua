@@ -373,7 +373,7 @@ function module:NoxiousBreathStacks(rest)
 		end
 	end
 	
-	if UnitName("Player") == "Relar" or UnitName("Player") == "Dreadsome" or UnitName("Player") == "Vakos" then
+	if UnitName("Player") == "Relar" or UnitName("Player") == "Dreadsome" then
 		if type(stacksQty) ~= "number" then
 			DEFAULT_CHAT_FRAME:AddMessage("|cFFFF8080[BigWigs]|r Send this Screenshot to Relar: "..rest)
 		end
