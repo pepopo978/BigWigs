@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Lord Blackwald II", "Karazhan")
 
-module.revision = 30027
+module.revision = 30028
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"reaverstorm", "boon", "empoweredsoul", "summon", "bosskill"}
 module.zonename = {

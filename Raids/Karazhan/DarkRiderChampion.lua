@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Dark Rider Champion", "Karazhan")
 
-module.revision = 30025
+module.revision = 30026
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"reaverstorm"}
 module.trashMod = true

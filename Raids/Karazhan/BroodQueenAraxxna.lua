@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Brood Queen Araxxna", "Karazhan")
 
-module.revision = 30036
+module.revision = 30037
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"volley", "leechingbite", "egg", "bosskill"}
 module.zonename = {

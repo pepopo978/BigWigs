@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Grizikil", "Karazhan")
 
-module.revision = 30023
+module.revision = 30024
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"rainoffire", "flamewave", "bosskill"}
 module.zonename = {

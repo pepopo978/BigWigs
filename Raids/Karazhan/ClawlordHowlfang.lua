@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Clawlord Howlfang", "Karazhan")
 
-module.revision = 30036
+module.revision = 30037
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"terrifyingpresence", "curse", "enrage", "bosskill"}
 module.zonename = {

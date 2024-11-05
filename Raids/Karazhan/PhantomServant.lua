@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Phantom Servant", "Karazhan")
 
-module.revision = 30022
+module.revision = 30023
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"phantomscream"}
 module.trashMod = true
