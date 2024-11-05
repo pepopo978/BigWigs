@@ -71,7 +71,7 @@ L:RegisterTranslations("enUS", function()
 		["Onyxia's Lair"] = "Onyxia",
 		["Naxxramas"] = "Naxxramas",
 		["Emerald Sanctum"] = "EmeraldSanctum",
-		["Karazhan"] = "Karazhan",
+		["Tower of Karazhan"] = "Karazhan",
 		["Dire Maul"] = "DireMaul",
 		["Blackrock Spire"] = "BlackrockSpire",
 		["The Black Morass"] = "BlackMorass",

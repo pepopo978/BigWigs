@@ -5,8 +5,8 @@ module.revision = 30027
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"reaverstorm", "boon", "empoweredsoul", "summon", "bosskill"}
 module.zonename = {
-	AceLibrary("AceLocale-2.2"):new("BigWigs")["Karazhan"],
-	AceLibrary("Babble-Zone-2.2")["Karazhan"],
+	AceLibrary("AceLocale-2.2"):new("BigWigs")["Tower of Karazhan"],
+	AceLibrary("Babble-Zone-2.2")["Tower of Karazhan"],
 }
 
 L:RegisterTranslations("enUS", function() return {
