@@ -10,7 +10,7 @@ Dependencies: AceLibrary, AceLocale-2.2
 ]]
 
 local MAJOR_VERSION = "Babble-Zone-2.2"
-local MINOR_VERSION = tonumber(string.sub("$Revision: 17780 $", 12, -3))
+local MINOR_VERSION = tonumber(string.sub("$Revision: 17781 $", 12, -3))
 
 if not AceLibrary then error(MAJOR_VERSION .. " requires AceLibrary") end
 
@@ -43,6 +43,7 @@ BabbleZone:RegisterTranslations("enUS", function()
 		["Karazhan"] = true,
 		["Lapidis Isle"] = true,
 		["Lower Karazhan Halls"] = true,
+		["Tower of Karazhan"] = true, -- new twow name
 		["Moomoo Grove"] = true,
 		["Scarlet Enclave"] = true,
 		["Stormwind Vault"] = true,

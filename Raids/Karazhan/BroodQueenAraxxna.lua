@@ -1,12 +1,12 @@
 
 local module, L = BigWigs:ModuleDeclaration("Brood Queen Araxxna", "Karazhan")
 
-module.revision = 30036
+module.revision = 30037
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"volley", "leechingbite", "egg", "bosskill"}
 module.zonename = {
-	AceLibrary("AceLocale-2.2"):new("BigWigs")["Karazhan"],
-	AceLibrary("Babble-Zone-2.2")["Karazhan"],
+	AceLibrary("AceLocale-2.2"):new("BigWigs")["Tower of Karazhan"],
+	AceLibrary("Babble-Zone-2.2")["Tower of Karazhan"],
 }
 
 L:RegisterTranslations("enUS", function() return {

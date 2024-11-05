@@ -71,7 +71,7 @@ L:RegisterTranslations("enUS", function()
 		["Onyxia's Lair"] = "Onyxia",
 		["Naxxramas"] = "Naxxramas",
 		["Emerald Sanctum"] = "EmeraldSanctum",
-		["Karazhan"] = "Karazhan",
+		["Tower of Karazhan"] = "Karazhan",
 		["Dire Maul"] = "DireMaul",
 		["Blackrock Spire"] = "BlackrockSpire",
 		["The Black Morass"] = "BlackMorass",
@@ -265,7 +265,7 @@ BigWigs.cmdtable = { type = "group", handler = BigWigs, args = {
 } }
 BigWigs:RegisterChatCommand({ "/bw", "/BigWigs" }, BigWigs.cmdtable)
 BigWigs.debugFrame = ChatFrame1
-BigWigs.revision = 30105
+BigWigs.revision = 30106
 
 function BigWigs:EditLayout()
 	BigWigsBars:BigWigs_ShowAnchors()
