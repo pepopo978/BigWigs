@@ -17,25 +17,9 @@ local syncFormat = modulePrefix .. "(.+)" --modulePrefix + command
 local dataFormat = "(.-);(.+)" -- spellShortName;spellArgs
 
 local Spells = {
-	pi = {
-		spellName = "Power Infusion",
-		spellIcon = "Spell_Holy_PowerInfusion",
-		spellSlot = nil,
-		hasSpell = nil,
-		targetRequester = true,
-		allowRequests = true,
-	},
 	bop = {
-		spellName = "Blessing of Protection",
+		spellName = "Hand of Protection",
 		spellIcon = "Spell_Holy_SealOfProtection",
-		spellSlot = nil,
-		hasSpell = nil,
-		targetRequester = true,
-		allowRequests = true,
-	},
-	bl = {
-		spellName = "Bloodlust",
-		spellIcon = "Spell_Nature_BloodLust",
 		spellSlot = nil,
 		hasSpell = nil,
 		targetRequester = true,
@@ -706,7 +690,12 @@ function BigWigsSpellRequests:UpdateRequestsFrame()
 		end
 		local numButtons = 0
 		for k, v in pairs(self.db.profile.shownreqbuttons) do
-			numButtons = numButtons + 1
+			if Spells[k] then
+				numButtons = numButtons + 1
+			else
+				-- remove invalid spell
+				self.db.profile.shownreqbuttons[k] = nil
+			end
 		end
 
 		if numButtons == 0 then
@@ -802,7 +791,12 @@ function BigWigsSpellRequests:UpdateCooldownsFrame()
 		end
 		local numButtons = 0
 		for k, v in pairs(self.db.profile.showncdbuttons) do
-			numButtons = numButtons + 1
+			if Spells[k] then
+				numButtons = numButtons + 1
+			else
+				-- remove invalid spell
+				self.db.profile.showncdbuttons[k] = nil
+			end
 		end
 
 		if numButtons == 0 then

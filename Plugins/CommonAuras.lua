@@ -95,7 +95,7 @@ L:RegisterTranslations("enUS", function()
 		["Deepwood Pipe"] = true,
 		["Lesser Invisibility"] = true,
 		["Limited Invulnerability Potion"] = true,
-		["Blessing of Protection"] = true,
+		["Hand of Protection"] = true,
 		["Power Infusion"] = true,
 
 		["AQ40 Insignia Reminder"] = true,
@@ -106,7 +106,7 @@ L:RegisterTranslations("enUS", function()
 		["lesser_invis_trigger"] = "You gain Lesser Invisibility",
 		["cloaking_invis_trigger"] = "You gain Cloaking",
 		["lip_trigger"] = "You gain Invulnerability",
-		["bop_trigger"] = "You gain Blessing of Protection",
+		["bop_trigger"] = "You gain Hand of Protection",
 		["powerinfusion_trigger"] = "You gain Power Infusion",
 		["deepwoodpipe_trigger"] = "You gain Smoke Cloud", -- use this as trigger instead of Stealth due to overlap with rogue ability
 
@@ -115,7 +115,7 @@ L:RegisterTranslations("enUS", function()
 		["lesser_invis_fades"] = "Lesser Invisibility fades",
 		["cloaking_invis_fades"] = "Cloaking fades",
 		["lip_fades"] = "Invulnerability fades",
-		["bop_fades"] = "Blessing of Protection fades",
+		["bop_fades"] = "Hand of Protection fades",
 		["powerinfusion_fades"] = "Power Infusion fades",
 		["deepwoodpipe_fades"] = "Stealth fades"
 	}
@@ -261,8 +261,8 @@ BigWigsCommonAuras.consoleOptions = {
 			args = {
 				["bop"] = {
 					type = "toggle",
-					name = L["Blessing of Protection"],
-					desc = string.format(L["Toggle %s display."], L["Blessing of Protection"]),
+					name = L["Hand of Protection"],
+					desc = string.format(L["Toggle %s display."], L["Hand of Protection"]),
 					get = function()
 						return BigWigsCommonAuras.db.profile.bop
 					end,
