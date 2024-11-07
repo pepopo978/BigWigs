@@ -15,7 +15,7 @@ local surface = AceLibrary("Surface-1.0")
 
 local timer = {
 	scorch = 30,
-	ignite = 4,
+	ignite = 6,
 }
 local syncName = {
 	scorch = "ScorchHit",
@@ -581,7 +581,7 @@ BigWigsMageTools.consoleOptions = {
 	}
 }
 
-BigWigsMageTools.revision = 30065
+BigWigsMageTools.revision = 30066
 BigWigsMageTools.external = true
 
 BigWigsMageTools.target = nil
