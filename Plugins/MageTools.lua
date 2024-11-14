@@ -1,5 +1,5 @@
 --[[
-This is a plugin to help mages track their fire vulnerability debuff.
+This is a plugin to help mages track their fire vulnerability and ignite debuffs.
 --]]
 
 assert(BigWigs, "BigWigs not found!")
@@ -62,9 +62,9 @@ L:RegisterTranslations("enUS", function()
 		["MageToolsCmd"] = "magetools",
 		["MageTools"] = "Mage Tools",
 		["MageToolsDesc"] = "Scorch/Ignite tools for mages",
-		["Enable"] = "Enable",
+		["Active"] = "Active",
 		["Debug"] = "Debug",
-		["EnableDesc"] = "Enable Mage tools",
+		["ActiveDesc"] = "Activate Mage tools (only works if you are a mage)",
 
 		["AnchorTitle"] = "Extras -> Mage Tools",
 		["ShowAnchor"] = "Show anchor frame",
@@ -162,14 +162,47 @@ end)
 --      Module Declaration
 -----------------------------------------------------------------------
 
+local hasScorchTalent = false
+local hasIgniteTalent = false
+
 local _, englishClass = UnitClass("player");
 local isMage = false;
 if englishClass == "MAGE" then
 	isMage = true
 end
+
+local function _checkTalents()
+	hasScorchTalent = false
+	hasIgniteTalent = false
+
+	local nameTalent, icon, tier, column, currRank, maxRank = GetTalentInfo(2, 3);
+	if nameTalent == "Ignite" and currRank > 0 then
+		hasIgniteTalent = true
+	end
+
+	nameTalent, icon, tier, column, currRank, maxRank = GetTalentInfo(2, 10);
+	if nameTalent == "Improved Scorch" and currRank > 0 then
+		hasScorchTalent = true
+	end
+
+	if isMage and (hasScorchTalent or hasIgniteTalent) then
+		if not BigWigsMageTools.active then
+			DEFAULT_CHAT_FRAME:AddMessage("Enabling Magetools due having scorch/ignite talent(s)")
+			BigWigsMageTools.active = true
+			BigWigs:EnableModule(name, true)
+		end
+	else
+		if BigWigsMageTools.active then
+			DEFAULT_CHAT_FRAME:AddMessage("Disabling Magetools due to not having scorch/ignite talent(s)")
+			BigWigsMageTools.active = false
+			BigWigs:DisableModule(name, true)
+		end
+	end
+end
+
 BigWigsMageTools = BigWigs:NewModule(name)
 BigWigsMageTools.defaultDB = {
-	enable = isMage and true or false,
+	enable = isMage,
 	debug = false,
 	barspacing = 5,
 	texture = "BantoBar",
@@ -207,14 +240,19 @@ BigWigsMageTools.consoleOptions = {
 	args = {
 		enable = {
 			type = "toggle",
-			name = L["Enable"],
-			desc = L["EnableDesc"],
+			name = L["Active"],
+			desc = L["ActiveDesc"],
 			order = 1,
 			get = function()
-				return BigWigsMageTools.db.profile.enable
+				return BigWigsMageTools.active
 			end,
 			set = function(v)
-				BigWigsMageTools.db.profile.enable = v
+				BigWigsMageTools.active = v
+				if v then
+					BigWigs:EnableModule(name)
+				else
+					BigWigs:DisableModule(name)
+				end
 			end,
 		},
 		debug = {
@@ -599,16 +637,22 @@ BigWigsMageTools.previousThreatPercent = {}
 -----------------------------------------------------------------------
 --      Initialization
 -----------------------------------------------------------------------
+function BigWigsMageTools:OnRegister()
+	self.active = false
+
+	-- will be nil
+	_checkTalents();
+end
 
 function BigWigsMageTools:OnEnable()
-	self.playerName = UnitName("player")
-	if not self.db.profile.texture then
-		self.db.profile.texture = "BantoBar"
-	end
-	self.frames = {}
-	self:SetupFrames()
-	self:RegisterEvent("BigWigs_RecvSync")
-	if self.db.profile.enable then
+	if self.active then
+		self.playerName = UnitName("player")
+		if not self.db.profile.texture then
+			self.db.profile.texture = "BantoBar"
+		end
+		self.frames = {}
+		self:SetupFrames()
+		self:RegisterEvent("BigWigs_RecvSync")
 		-- start listening to threat events
 		BigWigsThreat:StartListening()
 		self:RegisterEvent("BigWigs_ThreatUpdate", "ThreatUpdate")
@@ -628,32 +672,44 @@ function BigWigsMageTools:OnEnable()
 		self:RegisterEvent("CHAT_MSG_SPELL_PARTY_DAMAGE", "PlayerDamageEvents")
 		self:RegisterEvent("CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE", "PlayerDamageEvents")
 		self:RegisterEvent("CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF", "PlayerDamageEvents")
-	end
+		self:RegisterEvent("CHARACTER_POINTS_CHANGED", "CheckTalents")
 
-	if not self:IsEventRegistered("Surface_Registered") then
-		self:RegisterEvent("Surface_Registered", function()
-			self.consoleOptions.args[L["Texture"]].validate = surface:List()
-		end)
-	end
+		if not self:IsEventRegistered("Surface_Registered") then
+			self:RegisterEvent("Surface_Registered", function()
+				self.consoleOptions.args[L["Texture"]].validate = surface:List()
+			end)
+		end
 
-	self.target = UnitName("target")
-	self:ThrottleSync(warningSyncSpeed, syncName.ignitePlayerWarning)
-	self:ThrottleSync(warningSyncSpeed, syncName.ignitePyroRequest)
-	self:ThrottleSync(1, syncName.eyeOfDimStart)
-	self:ThrottleSync(1, syncName.eyeOfDimFade)
-	self:ThrottleSync(1, syncName.fetishStart)
-	self:ThrottleSync(1, syncName.fetishFade)
+		self.target = UnitName("target")
+		self:ThrottleSync(warningSyncSpeed, syncName.ignitePlayerWarning)
+		self:ThrottleSync(warningSyncSpeed, syncName.ignitePyroRequest)
+		self:ThrottleSync(1, syncName.eyeOfDimStart)
+		self:ThrottleSync(1, syncName.eyeOfDimFade)
+		self:ThrottleSync(1, syncName.fetishStart)
+		self:ThrottleSync(1, syncName.fetishFade)
+	end
 end
 
 function BigWigsMageTools:OnDisable()
+	self.active = false
+
 	self:HideAnchors()
 	self:UnregisterAllEvents()
 	self:CancelAllScheduledEvents()
+
+	-- still listen to check talents if a mage
+	if isMage then
+		self:RegisterEvent("CHARACTER_POINTS_CHANGED", "CheckTalents")
+	end
 end
 
 -----------------------------------------------------------------------
 --      Event Handlers
 -----------------------------------------------------------------------
+function BigWigsMageTools:CheckTalents()
+	self:ScheduleEvent("checktalents", _checkTalents, 1, self)
+end
+
 function BigWigsMageTools:PlayerDamageEvents(msg)
 	local eventHandled, crit, _ = self:ScorchEvent(msg)
 	if not eventHandled or crit then
@@ -1046,23 +1102,23 @@ end
 
 function BigWigsMageTools:BigWigs_RecvSync(sync, arg1, arg2)
 	if sync == syncName.ignitePlayerWarning then
-		if self.db.profile.enable and self.db.profile.igniteplayerwarning then
+		if self.active and self.db.profile.igniteplayerwarning then
 			self:Bar(arg1 .. " says stop casting!!!", 5, "inv_misc_bone_orcskull_01", false, "Red")
 			BigWigsSound:BigWigs_Sound("stopcasting")
 		end
 	elseif sync == syncName.ignitePyroRequest then
-		if self.db.profile.enable and self.db.profile.ignitepyrorequest then
+		if self.active and self.db.profile.ignitepyrorequest then
 			self:Bar(arg1 .. " has requested pyro!!!", 3, "spell_fire_fireball02", false, "Red")
 			BigWigsSound:BigWigs_Sound("Pyro")
 		end
 	elseif sync == syncName.eyeOfDimStart then
-		if self.db.profile.enable and self.db.profile.threattrinketalerts then
+		if self.active and self.db.profile.threattrinketalerts then
 			self:Bar(arg1 .. " used Eye of Dim", 20, "INV_Trinket_Naxxramas02", false, "Blue")
 		end
 	elseif sync == syncName.eyeOfDimFade then
 		self:RemoveBar(arg1 .. " used Eye of Dim")
 	elseif sync == syncName.fetishStart then
-		if self.db.profile.enable and self.db.profile.threattrinketalerts then
+		if self.active and self.db.profile.threattrinketalerts then
 			self:Bar(arg1 .. " used Fetish", 20, "INV_Misc_AhnQirajTrinket_03", false, "Blue")
 		end
 	elseif sync == syncName.fetishFade then
@@ -1128,14 +1184,6 @@ function BigWigsMageTools:GetTargetIgniteText(target)
 		igniteText = igniteText .. " - " .. self.igniteOwners[target]
 	end
 	return igniteText
-end
-
-function BigWigsMageTools:CheckTalents()
-	nameTalent, icon, tier, column, currRank, maxRank = GetTalentInfo(2, 10);
-	if nameTalent == "Improved Scorch" and currRank == maxRank then
-		return true
-	end
-	return false
 end
 
 function BigWigsMageTools:Test()
@@ -1283,7 +1331,7 @@ function BigWigsMageTools:SetupFrames()
 	rightbutton:SetHeight(25)
 	rightbutton:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 120, 10)
 	rightbutton:SetScript("OnClick", function()
-		self:HideAnchors()
+		BigWigsMageTools:HideAnchors()
 	end)
 
 	t = rightbutton:CreateTexture()
@@ -1382,10 +1430,12 @@ function BigWigsMageTools:ShowAnchors()
 end
 
 function BigWigsMageTools:HideAnchors()
-	if not self.frames.anchor then
-		return
+	if self.frames then
+		if not self.frames.anchor then
+			return
+		end
+		self.frames.anchor:Hide()
 	end
-	self.frames.anchor:Hide()
 end
 
 local barCache = {
