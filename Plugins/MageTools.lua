@@ -714,8 +714,8 @@ function BigWigsMageTools:OnDisable()
 
 	-- still listen to check talents if a mage
 	if isMage then
-		self:RegisterEvent("CHARACTER_POINTS_CHANGED", "CheckTalents")
-		self:RegisterEvent("LEARNED_SPELL_IN_TAB", "CheckTalents")
+		self:RegisterEvent("CHARACTER_POINTS_CHANGED", "CheckTalentEvent")
+		self:RegisterEvent("LEARNED_SPELL_IN_TAB", "CheckTalentEvent")
 	end
 end
 
