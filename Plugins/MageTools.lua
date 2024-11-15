@@ -648,6 +648,10 @@ function BigWigsMageTools:CheckTalents()
 	end
 end
 
+function BigWigsMageTools:CheckTalentEvent()
+		self:ScheduleEvent("checktalents", self.CheckTalents, 1, self)
+end
+
 function BigWigsMageTools:OnRegister()
 	-- will be nil
 	self:CheckTalents();
@@ -682,8 +686,8 @@ function BigWigsMageTools:OnEnable()
 		self:RegisterEvent("CHAT_MSG_SPELL_PARTY_DAMAGE", "PlayerDamageEvents")
 		self:RegisterEvent("CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE", "PlayerDamageEvents")
 		self:RegisterEvent("CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF", "PlayerDamageEvents")
-		self:RegisterEvent("CHARACTER_POINTS_CHANGED", "CheckTalents")
-		self:RegisterEvent("LEARNED_SPELL_IN_TAB", "CheckTalents")
+		self:RegisterEvent("CHARACTER_POINTS_CHANGED", "CheckTalentEvent")
+		self:RegisterEvent("LEARNED_SPELL_IN_TAB", "CheckTalentEvent")
 
 		if not self:IsEventRegistered("Surface_Registered") then
 			self:RegisterEvent("Surface_Registered", function()
