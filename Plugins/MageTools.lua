@@ -162,42 +162,10 @@ end)
 --      Module Declaration
 -----------------------------------------------------------------------
 
-local hasScorchTalent = false
-local hasIgniteTalent = false
-
 local _, englishClass = UnitClass("player");
 local isMage = false;
 if englishClass == "MAGE" then
 	isMage = true
-end
-
-local function _checkTalents()
-	hasScorchTalent = false
-	hasIgniteTalent = false
-
-	local nameTalent, icon, tier, column, currRank, maxRank = GetTalentInfo(2, 3);
-	if nameTalent == "Ignite" and currRank > 0 then
-		hasIgniteTalent = true
-	end
-
-	nameTalent, icon, tier, column, currRank, maxRank = GetTalentInfo(2, 10);
-	if nameTalent == "Improved Scorch" and currRank > 0 then
-		hasScorchTalent = true
-	end
-
-	if isMage and (hasScorchTalent or hasIgniteTalent) then
-		if not BigWigsMageTools.active then
-			DEFAULT_CHAT_FRAME:AddMessage("Enabling Magetools due having scorch/ignite talent(s)")
-			BigWigsMageTools.active = true
-			BigWigs:EnableModule(name, true)
-		end
-	else
-		if BigWigsMageTools.active then
-			DEFAULT_CHAT_FRAME:AddMessage("Disabling Magetools due to not having scorch/ignite talent(s)")
-			BigWigsMageTools.active = false
-			BigWigs:DisableModule(name, true)
-		end
-	end
 end
 
 BigWigsMageTools = BigWigs:NewModule(name)
@@ -311,8 +279,10 @@ BigWigsMageTools.consoleOptions = {
 			end,
 			set = function(v)
 				BigWigsMageTools.db.profile.barspacing = v
-				candybar:UpdateBarSpacing(BigWigsMageTools.frames.anchor.candyBarGroupId,
-						BigWigsMageTools.db.profile.barspacing)
+				if BigWigsMageTools.frames and BigWigsMageTools.frames.anchor then
+					candybar:UpdateBarSpacing(BigWigsMageTools.frames.anchor.candyBarGroupId,
+							BigWigsMageTools.db.profile.barspacing)
+				end
 			end,
 		},
 		scorchbar = {
@@ -622,6 +592,9 @@ BigWigsMageTools.consoleOptions = {
 BigWigsMageTools.revision = 30066
 BigWigsMageTools.external = true
 
+BigWigsMageTools.active = false
+BigWigsMageTools.frames = {}
+
 BigWigsMageTools.target = nil
 BigWigsMageTools.playerName = nil
 BigWigsMageTools.scorchTimers = {}
@@ -637,20 +610,57 @@ BigWigsMageTools.previousThreatPercent = {}
 -----------------------------------------------------------------------
 --      Initialization
 -----------------------------------------------------------------------
-function BigWigsMageTools:OnRegister()
-	self.active = false
 
+function BigWigsMageTools:CheckTalents()
+	if isMage then
+		self.hasScorchTalent = false
+		self.hasIgniteTalent = false
+
+		local nameTalent, icon, tier, column, currRank, maxRank = GetTalentInfo(2, 3);
+		if nameTalent == "Ignite" and currRank == maxRank then
+			self.hasIgniteTalent = true
+		end
+
+		nameTalent, icon, tier, column, currRank, maxRank = GetTalentInfo(2, 10);
+		if nameTalent == "Improved Scorch" and currRank > 0 then
+			self.hasScorchTalent = true
+		end
+
+		if self.hasScorchTalent or self.hasIgniteTalent then
+			if not self.active then
+				DEFAULT_CHAT_FRAME:AddMessage("Enabling Magetools due having scorch/ignite talent(s)")
+				self.active = true
+				self.db.profile.enable = true
+				if BigWigs:IsActive() then
+					BigWigs:EnableModule(name)
+				end
+			end
+		else
+			if self.active then
+				DEFAULT_CHAT_FRAME:AddMessage("Disabling Magetools due to not having scorch/ignite talent(s)")
+				self.active = false
+				self.db.profile.enable = true
+				if BigWigs:IsActive() then
+					BigWigs:EnableModule(name)
+				end
+			end
+		end
+	end
+end
+
+function BigWigsMageTools:OnRegister()
 	-- will be nil
-	_checkTalents();
+	self:CheckTalents();
 end
 
 function BigWigsMageTools:OnEnable()
+	self:CheckTalents();
+
 	if self.active then
 		self.playerName = UnitName("player")
 		if not self.db.profile.texture then
 			self.db.profile.texture = "BantoBar"
 		end
-		self.frames = {}
 		self:SetupFrames()
 		self:RegisterEvent("BigWigs_RecvSync")
 		-- start listening to threat events
@@ -673,6 +683,7 @@ function BigWigsMageTools:OnEnable()
 		self:RegisterEvent("CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE", "PlayerDamageEvents")
 		self:RegisterEvent("CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF", "PlayerDamageEvents")
 		self:RegisterEvent("CHARACTER_POINTS_CHANGED", "CheckTalents")
+		self:RegisterEvent("LEARNED_SPELL_IN_TAB", "CheckTalents")
 
 		if not self:IsEventRegistered("Surface_Registered") then
 			self:RegisterEvent("Surface_Registered", function()
@@ -700,16 +711,13 @@ function BigWigsMageTools:OnDisable()
 	-- still listen to check talents if a mage
 	if isMage then
 		self:RegisterEvent("CHARACTER_POINTS_CHANGED", "CheckTalents")
+		self:RegisterEvent("LEARNED_SPELL_IN_TAB", "CheckTalents")
 	end
 end
 
 -----------------------------------------------------------------------
 --      Event Handlers
 -----------------------------------------------------------------------
-function BigWigsMageTools:CheckTalents()
-	self:ScheduleEvent("checktalents", _checkTalents, 1, self)
-end
-
 function BigWigsMageTools:PlayerDamageEvents(msg)
 	local eventHandled, crit, _ = self:ScorchEvent(msg)
 	if not eventHandled or crit then
@@ -724,7 +732,7 @@ function BigWigsMageTools:Debug(msg)
 end
 
 function BigWigsMageTools:ScorchEvent(msg)
-	if not self.db.profile.scorchenable then
+	if not self.db.profile.scorchenable or not self.hasScorchTalent then
 		return
 	end
 
@@ -1214,8 +1222,6 @@ function BigWigsMageTools:SetupFrames()
 	local f, t
 
 	f, _, _ = GameFontNormal:GetFont()
-
-	--self.frames = {}
 
 	local frame = CreateFrame("Frame", "ScorchTimerBarAnchor", UIParent)
 
