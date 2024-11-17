@@ -4,6 +4,14 @@ This is a plugin to help mages track their fire vulnerability and ignite debuffs
 
 assert(BigWigs, "BigWigs not found!")
 
+local _, englishClass = UnitClass("player");
+local isMage = false;
+if englishClass == "MAGE" then
+	isMage = true
+else
+	return
+end
+
 -----------------------------------------------------------------------
 --      Are you local?
 -----------------------------------------------------------------------
@@ -62,9 +70,11 @@ L:RegisterTranslations("enUS", function()
 		["MageToolsCmd"] = "magetools",
 		["MageTools"] = "Mage Tools",
 		["MageToolsDesc"] = "Scorch/Ignite tools for mages",
+		["Enable"] = "Enable",
+		["EnableDesc"] = "Whether to check talents to see if tools should activate",
 		["Active"] = "Active",
+		["ActiveDesc"] = "Activate Mage tools (only works if you are a fire mage)",
 		["Debug"] = "Debug",
-		["ActiveDesc"] = "Activate Mage tools (only works if you are a mage)",
 
 		["AnchorTitle"] = "Extras -> Mage Tools",
 		["ShowAnchor"] = "Show anchor frame",
@@ -162,12 +172,6 @@ end)
 --      Module Declaration
 -----------------------------------------------------------------------
 
-local _, englishClass = UnitClass("player");
-local isMage = false;
-if englishClass == "MAGE" then
-	isMage = true
-end
-
 BigWigsMageTools = BigWigs:NewModule(name)
 BigWigsMageTools.defaultDB = {
 	enable = isMage,
@@ -206,7 +210,7 @@ BigWigsMageTools.consoleOptions = {
 	name = L["MageTools"],
 	desc = L["MageToolsDesc"],
 	args = {
-		enable = {
+		active = {
 			type = "toggle",
 			name = L["Active"],
 			desc = L["ActiveDesc"],
@@ -215,11 +219,10 @@ BigWigsMageTools.consoleOptions = {
 				return BigWigsMageTools.active
 			end,
 			set = function(v)
-				BigWigsMageTools.active = v
 				if v then
-					BigWigs:EnableModule(name)
+					BigWigsMageTools:Activate()
 				else
-					BigWigs:DisableModule(name)
+					BigWigsMageTools:Deactivate()
 				end
 			end,
 		},
@@ -629,38 +632,39 @@ function BigWigsMageTools:CheckTalents()
 		if self.hasScorchTalent or self.hasIgniteTalent then
 			if not self.active then
 				DEFAULT_CHAT_FRAME:AddMessage("Enabling Magetools due having scorch/ignite talent(s)")
-				self.active = true
-				self.db.profile.enable = true
-				if BigWigs:IsActive() then
-					BigWigs:EnableModule(name)
-				end
+				self:Activate()
 			end
 		else
 			if self.active then
 				DEFAULT_CHAT_FRAME:AddMessage("Disabling Magetools due to not having scorch/ignite talent(s)")
-				self.active = false
-				self.db.profile.enable = true
-				if BigWigs:IsActive() then
-					BigWigs:EnableModule(name)
-				end
+				self:Deactivate()
 			end
 		end
 	end
 end
 
 function BigWigsMageTools:CheckTalentEvent()
-		self:ScheduleEvent("checktalents", self.CheckTalents, 1, self)
-end
-
-function BigWigsMageTools:OnRegister()
-	-- will be nil
-	self:CheckTalents();
+	self:ScheduleEvent("checktalents", self.CheckTalents, 1, self)
 end
 
 function BigWigsMageTools:OnEnable()
 	self:CheckTalents();
 
-	if self.active then
+	if not self:IsEventRegistered("CHARACTER_POINTS_CHANGED") then
+		self:RegisterEvent("CHARACTER_POINTS_CHANGED", "CheckTalentEvent")
+	end
+
+	if not self:IsEventRegistered("LEARNED_SPELL_IN_TAB") then
+		self:RegisterEvent("LEARNED_SPELL_IN_TAB", "CheckTalentEvent")
+	end
+end
+
+function BigWigsMageTools:OnDisable()
+	self:Deactivate()
+end
+
+function BigWigsMageTools:Activate()
+	if not self.active then
 		self.playerName = UnitName("player")
 		if not self.db.profile.texture then
 			self.db.profile.texture = "BantoBar"
@@ -686,8 +690,14 @@ function BigWigsMageTools:OnEnable()
 		self:RegisterEvent("CHAT_MSG_SPELL_PARTY_DAMAGE", "PlayerDamageEvents")
 		self:RegisterEvent("CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE", "PlayerDamageEvents")
 		self:RegisterEvent("CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF", "PlayerDamageEvents")
-		self:RegisterEvent("CHARACTER_POINTS_CHANGED", "CheckTalentEvent")
-		self:RegisterEvent("LEARNED_SPELL_IN_TAB", "CheckTalentEvent")
+
+		if not self:IsEventRegistered("CHARACTER_POINTS_CHANGED") then
+			self:RegisterEvent("CHARACTER_POINTS_CHANGED", "CheckTalentEvent")
+		end
+
+		if not self:IsEventRegistered("LEARNED_SPELL_IN_TAB") then
+			self:RegisterEvent("LEARNED_SPELL_IN_TAB", "CheckTalentEvent")
+		end
 
 		if not self:IsEventRegistered("Surface_Registered") then
 			self:RegisterEvent("Surface_Registered", function()
@@ -702,15 +712,17 @@ function BigWigsMageTools:OnEnable()
 		self:ThrottleSync(1, syncName.eyeOfDimFade)
 		self:ThrottleSync(1, syncName.fetishStart)
 		self:ThrottleSync(1, syncName.fetishFade)
+
+		self.active = true
 	end
 end
 
-function BigWigsMageTools:OnDisable()
-	self.active = false
-
+function BigWigsMageTools:Deactivate()
 	self:HideAnchors()
 	self:UnregisterAllEvents()
 	self:CancelAllScheduledEvents()
+
+	self.active = false
 
 	-- still listen to check talents if a mage
 	if isMage then
@@ -736,7 +748,7 @@ function BigWigsMageTools:Debug(msg)
 end
 
 function BigWigsMageTools:ScorchEvent(msg)
-	if not self.db.profile.scorchenable or not self.hasScorchTalent then
+	if not self.db.profile.scorchenable then
 		return
 	end
 
