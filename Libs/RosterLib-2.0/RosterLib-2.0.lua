@@ -92,37 +92,37 @@ local playersent, petsent, unitcount, petcount, pmem, rmem, unit
 local function NextUnit()
 	-- STEP 1: Check the player's pet
 	if not petsent then
-			petsent = true
-			local unit = "pet"
-			if rmem == 0 and UnitExists(unit) then
-					return unit
-			end
+		petsent = true
+		local unit = "pet"
+		if rmem == 0 and UnitExists(unit) then
+			return unit
+		end
 	end
 
 	-- STEP 2: Check the player unit
 	if not playersent then
-			playersent = true
-			local unit = "player"
-			if rmem == 0 and UnitExists(unit) then
-					return unit
-			end
+		playersent = true
+		local unit = "player"
+		if rmem == 0 and UnitExists(unit) then
+			return unit
+		end
 	end
 
 	-- STEP 3: Iterate over raid and party units
 	local prefix, limit = (rmem > 0 and "raid" or "party"), (rmem > 0 and rmem or pmem)
 	while petIndex <= limit do
-			local unit = prefix .. "pet" .. petIndex
-			petIndex = petIndex + 1
-			if UnitExists(unit) then
-					return unit
-			end
+		local unit = prefix .. "pet" .. petIndex
+		petIndex = petIndex + 1
+		if UnitExists(unit) then
+			return unit
+		end
 	end
 	while unitIndex <= limit do
-			local unit = prefix .. unitIndex
-			unitIndex = unitIndex + 1
-			if UnitExists(unit) then
-					return unit
-			end
+		local unit = prefix .. unitIndex
+		unitIndex = unitIndex + 1
+		if UnitExists(unit) then
+			return unit
+		end
 	end
 end
 
@@ -132,9 +132,9 @@ local function UnitIterator()
 	pmem, rmem = GetNumPartyMembers(), GetNumRaidMembers()
 
 	if rmem > 0 then
-			prefix, limit = "raid", rmem
+		prefix, limit = "raid", rmem
 	else
-			prefix, limit = "party", pmem
+		prefix, limit = "party", pmem
 	end
 
 	return NextUnit
