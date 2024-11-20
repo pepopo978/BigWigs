@@ -1,6 +1,6 @@
 --[[
 Name: RosterLib-2.0
-Revision: $Revision: 17213 $
+Revision: $Revision: 18213 $
 X-ReleaseDate: $Date: 2006-08-10 08:55:29 +0200 (Thu, 10 Aug 2006) $
 Author: Maia (maia.proudmoore@gmail.com)
 Website: http://wiki.wowace.com/index.php/RosterLib-2.0
@@ -11,7 +11,7 @@ Dependencies: AceLibrary, AceOO-2.0, AceEvent-2.0
 ]]
 
 local MAJOR_VERSION = "RosterLib-2.0"
-local MINOR_VERSION = "$Revision: 17213 $"
+local MINOR_VERSION = "$Revision: 18313 $"
 
 if not AceLibrary then error(vmajor .. " requires AceLibrary.") end
 if not AceLibrary:IsNewVersion(MAJOR_VERSION, MINOR_VERSION) then return end
@@ -90,55 +90,53 @@ end
 local playersent, petsent, unitcount, petcount, pmem, rmem, unit
 
 local function NextUnit()
-	-- STEP 1: pet
+	-- STEP 1: Check the player's pet
 	if not petsent then
-		petsent = true
-		if rmem == 0 then
-			unit = "pet"
-			if UnitExists(unit) then return unit end
-		end
+			petsent = true
+			local unit = "pet"
+			if rmem == 0 and UnitExists(unit) then
+					return unit
+			end
 	end
-	-- STEP 2: player
+
+	-- STEP 2: Check the player unit
 	if not playersent then
-		playersent = true
-		if rmem == 0 then
-			unit = "player"
-			if UnitExists(unit) then return unit end
-		end
+			playersent = true
+			local unit = "player"
+			if rmem == 0 and UnitExists(unit) then
+					return unit
+			end
 	end
-	-- STEP 3: raid units
-	if rmem > 0 then
-		-- STEP 3a: pet units
-		for i = petcount, rmem do
-			unit = string.format("raidpet%d", i)
-			petcount = petcount + 1
-			if UnitExists(unit) then return unit end
-		end
-		-- STEP 3b: player units
-		for i = unitcount, rmem do
-			unit = string.format("raid%d", i)
-			unitcount = unitcount + 1
-			if UnitExists(unit) then return unit end
-		end
-	-- STEP 4: party units
-	elseif pmem > 0 then
-		-- STEP 3a: pet units
-		for i = petcount, pmem do
-			unit = string.format("partypet%d", i)
-			petcount = petcount + 1
-			if UnitExists(unit) then return unit end
-		end
-		-- STEP 3b: player units
-		for i = unitcount, pmem do
-			unit = string.format("party%d", i)
-			unitcount = unitcount + 1
-			if UnitExists(unit) then return unit end
-		end
+
+	-- STEP 3: Iterate over raid and party units
+	local prefix, limit = (rmem > 0 and "raid" or "party"), (rmem > 0 and rmem or pmem)
+	while petIndex <= limit do
+			local unit = prefix .. "pet" .. petIndex
+			petIndex = petIndex + 1
+			if UnitExists(unit) then
+					return unit
+			end
+	end
+	while unitIndex <= limit do
+			local unit = prefix .. unitIndex
+			unitIndex = unitIndex + 1
+			if UnitExists(unit) then
+					return unit
+			end
 	end
 end
 
 local function UnitIterator()
-	playersent, petsent, unitcount, petcount, pmem, rmem = false, false, 1, 1, GetNumPartyMembers(), GetNumRaidMembers()
+	playersent, petsent = false, false
+	unitIndex, petIndex = 1, 1
+	pmem, rmem = GetNumPartyMembers(), GetNumRaidMembers()
+
+	if rmem > 0 then
+			prefix, limit = "raid", rmem
+	else
+			prefix, limit = "party", pmem
+	end
+
 	return NextUnit
 end
 
@@ -147,7 +145,14 @@ end
 ------------------------------------------------
 
 
+-- consolidate bulk roster updates
 function RosterLib:ScanFullRoster()
+	if not RosterLib:IsEventScheduled("RosterUpdateDelay") then
+		RosterLib:ScheduleEvent("RosterUpdateDelay", function () RosterLib:DoScanFullRoster() end, 0.2);
+	end
+end
+
+function RosterLib:DoScanFullRoster()
 	-- save all units we currently have, this way we can check who to remove from roster later.
 	local temp = Compost and Compost:Acquire() or {}
 	for name in pairs(roster) do 
