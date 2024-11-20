@@ -1,6 +1,6 @@
 --[[
 Name: RosterLib-2.0
-Revision: $Revision: 18213 $
+Revision: $Revision: 18313 $
 X-ReleaseDate: $Date: 2006-08-10 08:55:29 +0200 (Thu, 10 Aug 2006) $
 Author: Maia (maia.proudmoore@gmail.com)
 Website: http://wiki.wowace.com/index.php/RosterLib-2.0
