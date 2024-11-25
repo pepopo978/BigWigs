@@ -448,12 +448,8 @@ function BigWigsCommonAuras:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF")
 	self:RegisterEvent("LOOT_OPENED")
 
-	if UnitClass("player") == "Warrior" or UnitClass("player") == "Druid" then
+	if UnitClass("player") == "Warrior" or UnitClass("player") == "Druid" or UnitClass("player") == "Priest" then
 		self:RegisterEvent("SpellStatusV2_SpellCastInstant")
-
-	elseif UnitClass("player") == "Priest" and UnitRace("player") == "Dwarf" then
-		self:RegisterEvent("SpellStatusV2_SpellCastInstant")
-
 	elseif UnitClass("player") == "Mage" then
 		if not spellStatus then
 			spellStatus = AceLibrary("SpellStatusV2-2.0")
@@ -637,7 +633,7 @@ function BigWigsCommonAuras:CHAT_MSG_MONSTER_EMOTE(msg, sender)
 		end
 
 		if zone ~= nil then
-			self:TriggerEvent("BigWigs_SendSync", "BWCAOR ".. zone)
+			self:TriggerEvent("BigWigs_SendSync", "BWCAOR " .. zone)
 		end
 
 	elseif string.find(msg, L["trigger_soulwell"]) then
