@@ -84,7 +84,7 @@ L:RegisterTranslations("esES", function() return {
 -----------------------------------------------------------------------
 
 BigWigsPulltimer = BigWigs:NewModule(L["Pull Timer"], "AceConsole-2.0")
-BigWigsPulltimer.revision = 20001
+BigWigsPulltimer.revision = 20002
 BigWigsPulltimer.defaultDB = {
 	enable = true,
 }
@@ -193,7 +193,8 @@ function BigWigsPulltimer:BigWigs_PullCommand(msg)
 			else
 				timer.pulltimer = 6
 			end
-		elseif ((timer.pulltimer > 63) or (timer.pulltimer < 1))  then
+		-- elseif ((timer.pulltimer > 63) or (timer.pulltimer < 1))  then
+		elseif ((timer.pulltimer < 1))  then
 			return
 		end
 
