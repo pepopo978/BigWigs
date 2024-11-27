@@ -153,7 +153,8 @@ L:RegisterTranslations("enUS", function()
 
 		ignite_afflict_test = "^(.+) is afflicted by Ignite(.*)", -- for stacks 2-5 will be "Ignite (2)".
 		ignite_gains_test = "^(.+) gains Ignite(.*)", -- for stacks 2-5 will be "Ignite (2)".
-		ignite_crit_test = "^(.+) (.+) crits (.+) for .+ Fire damage",
+		self_ignite_crit_test = "^(Your) (.+) crits (.+) for .+ Fire damage",
+		other_ignite_crit_test = "^(.+)'s (.+) crits (.+) for .+ Fire damage",
 		ignite_dmg = "^(.+) suffers (.+) Fire damage from (.+) Ignite",
 		ignite_fades_test = "Ignite fades from (.+).",
 
@@ -871,7 +872,10 @@ function BigWigsMageTools:IgniteEvent(msg)
 		return true, false, afflictedTarget  -- handled, crit, target
 	else
 		-- check for ignite crits
-		local _, _, playerName, spellName, critTarget = string.find(msg, L["ignite_crit_test"])
+		local _, _, playerName, spellName, critTarget = string.find(msg, L["self_ignite_crit_test"])
+		if not critTarget then
+			_, _, playerName, spellName, critTarget = string.find(msg, L["other_ignite_crit_test"])
+		end
 		if critTarget and self:IsMageFireSpell(spellName) then
 			self:Debug(msg)
 			if not self.igniteStacks[critTarget] then
