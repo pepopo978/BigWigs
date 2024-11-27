@@ -648,7 +648,7 @@ function BigWigsMageTools:CheckTalentEvent()
 end
 
 function BigWigsMageTools:OnEnable()
-	self:CheckTalents();
+	self:ScheduleEvent("checktalents", self.CheckTalents, 1, self)
 
 	if not self:IsEventRegistered("CHARACTER_POINTS_CHANGED") then
 		self:RegisterEvent("CHARACTER_POINTS_CHANGED", "CheckTalentEvent")
