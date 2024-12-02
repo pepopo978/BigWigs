@@ -53,7 +53,9 @@ L:RegisterTranslations("enUS", function() return {
 	bar_inRoom = "In Room",
 	msg_inRoom = "Gothik the Harvester teleports into the Fray!",
 	msg_inRoom10 = "Gothik Incoming in 10 seconds",
-	
+
+	teleporttext = "Teleport",
+
 	msg_gateOpen = "The Central gate opens!",
 } end )
 
@@ -71,7 +73,7 @@ local timer = {
 	sideteleport = 15,
 }
 local icon = {
-	inroom = "Spell_Magic_LesserInvisibilty",
+	inroom = "Spell_Arcane_Blink",
 	trainee = "Ability_Seal",
 	deathknight = "INV_Boots_Plate_08",
 	rider = "Spell_Shadow_DeathPact",
@@ -176,7 +178,7 @@ function module:CHAT_MSG_MONSTER_YELL(msg)
 		
 	elseif msg == L["trigger_inRoom"] then
 		self:Sync(syncName.inRoom)
-
+		self:Bar(L["teleporttext"], timer.sideteleport, icon.inroom)
 	elseif string.find(msg, L["trigger_bossDead"]) then
 		self:SendBossDeathSync()
 	end

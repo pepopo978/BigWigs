@@ -29,6 +29,9 @@ L:RegisterTranslations("enUS", function()
 		["Announces in chat channel on important instant casts."] = true,
 		["Combat Announcement"] = true,
 		["combatannouncement"] = true,
+
+		["Hand of Reckoning"] = true,
+		["Earthshaker Slam"] = true,
 	}
 end)
 
@@ -55,6 +58,8 @@ local SpellTranslation = {
 	["pummel"] = BS["Pummel"],
 	["shieldbash"] = BS["Shield Bash"],
 	["taunt"] = BS["Taunt"],
+	["handofreckoning"] = L["Hand of Reckoning"],
+	["earthshakerslam"] = L["Earthshaker Slam"],
 	["disarm"] = BS["Disarm"],
 	["challengingshout"] = BS["Challenging Shout"],
 	["intimidatingshout"] = BS["Intimidating Shout"],
@@ -104,10 +109,12 @@ BigWigsCombatAnnouncement.defaultDB = {
 	counterspell = true,
 	-- Paladin
 	hammerofjustice = true,
+	handofreckoning = true,
 	-- Priest
 	psychicscream = true,
 	-- Shaman
 	earthshock = true,
+	earthshakerslam = true,
 	-- Warlock
 	deathcoil = true,
 
@@ -676,6 +683,18 @@ elseif class == "PALADIN" then
 					BigWigsCombatAnnouncement.db.profile.hammerofjustice = v
 				end,
 			},
+			handofreckoning = {
+				type = "toggle",
+				name = L["Hand of Reckoning"],
+				order = 2,
+				desc = string.format(L["Toggle %s display."], L["Hand of Reckoning"]),
+				get = function()
+					return BigWigsCombatAnnouncement.db.profile.handofreckoning
+				end,
+				set = function(v)
+					BigWigsCombatAnnouncement.db.profile.handofreckoning = v
+				end,
+			},
 			spacer = {
 				type = "header",
 				name = " ",
@@ -822,6 +841,18 @@ elseif class == "SHAMAN" then
 				end,
 				set = function(v)
 					BigWigsCombatAnnouncement.db.profile.earthshock = v
+				end,
+			},
+			earthshakerslam = {
+				type = "toggle",
+				name = L["Earthshaker Slam"],
+				order = 2,
+				desc = string.format(L["Toggle %s display."], L["Earthshaker Slam"]),
+				get = function()
+					return BigWigsCombatAnnouncement.db.profile.earthshakerslam
+				end,
+				set = function(v)
+					BigWigsCombatAnnouncement.db.profile.earthshakerslam = v
 				end,
 			},
 			spacer = {
