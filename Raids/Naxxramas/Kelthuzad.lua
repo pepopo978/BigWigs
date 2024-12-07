@@ -209,6 +209,8 @@ L:RegisterTranslations("enUS", function()
 		trigger_bloodTap = "Guardian of Icecrown gains Blood Tap %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
 		bar_bloodTapA = "Blood Tap +",
 		bar_bloodTapB = "% Damage",
+
+		spellEffectWarning = "BigWigs: Your spellEffectLevel is set to 0, this makes fissures extremely hard to see.  Consider changing this in your graphics options or typing /run SetCVar(\"spellEffectLevel\", 2)."
 	}
 end)
 
@@ -416,10 +418,16 @@ function module:OnEnable()
 	SetCVar("CombatLogRangeHostilePlayers", 200)
 	SetCVar("CombatLogRangeHostilePlayersPets", 200)
 	SetCVar("CombatLogRangeCreature", 200)
+
+	-- check if spellEffectLevel is set to 0 and warn
+	if GetCVar("spellEffectLevel") == "0" then
+		self:Message(L["spellEffectWarning"], "Attention")
+		DEFAULT_CHAT_FRAME:AddMessage(L["spellEffectWarning"])
+	end
 end
 
 function module:OnSetup()
-	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH") --p1adds 
+	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH") --p1adds
 	self:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLY_DEATH") --trigger_friendlyDead
 end
 
@@ -493,7 +501,6 @@ function module:Victory()
 	-- reset farclip back to saved value
 	SetCVar("farclip", BigWigsFarclip.db.profile.defaultFarclip)
 end
-
 
 function module:MINIMAP_ZONE_CHANGED(msg)
 	if GetMinimapZoneText() == "Sapphiron's Lair" and self.core:IsModuleActive(module.translatedName) then
