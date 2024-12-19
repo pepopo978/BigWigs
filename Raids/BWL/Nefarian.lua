@@ -832,10 +832,10 @@ function module:ClassCall(rest)
 		
 	self:Bar(rest.." "..L["bar_classCall"], timer.classCallDur, icon.classCall, true, color.classCallDur)
 	self:Message(L["msg_classCall_"..rest], "Positive", false, nil, false)
-	--self:WarningSign("classicon_"..rest, 0.7)
-	
+
 	if UnitClass("Player") == rest then
 		self:Sound("Beware")
+		self:WarningSign("classicon_"..rest, 2)
 	end
 	
 	if rest == "Paladin" then
