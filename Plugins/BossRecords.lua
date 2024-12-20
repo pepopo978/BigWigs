@@ -60,12 +60,12 @@ end
 
 function BigWigsBossRecords:StartBossfight(module)
 	-- checking if module is actually a bossmod
-	if module and module.bossSync then
+	if module and module.bossSync and not module.trashMod then
 		c.name      = module:ToString()
 		c.startTime = GetTime()
-		--if self.db.profile.enable then
+		if self.db.profile.enable then
 			DEFAULT_CHAT_FRAME:AddMessage(prefix .. string.format(L["BOSS_ENGAGED"], c.name))
-		--end
+		end
 	end
 end
 
@@ -77,25 +77,25 @@ function BigWigsBossRecords:EndBossfight(module)
 		if self.db.profile[c.name] then
 			if self.db.profile[c.name][2] > timeSpent then
 				-- It's a new record!
-				--if self.db.profile.enable then
+				if self.db.profile.enable then
 					DEFAULT_CHAT_FRAME:AddMessage(prefix .. string.format(L["BOSS_DOWN_NR"], c.name, self:FormatTime(timeSpent), self:FormatTime(self.db.profile[c.name][2]), self.db.profile[c.name][1] + 1))
-				--end
+				end
 				self.db.profile[c.name][1] = self.db.profile[c.name][1] + 1;
 				self.db.profile[c.name][2] = timeSpent
 				self.db.profile[c.name][3] = timeSpent
 			else
 				-- We found data but it's not a new record
-				--if self.db.profile.enable then
+				if self.db.profile.enable then
 					DEFAULT_CHAT_FRAME:AddMessage(prefix .. string.format(L["BOSS_DOWN_L"], c.name, self:FormatTime(timeSpent), self:FormatTime(self.db.profile[c.name][3]), self:FormatTime(self.db.profile[c.name][2]), self.db.profile[c.name][1] + 1))
-				--end
+				end
 				self.db.profile[c.name][1] = self.db.profile[c.name][1] + 1;
 				self.db.profile[c.name][3] = timeSpent
 			end
 		else
 			-- It's our first kill
-			--if self.db.profile.enable then
+			if self.db.profile.enable then
 				DEFAULT_CHAT_FRAME:AddMessage(prefix .. string.format(L["BOSS_DOWN"], c.name, self:FormatTime(timeSpent)))
-			--end
+			end
 			self.db.profile[c.name] = {1, timeSpent, timeSpent}
 		end
 	end
