@@ -17,9 +17,9 @@ lastKill,
 --      Are you local?      --
 ------------------------------
 local c = {
-	name        = "",
-	startTime   = 0,
-	lastKill    = 0,
+	name = "",
+	startTime = 0,
+	lastKill = 0,
 }
 local prefix = "|cf75DE52f[BigWigs]|r - ";
 
@@ -27,24 +27,56 @@ local prefix = "|cf75DE52f[BigWigs]|r - ";
 --      Localization      --
 ----------------------------
 local L = AceLibrary("AceLocale-2.2"):new("BigWigsBossRecords")
-L:RegisterTranslations("enUS", function() return {
-	BOSS_ENGAGED    = "%s engaged. Good luck and have fun! :)",
-	BOSS_DOWN		= "%s down after %s!",
-	BOSS_DOWN_L		= "%s down after %s! Your last kill took %s and your fastest kill took %s. You have %d total victories.",
-	BOSS_DOWN_NR	= "%s down after %s! This is a new record! (Old record was %s). You have %d total victories.",
-} end)
+L:RegisterTranslations("enUS", function()
+	return {
+		BossRecords = "Boss Records",
+		Enable = "Enable",
+		BOSS_ENGAGED = "%s engaged. Good luck and have fun! :)",
+		BOSS_DOWN = "%s down after %s!",
+		BOSS_DOWN_L = "%s down after %s! Your last kill took %s and your fastest kill took %s. You have %d total victories.",
+		BOSS_DOWN_NR = "%s down after %s! This is a new record! (Old record was %s). You have %d total victories.",
+	}
+end)
 
-L:RegisterTranslations("esES", function() return {
-	BOSS_ENGAGED    = "Entrando en combate con %s. ¡Buena suerte!",
-	BOSS_DOWN		= "¡%s matado después de %s!",
-	BOSS_DOWN_L		= "¡%s matado después de %s! La última vez estuvo %s y tu muerte más rápida estuvo %s. Lo has matado %d veces.",
-	BOSS_DOWN_NR	= "%s matado después de %s! Es un nuevo récord! (El récord pasado estuvo %s). Lo has matado %d veces.",
-} end)
+L:RegisterTranslations("esES", function()
+	return {
+		BossRecords = "Boss Records",
+		Enable = "Enable",
+		BOSS_ENGAGED = "Entrando en combate con %s. ¡Buena suerte!",
+		BOSS_DOWN = "¡%s matado después de %s!",
+		BOSS_DOWN_L = "¡%s matado después de %s! La última vez estuvo %s y tu muerte más rápida estuvo %s. Lo has matado %d veces.",
+		BOSS_DOWN_NR = "%s matado después de %s! Es un nuevo récord! (El récord pasado estuvo %s). Lo has matado %d veces.",
+	}
+end)
 ----------------------------------
 --      Module Declaration      --
 ----------------------------------
 
-BigWigsBossRecords = BigWigs:NewModule("BossRecords")
+BigWigsBossRecords = BigWigs:NewModule(L["BossRecords"], "AceConsole-2.0")
+BigWigsBossRecords.revision = 20003
+BigWigsBossRecords.defaultDB = {
+	enable = true,
+}
+BigWigsBossRecords.consoleCmd = "bossrecords"
+BigWigsBossRecords.consoleOptions = {
+	type = "group",
+	name = L["BossRecords"],
+	desc = L["BossRecords"],
+	args = {
+		enable = {
+			type = "toggle",
+			name = L["Enable"],
+			desc = L["Enable"],
+			order = 1,
+			get = function()
+				return BigWigsBossRecords.db.profile.enable
+			end,
+			set = function(v)
+				BigWigsBossRecords.db.profile.enable = v
+			end,
+		},
+	},
+}
 
 ------------------------------
 --      Initialization      --
@@ -61,7 +93,7 @@ end
 function BigWigsBossRecords:StartBossfight(module)
 	-- checking if module is actually a bossmod
 	if module and module.bossSync and not module.trashMod then
-		c.name      = module:ToString()
+		c.name = module:ToString()
 		c.startTime = GetTime()
 		if self.db.profile.enable then
 			DEFAULT_CHAT_FRAME:AddMessage(prefix .. string.format(L["BOSS_ENGAGED"], c.name))
@@ -72,7 +104,7 @@ end
 function BigWigsBossRecords:EndBossfight(module)
 	if c.name == module:ToString() then
 		local timeSpent = GetTime() - c.startTime
-		c.lastKill      = GetTime()
+		c.lastKill = GetTime()
 
 		if self.db.profile[c.name] then
 			if self.db.profile[c.name][2] > timeSpent then
@@ -96,13 +128,15 @@ function BigWigsBossRecords:EndBossfight(module)
 			if self.db.profile.enable then
 				DEFAULT_CHAT_FRAME:AddMessage(prefix .. string.format(L["BOSS_DOWN"], c.name, self:FormatTime(timeSpent)))
 			end
-			self.db.profile[c.name] = {1, timeSpent, timeSpent}
+			self.db.profile[c.name] = { 1, timeSpent, timeSpent }
 		end
 	end
 end
 
 function BigWigsBossRecords:FormatTime(time)
-	if not type(time) == "number" then return end
+	if not type(time) == "number" then
+		return
+	end
 	--[[
 	input:  time in seconds
 	output: time formated as string (eg. '2min 14s')
@@ -115,7 +149,7 @@ function BigWigsBossRecords:FormatTime(time)
 		local minutes = 0
 		local seconds = 0
 		while (time >= 60) do
-			time    = time - 60;
+			time = time - 60;
 			minutes = minutes + 1;
 		end
 		if time > 0 then
