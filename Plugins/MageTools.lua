@@ -621,7 +621,7 @@ function BigWigsMageTools:CheckTalents()
 		self.hasIgniteTalent = false
 
 		local nameTalent, icon, tier, column, currRank, maxRank = GetTalentInfo(2, 3);
-		if nameTalent == "Ignite" and currRank == maxRank then
+		if nameTalent == "Ignite" and currRank > 0 then
 			self.hasIgniteTalent = true
 		end
 
