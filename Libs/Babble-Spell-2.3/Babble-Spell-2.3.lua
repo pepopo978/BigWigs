@@ -1258,6 +1258,7 @@ BabbleSpell:RegisterTranslations("enUS", function()
 		["Spellsteal"] = true,
 		["Spirit Bond"] = true,
 		["Spirit Burst"] = true,
+		["Spirit Link"] = true,
 		["Spirit of Redemption"] = true,
 		["Spirit Tap"] = true,
 		["Spiritual Attunement"] = true,
@@ -2688,6 +2689,7 @@ BabbleSpell:RegisterTranslations("esES", function()
 		["Spellsteal"] = "Spellsteal", -- Old
 		["Spirit Bond"] = "Vínculo de espíritu",
 		["Spirit Burst"] = "Ráfaga de espíritu",
+		["Spirit Link"] = "Enlace de espíritu",
 		["Spirit of Redemption"] = "Espíritu de redencción",
 		["Spirit Tap"] = "Transfusión de espíritu",
 		["Spiritual Attunement"] = "Spiritual Attunement", -- Old
@@ -4120,6 +4122,7 @@ BabbleSpell:RegisterTranslations("ruRU", function()
 		["Spirit Bond"] = "Узы духа",
 		["Spirit Burst"] = "Импульс духа",
 		["Spirit of Redemption"] = "Дух воздаяния",
+		["Spirit Link"] = "Связь духа",
 		["Spirit Tap"] = "Захват духа",
 		["Spiritual Attunement"] = "Spiritual Attunement", -- old
 		["Spiritual Focus"] = "Средоточие духа",
@@ -5501,6 +5504,7 @@ BabbleSpell:RegisterTranslations("deDE", function()
 		["Spellsteal"] = "Spellsteal", --  Need to translated
 		["Spirit Bond"] = "Geistbande",
 		["Spirit Burst"] = "Geistexplosion",
+		["Spirit Link"] =  "Geistverbindung",
 		["Spirit of Redemption"] = "Geist der Erl\195\182sung",
 		["Spirit Tap"] = "Willensentzug",
 		["Spiritual Attunement"] = "Spiritual Attunement", --  Need to translated
@@ -6742,6 +6746,7 @@ BabbleSpell:RegisterTranslations("frFR", function()
 		--["Spell Vulnerability"] = true,
 		["Spell Warding"] = "Protection contre les sorts",
 		["Spirit Bond"] = "Engagement spirituel",
+		["Spirit Link"] = "Lien spirituel",
 		["Spirit Tap"] = "Connexion spirituelle",
 		["Spirit of Redemption"] = "Esprit de r\195\169demption",
 		["Spiritual Attunement"] = "Harmonisation spirituelle",
@@ -7892,6 +7897,7 @@ BabbleSpell:RegisterTranslations("zhCN", function()
 		["Spell Warding"] = "法术屏障",
 		["Spellsteal"] = "Spellsteal", --  Need to translated
 		["Spirit Bond"] = "灵魂连接",
+		["Spirit Link"] = "灵魂链接",
 		["Spirit of Redemption"] = "救赎之魂",
 		["Spirit Tap"] = "精神分流",
 		["Spiritual Attunement"] = "Spiritual Attunement", --  Need to translated
@@ -9075,6 +9081,7 @@ BabbleSpell:RegisterTranslations("zhTW", function()
 		--		["Spell Reflection"] = true,
 		--["Spell Vulnerability"] = true,
 		["Spell Warding"] = "法術護衛",
+		["Spirit Link"] = "灵魂链接",
 		["Spirit Bond"] = "靈魂聯結",
 		["Spirit Tap"] = "精神分流",
 		["Spirit of Redemption"] = "救贖之魂",
@@ -10273,6 +10280,7 @@ BabbleSpell:RegisterTranslations("koKR", function()
 		["Spell Vulnerability"] = "주문 저항 약화",
 		["Spell Warding"] = "주문 수호",
 		["Spirit Bond"] = "정신의 결속",
+		["Spirit Link"] = "정령 결속",
 		["Spirit Tap"] = "정신력 누출",
 		["Spirit of Redemption"] = "구원의 영혼",
 		["Spiritual Attunement"] = "영혼의 조화",
@@ -11653,6 +11661,7 @@ local spellIcons = {
 	["Spell Warding"] = "Spell_Holy_SpellWarding",
 	["Spirit Bond"] = "Ability_Druid_DemoralizingRoar",
 	["Spirit Burst"] = "Spell_Shadow_Teleport",
+	["Spirit Link"] = "Spell_Shaman_SpiritLink",
 	["Spirit of Redemption"] = "INV_Enchant_EssenceEternalLarge",
 	["Spirit Tap"] = "Spell_Shadow_Requiem",
 	["Spiritual Focus"] = "Spell_Arcane_Blink",
