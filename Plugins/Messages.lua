@@ -288,7 +288,7 @@ end
 function BigWigsMessages:CreateMsgFrame()
 	self.msgframe = CreateFrame("MessageFrame")
 	self.msgframe:SetWidth(512)
-	self.msgframe:SetHeight(160)
+	self.msgframe:SetHeight(200)
 
 	self.msgframe:SetPoint("TOP", self.frames.anchor, "BOTTOM", 0, 0)
 	self.msgframe:SetScale(self.db.profile.scale or 1)

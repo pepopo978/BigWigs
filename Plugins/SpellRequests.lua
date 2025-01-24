@@ -129,8 +129,8 @@ L:RegisterTranslations("enUS", function()
 		triggercooldownchecktitle = "Check %s cooldowns",
 		triggercooldowncheckdesc = "Displays a message with the cooldown of each player that knows the spell.  To use in a macro /bw extra spellrequests checkcooldowns check%scooldowns.",
 
-		display_cooldown_format = "%s %s cd: %d",
-		display_available_format = "%s %s available",
+		display_cooldown_format = "%s %s: %d",
+		display_available_format = "%s has %s",
 
 		no_players_responded = "No players responded for %s",
 
