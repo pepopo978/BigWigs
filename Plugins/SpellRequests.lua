@@ -49,6 +49,22 @@ local Spells = {
 		targetRequester = true,
 		allowRequests = true,
 	},
+	spiritlink = {
+		spellName = "Spirit Link",
+		spellIcon = "Spell_Shaman_SpiritLink",
+		spellSlot = nil,
+		hasSpell = nil,
+		targetRequester = true,
+		allowRequests = true,
+	},
+	tranquility = {
+		spellName = "Tranquility",
+		spellIcon = "Spell_Nature_Tranquility",
+		spellSlot = nil,
+		hasSpell = nil,
+		targetRequester = false,
+		allowRequests = true,
+	},
 	-- check cooldowns only
 	cshout = {
 		spellName = "Challenging Shout",
