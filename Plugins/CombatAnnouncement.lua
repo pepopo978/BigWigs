@@ -113,7 +113,7 @@ BigWigsCombatAnnouncement.defaultDB = {
 	-- Priest
 	psychicscream = true,
 	-- Shaman
-	earthshock = true,
+	earthshock = false, -- spams too much if shaman tank
 	earthshakerslam = true,
 	-- Warlock
 	deathcoil = true,
