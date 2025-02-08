@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Gluth", "Naxxramas")
 
-module.revision = 30071
+module.revision = 30072
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"frenzy", "fear", "decimate", "enrage", "zombies", "wound", -1, "bosskill"}
 
