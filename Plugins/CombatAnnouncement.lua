@@ -1097,7 +1097,7 @@ else
 	}
 end
 
-BigWigsCombatAnnouncement.revision = 20006
+BigWigsCombatAnnouncement.revision = 20007
 BigWigsCombatAnnouncement.external = true
 
 ------------------------------
@@ -1167,7 +1167,7 @@ function BigWigsCombatAnnouncement:AnnounceAbility(msg, target, spellName)
         SendChatMessage(msg, "BATTLEGROUND")
     end
     -- Only send whisper if the spell name has a target that is a friendly player
-    if self.db.profile.broadcastwhisper and target and UnitIsFriend("player","target") and not UnitIsUnit("player","target") then
+    if self.db.profile.broadcastwhisper and target and UnitIsFriend("player","target") and UnitIsPlayer("target") then
         SendChatMessage("Casted " .. spellName .. " on you", "WHISPER", nil, target)
     end
 end
