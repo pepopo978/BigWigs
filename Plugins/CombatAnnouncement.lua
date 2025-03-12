@@ -72,6 +72,8 @@ local SpellTranslation = {
 	["pounce"] = BS["Pounce"],
 	["bash"] = BS["Bash"],
 	["growl"] = BS["Growl"],
+	["hibernate"] = BS["Hibernate"],
+	["entanglingroots"] = BS["Entangling Roots"],
 	["wyvernsting"] = BS["Wyvern Sting"],
 	["scattershot"] = BS["Scatter Shot"],
 	["tranquilshot"] = BS["Tranquilizing Shot"],
@@ -101,6 +103,8 @@ BigWigsCombatAnnouncement.defaultDB = {
 	pounce = true,
 	bash = true,
 	growl = true,
+	hibernate = true,
+	entanglingroots = true,
 	-- Hunter
 	wyvernsting = true,
 	scattershot = true,
@@ -435,6 +439,30 @@ elseif class == "DRUID" then
 				end,
 				set = function(v)
 					BigWigsCombatAnnouncement.db.profile.growl = v
+				end,
+			},
+			hibernate = {
+				type = "toggle",
+				name = BS["Hibernate"],
+				order = 4,
+				desc = string.format(L["Toggle %s display."], BS["Hibernate"]),
+				get = function()
+					return BigWigsCombatAnnouncement.db.profile.hibernate
+				end,
+				set = function(v)
+					BigWigsCombatAnnouncement.db.profile.hibernate = v
+				end,
+			},
+			entanglingroots = {
+				type = "toggle",
+				name = BS["Entangling Roots"],
+				order = 5,
+				desc = string.format(L["Toggle %s display."], BS["Entangling Roots"]),
+				get = function()
+					return BigWigsCombatAnnouncement.db.profile.entanglingroots
+				end,
+				set = function(v)
+					BigWigsCombatAnnouncement.db.profile.entanglingroots = v
 				end,
 			},
 			spacer = {
@@ -1051,7 +1079,11 @@ BigWigsCombatAnnouncement.external = true
 ------------------------------
 
 function BigWigsCombatAnnouncement:OnEnable()
-	self:RegisterEvent("SpellStatusV2_SpellCastInstant")
+	self:RegisterEvent("SpellStatusV2_SpellCastInstant", "SpellStatusV2_CastEvent")
+
+	if class == "DRUID" then
+		self:RegisterEvent("SpellStatusV2_SpellCastCastingFinish", "SpellStatusV2_CastEvent")
+	end
 end
 
 ------------------------------
@@ -1083,7 +1115,7 @@ end
 --         Events           --
 ------------------------------
 
-function BigWigsCombatAnnouncement:SpellStatusV2_SpellCastInstant(id, name, rank, fullname, caststart, caststop, castduration, castdelay, activetarget)
+function BigWigsCommonAuras:SpellStatusV2_CastEvent(id, name, rank, fullname, caststart, caststop, castduration, castdelay, activetarget)
 	if not BigWigsCombatAnnouncement:IsBroadcasting() then
 		return
 	end
