@@ -59,7 +59,7 @@ local SpellTranslation = {
     ["taunt"] = BS["Taunt"],
     ["handofreckoning"] = L["Hand of Reckoning"],
     ["earthshakerslam"] = L["Earthshaker Slam"],
-    ["Innervate"] = BS["Innervate"], -- Added Innervate to the spell translations
+    ["innervate"] = BS["Innervate"], -- Added Innervate to the spell translations
     ["disarm"] = BS["Disarm"],
     ["challengingshout"] = BS["Challenging Shout"],
     ["intimidatingshout"] = BS["Intimidating Shout"],
@@ -105,7 +105,7 @@ BigWigsCombatAnnouncement.defaultDB = {
   growl = true,
 	hibernate = true,
 	entanglingroots = true,
-  Innervate = true,
+  innervate = true,
 	-- Hunter
 	wyvernsting = true,
 	scattershot = true,
@@ -407,16 +407,16 @@ elseif class == "DRUID" then
         name = "Combat Announcement",
         desc = "Announces in chat channel on important instant casts.",
         args = {
-            Innervate = {
+            innervate = {
                 type = "toggle",
                 name = BS["Innervate"],
                 order = 1,
                 desc = string.format(L["Toggle %s display."], L["Innervate"]),
                 get = function()
-                    return BigWigsCombatAnnouncement.db.profile.Innervate
+                    return BigWigsCombatAnnouncement.db.profile.innervate
                 end,
                 set = function(v)
-                    BigWigsCombatAnnouncement.db.profile.Innervate = v
+                    BigWigsCombatAnnouncement.db.profile.innervate = v
                 end,
             },
             pounce = {
