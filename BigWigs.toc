@@ -226,5 +226,9 @@ Raids\Karazhan\Moroes.lua
 Raids\Karazhan\PhantomServant.lua
 Raids\Karazhan\DarkRiderChampion.lua
 
+Raids\Karazhan\KeeperGnarlmoon.lua
+Raids\Karazhan\Incantagos.lua
+Raids\Karazhan\Anomalus.lua
+
 Battlegrounds\AlteracValley.lua
 Battlegrounds\ArathiBasin.lua
