@@ -1150,8 +1150,14 @@ end
 
 function BigWigsCombatAnnouncement:AnnounceAbility(msg, target, spellName)
 	-- Check if the spell is Innervate and the target is hostile
-	if spellName == L["Innervate"] and target and not UnitIsFriend("player", "target") then
-		return -- Ignore announcements for Innervate on hostile targets
+	if spellName == L["Innervate"] and target
+			and (not UnitIsFriend("player", "target") or UnitIsUnit("player", "target") or not UnitIsPlayer("target")) then
+		return -- Ignore announcements for Innervate on hostile targets, NPCs, or the player itself
+	end
+
+	-- Ignore announcement if the target is the player or ALT key is pressed
+	if UnitIsUnit("player", "target") or IsAltKeyDown() then
+		return
 	end
 
 	if self.db.profile.broadcastsay and (GetNumPartyMembers("player") > 0 or UnitInRaid("player")) then
@@ -1172,6 +1178,7 @@ function BigWigsCombatAnnouncement:AnnounceAbility(msg, target, spellName)
 			UnitIsFriend("player", "target") and
 			not UnitIsUnit("player", "target") and
 			UnitIsPlayer("target") then
-		SendChatMessage("Casted " .. spellName .. " on you", "WHISPER", nil, target)
+		local targetName = UnitName("target") or target -- Get the target's name without worrying about the raid mark
+		SendChatMessage("Casted " .. spellName .. " on you", "WHISPER", nil, targetName)
 	end
 end
