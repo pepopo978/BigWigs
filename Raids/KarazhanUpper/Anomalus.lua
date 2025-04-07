@@ -42,7 +42,7 @@ L:RegisterTranslations("enUS", function()
 
 		trigger_arcaneOverloadYou = "You are afflicted by Arcane Overload",
 		trigger_arcaneOverloadOther = "(.+) is afflicted by Arcane Overload",
-		msg_arcaneOverloadYou = "BOMB ON YOU - MOVE AWAY!",
+		msg_arcaneOverloadYou = "BOMB ON YOU - DPS HARD THEN RUN AWAY!",
 		msg_arcaneOverloadOther = "BOMB on %s!",
 		bar_arcaneOverload = "Next Bomb",
 		bar_arcaneOverloadExplosion = "BOMB ON YOU Explosion",
@@ -59,7 +59,10 @@ end)
 
 -- timer and icon variables
 local timer = {
-	firstArcaneOverload = 7,
+	arcaneOverload = {
+		7, 15, 13.5, 12.1, 10.9, 9.8, 8.8, 8, 7.2, 6.5, 5.8, 5.2, 4.5
+	},
+	minArcaneOverload = 4.5, -- minimum time between Arcane Overload casts
 	manaboundDuration = 60,
 	arcaneOverloadExplosion = 15,
 }
@@ -81,11 +84,6 @@ local syncName = {
 local maxManaboundPlayers = 10
 local arcaneOverloadCount = 0
 local manaboundStrikesPlayers = {}
-
--- arcane overload timing
-local arcaneOverloadTimers = {
-	7, 15, 14, 13, 12, 11, 10, 9, 8, 7
-}
 
 function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "AfflictionEvent")
@@ -111,7 +109,7 @@ function module:OnEngage()
 	manaboundStrikesPlayers = {}
 
 	if self.db.profile.arcaneoverload then
-		self:Bar(L["bar_arcaneOverload"], arcaneOverloadTimers[1], icon.arcaneOverload)
+		self:Bar(L["bar_arcaneOverload"], timer.arcaneOverload[arcaneOverloadCount], icon.arcaneOverload)
 	end
 
 	if self.db.profile.manaboundframe then
@@ -194,7 +192,7 @@ function module:ArcaneOverload(player)
 	arcaneOverloadCount = arcaneOverloadCount + 1
 
 	-- Calculate next timer (minimum 7 seconds)
-	local nextTimer = arcaneOverloadTimers[arcaneOverloadCount + 1] or 7
+	local nextTimer = timer.arcaneOverload[arcaneOverloadCount] or timer.minArcaneOverload
 
 	if self.db.profile.arcaneoverload then
 		if player == UnitName("player") then
