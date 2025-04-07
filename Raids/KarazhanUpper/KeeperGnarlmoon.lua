@@ -3,7 +3,7 @@ local module, L = BigWigs:ModuleDeclaration("Keeper Gnarlmoon", "Karazhan")
 -- module variables
 module.revision = 30000 -- To be updated
 module.enabletrigger = module.translatedName
-module.toggleoptions = { "lunarshift", "owlphase", "owlenrage", "moondebuff" }
+module.toggleoptions = { "lunarshift", "owlphase", "owlenrage", "moondebuff", "bosskill" }
 module.zonename = {
  AceLibrary("AceLocale-2.2"):new("BigWigs")["Tower of Karazhan"],
  AceLibrary("Babble-Zone-2.2")["Tower of Karazhan"],
