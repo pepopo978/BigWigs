@@ -1,26 +1,15 @@
 local module, L = BigWigs:ModuleDeclaration("Heigan the Unclean", "Naxxramas")
 
-module.revision = 30058
+module.revision = 30038
 module.enabletrigger = module.translatedName
-module.toggleoptions = { "map","fundance", "disease", "manaBurn", "teleport", "eruption", -1, "bosskill" }
+module.toggleoptions = { "fundance", "disease", "manaBurn", "teleport", "eruption", -1, "bosskill" }
 module.defaultDB = {
 	fundance = false,
-	mapX = 600,
-	mapY = -400,
-	mapAlpha = 1,
-	mapScale = 1,
-	autotarget = false,
-	window = false,
 }
-
 
 L:RegisterTranslations("enUS", function()
 	return {
 		cmd = "Heigan",
-
-		map_cmd = "map",
-		map_name = "Positions Map",
-		map_desc = "Show live heighan positions map",
 
 		fundance_cmd = "fundance",
 		fundance_name = "Safety Dance",
@@ -129,21 +118,12 @@ function module:OnEnable()
 	self:ThrottleSync(1, syncName.manaBurn)
 	self:ThrottleSync(1, syncName.danceStart)
 	self:ThrottleSync(10, syncName.fightStart)
-
-	self:SetupMap()
-	--heiganmap:Show()
 end
 
 function module:OnSetup()
-	self:SetupMap()
 end
 
 function module:OnEngage()
-
-	if self.db.profile.map then
-		heiganmap:Show()
-	end
-
 	bwHeiganTimeFloorStarted = GetTime()
 
 	if self.db.profile.disease then
@@ -167,7 +147,6 @@ function module:OnEngage()
 end
 
 function module:OnDisengage()
-	--heiganmap:Hide()
 end
 
 function module:Event(msg)
@@ -304,180 +283,4 @@ end
 
 function eruption_help(inp)
 	return ' ' .. inp
-end
-
------------------------
--- Utility Functions --
------------------------
-
-function GetHeiganCoords()
-	local posX, posY = GetPlayerMapPosition("player")
-
-	posX = posX * 100.
-	posY = posY * 100.
-
-	if posX >= 68.3 then
-		posX = 0.
-	end	
-
-	if posY <= 63.4 or posY >= 70.405 then
-		posY = 0.
-	end
-
-	posX = ((posX - 63.505) / 4.79870410) * heiganmap.map:GetWidth() * (483.0/512.0)
-	posY = ((63.423 - posY) / 7.19656160) * heiganmap.map:GetHeight() * (364.0/512.0)
-
-	if posX < 0 then
-		posX = 0.
-	end
-	
-	return posX, posY
-end
-
-
-function UpdateHeiganMap()
-	if not heiganmap.map then
-		return
-	end
-	local tooltipText = ""
-	local tooltipAnchor
-	
-	local coordX, coordY = GetHeiganCoords()
-
-	heiganmap.map.unit:Show()
-	heiganmap.map.unit:SetPoint("CENTER", heiganmap.map, "TOPLEFT", coordX, coordY)
-	HeiganMapUnitIcon()
-
-	if tooltipText ~= "" then
-		heiganmap.tooltip:Show()
-		heiganmap.tooltip:SetOwner(tooltipAnchor, "ANCHOR_RIGHT");
-		heiganmap.tooltip:SetText(tooltipText)
-	else
-		heiganmap.tooltip:Hide()
-	end
-end
-
-function HeiganMapUnitIcon()	
-	heiganmap.map.unit:SetWidth(32)
-	heiganmap.map.unit:SetHeight(32)	
-	heiganmap.map.unit.texture:SetTexture("Interface\\Addons\\BigWigs\\Textures\\PlayerMapIconGreen")
-end
-
-function module:SetupMap()
-	if heiganmap then
-		return
-	end
-	heiganmap = CreateFrame("Frame", "BigWigsHeiganMap", UIParent)
-	heiganmap:SetWidth(200)
-	heiganmap:SetHeight(32)
-
-	heiganmap:SetBackdrop({
-		-- bgFile = "Interface\\Tooltips\\UI-Tooltip-Background", tile = true, tileSize = 16,
-		edgeFile = "Interface\\Addons\\BigWigs\\Textures\\otravi-semi-full-border", edgeSize = 32,
-		--edgeFile = "", edgeSize = 32,
-		insets = { left = 1, right = 1, top = 20, bottom = 1 },
-	})
-	heiganmap:SetBackdropBorderColor(1.0, 1.0, 1.0)
-	heiganmap:SetBackdropColor(24 / 255, 24 / 255, 24 / 255)
-	heiganmap:ClearAllPoints()
-	heiganmap:SetPoint("TOPLEFT", nil, "TOPLEFT", self.db.profile.mapX, self.db.profile.mapY)
-	heiganmap:EnableMouse(true)
-	heiganmap:SetClampedToScreen(true)
-	heiganmap:RegisterForDrag("LeftButton")
-	heiganmap:SetMovable(true)
-	heiganmap:SetFrameStrata("LOW")
-	heiganmap:SetAlpha(self.db.profile.mapAlpha or 1.0)
-	heiganmap:SetScale(self.db.profile.mapScale or 1.0)
-	heiganmap:SetScript("OnDragStart", function()
-		heiganmap:StartMoving()
-	end)
-	heiganmap:SetScript("OnDragStop", function()
-		heiganmap:StopMovingOrSizing();
-		self.db.profile.mapX = heiganmap:GetLeft();
-		self.db.profile.mapY = heiganmap:GetTop()
-	end)
-	heiganmap:SetScript("OnUpdate", UpdateHeiganMap)
-	heiganmap:Hide()
-
-	heiganmap.tooltip = CreateFrame("GameTooltip", "HeiganMapTooltip", heiganmap, "GameTooltipTemplate")
-
-	heiganmap.cheader = heiganmap:CreateFontString(nil, "OVERLAY")
-	heiganmap.cheader:ClearAllPoints()
-	heiganmap.cheader:SetWidth(190)
-	heiganmap.cheader:SetHeight(15)
-	heiganmap.cheader:SetPoint("TOP", heiganmap, "TOP", 0, -14)
-	heiganmap.cheader:SetFont("Fonts\\FRIZQT__.TTF", 12)
-	heiganmap.cheader:SetJustifyH("LEFT")
-	heiganmap.cheader:SetText("Heigan Map")
-	heiganmap.cheader:SetShadowOffset(.8, -.8)
-	heiganmap.cheader:SetShadowColor(0, 0, 0, 1)
-
-	heiganmap.closebutton = CreateFrame("Button", nil, heiganmap)
-	heiganmap.closebutton:SetWidth(20)
-	heiganmap.closebutton:SetHeight(14)
-	heiganmap.closebutton:SetHighlightTexture("Interface\\Addons\\BigWigs\\Textures\\otravi-close")
-	heiganmap.closebutton:SetNormalTexture("Interface\\Addons\\BigWigs\\Textures\\otravi-close")
-	heiganmap.closebutton:SetPushedTexture("Interface\\Addons\\BigWigs\\Textures\\otravi-close")
-	heiganmap.closebutton:SetPoint("TOPRIGHT", heiganmap, "TOPRIGHT", -7, -15)
-	heiganmap.closebutton:SetScript("OnClick", function()
-		heiganmap:Hide()
-	end)
-
-	heiganmap.alphabutton = CreateFrame("Button", nil, heiganmap)
-	heiganmap.alphabutton:SetWidth(20)
-	heiganmap.alphabutton:SetHeight(14)
-	heiganmap.alphabutton:SetHighlightTexture("Interface\\Addons\\BigWigs\\Textures\\otravi-alpha")
-	heiganmap.alphabutton:SetNormalTexture("Interface\\Addons\\BigWigs\\Textures\\otravi-alpha")
-	heiganmap.alphabutton:SetPushedTexture("Interface\\Addons\\BigWigs\\Textures\\otravi-alpha")
-	heiganmap.alphabutton:SetPoint("TOPRIGHT", heiganmap, "TOPRIGHT", -27, -15)
-	heiganmap.alphabutton:SetScript("OnClick", function()
-		if not self.db.profile.mapAlpha or (self.db.profile.mapAlpha < 0.3) then
-			self.db.profile.mapAlpha = 1.0
-		else
-			self.db.profile.mapAlpha = self.db.profile.mapAlpha - 0.2
-		end
-		heiganmap:SetAlpha(self.db.profile.mapAlpha)
-	end)
-
-	heiganmap.scalebutton = CreateFrame("Button", nil, heiganmap)
-	heiganmap.scalebutton:SetWidth(20)
-	heiganmap.scalebutton:SetHeight(14)
-	heiganmap.scalebutton:SetHighlightTexture("Interface\\Addons\\BigWigs\\Textures\\otravi-scale")
-	heiganmap.scalebutton:SetNormalTexture("Interface\\Addons\\BigWigs\\Textures\\otravi-scale")
-	heiganmap.scalebutton:SetPushedTexture("Interface\\Addons\\BigWigs\\Textures\\otravi-scale")
-	heiganmap.scalebutton:SetPoint("TOPRIGHT", heiganmap, "TOPRIGHT", -47, -15)
-	heiganmap.scalebutton:SetScript("OnClick", function()
-		local oldScale = (self.db.profile.mapScale or 1.0)
-		if not self.db.profile.mapScale then
-			self.db.profile.mapScale = 1.0
-		elseif (self.db.profile.mapScale > 2.0) then
-			self.db.profile.mapScale = 0.75
-		else
-			self.db.profile.mapScale = self.db.profile.mapScale + 0.25
-		end
-		heiganmap:SetScale(self.db.profile.mapScale)
-		self.db.profile.mapX = self.db.profile.mapX * oldScale / self.db.profile.mapScale
-		self.db.profile.mapY = self.db.profile.mapY * oldScale / self.db.profile.mapScale
-		heiganmap:ClearAllPoints()
-		heiganmap:SetPoint("TOPLEFT", nil, "TOPLEFT", self.db.profile.mapX, self.db.profile.mapY)
-	end)
-
-	heiganmap.map = CreateFrame("Frame", "HeiganMapAnchor", heiganmap)
-	heiganmap.map:SetPoint("TOPLEFT", heiganmap, "BOTTOMLEFT", 0, 0)
-	heiganmap.map:SetWidth(heiganmap:GetWidth())
-	heiganmap.map:SetHeight(200)
-	heiganmap.map.texture = heiganmap.map:CreateTexture(nil, "BACKGROUND")
-	heiganmap.map.texture:SetAllPoints(heiganmap.map)
-	heiganmap.map.texture:SetTexture("Interface\\Addons\\BigWigs\\Textures\\heiganmaptexture")
-
-	heiganmap.map.unit = CreateFrame("Frame", "HeiganMapUnit", heiganmap.map)
-	--		heiganmap.map.unit[i]:EnableMouse(true)
-	--		heiganmap.map.unit[i]: SetPoint("TOPLEFT", heiganmap.map, "TOPLEFT")
-	heiganmap.map.unit.texture = heiganmap.map.unit:CreateTexture(nil, "OVERLAY")
-	heiganmap.map.unit.texture:SetAllPoints(heiganmap.map.unit)
-	--		heiganmap.map.unit[i]:SetScript("OnLeave", function() GameTooltip:Hide(); DEFAULT_CHAT_FRAME:AddMessage("leave hover") end )
-	HeiganMapUnitIcon()	
-	
-	
-	heiganmap:Show()
 end
