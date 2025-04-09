@@ -25,13 +25,12 @@ local _, class = UnitClass("player")
 L:RegisterTranslations("enUS", function()
 	return {
 		["Toggle %s display."] = true,
-
 		["Announces in chat channel on important instant casts."] = true,
 		["Combat Announcement"] = true,
 		["combatannouncement"] = true,
-
 		["Hand of Reckoning"] = true,
 		["Earthshaker Slam"] = true,
+		["Innervate"] = true, -- Add Innervate to localization
 	}
 end)
 
@@ -60,6 +59,7 @@ local SpellTranslation = {
 	["taunt"] = BS["Taunt"],
 	["handofreckoning"] = L["Hand of Reckoning"],
 	["earthshakerslam"] = L["Earthshaker Slam"],
+	["innervate"] = BS["Innervate"], -- Added Innervate to the spell translations
 	["disarm"] = BS["Disarm"],
 	["challengingshout"] = BS["Challenging Shout"],
 	["intimidatingshout"] = BS["Intimidating Shout"],
@@ -72,6 +72,8 @@ local SpellTranslation = {
 	["pounce"] = BS["Pounce"],
 	["bash"] = BS["Bash"],
 	["growl"] = BS["Growl"],
+	["hibernate"] = BS["Hibernate"],
+	["entanglingroots"] = BS["Entangling Roots"],
 	["wyvernsting"] = BS["Wyvern Sting"],
 	["scattershot"] = BS["Scatter Shot"],
 	["tranquilshot"] = BS["Tranquilizing Shot"],
@@ -101,6 +103,9 @@ BigWigsCombatAnnouncement.defaultDB = {
 	pounce = true,
 	bash = true,
 	growl = true,
+	hibernate = true,
+	entanglingroots = true,
+	innervate = true,
 	-- Hunter
 	wyvernsting = true,
 	scattershot = true,
@@ -123,6 +128,7 @@ BigWigsCombatAnnouncement.defaultDB = {
 	broadcastparty = false,
 	broadcastraid = false,
 	broadcastbg = false,
+	broadcastwhisper = false, -- Added general option for whisper
 }
 
 BigWigsCombatAnnouncement.consoleCmd = L["combatannouncement"]
@@ -401,10 +407,22 @@ elseif class == "DRUID" then
 		name = "Combat Announcement",
 		desc = "Announces in chat channel on important instant casts.",
 		args = {
+			innervate = {
+				type = "toggle",
+				name = BS["Innervate"],
+				order = 1,
+				desc = string.format(L["Toggle %s display."], L["Innervate"]),
+				get = function()
+					return BigWigsCombatAnnouncement.db.profile.innervate
+				end,
+				set = function(v)
+					BigWigsCombatAnnouncement.db.profile.innervate = v
+				end,
+			},
 			pounce = {
 				type = "toggle",
 				name = BS["Pounce"],
-				order = 1,
+				order = 2,
 				desc = string.format(L["Toggle %s display."], BS["Pounce"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.pounce
@@ -416,7 +434,7 @@ elseif class == "DRUID" then
 			bash = {
 				type = "toggle",
 				name = BS["Bash"],
-				order = 2,
+				order = 3,
 				desc = string.format(L["Toggle %s display."], BS["Bash"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.bash
@@ -428,13 +446,37 @@ elseif class == "DRUID" then
 			growl = {
 				type = "toggle",
 				name = BS["Growl"],
-				order = 2,
+				order = 4,
 				desc = string.format(L["Toggle %s display."], BS["Growl"]),
 				get = function()
 					return BigWigsCombatAnnouncement.db.profile.growl
 				end,
 				set = function(v)
 					BigWigsCombatAnnouncement.db.profile.growl = v
+				end,
+			},
+			hibernate = {
+				type = "toggle",
+				name = BS["Hibernate"],
+				order = 4,
+				desc = string.format(L["Toggle %s display."], BS["Hibernate"]),
+				get = function()
+					return BigWigsCombatAnnouncement.db.profile.hibernate
+				end,
+				set = function(v)
+					BigWigsCombatAnnouncement.db.profile.hibernate = v
+				end,
+			},
+			entanglingroots = {
+				type = "toggle",
+				name = BS["Entangling Roots"],
+				order = 5,
+				desc = string.format(L["Toggle %s display."], BS["Entangling Roots"]),
+				get = function()
+					return BigWigsCombatAnnouncement.db.profile.entanglingroots
+				end,
+				set = function(v)
+					BigWigsCombatAnnouncement.db.profile.entanglingroots = v
 				end,
 			},
 			spacer = {
@@ -488,6 +530,18 @@ elseif class == "DRUID" then
 				end,
 				set = function(v)
 					BigWigsCombatAnnouncement.db.profile.broadcastbg = v
+				end,
+			},
+			broadcastwhisper = {
+				type = "toggle",
+				name = "Broadcast Whisper",
+				order = 101,
+				desc = "Toggle broadcasting the messages to the Whisper channel.",
+				get = function()
+					return BigWigsCombatAnnouncement.db.profile.broadcastwhisper
+				end,
+				set = function(v)
+					BigWigsCombatAnnouncement.db.profile.broadcastwhisper = v
 				end,
 			},
 		}
@@ -1043,28 +1097,69 @@ else
 	}
 end
 
-BigWigsCombatAnnouncement.revision = 20006
+BigWigsCombatAnnouncement.revision = 20007
 BigWigsCombatAnnouncement.external = true
 
 ------------------------------
 --      Initialization      --
 ------------------------------
 
+------------------------------
+--         Events           --
+------------------------------
+
+function BigWigsCombatAnnouncement:CastEvent(id, name, rank, fullname, caststart, caststop, castduration, castdelay, activetarget)
+	if not BigWigsCombatAnnouncement:IsBroadcasting() then
+		return
+	end
+
+	for optionname, translatedname in pairs(SpellTranslation) do
+		if self.db.profile[optionname] == true then
+			if name == translatedname then
+				local CombatAnnouncementString = "Casted " .. name
+				if activetarget and activetarget ~= "none" then
+					CombatAnnouncementString = CombatAnnouncementString .. " on " .. activetarget
+					BigWigsCombatAnnouncement:AnnounceAbility(CombatAnnouncementString, activetarget, name) -- Pass target for whispers
+				else
+					BigWigsCombatAnnouncement:AnnounceAbility(CombatAnnouncementString) -- regular announcements without target
+				end
+			end
+		end
+	end
+end
+
 function BigWigsCombatAnnouncement:OnEnable()
-	self:RegisterEvent("SpellStatusV2_SpellCastInstant")
+	self:RegisterEvent("SpellStatusV2_SpellCastInstant", "CastEvent")
+
+	if class == "DRUID" then
+		self:RegisterEvent("SpellStatusV2_SpellCastCastingFinish", "CastEvent")
+	end
+end
+
+function BigWigsCombatAnnouncement:IsBroadcasting()
+	return self.db.profile.broadcastsay or
+			self.db.profile.broadcastparty or
+			self.db.profile.broadcastraid or
+			self.db.profile.broadcastbg or
+			self.db.profile.broadcastwhisper
 end
 
 ------------------------------
 --          Util            --
 ------------------------------
 
-function BigWigsCombatAnnouncement:IsBroadcasting()
-	if self.db.profile.broadcastsay or self.db.profile.broadcastparty or self.db.profile.broadcastraid or self.db.profile.broadcastbg then
-		return true
+function BigWigsCombatAnnouncement:AnnounceAbility(msg, target, spellName)
+	-- Check if the spell is Innervate and the target is hostile
+	if spellName == L["Innervate"] and target
+			and (not UnitIsFriend("player", "target") or UnitIsUnit("player", "target") or not UnitIsPlayer("target")) then
+		return -- Ignore announcements for Innervate on hostile targets, NPCs, or the player itself
 	end
-end
 
-function BigWigsCombatAnnouncement:AnnounceAbility(msg)
+	-- Ignore announcement if the target is the player or ALT key is pressed
+	if UnitIsUnit("player", "target") or IsAltKeyDown() then
+		return
+	end
+
 	if self.db.profile.broadcastsay and (GetNumPartyMembers("player") > 0 or UnitInRaid("player")) then
 		SendChatMessage(msg, "SAY")
 	end
@@ -1077,26 +1172,13 @@ function BigWigsCombatAnnouncement:AnnounceAbility(msg)
 	if self.db.profile.broadcastbg and GetZoneText() == "Blood Ring" then
 		SendChatMessage(msg, "BATTLEGROUND")
 	end
-end
-
-------------------------------
---         Events           --
-------------------------------
-
-function BigWigsCombatAnnouncement:SpellStatusV2_SpellCastInstant(id, name, rank, fullname, caststart, caststop, castduration, castdelay, activetarget)
-	if not BigWigsCombatAnnouncement:IsBroadcasting() then
-		return
-	end
-
-	for optionname, translatedname in pairs(SpellTranslation) do
-		if self.db.profile[optionname] == true then
-			if name == translatedname then
-				local CombatAnnouncementString = "Casted " .. name
-				if activetarget and activetarget ~= "none" then
-					CombatAnnouncementString = CombatAnnouncementString .. " on " .. activetarget
-				end
-				BigWigsCombatAnnouncement:AnnounceAbility(CombatAnnouncementString)
-			end
-		end
+	-- Only send whisper if the spell name has a target that is a friendly player
+	if self.db.profile.broadcastwhisper and
+			target and
+			UnitIsFriend("player", "target") and
+			not UnitIsUnit("player", "target") and
+			UnitIsPlayer("target") then
+		local targetName = UnitName("target") or target -- Get the target's name without worrying about the raid mark
+		SendChatMessage("Casted " .. spellName .. " on you", "WHISPER", nil, targetName)
 	end
 end
