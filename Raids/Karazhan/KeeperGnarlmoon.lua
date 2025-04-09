@@ -3,7 +3,7 @@ local module, L = BigWigs:ModuleDeclaration("Keeper Gnarlmoon", "Karazhan")
 -- module variables
 module.revision = 30000 -- To be updated
 module.enabletrigger = module.translatedName
-module.toggleoptions = { "lunarshift", "owlphase", "owlenrage", "moondebuff" }
+module.toggleoptions = { "lunarshift", "ravens", "owlphase", "owlenrage", "moondebuff" }
 module.zonename = {
  AceLibrary("AceLocale-2.2"):new("BigWigs")["Tower of Karazhan"],
  AceLibrary("Babble-Zone-2.2")["Tower of Karazhan"],
@@ -11,10 +11,13 @@ module.zonename = {
 -- module defaults
 module.defaultDB = {
  lunarshift = true,
+ ravens = true,
  owlphase = true,
  owlenrage = true,
  moondebuff = true,
 }
+
+-
 
 -- localization
 L:RegisterTranslations("enUS", function()
@@ -42,6 +45,14 @@ L:RegisterTranslations("enUS", function()
   bar_lunarShiftCD = "Next Lunar Shift",
   msg_lunarShift = "Lunar Shift casting!",
 
+  raven_cmd = "ravens",
+  raven_name = "Raven alert",
+  raven_desc = "Timer for when 12 Blood Ravens will appear",
+	msg_ravensSoon = "12 ravens incoming",
+      
+	msg_midHp = "Keeper Gnarlmoon at 75% - Owls Soon (@ 66%)!",
+	msg_lowHp = "Keeper Gnarlmoon at 40% - Owls Soon (@ 33%)!",
+      
   trigger_owlPhaseStart = "Keeper Gnarlmoon gains Worgen Dimension",
   trigger_owlPhaseEnd = "Worgen Dimension fades from Keeper Gnarlmoon",
   msg_owlPhaseStart = "Owl Phase begins - kill the owls at the same time within 1 min!",
@@ -64,6 +75,7 @@ local timer = {
  lunarShiftCD = 30,
  owlPhase = 67, -- approximately based on logs
  owlEnrage = 60,
+ ravenSummon = { 15, 40 },
 }
 
 local icon = {
@@ -102,6 +114,14 @@ function module:OnSetup()
  self.started = nil
  self.phase = nil
  self.owlPhaseCount = 0
+  
+  - Used to monitor when owl phase will begin
+ self.lowHp = nil
+ self.midHp = nil
+ self.gnarlHealth = 100  
+
+ -- used to separate timer for first raven summon from remainer
+ self.firstRaven = true
 end
 
 function module:OnEngage()
@@ -111,6 +131,29 @@ function module:OnEngage()
  if self.db.profile.lunarshift then
 		self:Bar(L["bar_lunarShiftCD"], timer.lunarShiftCD, icon.lunarShift, true, color.lunarShift)
  end
+
+  if self.db.profile.ravens then
+		self:Bar(L["msg_ravensSoon"], timer.ravenSummon[1], icon.ravenSummon)
+		self:DelayedMessage(timer.ravenSummon[1]-5, L["msg_ravensSoon"],  "Important", false, nil, false)  
+    self:ScheduleRepeatingEvent("FirstRavens", self.FirstRavens, timer.ravenSummon[1], self)
+  end
+
+  if self.db.profil.owlphase then
+    self:ScheduleRepeatingEvent("CheckHps", self.CheckHps, 1, self)
+  end
+		
+end
+
+function module:OnDisengage()
+  if self.db.profil.owlphase then
+	  self:CancelScheduledEvent("CheckHps")
+    self.gnarlHealth = 100
+  end
+
+  if self.db.profile.ravens then
+	  self:CancelScheduledEvent("RemainingRavens")
+    self.firstRaven = true
+  end
 end
 
 function module:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE(msg)
@@ -162,6 +205,22 @@ function module:LunarShift()
  end
 end
 
+function module:FirstRavens()
+	-- first summon is after 15 seconds, remainder are every 40 seconds
+	if self.firstRaven then
+		self.firstRaven = false
+		self:Bar(L["msg_ravensSoon"], timer.ravenSummon[2], icon.ravenSummon)
+		self:DelayedMessage(timer.ravenSummon[2]-5, L["msg_ravensSoon"],  "Important", false, nil, false)
+		self:ScheduleRepeatingEvent("RemainingRavens", self.RemainingRavens, timer.ravenSummon[2], self)
+		self:CancelScheduledEvent("FirstRavens")
+	end
+end
+
+function module:RemainingRavens()
+	self:DelayedMessage(timer.ravenSummon[2]-5, L["msg_ravensSoon"],  "Important", false, nil, false)
+	self:Bar(L["msg_ravensSoon"], timer.ravenSummon[2], icon.ravenSummon)
+end
+
 function module:OwlPhaseStart()
  -- TODO add owl hp display
  if self.db.profile.owlphase then
@@ -184,6 +243,39 @@ function module:OwlPhaseEnd()
   self:RemoveBar(L["bar_owlEnrage"])
  end
 end
+
+function module:CheckHps()
+	for i = 1, GetNumRaidMembers() do
+		local targetString = "raid" .. i .. "target"
+		local targetName = UnitName(targetString)
+		local tempH
+		
+		if targetName == module.translatedName then
+			tempH = UnitHealth(targetString)
+			if tempH > 0 then
+				self.gnarlHealth = math.ceil((UnitHealth(targetString) / UnitHealthMax(targetString)) * 100)
+				break
+			end
+		end
+	end
+
+	if self.gnarlHealth >= 76 and self.midHp ~= nil then
+		self.midHp = nil
+	elseif self.gnarlHealth < 75 and self.midHp == nil then
+		self.midHp = true
+	  self:Message(L["msg_midHp"], "Urgent", true, nil, false)
+	  self:Sound("Alert")
+	end
+
+	if self.gnarlHealth >= 41 and self.lowHp ~= nil then
+		self.lowHp = nil
+	elseif self.gnarlHealth < 40 and self.lowHp == nil then
+		self.lowHp = true
+	  self:Message(L["msg_lowHp"], "Urgent", true, nil, false)
+	  self:Sound("Alert")
+	end
+end
+
 
 function module:Test()
  -- Enable all options for testing
