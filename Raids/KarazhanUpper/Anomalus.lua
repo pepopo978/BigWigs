@@ -3,7 +3,7 @@ local module, L = BigWigs:ModuleDeclaration("Anomalus", "Karazhan")
 -- module variables
 module.revision = 30000
 module.enabletrigger = module.translatedName
-module.toggleoptions = { "arcaneoverload", "arcaneprison", "manaboundstrike", "manaboundframe", "bosskill" }
+module.toggleoptions = { "arcaneoverload", "arcaneprison", "manaboundstrike", "manaboundframe", "markdampenedplayers", "bosskill" }
 module.zonename = {
 	AceLibrary("AceLocale-2.2"):new("BigWigs")["Tower of Karazhan"],
 	AceLibrary("Babble-Zone-2.2")["Tower of Karazhan"],
@@ -17,6 +17,7 @@ module.defaultDB = {
 	manaboundframe = true,
 	manaboundframeposx = 100,
 	manaboundframeposy = 300,
+	markdampenedplayers = false,
 }
 
 -- localization
@@ -40,6 +41,10 @@ L:RegisterTranslations("enUS", function()
 		manaboundframe_name = "Manabound Strikes Frame",
 		manaboundframe_desc = "Shows a frame with player stacks and timers for Manabound Strikes",
 
+		markdampenedplayers_cmd = "markdampenedplayers",
+		markdampenedplayers_name = "Mark Dampened Players",
+		markdampenedplayers_desc = "Mark players affected by Arcane Dampening if there are unused raid icons (requires assistant or leader)",
+
 		trigger_arcaneOverloadYou = "You are afflicted by Arcane Overload",
 		trigger_arcaneOverloadOther = "(.+) is afflicted by Arcane Overload",
 		msg_arcaneOverloadYou = "BOMB ON YOU - DPS HARD THEN RUN AWAY!",
@@ -53,6 +58,9 @@ L:RegisterTranslations("enUS", function()
 		trigger_manaboundStrike = "(.+) is afflicted by Manabound Strikes %((%d+)%)",
 		trigger_manaboundFade = "Manabound Strikes fades from (.+)",
 
+		trigger_arcaneDampening = "(.+) is afflicted by Arcane Dampening",
+		trigger_arcaneDampeningFade = "Arcane Dampening fades from (.+)",
+
 		bar_manaboundExpire = "Manabound stacks expire",
 	}
 end)
@@ -65,6 +73,7 @@ local timer = {
 	minArcaneOverload = 4.5, -- minimum time between Arcane Overload casts
 	manaboundDuration = 60,
 	arcaneOverloadExplosion = 15,
+	arcaneDampening = 45, -- duration of Arcane Dampening
 }
 
 local icon = {
@@ -72,6 +81,7 @@ local icon = {
 	arcanePrison = "Spell_Frost_Glacier",
 	manaboundStrike = "Spell_Arcane_FocusedPower",
 	manaboundExpire = "Spell_Holy_FlashHeal",
+	arcaneDampening = "Spell_Nature_AbolishMagic", -- icon for Arcane Dampening
 }
 
 local syncName = {
@@ -79,11 +89,14 @@ local syncName = {
 	arcanePrison = "AnomalusArcanePrison" .. module.revision,
 	manaboundStrike = "AnomalusManaboundStrike" .. module.revision,
 	manaboundStrikeFade = "AnomalusManaboundStrikeFade" .. module.revision,
+	arcaneDampening = "AnomalusArcaneDampening" .. module.revision,
+	arcaneDampeningFade = "AnomalusArcaneDampeningFade" .. module.revision,
 }
 
 local maxManaboundPlayers = 10
 local arcaneOverloadCount = 0
 local manaboundStrikesPlayers = {}
+local dampenedPlayers = {}
 
 function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "AfflictionEvent")
@@ -91,11 +104,15 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "AfflictionEvent")
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY")
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER")
+	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF")
+	self:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLY_DEATH")
 
 	self:ThrottleSync(3, syncName.arcaneOverload)
 	self:ThrottleSync(3, syncName.arcanePrison)
 	self:ThrottleSync(3, syncName.manaboundStrike)
 	self:ThrottleSync(3, syncName.manaboundStrikeFade)
+	self:ThrottleSync(3, syncName.arcaneDampening)
+	self:ThrottleSync(3, syncName.arcaneDampeningFade)
 
 	self:UpdateManaboundStatusFrame()
 end
@@ -107,6 +124,7 @@ end
 function module:OnEngage()
 	arcaneOverloadCount = 0
 	manaboundStrikesPlayers = {}
+	dampenedPlayers = {}
 
 	if self.db.profile.arcaneoverload then
 		self:Bar(L["bar_arcaneOverload"], timer.arcaneOverload[arcaneOverloadCount], icon.arcaneOverload)
@@ -147,12 +165,24 @@ function module:AfflictionEvent(msg)
 	if player and count then
 		self:Sync(syncName.manaboundStrike .. " " .. player .. " " .. count)
 	end
+
+	-- Arcane Dampening
+	local _, _, player = string.find(msg, L["trigger_arcaneDampening"])
+	if player then
+		self:Sync(syncName.arcaneDampening .. " " .. player)
+	end
 end
 
 function module:CHAT_MSG_SPELL_AURA_GONE_SELF(msg)
 	local _, _, player = string.find(msg, L["trigger_manaboundFade"])
 	if player then
 		self:Sync(syncName.manaboundStrikeFade .. " " .. player)
+	end
+
+	-- Arcane Dampening faded
+	local _, _, player = string.find(msg, L["trigger_arcaneDampeningFade"])
+	if player then
+		self:Sync(syncName.arcaneDampeningFade .. " " .. player)
 	end
 
 	-- remove bar
@@ -164,12 +194,32 @@ function module:CHAT_MSG_SPELL_AURA_GONE_PARTY(msg)
 	if player then
 		self:Sync(syncName.manaboundStrikeFade .. " " .. player)
 	end
+
+	-- Arcane Dampening faded
+	local _, _, player = string.find(msg, L["trigger_arcaneDampeningFade"])
+	if player then
+		self:Sync(syncName.arcaneDampeningFade .. " " .. player)
+	end
 end
 
 function module:CHAT_MSG_SPELL_AURA_GONE_OTHER(msg)
 	local _, _, player = string.find(msg, L["trigger_manaboundFade"])
 	if player then
 		self:Sync(syncName.manaboundStrikeFade .. " " .. player)
+	end
+
+	-- Arcane Dampening faded
+	local _, _, player = string.find(msg, L["trigger_arcaneDampeningFade"])
+	if player then
+		self:Sync(syncName.arcaneDampeningFade .. " " .. player)
+	end
+end
+
+function module:CHAT_MSG_COMBAT_FRIENDLY_DEATH(msg)
+	-- Remove raid marker when a player dies
+	local _, _, player = string.find(msg, "(.+) dies")
+	if player and self.db.profile.markdampenedplayers and dampenedPlayers[player] then
+		self:RemoveDampenedPlayerMark(player)
 	end
 end
 
@@ -185,6 +235,10 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		end
 	elseif sync == syncName.manaboundStrikeFade and rest then
 		self:ManaboundStrikeFade(rest)
+	elseif sync == syncName.arcaneDampening and rest then
+		self:ArcaneDampening(rest)
+	elseif sync == syncName.arcaneDampeningFade and rest then
+		self:ArcaneDampeningFade(rest)
 	end
 end
 
@@ -253,6 +307,78 @@ function module:ManaboundStrikeFade(player)
 
 		self:UpdateManaboundStatusFrame()
 	end
+end
+
+function module:ArcaneDampening(player)
+	if self.db.profile.markdampenedplayers and (IsRaidLeader() or IsRaidOfficer()) then
+		dampenedPlayers[player] = true
+		self:MarkDampenedPlayer(player)
+	end
+	-- Add bar for the player with Arcane Dampening
+	if player == UnitName("player") then
+		self:Bar("Arcane Dampening - Can Soak", timer.arcaneDampening, icon.arcaneDampening)
+	end
+end
+
+function module:ArcaneDampeningFade(player)
+	if self.db.profile.markdampenedplayers and dampenedPlayers[player] then
+		self:RemoveDampenedPlayerMark(player)
+	end
+
+	-- Remove the bar if it's the player
+	if player == UnitName("player") then
+		self:RemoveBar("Arcane Dampening - Can Soak")
+	end
+end
+
+function module:MarkDampenedPlayer(player)
+	if not (IsRaidLeader() or IsRaidOfficer()) then
+		return
+	end
+
+	local playerUnit = nil
+	for i = 1, GetNumRaidMembers() do
+		if UnitName("raid" .. i) == player then
+			playerUnit = "raid" .. i
+			break
+		end
+	end
+
+	if not playerUnit then
+		return
+	end
+
+	-- Find next available raid mark (don't use skull/8)
+	local usedMarks = {}
+	for i = 1, GetNumRaidMembers() do
+		local mark = GetRaidTargetIndex("raid" .. i)
+		if mark then
+			usedMarks[mark] = true
+		end
+	end
+
+	for i = 1, 7 do
+		if not usedMarks[i] then
+			SetRaidTarget(playerUnit, i)
+			dampenedPlayers[player] = i -- Store which mark was used
+			break
+		end
+	end
+end
+
+function module:RemoveDampenedPlayerMark(player)
+	if not (IsRaidLeader() or IsRaidOfficer()) then
+		return
+	end
+
+	for i = 1, GetNumRaidMembers() do
+		if UnitName("raid" .. i) == player then
+			SetRaidTarget("raid" .. i, 0)
+			break
+		end
+	end
+
+	dampenedPlayers[player] = nil
 end
 
 function module:UpdateManaboundStatusFrame()
@@ -413,6 +539,28 @@ function module:Test()
 		{ time = 10, func = function()
 			print("Test: Player gets Arcane Prison")
 			module:AfflictionEvent("Player3 is afflicted by Arcane Prison")
+		end },
+
+		-- Arcane Dampening events
+		{ time = 12, func = function()
+			print("Test: Tankeboy gets Arcane Dampening")
+			module:AfflictionEvent("Tankeboy is afflicted by Arcane Dampening")
+		end },
+		{ time = 16, func = function()
+			print("Test: Pepopo gets Arcane Dampening")
+			module:AfflictionEvent("Pepopo is afflicted by Arcane Dampening")
+		end },
+		{ time = 22, func = function()
+			print("Test: Arcane Dampening fades from Pepopo")
+			module:CHAT_MSG_SPELL_AURA_GONE_PARTY("Arcane Dampening fades from Pepopo")
+		end },
+		{ time = 25, func = function()
+			print("Test: Pepopo gets Arcane Dampening")
+			module:AfflictionEvent("Pepopo is afflicted by Arcane Dampening")
+		end },
+		{ time = 28, func = function()
+			print("Test: Pepopo dies")
+			module:CHAT_MSG_COMBAT_FRIENDLY_DEATH("Pepopo dies")
 		end },
 
 		-- Manabound Strikes events

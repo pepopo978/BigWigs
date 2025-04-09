@@ -265,7 +265,7 @@ BigWigs.cmdtable = { type = "group", handler = BigWigs, args = {
 } }
 BigWigs:RegisterChatCommand({ "/bw", "/BigWigs" }, BigWigs.cmdtable)
 BigWigs.debugFrame = ChatFrame1
-BigWigs.revision = 30111
+BigWigs.revision = 30112
 
 function BigWigs:EditLayout()
 	BigWigsBars:BigWigs_ShowAnchors()
@@ -405,6 +405,8 @@ function BigWigs.modulePrototype:Victory()
 	end
 end
 function BigWigs.modulePrototype:Disable()
+	self.castEventUnits = nil
+
 	self:Disengage()
 	self.core:ToggleModuleActive(self, false)
 end
@@ -612,6 +614,47 @@ function BigWigs.modulePrototype:Test()
 	BigWigs:Print("No tests defined for module " .. self:ToString())
 end
 
+if SUPERWOW_STRING then
+	local testGuids = {
+		["0xF13000F1F3276A33"] = "Keeper Gnarlmoon",
+	}
+
+	function BigWigs.modulePrototype:RegisterUnitCastEvent()
+		if not self:IsEventRegistered("UNIT_CASTEVENT") then
+			self:RegisterEvent("UNIT_CASTEVENT", function(casterGuid, targetGuid, eventType, spellId, castTime)
+				if self.castEventUnits then
+					local unitName = UnitName(casterGuid)
+
+					if not unitName or unitName == "Unknown" then
+						if testGuids[casterGuid] then
+							unitName = testGuids[casterGuid]
+						end
+					end
+
+					if unitName and self.castEventUnits[unitName] then
+						local callback = self.castEventUnits[unitName]
+						if type(callback) == "function" then
+							callback(self, targetGuid, eventType, spellId, castTime)
+						end
+					end
+				end
+			end)
+		end
+	end
+
+	function BigWigs.modulePrototype:RegisterCastEventsForUnitName(unitName, callback)
+		self:RegisterUnitCastEvent()
+
+		if not self.castEventUnits then
+			self.castEventUnits = {}
+		end
+
+		if not self.castEventUnits[unitName] then
+			self.castEventUnits[unitName] = callback
+		end
+	end
+end
+
 ------------------------------
 --      Provided API      --
 ------------------------------
@@ -728,6 +771,7 @@ end
 function BigWigs.modulePrototype:RemoveProximity()
 	BigWigs:RemoveProximity()
 end
+
 
 ------------------------------
 --      Initialization      --
@@ -1280,3 +1324,4 @@ function BigWigs:AddLoDMenu(zonename)
 		end
 	end
 end
+
