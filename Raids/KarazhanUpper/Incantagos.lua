@@ -148,13 +148,18 @@ module.proximitySilent = true
 
 -- module functions
 function module:OnEnable()
-	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE")
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "BeginsCastEvent")
+	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF", "BeginsCastEvent")
 
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_BUFFS_BUFFS", "BuffEvent")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_BUFFS", "BuffEvent")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "BuffEvent")
 
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE")
+
+	if SUPERWOW_VERSION then
+		self:RegisterCastEventsForUnitName("Ley-Watcher Incantagos", "IncantagosCastEvent")
+	end
 
 	self:ThrottleSync(5, syncName.summonSeeker)
 	self:ThrottleSync(5, syncName.summonWhelps)
@@ -200,6 +205,14 @@ function module:OnDisengage()
 	end
 end
 
+function module:IncantagosCastEvent(casterGuid, targetGuid, eventType, spellId, castTime)
+	if eventType == "CHANNEL" and spellId == 51187 then
+		if IsRaidLeader() or IsRaidOfficer() then
+			SetRaidTarget(targetGuid, 8)
+		end
+	end
+end
+
 function module:CheckBossHealth()
 	for i = 1, GetNumRaidMembers() do
 		local targetString = "raid" .. i .. "target"
@@ -222,7 +235,7 @@ function module:CheckBossHealth()
 	end
 end
 
-function module:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE(msg)
+function module:BeginsCastEvent(msg)
 	if string.find(msg, L["trigger_summonSeekerCast"]) then
 		self:Sync(syncName.summonSeeker)
 	elseif string.find(msg, L["trigger_summonWhelpsCast"]) then
@@ -364,27 +377,39 @@ function module:Test()
 		-- First Ley-Line around 1:15
 		{ time = 4, func = function()
 			print("Test: Ley-Watcher Incantagos begins to cast Ley-Line Disturbance")
-			module:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE("Ley-Watcher Incantagos begins to cast Ley-Line Disturbance.")
+			module:BeginsCastEvent("Ley-Watcher Incantagos begins to cast Ley-Line Disturbance.")
 		end },
 		{ time = 5, func = function()
 			print("Test: You are afflicted by Guided Ley-Beam")
 			module:CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE("You are afflicted by Guided Ley-Beam (1).")
 		end },
+		{ time = 6, func = function()
+			print("Test: simulate cast event")
+			if SUPERWOW_VERSION then
+				local _, guid = UnitExists("player")
+				module:IncantagosCastEvent(nil, guid, "CHANNEL", 51187, 0)
+			end
+		end },
 
 		-- Summon Seeker
 		{ time = 7, func = function()
 			print("Test: Ley-Watcher Incantagos begins to cast Summon Manascale Ley-Seeker")
-			module:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE("Ley-Watcher Incantagos begins to cast Summon Manascale Ley-Seeker.")
+			module:BeginsCastEvent("Ley-Watcher Incantagos begins to cast Summon Manascale Ley-Seeker.")
 		end },
 		-- Ley-Beam
 		{ time = 10, func = function()
 			print("Test: " .. UnitName("player") .. " gains Guided Ley-Beam")
 			module:CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_BUFFS(UnitName("player") .. " gains Guided Ley-Beam (1).")
+
+			-- clear skull
+			if IsRaidLeader() or IsRaidOfficer() then
+				SetRaidTarget("player", 0)
+			end
 		end },
 		-- Summon Whelps
 		{ time = 15, func = function()
 			print("Test: Ley-Watcher Incantagos begins to cast Summon Manascale Whelps")
-			module:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE("Ley-Watcher Incantagos begins to cast Summon Manascale Whelps.")
+			module:BeginsCastEvent("Ley-Watcher Incantagos begins to cast Summon Manascale Whelps.")
 		end },
 		{ time = 18, func = function()
 			print("Test: Stormhide gains Guided Ley-Beam")
@@ -420,7 +445,7 @@ function module:Test()
 		-- Second Ley-Line about 55s after first one
 		{ time = 60, func = function()
 			print("Test: Ley-Watcher Incantagos begins to cast Ley-Line Disturbance")
-			module:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE("Ley-Watcher Incantagos begins to cast Ley-Line Disturbance.")
+			module:BeginsCastEvent("Ley-Watcher Incantagos begins to cast Ley-Line Disturbance.")
 		end },
 
 		{ time = 65, func = function()
