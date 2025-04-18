@@ -105,7 +105,6 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY")
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER")
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF")
-	self:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLY_DEATH")
 
 	self:ThrottleSync(3, syncName.arcaneOverload)
 	self:ThrottleSync(3, syncName.arcanePrison)
@@ -215,7 +214,7 @@ function module:CHAT_MSG_SPELL_AURA_GONE_OTHER(msg)
 	end
 end
 
-function module:CHAT_MSG_COMBAT_FRIENDLY_DEATH(msg)
+function module:OnFriendlyDeath(msg)
 	-- Remove raid marker when a player dies
 	local _, _, player = string.find(msg, "(.+) dies")
 	if player and self.db.profile.markdampenedplayers and dampenedPlayers[player] then
@@ -623,7 +622,7 @@ function module:Test()
 		end },
 		{ time = 80, func = function()
 			print("Test: Disengage")
-			module:OnDisengage()
+			module:Disengage()
 		end },
 	}
 

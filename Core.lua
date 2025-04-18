@@ -589,8 +589,18 @@ function BigWigs:CheckForWipe(module)
 		end
 	end
 end
+
 function BigWigs.modulePrototype:CheckForWipe()
 	BigWigs:CheckForWipe(self)
+end
+
+function BigWigs.modulePrototype:OnFriendlyDeath(msg)
+end
+
+-- don't override
+function BigWigs.modulePrototype:CHAT_MSG_COMBAT_FRIENDLY_DEATH(msg)
+	self:OnFriendlyDeath(msg)
+	self:CheckForWipe()
 end
 
 function BigWigs:CheckForBossDeath(msg, module)
@@ -603,6 +613,15 @@ end
 
 function BigWigs.modulePrototype:CheckForBossDeath(msg)
 	BigWigs:CheckForBossDeath(msg, self)
+end
+
+function BigWigs.modulePrototype:OnEnemyDeath(msg)
+end
+
+-- don't override
+function BigWigs.modulePrototype:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
+	self:OnEnemyDeath(msg)
+	self:CheckForBossDeath(msg)
 end
 
 -- override
@@ -1130,8 +1149,8 @@ function BigWigs:SetupModule(moduleName)
 	if m and m:IsBossModule() then
 		m:RegisterEvent("PLAYER_REGEN_DISABLED", "CheckForEngage") -- addition
 		m:RegisterEvent("PLAYER_REGEN_ENABLED", "CheckForWipe")
-		m:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLY_DEATH", "CheckForWipe")
-		m:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH", "CheckForBossDeath") -- addition
+		m:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLY_DEATH")
+		m:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH") -- addition
 
 		m:RegisterEvent("BigWigs_RecvSync")
 

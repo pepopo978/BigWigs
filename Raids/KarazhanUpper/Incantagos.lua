@@ -164,12 +164,12 @@ function module:OnEnable()
 	self:ThrottleSync(5, syncName.summonSeeker)
 	self:ThrottleSync(5, syncName.summonWhelps)
 	self:ThrottleSync(5, syncName.leyLine)
-	self:ThrottleSync(2, syncName.greenAffinity)
-	self:ThrottleSync(2, syncName.blackAffinity)
-	self:ThrottleSync(2, syncName.redAffinity)
-	self:ThrottleSync(2, syncName.blueAffinity)
-	self:ThrottleSync(2, syncName.manaAffinity)
-	self:ThrottleSync(2, syncName.crystalAffinity)
+	self:ThrottleSync(20, syncName.greenAffinity)
+	self:ThrottleSync(20, syncName.blackAffinity)
+	self:ThrottleSync(20, syncName.redAffinity)
+	self:ThrottleSync(20, syncName.blueAffinity)
+	self:ThrottleSync(20, syncName.manaAffinity)
+	self:ThrottleSync(20, syncName.crystalAffinity)
 	self:ThrottleSync(2, syncName.beam)
 end
 
@@ -450,7 +450,7 @@ function module:Test()
 
 		{ time = 65, func = function()
 			print("Test: Disengage")
-			module:OnDisengage()
+			module:Disengage()
 		end },
 	}
 
