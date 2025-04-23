@@ -661,8 +661,117 @@ function module:Test()
 			module:CheckHps()
 		end },
 
-		-- Continue with previous test events...
-		-- Rest of events from original test function
+		-- Second Lunar Shift
+		{ time = 21, func = function()
+			print("Test: Keeper Gnarlmoon begins to cast Lunar Shift")
+			module:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE("Keeper Gnarlmoon begins to cast Lunar Shift.")
+		end },
+
+		-- First Owl Phase (at 66.66% HP)
+		{ time = 23, func = function()
+			print("Test: Keeper Gnarlmoon gains Worgen Dimension")
+			module:CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS("Keeper Gnarlmoon gains Worgen Dimension")
+		end },
+
+		-- Moon debuffs and owl HP reduction
+		{ time = 26, func = function()
+			print("Test: You are afflicted by Red Moon")
+			module:CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE("You are afflicted by Red Moon (1).")
+
+			module.lowRedOwlHp = 85
+			module.lowBlueOwlHp = 70
+			module.highRedOwlHp = 90
+			module.highBlueOwlHp = 75
+			module:UpdateOwlStatusFrame()
+		end },
+
+		{ time = 29, func = function()
+			module.lowRedOwlHp = 50
+			module.lowBlueOwlHp = 45
+			module.highRedOwlHp = 55
+			module.highBlueOwlHp = 48
+			module:UpdateOwlStatusFrame()
+		end },
+
+		{ time = 33, func = function()
+			print("Test: You are afflicted by Blue Moon")
+			module:CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE("You are afflicted by Blue Moon (1).")
+
+			module.lowRedOwlHp = 15
+			module.lowBlueOwlHp = 12
+			module.highRedOwlHp = 18
+			module.highBlueOwlHp = 13
+			module:UpdateOwlStatusFrame()
+		end },
+
+		-- Owl Phase ends
+		{ time = 36, func = function()
+			print("Test: Worgen Dimension fades from Keeper Gnarlmoon")
+			module:CHAT_MSG_SPELL_AURA_GONE_OTHER("Worgen Dimension fades from Keeper Gnarlmoon")
+		end },
+
+		-- Third Lunar Shift
+		{ time = 40, func = function()
+			print("Test: Keeper Gnarlmoon begins to cast Lunar Shift")
+			module:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE("Keeper Gnarlmoon begins to cast Lunar Shift.")
+		end },
+
+		-- HP triggers for second owl phase
+		{ time = 45, func = function()
+			print("Test: 37% hp")
+			module.gnarlHealth = 37
+			module:CheckHps()
+		end },
+
+		-- Second Owl Phase (at 33.33% HP)
+		{ time = 50, func = function()
+			print("Test: Keeper Gnarlmoon gains Worgen Dimension")
+			module:CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS("Keeper Gnarlmoon gains Worgen Dimension")
+		end },
+
+		-- Moon debuffs and owl HP reduction for second phase
+		{ time = 52, func = function()
+			print("Test: You are afflicted by Blue Moon")
+			module:CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE("You are afflicted by Blue Moon (1).")
+
+			module.lowRedOwlHp = 70
+			module.lowBlueOwlHp = 85
+			module.highRedOwlHp = 75
+			module.highBlueOwlHp = 90
+			module:UpdateOwlStatusFrame()
+		end },
+
+		{ time = 58, func = function()
+			module.lowRedOwlHp = 35
+			module.lowBlueOwlHp = 45
+			module.highRedOwlHp = 42
+			module.highBlueOwlHp = 50
+			module:UpdateOwlStatusFrame()
+		end },
+
+		{ time = 62, func = function()
+			print("Test: You are afflicted by Red Moon")
+			module:CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE("You are afflicted by Red Moon (1).")
+		end },
+
+		-- Owl Phase ends
+		{ time = 65, func = function()
+			print("Test: Worgen Dimension fades from Keeper Gnarlmoon")
+			module:CHAT_MSG_SPELL_AURA_GONE_OTHER("Worgen Dimension fades from Keeper Gnarlmoon")
+		end },
+
+		-- Final Lunar Shift
+		{ time = 75, func = function()
+			print("Test: Keeper Gnarlmoon begins to cast Lunar Shift")
+			module:CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE("Keeper Gnarlmoon begins to cast Lunar Shift.")
+		end },
+
+		-- End test
+		{ time = 80, func = function()
+			print("Test: Test complete")
+			module.testInProgress = false
+			module:Disengage()
+		end },
 	}
 
 	-- Schedule each event at its absolute time

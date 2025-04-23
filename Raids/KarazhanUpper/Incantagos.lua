@@ -371,7 +371,7 @@ end
 function module:Test()
 	-- Initialize module state
 	self:OnSetup()
-	self:OnEngage()
+	self:Engage()
 
 	local events = {
 		-- First Ley-Line around 1:15

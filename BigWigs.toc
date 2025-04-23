@@ -1,6 +1,6 @@
 ## Interface: 11200
 
-## Title: |cFFFF8080Pepopo|r Big Wigs |cff7fff7f30112|r |cffabd473Turtle-WoW|r
+## Title: |cFFFF8080Pepopo|r Big Wigs |cff7fff7f30113|r |cffabd473Turtle-WoW|r
 ## Title-zhCN: |cffabd473Turtle-WoW|r Big Wigs
 ## Notes: Boss Mods with Timer bars.
 ## Notes-esES: Módulos para Jefes con barras temporizadoras.
@@ -230,6 +230,8 @@ Raids\Karazhan\DarkRiderChampion.lua
 Raids\KarazhanUpper\KeeperGnarlmoon.lua
 Raids\KarazhanUpper\Incantagos.lua
 Raids\KarazhanUpper\Anomalus.lua
+Raids\KarazhanUpper\EchoOfMedivh.lua
+Raids\KarazhanUpper\ChessFight.lua
 
 Battlegrounds\AlteracValley.lua
 Battlegrounds\ArathiBasin.lua

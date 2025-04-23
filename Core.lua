@@ -219,53 +219,58 @@ end)
 BigWigs = AceLibrary("AceAddon-2.0"):new("AceEvent-2.0", "AceDebug-2.0", "AceModuleCore-2.0", "AceConsole-2.0", "AceDB-2.0", "AceHook-2.1")
 BigWigs:SetModuleMixins("AceDebug-2.0", "AceEvent-2.0", "CandyBar-2.2")
 BigWigs:RegisterDB("BigWigsDB", "BigWigsDBPerChar")
-BigWigs.cmdtable = { type = "group", handler = BigWigs, args = {
-	[L["boss"]] = {
-		type = "group",
-		name = L["Bosses"],
-		desc = L["Options for boss modules."],
-		order = 1,
-		args = {},
-		disabled = function()
-			return not BigWigs:IsActive()
-		end,
-	},
-	[L["plugin"]] = {
-		type = "group",
-		name = L["Plugins"],
-		desc = L["Options for plugins."],
-		order = 2,
-		args = {},
-		disabled = function()
-			return not BigWigs:IsActive()
-		end,
-	},
-	[L["extra"]] = {
-		type = "group",
-		name = L["Extras"],
-		desc = L["Options for extras."],
-		order = 3,
-		args = {},
-		disabled = function()
-			return not BigWigs:IsActive()
-		end,
-	},
-	["editlayout"] = {
-		type = "execute",
-		name = "Edit Layout",
-		order = 4,
-		desc = "Edit frame layout and alert sizes",
-		func = function()
-			BigWigs:EditLayout()
-		end,
-		disabled = function()
-			return not BigWigs:IsActive()
-		end,
+BigWigs.cmdtable = {
+	type = "group",
+	handler = BigWigs,
+	args = {
+		[L["boss"]] = {
+			type = "group",
+			name = L["Bosses"],
+			desc = L["Options for boss modules."],
+			order = 1,
+			args = {},
+			disabled = function()
+				return not BigWigs:IsActive()
+			end,
+		},
+		[L["plugin"]] = {
+			type = "group",
+			name = L["Plugins"],
+			desc = L["Options for plugins."],
+			order = 2,
+			args = {},
+			disabled = function()
+				return not BigWigs:IsActive()
+			end,
+		},
+		[L["extra"]] = {
+			type = "group",
+			name = L["Extras"],
+			desc = L["Options for extras."],
+			order = 3,
+			args = {},
+			disabled = function()
+				return not BigWigs:IsActive()
+			end,
+		},
+		["editlayout"] = {
+			type = "execute",
+			name = "Edit Layout",
+			order = 4,
+			desc = "Edit frame layout and alert sizes",
+			func = function()
+				BigWigs:EditLayout()
+			end,
+			disabled = function()
+				return not BigWigs:IsActive()
+			end,
+		}
 	}
-} }
+}
 BigWigs:RegisterChatCommand({ "/bw", "/BigWigs" }, BigWigs.cmdtable)
 BigWigs.debugFrame = ChatFrame1
-BigWigs.revision = 30112
+BigWigs.revision = 30113
+BigWigs.markUnitsWhenNotRaidLeader = false -- too many people marking causes issues, can turn on if needed
 
 function BigWigs:EditLayout()
 	BigWigsBars:BigWigs_ShowAnchors()
@@ -369,6 +374,22 @@ function BigWigs.modulePrototype:Engage()
 
 		BigWigsBossRecords:StartBossfight(self)
 
+		self.storedPlayerMarks = {}
+
+		-- store initial marks for disengage
+		self.initialPlayerMarks = {}
+		self.recentlyUsedMarks = {}
+
+		if IsRaidLeader() or BigWigs.markUnitsWhenNotRaidLeader then
+			for i = 1, GetNumRaidMembers() do
+				local playerUnit = "raid" .. i
+				local playerName = UnitName(playerUnit)
+				if playerName then
+					self.initialPlayerMarks[playerName] = GetRaidTargetIndex(playerUnit) or 0
+				end
+			end
+		end
+
 		self:OnEngage()
 	end
 end
@@ -387,6 +408,15 @@ function BigWigs.modulePrototype:Disengage()
 		BigWigsBars:BigWigs_HideCounterBars()
 
 		self:RemoveProximity()
+
+		if self.initialPlayerMarks then
+			for player in pairs(self.initialPlayerMarks) do
+				self:RestoreInitialRaidTargetForPlayer(player)
+			end
+			self.initialPlayerMarks = {}
+		end
+
+		self.recentlyUsedMarks = {}
 
 		self:OnDisengage()
 	end
@@ -442,6 +472,131 @@ function BigWigs.modulePrototype:SendBossDeathSync()
 		self:Sync(self:GetBossDeathSync() .. " " .. self.bossSync)
 	end
 end
+
+-- Add to BigWigs.modulePrototype section in Core.lua
+function BigWigs.modulePrototype:SetRaidTargetForPlayer(player, mark)
+	if not IsRaidLeader() and not BigWigs.markUnitsWhenNotRaidLeader then
+		return false
+	end
+
+	local playerUnit = nil
+	for i = 1, GetNumRaidMembers() do
+		if UnitName("raid" .. i) == player then
+			playerUnit = "raid" .. i
+			break
+		end
+	end
+
+	if not playerUnit then
+		return false
+	end
+
+	-- Store previous mark before changing it
+	local previousMark = GetRaidTargetIndex(playerUnit) or 0
+	if not self.storedPlayerMarks then
+		self.storedPlayerMarks = {}
+	end
+	self.storedPlayerMarks[player] = previousMark
+
+	SetRaidTarget(playerUnit, mark)
+	return true
+end
+
+function BigWigs.modulePrototype:GetAvailableRaidMark(excludeMarks)
+	excludeMarks = excludeMarks or {}
+	local usedMarks = {}
+	local currentTime = GetTime()
+
+	-- Initialize recentlyUsedMarks if needed
+	if not self.recentlyUsedMarks then
+		self.recentlyUsedMarks = {}
+	end
+
+	-- Mark existing raid targets as used
+	for i = 1, GetNumRaidMembers() do
+		local mark = GetRaidTargetIndex("raid" .. i)
+		if mark then
+			usedMarks[mark] = true
+		end
+	end
+
+	-- Add excluded marks to used marks
+	for _, mark in pairs(excludeMarks) do
+		usedMarks[mark] = true
+	end
+
+	-- Add recently used marks (within the last second) to used marks
+	for mark, timestamp in pairs(self.recentlyUsedMarks) do
+		if currentTime - timestamp < 1 then
+			usedMarks[mark] = true
+		end
+	end
+
+	-- Find first available mark (prioritizing skull/8, then down to 1)
+	for i = 8, 1, -1 do
+		if not usedMarks[i] then
+			-- Record this mark as recently used with current timestamp
+			self.recentlyUsedMarks[i] = currentTime
+			return i
+		end
+	end
+
+	return nil -- No marks available
+end
+
+function BigWigs.modulePrototype:RestorePreviousRaidTargetForPlayer(player)
+	if not IsRaidLeader() and not BigWigs.markUnitsWhenNotRaidLeader then
+		return false
+	end
+
+	if not self.storedPlayerMarks or not self.storedPlayerMarks[player] then
+		return false
+	end
+
+	local playerUnit = nil
+	for i = 1, GetNumRaidMembers() do
+		if UnitName("raid" .. i) == player then
+			playerUnit = "raid" .. i
+			break
+		end
+	end
+
+	if not playerUnit then
+		return false
+	end
+
+	SetRaidTarget(playerUnit, self.storedPlayerMarks[player])
+	self.storedPlayerMarks[player] = nil
+
+	return true
+end
+
+function BigWigs.modulePrototype:RestoreInitialRaidTargetForPlayer(player)
+	if not IsRaidLeader() and not BigWigs.markUnitsWhenNotRaidLeader then
+		return false
+	end
+
+	if not self.initialPlayerMarks or not self.initialPlayerMarks[player] then
+		return false
+	end
+
+	local playerUnit = nil
+	for i = 1, GetNumRaidMembers() do
+		if UnitName("raid" .. i) == player then
+			playerUnit = "raid" .. i
+			break
+		end
+	end
+
+	if not playerUnit then
+		return false
+	end
+
+	SetRaidTarget(playerUnit, self.initialPlayerMarks[player])
+
+	return true
+end
+
 
 -- event handler
 local yellTriggers = {} -- [i] = {yell, bossmod}
@@ -633,7 +788,7 @@ function BigWigs.modulePrototype:Test()
 	BigWigs:Print("No tests defined for module " .. self:ToString())
 end
 
-if SUPERWOW_STRING then
+if SUPERWOW_STRING or SetAutoloot then
 	local testGuids = {
 		["0xF13000F1F3276A33"] = "Keeper Gnarlmoon",
 	}
@@ -653,7 +808,12 @@ if SUPERWOW_STRING then
 					if unitName and self.castEventUnits[unitName] then
 						local callback = self.castEventUnits[unitName]
 						if type(callback) == "function" then
-							callback(self, targetGuid, eventType, spellId, castTime)
+							callback(self, casterGuid, targetGuid, eventType, spellId, castTime)
+						elseif type(callback) == "string" and type(self[callback]) == "function" then
+							self[callback](self, casterGuid, targetGuid, eventType, spellId, castTime)
+						else
+							DEFAULT_CHAT_FRAME:AddMessage("Invalid callback for unit " .. unitName)
+							self.castEventUnits[unitName] = nil
 						end
 					end
 				end
@@ -965,7 +1125,6 @@ function BigWigs:RegisterModule(name, module)
 	if module:IsBossModule() then
 		local cons
 		local revision = type(module.revision) == "number" and module.revision or -1
-		--self:Print(name .. " " .. module.bossSync .. " " .. module:ToString())
 		local L2 = AceLibrary("AceLocale-2.2"):new("BigWigs" .. name)
 		if module.toggleoptions then
 			local m = module
