@@ -133,22 +133,6 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "CastEvent")
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF", "CastEvent")
 
-	if SUPERWOW_VERSION then
-		self:RegisterCastEventsForUnitName("Queen", "QueenCastEvent")
-	end
-
-	self:ThrottleSync(1, syncName.subservience)
-	self:ThrottleSync(2, syncName.queenCastingSubservience)
-	self:ThrottleSync(2, syncName.kingCastFury)
-	self:ThrottleSync(2, syncName.subservienceFailed)
-	self:ThrottleSync(2, syncName.charmingPresence)
-end
-
-function module:OnSetup()
-	self.started = nil
-end
-
-function module:OnEnable()
 	-- install wrapper exactly once
 	if not self.origChatFrameOnEvent and self.db.profile.throttlebow then
 		self.origChatFrameOnEvent = ChatFrame_OnEvent
@@ -168,6 +152,20 @@ function module:OnEnable()
 			end
 		end
 	end
+
+	if SUPERWOW_VERSION then
+		self:RegisterCastEventsForUnitName("Queen", "QueenCastEvent")
+	end
+
+	self:ThrottleSync(1, syncName.subservience)
+	self:ThrottleSync(2, syncName.queenCastingSubservience)
+	self:ThrottleSync(2, syncName.kingCastFury)
+	self:ThrottleSync(2, syncName.subservienceFailed)
+	self:ThrottleSync(2, syncName.charmingPresence)
+end
+
+function module:OnSetup()
+	self.started = nil
 end
 
 function module:OnDisable()
