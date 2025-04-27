@@ -105,7 +105,6 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY")
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER")
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF")
-	self:RegisterEvent("CHAT_MSG_COMBAT_FRIENDLY_DEATH")
 
 	self:ThrottleSync(3, syncName.arcaneOverload)
 	self:ThrottleSync(3, syncName.arcanePrison)
@@ -124,7 +123,6 @@ end
 function module:OnEngage()
 	arcaneOverloadCount = 0
 	manaboundStrikesPlayers = {}
-	dampenedPlayers = {}
 
 	if self.db.profile.arcaneoverload then
 		self:Bar(L["bar_arcaneOverload"], timer.arcaneOverload[arcaneOverloadCount], icon.arcaneOverload)
@@ -215,7 +213,7 @@ function module:CHAT_MSG_SPELL_AURA_GONE_OTHER(msg)
 	end
 end
 
-function module:CHAT_MSG_COMBAT_FRIENDLY_DEATH(msg)
+function module:OnFriendlyDeath(msg)
 	-- Remove raid marker when a player dies
 	local _, _, player = string.find(msg, "(.+) dies")
 	if player and self.db.profile.markdampenedplayers and dampenedPlayers[player] then
@@ -256,15 +254,10 @@ function module:ArcaneOverload(player)
 			self:Bar(L["bar_arcaneOverloadExplosion"], timer.arcaneOverloadExplosion, icon.arcaneOverload, true, "red")
 		else
 			self:Message(string.format(L["msg_arcaneOverloadOther"], player), "Important")
-
-			if IsRaidLeader() or IsRaidOfficer() then
-				for i = 1, GetNumRaidMembers() do
-					if UnitName("raid" .. i) == player then
-						SetRaidTarget("raid" .. i, 8)
-					end
-				end
-			end
 		end
+
+		-- set latest bomb as skull
+		self:SetRaidTargetForPlayer(player, 8)
 
 		self:RemoveBar(L["bar_arcaneOverload"])
 		self:Bar(L["bar_arcaneOverload"], nextTimer, icon.arcaneOverload)
@@ -310,10 +303,8 @@ function module:ManaboundStrikeFade(player)
 end
 
 function module:ArcaneDampening(player)
-	if self.db.profile.markdampenedplayers and (IsRaidLeader() or IsRaidOfficer()) then
-		dampenedPlayers[player] = true
-		self:MarkDampenedPlayer(player)
-	end
+	self:MarkDampenedPlayer(player)
+
 	-- Add bar for the player with Arcane Dampening
 	if player == UnitName("player") then
 		self:Bar("Arcane Dampening - Can Soak", timer.arcaneDampening, icon.arcaneDampening)
@@ -321,9 +312,7 @@ function module:ArcaneDampening(player)
 end
 
 function module:ArcaneDampeningFade(player)
-	if self.db.profile.markdampenedplayers and dampenedPlayers[player] then
-		self:RemoveDampenedPlayerMark(player)
-	end
+	self:RemoveDampenedPlayerMark(player)
 
 	-- Remove the bar if it's the player
 	if player == UnitName("player") then
@@ -331,54 +320,28 @@ function module:ArcaneDampeningFade(player)
 	end
 end
 
+function module:OnFriendlyDeath(msg)
+	-- Remove raid marker when a player dies
+	local _, _, player = string.find(msg, "(.+) dies")
+	if player then
+		self:RemoveDampenedPlayerMark(player)
+	end
+end
+
 function module:MarkDampenedPlayer(player)
-	if not (IsRaidLeader() or IsRaidOfficer()) then
-		return
-	end
-
-	local playerUnit = nil
-	for i = 1, GetNumRaidMembers() do
-		if UnitName("raid" .. i) == player then
-			playerUnit = "raid" .. i
-			break
-		end
-	end
-
-	if not playerUnit then
-		return
-	end
-
-	-- Find next available raid mark (don't use skull/8)
-	local usedMarks = {}
-	for i = 1, GetNumRaidMembers() do
-		local mark = GetRaidTargetIndex("raid" .. i)
-		if mark then
-			usedMarks[mark] = true
-		end
-	end
-
-	for i = 1, 7 do
-		if not usedMarks[i] then
-			SetRaidTarget(playerUnit, i)
-			dampenedPlayers[player] = i -- Store which mark was used
-			break
+	if self.db.profile.markdampenedplayers then
+		-- don't use skull mark as that is reserved for the latest Arcane Overload
+		local markToUse = self:GetAvailableRaidMark({ 8 })
+		if markToUse then
+			self:SetRaidTargetForPlayer(player, markToUse)
 		end
 	end
 end
 
 function module:RemoveDampenedPlayerMark(player)
-	if not (IsRaidLeader() or IsRaidOfficer()) then
-		return
+	if self.db.profile.markdampenedplayers then
+		self:RestorePreviousRaidTargetForPlayer(player)
 	end
-
-	for i = 1, GetNumRaidMembers() do
-		if UnitName("raid" .. i) == player then
-			SetRaidTarget("raid" .. i, 0)
-			break
-		end
-	end
-
-	dampenedPlayers[player] = nil
 end
 
 function module:UpdateManaboundStatusFrame()
@@ -521,14 +484,14 @@ end
 
 function module:Test()
 	-- Initialize module state
-	self:OnSetup()
-	self:OnEngage()
+	self:Engage()
 
 	local events = {
 		-- Arcane Overload events
 		{ time = 5, func = function()
-			print("Test: Player gets Arcane Overload")
-			module:AfflictionEvent("Player1 is afflicted by Arcane Overload")
+			print("Test: raid1 gets Arcane Overload")
+			local name = UnitName("raid1") or "raid1"
+			module:AfflictionEvent(name .. " is afflicted by Arcane Overload")
 		end },
 		{ time = 15, func = function()
 			print("Test: You get Arcane Overload")
@@ -537,93 +500,92 @@ function module:Test()
 
 		-- Arcane Prison event
 		{ time = 10, func = function()
-			print("Test: Player gets Arcane Prison")
-			module:AfflictionEvent("Player3 is afflicted by Arcane Prison")
+			print("Test: raid3 gets Arcane Prison")
+			local name = UnitName("raid3") or "raid3"
+			module:AfflictionEvent(name .. " is afflicted by Arcane Prison")
 		end },
 
 		-- Arcane Dampening events
 		{ time = 12, func = function()
-			print("Test: Tankeboy gets Arcane Dampening")
-			module:AfflictionEvent("Tankeboy is afflicted by Arcane Dampening")
+			print("Test: raid4 gets Arcane Dampening")
+			local name = UnitName("raid4") or "raid4"
+			module:AfflictionEvent(name .. " is afflicted by Arcane Dampening")
 		end },
 		{ time = 16, func = function()
-			print("Test: Pepopo gets Arcane Dampening")
-			module:AfflictionEvent("Pepopo is afflicted by Arcane Dampening")
+			print("Test: raid5 gets Arcane Dampening")
+			local name = UnitName("raid5") or "raid5"
+			module:AfflictionEvent(name .. " is afflicted by Arcane Dampening")
 		end },
 		{ time = 22, func = function()
-			print("Test: Arcane Dampening fades from Pepopo")
-			module:CHAT_MSG_SPELL_AURA_GONE_PARTY("Arcane Dampening fades from Pepopo")
+			print("Test: Arcane Dampening fades from raid5")
+			local name = UnitName("raid5") or "raid5"
+			module:CHAT_MSG_SPELL_AURA_GONE_PARTY("Arcane Dampening fades from " .. name)
 		end },
 		{ time = 25, func = function()
-			print("Test: Pepopo gets Arcane Dampening")
-			module:AfflictionEvent("Pepopo is afflicted by Arcane Dampening")
+			print("Test: raid5 gets Arcane Dampening")
+			local name = UnitName("raid5") or "raid5"
+			module:AfflictionEvent(name .. " is afflicted by Arcane Dampening")
 		end },
 		{ time = 28, func = function()
-			print("Test: Pepopo dies")
-			module:CHAT_MSG_COMBAT_FRIENDLY_DEATH("Pepopo dies")
+			print("Test: raid1 dies")
+			local name = UnitName("raid1") or "raid1"
+			module:CHAT_MSG_COMBAT_FRIENDLY_DEATH(name .. " dies")
 		end },
 
 		-- Manabound Strikes events
 		{ time = 3, func = function()
-			print("Test: Player1 gets Manabound Strikes (1)")
-			module:AfflictionEvent("Player1 is afflicted by Manabound Strikes (1)")
+			print("Test: raid1 gets Manabound Strikes (1)")
+			local name = UnitName("raid1") or "raid1"
+			module:AfflictionEvent(name .. " is afflicted by Manabound Strikes (1)")
 		end },
 		{ time = 8, func = function()
-			print("Test: Player2 gets Manabound Strikes (1)")
-			module:AfflictionEvent("Player2 is afflicted by Manabound Strikes (1)")
+			print("Test: raid2 gets Manabound Strikes (1)")
+			local name = UnitName("raid2") or "raid2"
+			module:AfflictionEvent(name .. " is afflicted by Manabound Strikes (1)")
 		end },
 		{ time = 13, func = function()
-			print("Test: Player1 gets Manabound Strikes (2)")
-			module:AfflictionEvent("Player1 is afflicted by Manabound Strikes (2)")
+			print("Test: raid1 gets Manabound Strikes (2)")
+			local name = UnitName("raid1") or "raid1"
+			module:AfflictionEvent(name .. " is afflicted by Manabound Strikes (2)")
 		end },
 		{ time = 18, func = function()
-			print("Test: Player3 gets Manabound Strikes (1)")
-			module:AfflictionEvent("Player3 is afflicted by Manabound Strikes (1)")
+			print("Test: raid3 gets Manabound Strikes (1)")
+			local name = UnitName("raid3") or "raid3"
+			module:AfflictionEvent(name .. " is afflicted by Manabound Strikes (1)")
 		end },
 		{ time = 20, func = function()
-			print("Test: Player2 gets Manabound Strikes (2)")
-			module:AfflictionEvent("Player2 is afflicted by Manabound Strikes (2)")
+			print("Test: raid2 gets Manabound Strikes (2)")
+			local name = UnitName("raid2") or "raid2"
+			module:AfflictionEvent(name .. " is afflicted by Manabound Strikes (2)")
 		end },
 		{ time = 25, func = function()
-			print("Test: Player3 gets Manabound Strikes (2)")
-			module:AfflictionEvent("Player3 is afflicted by Manabound Strikes (2)")
+			print("Test: raid3 gets Manabound Strikes (2)")
+			local name = UnitName("raid3") or "raid3"
+			module:AfflictionEvent(name .. " is afflicted by Manabound Strikes (2)")
 		end },
 		{ time = 30, func = function()
-			print("Test: Player1 gets Manabound Strikes (3)")
-			module:AfflictionEvent("Player1 is afflicted by Manabound Strikes (3)")
+			print("Test: raid1 gets Manabound Strikes (3)")
+			local name = UnitName("raid1") or "raid1"
+			module:AfflictionEvent(name .. " is afflicted by Manabound Strikes (3)")
 		end },
 		{ time = 35, func = function()
-			print("Test: Player2 gets Manabound Strikes (3)")
-			module:AfflictionEvent("Player2 is afflicted by Manabound Strikes (3)")
+			print("Test: raid2 gets Manabound Strikes (3)")
+			local name = UnitName("raid2") or "raid2"
+			module:AfflictionEvent(name .. " is afflicted by Manabound Strikes (3)")
 		end },
 		{ time = 40, func = function()
-			print("Test: Player3 gets Manabound Strikes (3)")
-			module:AfflictionEvent("Player3 is afflicted by Manabound Strikes (3)")
+			print("Test: raid3 gets Manabound Strikes (3)")
+			local name = UnitName("raid3") or "raid3"
+			module:AfflictionEvent(name .. " is afflicted by Manabound Strikes (3)")
 		end },
 		{ time = 45, func = function()
-			print("Test: Player4 gets Manabound Strikes (1)")
-			module:AfflictionEvent("Player4 is afflicted by Manabound Strikes (1)")
+			print("Test: raid6 gets Manabound Strikes (1)")
+			local name = UnitName("raid6") or "raid6"
+			module:AfflictionEvent(name .. " is afflicted by Manabound Strikes (1)")
 		end },
 		{ time = 50, func = function()
-			print("Test: Player1 gets Manabound Strikes (4)")
-			module:AfflictionEvent("Player1 is afflicted by Manabound Strikes (4)")
-		end },
-		{ time = 53, func = function()
-			print("Test: You get Manabound Strikes (7)")
-			local playerName = UnitName("player")
-			module:AfflictionEvent(playerName .. " is afflicted by Manabound Strikes (7)")
-		end },
-		{ time = 70, func = function()
-			print("Test: Manabound Strikes fades from Player2")
-			module:CHAT_MSG_SPELL_AURA_GONE_PARTY("Manabound Strikes fades from Player2")
-		end },
-		{ time = 75, func = function()
-			print("Test: Manabound Strikes fades from Pepopo")
-			module:CHAT_MSG_SPELL_AURA_GONE_PARTY("Manabound Strikes fades from Pepopo")
-		end },
-		{ time = 80, func = function()
 			print("Test: Disengage")
-			module:OnDisengage()
+			module:Disengage()
 		end },
 	}
 
