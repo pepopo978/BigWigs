@@ -1,7 +1,7 @@
 local module, L = BigWigs:ModuleDeclaration("Anomalus", "Karazhan")
 
 -- module variables
-module.revision = 30000
+module.revision = 30001
 module.enabletrigger = module.translatedName
 module.toggleoptions = { "arcaneoverload", "arcaneprison", "manaboundstrike", "manaboundframe", "markdampenedplayers", "bosskill" }
 module.zonename = {
@@ -121,7 +121,7 @@ function module:OnSetup()
 end
 
 function module:OnEngage()
-	arcaneOverloadCount = 0
+	arcaneOverloadCount = 1
 	manaboundStrikesPlayers = {}
 
 	if self.db.profile.arcaneoverload then
@@ -243,7 +243,7 @@ end
 function module:ArcaneOverload(player)
 	arcaneOverloadCount = arcaneOverloadCount + 1
 
-	-- Calculate next timer (minimum 7 seconds)
+	-- Calculate next timer (minimum 4.5 seconds)
 	local nextTimer = timer.arcaneOverload[arcaneOverloadCount] or timer.minArcaneOverload
 
 	if self.db.profile.arcaneoverload then
