@@ -502,7 +502,7 @@ function BigWigs.modulePrototype:SetRaidTargetForPlayer(player, mark)
 	return true
 end
 
-function BigWigs.modulePrototype:GetAvailableRaidMark(excludeMarks)
+function BigWigs.modulePrototype:GetAvailableRaidMark(excludeMarks, reverse)
 	excludeMarks = excludeMarks or {}
 	local usedMarks = {}
 	local currentTime = GetTime()
@@ -532,8 +532,11 @@ function BigWigs.modulePrototype:GetAvailableRaidMark(excludeMarks)
 		end
 	end
 
+	local start, stop, step = 8, 1, -1
+	if reverse then start, stop, step = 1, 8, 1 end
+
 	-- Find first available mark (prioritizing skull/8, then down to 1)
-	for i = 8, 1, -1 do
+	for i = start, stop, step do
 		if not usedMarks[i] then
 			-- Record this mark as recently used with current timestamp
 			self.recentlyUsedMarks[i] = currentTime
