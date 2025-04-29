@@ -1,7 +1,7 @@
 local module, L = BigWigs:ModuleDeclaration("Ley-Watcher Incantagos", "Karazhan")
 
 -- module variables
-module.revision = 30001
+module.revision = 30002
 module.enabletrigger = module.translatedName
 module.toggleoptions = { "leyline", "summonseeker", "summonwhelps", "affinity", "beam", "cursewarning", "proximity", "bosskill" }
 module.zonename = {
@@ -87,8 +87,9 @@ L:RegisterTranslations("enUS", function()
 		bar_manaAffinity = "Mana Affinity (Mages/Druids)",
 		bar_crystalAffinity = "Crystal Affinity (Melee/Hunters)",
 
-		trigger_leyBeamGain = "(.*) gains Guided Ley",
+		trigger_leyBeamGain = "(.+) gain.? Guided Ley",
 		trigger_leyBeamAfflicted = "afflicted by Guided Ley",
+		bar_leyBeam = "Guided Ley-Beam in",
 		msg_leyBeam = "LEY-BEAM on %s - AVOID THEM!",
 		msg_leyBeamYou = "LEY-BEAM on YOU - GET AWAY FROM OTHERS!",
 		msg_leyBeamSay = "Guided Ley-Beam on me! STAY AWAY!",
@@ -107,6 +108,7 @@ local timer = {
 	summonSeekerCast = 2,
 	summonWhelpsCast = 2,
 	affinity = 15,
+	initalBeamCD = 28,
 	beam = 13, -- 10 sec duration, starts 3 sec after initial targeting buff
 }
 
@@ -151,7 +153,8 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "BeginsCastEvent")
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF", "BeginsCastEvent")
 
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_BUFFS_BUFFS", "BuffEvent")
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS", "BuffEvent")
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_BUFFS", "BuffEvent")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_BUFFS", "BuffEvent")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "BuffEvent")
 
@@ -182,6 +185,10 @@ end
 function module:OnEngage()
 	if self.db.profile.leyline then
 		self:IntervalBar(L["bar_leyLineCD"], timer.firstLeyLine[1], timer.firstLeyLine[2], icon.leyLine, true, color.leyLine)
+	end
+
+	if self.db.profile.beam then
+		self:Bar(L["bar_leyBeam"], timer.initalBeamCD, icon.beam, true, color.leyLine)
 	end
 
 	if self.db.profile.proximity then
@@ -264,6 +271,7 @@ end
 function module:CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_BUFFS(msg)
 	local _, _, player = string.find(msg, L["trigger_leyBeamGain"])
 	if player then
+		if player == "You" then player = UnitName("player") end
 		self:Sync(syncName.beam .. " " .. player)
 	end
 end
@@ -359,6 +367,7 @@ function module:LeyBeamStarted(player)
 	-- Combined self and other beam handling into one function
 	if player == UnitName("player") then
 		self:Message(L["msg_leyBeamYou"], "Important", true, "Alarm")
+		self:WarningSign(icon.beam, 3, true, L["msg_leyBeamYou"])
 		SendChatMessage(L["msg_leyBeamSay"], "SAY")
 	else
 		self:Message(string.format(L["msg_leyBeam"], player), "Important")
@@ -406,49 +415,55 @@ function module:Test()
 				SetRaidTarget("player", 0)
 			end
 		end },
-		-- Summon Whelps
 		{ time = 15, func = function()
-			print("Test: Ley-Watcher Incantagos begins to cast Summon Manascale Whelps")
-			module:BeginsCastEvent("Ley-Watcher Incantagos begins to cast Summon Manascale Whelps.")
-		end },
-		{ time = 18, func = function()
 			print("Test: Stormhide gains Guided Ley-Beam")
 			module:CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_BUFFS("Stormhide gains Guided Ley-Beam (1).")
 		end },
 
+		{ time = 20, func = function()
+			print("Test: You gain Guided Ley-Beam")
+			module:CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_BUFFS("You gain Guided Ley-Beam (1).")
+		end },
+
+		-- Summon Whelps
+		{ time = 25, func = function()
+			print("Test: Ley-Watcher Incantagos begins to cast Summon Manascale Whelps")
+			module:BeginsCastEvent("Ley-Watcher Incantagos begins to cast Summon Manascale Whelps.")
+		end },
+
 		-- Affinities
-		{ time = 22, func = function()
+		{ time = 27, func = function()
 			print("Test: Player1 gains Green Affinity")
 			module:BuffEvent("Player1 gains Green Affinity (1).")
 		end },
-		{ time = 28, func = function()
+		{ time = 33, func = function()
 			print("Test: Player1 gains Black Affinity")
 			module:BuffEvent("Player1 gains Black Affinity (1).")
 		end },
-		{ time = 34, func = function()
+		{ time = 39, func = function()
 			print("Test: Player1 gains Red Affinity")
 			module:BuffEvent("Player1 gains Red Affinity (1).")
 		end },
-		{ time = 40, func = function()
+		{ time = 45, func = function()
 			print("Test: Player1 gains Blue Affinity")
 			module:BuffEvent("Player1 gains Blue Affinity (1).")
 		end },
-		{ time = 46, func = function()
+		{ time = 51, func = function()
 			print("Test: Player1 gains Mana Affinity")
 			module:BuffEvent("Player1 gains Mana Affinity (1).")
 		end },
-		{ time = 52, func = function()
+		{ time = 57, func = function()
 			print("Test: Player1 gains Crystal Affinity")
 			module:BuffEvent("Player1 gains Crystal Affinity (1).")
 		end },
 
 		-- Second Ley-Line about 55s after first one
-		{ time = 60, func = function()
+		{ time = 65, func = function()
 			print("Test: Ley-Watcher Incantagos begins to cast Ley-Line Disturbance")
 			module:BeginsCastEvent("Ley-Watcher Incantagos begins to cast Ley-Line Disturbance.")
 		end },
 
-		{ time = 65, func = function()
+		{ time = 70, func = function()
 			print("Test: Disengage")
 			module:Disengage()
 		end },
