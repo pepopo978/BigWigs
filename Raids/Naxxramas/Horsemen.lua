@@ -546,7 +546,7 @@ function module:DelayedVoidZoneEvent()
 		if target == UnitName("player") then
 			self:Message("Void Zone on YOU !!!", "Important")
 			self:TriggerEvent("BigWigs_Sound", "VoidZoneMove")
-			SendChatMessage("Void Zone On Me !", "SAY")
+			SendChatMessage("Void Zone On Me!", "SAY")
 		else
 			self:Message("Void Zone on " .. target .. " !!!", "Important")
 		end

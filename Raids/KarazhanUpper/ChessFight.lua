@@ -3,7 +3,7 @@ local module, L = BigWigs:ModuleDeclaration("King", "Karazhan")
 -- module variables
 module.revision = 30002
 module.enabletrigger = module.translatedName
-module.toggleoptions = { "subservience", "kingsfury", "charmingpresence", "decursebow", "marksubservience", "markmindcontrol", "throttlebow", "bosskill" }
+module.toggleoptions = { "subservience", "kingsfury", "charmingpresence", "decursebow", "marksubservience", "markmindcontrol", "throttlebow", "bishoptonguesalert", "voidzone", "bosskill" }
 module.zonename = {
 	AceLibrary("AceLocale-2.2"):new("BigWigs")["Tower of Karazhan"],
 	AceLibrary("Babble-Zone-2.2")["Tower of Karazhan"],
@@ -21,6 +21,8 @@ module.defaultDB = {
 	marksubservience = true,
 	markmindcontrol = true,
 	throttlebow = true,
+	bishoptonguesalert = true,
+    voidzone = true,
 }
 
 -- localization
@@ -56,6 +58,16 @@ L:RegisterTranslations("enUS", function()
 		markmindcontrol_name = "Mark Mind Controlled Target",
 		markmindcontrol_desc = "Marks players affected by King's Curse with X raid icon (requires assistant or leader)",
 
+		bishoptonguesalert_cmd = "bishoptonguesalert",
+		bishoptonguesalert_name = "Bishop Curse of Tongues Alert",
+		bishoptonguesalert_desc = "Alerts when the Bishop needs Curse of Tongues applied",
+
+        voidzone_cmd = "voidzone",
+        voidzone_name = "Void Zone Alert",
+        voidzone_desc = "Warns when King casts Blunder (Void Zone)",
+        trigger_voidzone = "King casts Blunder.",
+        msg_voidzone = "Void Zone MOVE!",
+
 		trigger_subservienceYou = "You are afflicted by Dark Subservience",
 		trigger_subservienceOther = "(.+) is afflicted by Dark Subservience",
 		trigger_subservienceFade = "Dark Subservience fades from (.+)",
@@ -83,6 +95,8 @@ L:RegisterTranslations("enUS", function()
 		bar_kingsfury = "King's Fury - Hide!",
 		bar_charmingpresence = "Next Charming Presence",
 		bar_decursebow = "Decurse %s >Click Me<",
+
+		bishop_name = "Bishop",
 	}
 end)
 
@@ -92,6 +106,8 @@ local timer = {
 	kingsfury = 5, -- duration of king's fury cast
 	charmingpresence = 12, -- queen casts every 12 seconds
 	throttlebow = 1.5, -- bow throttle rate
+	bishopScan = 5, -- check bishop debuffs every 5 seconds
+    voidzone = 2, -- duration for void zone warning sign
 }
 
 local icon = {
@@ -99,6 +115,7 @@ local icon = {
 	kingsfury = "Spell_Holy_HolyNova", -- icon for king's fury
 	charmingpresence = "Spell_Shadow_ShadowWordDominate", -- icon for charming presence
 	kingscurse = "Spell_Shadow_GrimWard", -- icon for King's curse
+    voidzone = "spell_shadow_antishadow", -- icon for void zone
 }
 
 local kingsCurseTexture = "Interface\\Icons\\Spell_Shadow_GrimWard"
@@ -109,6 +126,7 @@ local syncName = {
 	kingCastFury = "ChessKingCastFury" .. module.revision,
 	subservienceFailed = "ChessSubservienceFailed" .. module.revision,
 	charmingPresence = "ChessCharmingPresence" .. module.revision,
+	bishopNoCurse = "ChessBishopNoCurse" .. module.revision,
 }
 
 local spellIds = {
@@ -119,6 +137,8 @@ local spellIds = {
 
 -- Track players afflicted with King's Curse
 local bowed = {}
+
+local baseChatFrameOnEvent = ChatFrame_OnEvent
 
 function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "AfflictionEvent")
@@ -133,12 +153,24 @@ function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "CastEvent")
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF", "CastEvent")
 
+	if self.db.profile.bishoptonguesalert then
+		self:ScheduleRepeatingEvent("BishopDebuffScan", self.ScanBishopDebuffs, timer.bishopScan, self)
+	end
+
 	-- install wrapper exactly once
 	if not self.origChatFrameOnEvent and self.db.profile.throttlebow then
 		self.origChatFrameOnEvent = ChatFrame_OnEvent
 
 		ChatFrame_OnEvent = function(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
 			local msg, who = arg1, arg2
+
+			if not self.origChatFrameOnEvent then
+                -- something went wrong, just call the original function
+                baseChatFrameOnEvent(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+                ChatFrame_OnEvent = baseChatFrameOnEvent
+                return
+            end
+
 			-- only throttle OTHER players’ /bow emote when we’re engaged
 			if self.engaged and event == "CHAT_MSG_TEXT_EMOTE" and who ~= UnitName("player") and string.find(msg, "^.- bow") then
 				local now = GetTime()
@@ -183,6 +215,7 @@ function module:OnEngage()
 end
 
 function module:OnDisengage()
+	self:CancelScheduledEvent("BishopDebuffScan")
 end
 
 function module:QueenCastEvent(casterGuid, targetGuid, eventType, spellId, castTime)
@@ -199,6 +232,8 @@ function module:CastEvent(msg)
 		self:Sync(syncName.subservienceFailed .. " " .. self.queenTarget)
 	elseif string.find(msg, L["trigger_kingCastFury"]) then
 		self:Sync(syncName.kingCastFury)
+    elseif string.find(msg, L["trigger_voidzone"]) then
+        self:VoidZoneAlert()
 	end
 end
 
@@ -287,6 +322,8 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		if self.db.profile.charmingpresence then
 			self:StartCharmingPresenceTimer()
 		end
+	elseif sync == syncName.bishopNoCurse then
+		self:BishopNeedsCurseOfTongues()
 	end
 end
 
@@ -405,6 +442,55 @@ function module:KingCastFury()
 	self:Bar(L["bar_kingsfury"], timer.kingsfury, icon.kingsfury)
 end
 
+function module:VoidZoneAlert()
+    if not self.db.profile.voidzone then
+        return
+    end
+
+    self:WarningSign(icon.voidzone, timer.voidzone, true, L["msg_voidzone"])
+    self:TriggerEvent("BigWigs_Sound", "VoidZoneMove")
+    SendChatMessage("Void Zone On Me!", "SAY")
+end
+
+function module:ScanBishopDebuffs()
+	-- Check if current target is Bishop
+	if UnitName("target") == L["bishop_name"] then
+		-- Scan debuffs
+		for i = 1, 16 do
+			local texture = UnitDebuff("target", i)
+			if texture and string.find(texture, "Spell_Shadow_CurseOfTounges") then
+				-- Found Curse of Tongues debuff
+				return
+			elseif not texture then
+				break
+			end
+		end
+
+		-- Scan buffs
+		for i = 1, 32 do
+			local texture = UnitBuff("target", i)
+			if texture and string.find(texture, "Spell_Shadow_CurseOfTounges") then
+				-- Found Curse of Tongues as buff
+				return
+			elseif not texture then
+				break
+			end
+		end
+
+		-- no curse of tongues found, trigger sync
+		self:Sync(syncName.bishopNoCurse)
+	end
+end
+
+function module:BishopNeedsCurseOfTongues()
+	if self.db.profile.bishoptonguesalert then
+		if IsRaidLeader() or playerClass == "WARLOCK" then
+			-- Alert warlocks that the Bishop needs to be cursed
+			self:Message("Bishop needs Curse of Tongues!", "Important", nil, "Alert")
+		end
+	end
+end
+
 function module:Test()
 	-- Initialize module state
 	self:OnSetup()
@@ -444,6 +530,18 @@ function module:Test()
 			local msg = "You are afflicted by Dark Subservience"
 			module:AfflictionEvent(msg)
 			print("Test: " .. msg)
+		end },
+
+		{ time = 5, func = function()
+			print("Test: Scanning Bishop")
+			local originalName = L["bishop_name"]
+			L["bishop_name"] = UnitName("target")
+
+			-- Run the scan function
+			module:ScanBishopDebuffs()
+
+			-- Restore original name
+			L["bishop_name"] = originalName
 		end },
 
 		{ time = 7, func = function()
@@ -514,10 +612,29 @@ function module:Test()
 
 		{ time = 32, func = function()
 			local msg = testPlayerName2 .. " dies"
-			module:CHAT_MSG_COMBAT_FRIENDLY_DEATH(msg)
+			-- Correct event for player death is CHAT_MSG_COMBAT_FRIENDLY_DEATH
+			module:OnFriendlyDeath(msg)
 			print("Test: " .. msg)
 		end },
 
+		-- Add to the events table inside the Test function
+		{ time = 33, func = function()
+			print("Test: Scanning Bishop")
+			local originalName = L["bishop_name"]
+			L["bishop_name"] = UnitName("target")
+
+			-- Run the scan function
+			module:ScanBishopDebuffs()
+
+			-- Restore original name
+			L["bishop_name"] = originalName
+		end },
+
+        -- Test case for Void Zone
+        { time = 34, func = function()
+            print("Test: Simulating Void Zone cast")
+            module:CastEvent(L["trigger_voidzone"])
+        end },
 		-- Test disengage
 		{ time = 35, func = function()
 			print("Test: Disengage")
