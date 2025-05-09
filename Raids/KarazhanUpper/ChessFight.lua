@@ -1,7 +1,7 @@
 local module, L = BigWigs:ModuleDeclaration("King", "Karazhan")
 
 -- module variables
-module.revision = 30002
+module.revision = 30003
 module.enabletrigger = module.translatedName
 module.toggleoptions = { "subservience", "kingsfury", "charmingpresence", "decursebow", "marksubservience", "markmindcontrol", "throttlebow", "bishoptonguesalert", "voidzone", "bosskill" }
 module.zonename = {
@@ -232,8 +232,6 @@ function module:CastEvent(msg)
 		self:Sync(syncName.subservienceFailed .. " " .. self.queenTarget)
 	elseif string.find(msg, L["trigger_kingCastFury"]) then
 		self:Sync(syncName.kingCastFury)
-    elseif string.find(msg, L["trigger_voidzone"]) then
-        self:VoidZoneAlert()
 	end
 end
 
