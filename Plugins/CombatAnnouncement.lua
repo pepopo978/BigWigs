@@ -84,6 +84,43 @@ local SpellTranslation = {
 	["deathcoil"] = BS["Death Coil"],
 }
 
+local SpellVerbMapping = {
+	["pummel"] = "Interrupting",
+	["shieldbash"] = "Interrupting",
+	["kick"] = "Interrupting",
+	["counterspell"] = "Interrupting",
+	["earthshock"] = "Interrupting",
+	["taunt"] = "Taunting",
+	["growl"] = "Taunting",
+	["handofreckoning"] = "Taunting",
+	["challengingshout"] = "AOE Taunting",
+	["intimidatingshout"] = "AOE Fearing",
+	["concussionblow"] = "Stunning",
+	["kidneyshot"] = "Stunning",
+	["cheapshot"] = "Stunning",
+	["hammerofjustice"] = "Stunning",
+	["pounce"] = "Stunning",
+	["bash"] = "Stunning",
+	["blind"] = "Blinding",
+	["gouge"] = "Stunning",
+	["disarm"] = "Disarming",
+	["innervate"] = "Innervating",
+	["hibernate"] = "Sleeping",
+	["entanglingroots"] = "Rooting",
+	["wyvernsting"] = "Sleeping",
+	["scattershot"] = "Blinding",
+	["tranquilshot"] = "Taunting",
+	["deathcoil"] = "Fearing",
+	["psychicscream"] = "AOE Fearing",
+	["earthshakerslam"] = "Stunning"
+}
+
+local NonTargetSpells = {
+	challengingshout = true,
+	intimidatingshout = true,
+	psychicscream = true,
+}
+
 BigWigsCombatAnnouncement.defaultDB = {
 	-- Warrior
 	pummel = true,
@@ -1116,9 +1153,9 @@ function BigWigsCombatAnnouncement:CastEvent(id, name, rank, fullname, caststart
 	for optionname, translatedname in pairs(SpellTranslation) do
 		if self.db.profile[optionname] == true then
 			if name == translatedname then
-				local CombatAnnouncementString = "Casted " .. name
-				if activetarget and activetarget ~= "none" then
-					CombatAnnouncementString = CombatAnnouncementString .. " on " .. activetarget
+				local CombatAnnouncementString = SpellVerbMapping[optionname] .. " (" .. name .. ") "
+				if activetarget and activetarget ~= "none" and not NonTargetSpells[optionname] then
+					CombatAnnouncementString = CombatAnnouncementString .. " " .. activetarget
 					BigWigsCombatAnnouncement:AnnounceAbility(CombatAnnouncementString, activetarget, name) -- Pass target for whispers
 				else
 					BigWigsCombatAnnouncement:AnnounceAbility(CombatAnnouncementString) -- regular announcements without target
