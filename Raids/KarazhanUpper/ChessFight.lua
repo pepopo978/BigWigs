@@ -22,7 +22,7 @@ module.defaultDB = {
 	markmindcontrol = true,
 	throttlebow = true,
 	bishoptonguesalert = true,
-    voidzone = true,
+	voidzone = true,
 }
 
 -- localization
@@ -62,11 +62,11 @@ L:RegisterTranslations("enUS", function()
 		bishoptonguesalert_name = "Bishop Curse of Tongues Alert",
 		bishoptonguesalert_desc = "Alerts when the Bishop needs Curse of Tongues applied",
 
-        voidzone_cmd = "voidzone",
-        voidzone_name = "Void Zone Alert",
-        voidzone_desc = "Warns when King casts Blunder (Void Zone)",
-        trigger_voidzone = "King casts Blunder.",
-        msg_voidzone = "Void Zone MOVE!",
+		voidzone_cmd = "voidzone",
+		voidzone_name = "Void Zone Alert",
+		voidzone_desc = "Warns when King casts Blunder (Void Zone)",
+		trigger_voidzone = "King casts Blunder.",
+		msg_voidzone = "Void Zone MOVE!",
 
 		trigger_subservienceYou = "You are afflicted by Dark Subservience",
 		trigger_subservienceOther = "(.+) is afflicted by Dark Subservience",
@@ -107,7 +107,7 @@ local timer = {
 	charmingpresence = 12, -- queen casts every 12 seconds
 	throttlebow = 1.5, -- bow throttle rate
 	bishopScan = 5, -- check bishop debuffs every 5 seconds
-    voidzone = 2, -- duration for void zone warning sign
+	voidzone = 2, -- duration for void zone warning sign
 }
 
 local icon = {
@@ -115,7 +115,7 @@ local icon = {
 	kingsfury = "Spell_Holy_HolyNova", -- icon for king's fury
 	charmingpresence = "Spell_Shadow_ShadowWordDominate", -- icon for charming presence
 	kingscurse = "Spell_Shadow_GrimWard", -- icon for King's curse
-    voidzone = "spell_shadow_antishadow", -- icon for void zone
+	voidzone = "spell_shadow_antishadow", -- icon for void zone
 }
 
 local kingsCurseTexture = "Interface\\Icons\\Spell_Shadow_GrimWard"
@@ -127,12 +127,14 @@ local syncName = {
 	subservienceFailed = "ChessSubservienceFailed" .. module.revision,
 	charmingPresence = "ChessCharmingPresence" .. module.revision,
 	bishopNoCurse = "ChessBishopNoCurse" .. module.revision,
+	voidzone = "ChessVoidZone" .. module.revision,
 }
 
 local spellIds = {
 	subservience = 41647, -- Dark Subservience
 	charmingpresence = 41644,
 	kingscurse = 41635,
+	blunder = 52667, -- Void Zone
 }
 
 -- Track players afflicted with King's Curse
@@ -165,11 +167,11 @@ function module:OnEnable()
 			local msg, who = arg1, arg2
 
 			if not self.origChatFrameOnEvent then
-                -- something went wrong, just call the original function
-                baseChatFrameOnEvent(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
-                ChatFrame_OnEvent = baseChatFrameOnEvent
-                return
-            end
+				-- something went wrong, just call the original function
+				baseChatFrameOnEvent(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+				ChatFrame_OnEvent = baseChatFrameOnEvent
+				return
+			end
 
 			-- only throttle OTHER players’ /bow emote when we’re engaged
 			if self.engaged and event == "CHAT_MSG_TEXT_EMOTE" and who ~= UnitName("player") and string.find(msg, "^.- bow") then
@@ -187,6 +189,7 @@ function module:OnEnable()
 
 	if SUPERWOW_VERSION then
 		self:RegisterCastEventsForUnitName("Queen", "QueenCastEvent")
+		self:RegisterCastEventsForUnitName("King", "KingCastEvent")
 	end
 
 	self:ThrottleSync(1, syncName.subservience)
@@ -194,6 +197,8 @@ function module:OnEnable()
 	self:ThrottleSync(2, syncName.kingCastFury)
 	self:ThrottleSync(2, syncName.subservienceFailed)
 	self:ThrottleSync(2, syncName.charmingPresence)
+	self:ThrottleSync(2, syncName.bishopNoCurse)
+	self:ThrottleSync(2, syncName.voidzone)
 end
 
 function module:OnSetup()
@@ -224,6 +229,15 @@ function module:QueenCastEvent(casterGuid, targetGuid, eventType, spellId, castT
 		self:Sync(syncName.queenCastingSubservience .. " " .. self.queenTarget)
 	elseif spellId == spellIds.charmingpresence and eventType == "CAST" then
 		self:Sync(syncName.charmingPresence)
+	end
+end
+
+function module:KingCastEvent(casterGuid, targetGuid, eventType, spellId, castTime)
+	if spellId == spellIds.blunder and eventType == "CAST" then
+		local voidZoneTarget = UnitName(targetGuid)
+		if voidZoneTarget then
+			self:Sync(syncName.voidzone .. " " .. voidZoneTarget)
+		end
 	end
 end
 
@@ -322,6 +336,8 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		end
 	elseif sync == syncName.bishopNoCurse then
 		self:BishopNeedsCurseOfTongues()
+	elseif sync == syncName.voidzone and rest then
+		self:VoidZoneAlert(rest)
 	end
 end
 
@@ -440,14 +456,17 @@ function module:KingCastFury()
 	self:Bar(L["bar_kingsfury"], timer.kingsfury, icon.kingsfury)
 end
 
-function module:VoidZoneAlert()
-    if not self.db.profile.voidzone then
-        return
-    end
+function module:VoidZoneAlert(player)
+	if not self.db.profile.voidzone then
+		return
+	end
 
-    self:WarningSign(icon.voidzone, timer.voidzone, true, L["msg_voidzone"])
-    self:TriggerEvent("BigWigs_Sound", "VoidZoneMove")
-    SendChatMessage("Void Zone On Me!", "SAY")
+	if player == UnitName("player") then
+		self:Message(L["msg_voidzone"], "Important", nil, "Alarm")
+		self:WarningSign(icon.voidzone, timer.voidzone, true, L["msg_voidzone"])
+		self:Sound("VoidZoneMove")
+		SendChatMessage("Void Zone On Me!", "SAY")
+	end
 end
 
 function module:ScanBishopDebuffs()
@@ -528,6 +547,18 @@ function module:Test()
 			local msg = "You are afflicted by Dark Subservience"
 			module:AfflictionEvent(msg)
 			print("Test: " .. msg)
+		end },
+
+		{ time = 5, func = function()
+			print("Test: Scanning Bishop")
+			local originalName = L["bishop_name"]
+			L["bishop_name"] = UnitName("target")
+
+			-- Run the scan function
+			module:ScanBishopDebuffs()
+
+			-- Restore original name
+			L["bishop_name"] = originalName
 		end },
 
 		{ time = 5, func = function()
@@ -628,13 +659,26 @@ function module:Test()
 			L["bishop_name"] = originalName
 		end },
 
-        -- Test case for Void Zone
-        { time = 34, func = function()
-            print("Test: Simulating Void Zone cast")
-            module:CastEvent(L["trigger_voidzone"])
-        end },
+		-- Add to the events table inside the Test function
+		{ time = 43, func = function()
+			print("Test: King casts Void Zone (Blunder) on player")
+			-- Simulate KingCastEvent with current player as target
+			local _, playerGuid = UnitExists("player")
+			local kingGuid = "king"
+			module:KingCastEvent(kingGuid, playerGuid, "CAST", spellIds.blunder, 0)
+		end },
+
+		-- Add to the events table inside the Test function
+		{ time = 48, func = function()
+			print("Test: King casts Void Zone (Blunder) on raid1")
+			-- Simulate KingCastEvent with current player as target
+			local _, playerGuid = UnitExists("raid1")
+			local kingGuid = "king"
+			module:KingCastEvent(kingGuid, playerGuid, "CAST", spellIds.blunder, 0)
+		end },
+
 		-- Test disengage
-		{ time = 35, func = function()
+		{ time = 53, func = function()
 			print("Test: Disengage")
 			BigWigs:DisableModule("King")
 		end },
