@@ -451,6 +451,23 @@ elseif class == "DRUID" then
 			set = function(v)
 				BigWigsCombatAnnouncement.db.profile.entanglingroots = v
 			end,
+		},		
+		spacer = {
+			type = "header",
+			name = " ",
+			order = 6,
+		},
+		broadcastwhisper = {
+			type = "toggle",
+			name = "Broadcast Whisper",
+			order = 7,
+			desc = "Toggle broadcasting the messages to the Whisper channel.",
+			get = function()
+				return BigWigsCombatAnnouncement.db.profile.broadcastwhisper
+			end,
+			set = function(v)
+				BigWigsCombatAnnouncement.db.profile.broadcastwhisper = v
+			end,
 		},
 	}
 elseif class == "HUNTER" then
