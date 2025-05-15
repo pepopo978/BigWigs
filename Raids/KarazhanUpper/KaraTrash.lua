@@ -217,7 +217,7 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 	elseif sync == syncName.self_destruct then
 		if self.db.profile.self_destruct then
 			self:Sound("RunAway")
-			self:Bar(L.self_destruct, timer.self_destruct, icon.self_destruct)
+			self:Bar(L.bar_self_destruct, timer.self_destruct, icon.self_destruct)
 		end
 	elseif sync == syncName.shackleShatter and rest then
 		self:ShackleShatter(rest)
