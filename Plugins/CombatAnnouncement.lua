@@ -74,7 +74,6 @@ local SpellTranslation = {
 	["growl"] = BS["Growl"],
 	["hibernate"] = BS["Hibernate"],
 	["entanglingroots"] = BS["Entangling Roots"],
-	["wyvernsting"] = BS["Wyvern Sting"],
 	["scattershot"] = BS["Scatter Shot"],
 	["tranquilshot"] = BS["Tranquilizing Shot"],
 	["counterspell"] = BS["Counterspell"],
@@ -107,7 +106,6 @@ local SpellVerbMapping = {
 	["innervate"] = "Innervating",
 	["hibernate"] = "Sleeping",
 	["entanglingroots"] = "Rooting",
-	["wyvernsting"] = "Sleeping",
 	["scattershot"] = "Blinding",
 	["tranquilshot"] = "Taunting",
 	["deathcoil"] = "Fearing",
@@ -177,44 +175,44 @@ local NonTargetableSpells = {
 	psychicscream = true,
 }
 
+-- players voted to make these all default off
 BigWigsCombatAnnouncement.defaultDB = {
 	-- Warrior
-	pummel = true,
-	shieldbash = true,
-	taunt = true,
-	disarm = true,
-	challengingshout = true,
+	pummel = false,
+	shieldbash = false,
+	taunt = false,
+	disarm = false,
+	challengingshout = false,
 	intimidatingshout = false,
-	concussionblow = true,
+	concussionblow = false,
 	-- Rogue
-	kick = true,
-	kidneyshot = true,
-	cheapshot = true,
-	blind = true,
-	gouge = true,
+	kick = false,
+	kidneyshot = false,
+	cheapshot = false,
+	blind = false,
+	gouge = false,
 	-- Druid
-	pounce = true,
-	bash = true,
-	growl = true,
-	hibernate = true,
-	entanglingroots = true,
-	innervate = true,
+	pounce = false,
+	bash = false,
+	growl = false,
+	hibernate = false,
+	entanglingroots = false,
+	innervate = false,
 	-- Hunter
-	wyvernsting = true,
-	scattershot = true,
+	scattershot = false,
 	tranquilshot = false,
 	-- Mage
-	counterspell = true,
+	counterspell = false,
 	-- Paladin
-	hammerofjustice = true,
-	handofreckoning = true,
+	hammerofjustice = false,
+	handofreckoning = false,
 	-- Priest
-	psychicscream = true,
+	psychicscream = false,
 	-- Shaman
 	earthshock = false, -- spams too much if shaman tank
-	earthshakerslam = true,
+	earthshakerslam = false,
 	-- Warlock
-	deathcoil = true,
+	deathcoil = false,
 
 	-- General
 	broadcastsay = true,
@@ -472,18 +470,6 @@ elseif class == "DRUID" then
 	}
 elseif class == "HUNTER" then
 	abilityOptions = {
-		wyvernsting = {
-			type = "toggle",
-			name = BS["Wyvern Sting"],
-			order = 1,
-			desc = string.format(L["Toggle %s display."], BS["Wyvern Sting"]),
-			get = function()
-				return BigWigsCombatAnnouncement.db.profile.wyvernsting
-			end,
-			set = function(v)
-				BigWigsCombatAnnouncement.db.profile.wyvernsting = v
-			end,
-		},
 		scattershot = {
 			type = "toggle",
 			name = BS["Scatter Shot"],

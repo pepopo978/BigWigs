@@ -269,7 +269,7 @@ BigWigs.cmdtable = {
 }
 BigWigs:RegisterChatCommand({ "/bw", "/BigWigs" }, BigWigs.cmdtable)
 BigWigs.debugFrame = ChatFrame1
-BigWigs.revision = 30115
+BigWigs.revision = 30119
 BigWigs.markUnitsWhenNotRaidLeader = false -- too many people marking causes issues, can turn on if needed
 
 function BigWigs:EditLayout()
@@ -1504,5 +1504,46 @@ function BigWigs:AddLoDMenu(zonename)
 			}
 		end
 	end
+end
+
+-- Requires Superwow for GetPlayerBuffID
+function BigWigs:CancelAuraId(spellId)
+	if not GetPlayerBuffID then
+		self:Print("Superwow required for CancelAuraId")
+	end
+
+	local i = 0
+	while true do
+		local buffIndex = GetPlayerBuff(i, "HELPFUL")
+		i = i + 1
+		if buffIndex == -1 then
+			break
+		end
+		local buffId = GetPlayerBuffID(buffIndex)
+		buffId = (buffId < -1) and (buffId + 65536) or buffId
+		if buffId == spellId then
+			CancelPlayerBuff(buffIndex)
+			return true
+		end
+	end
+	return false
+end
+
+function BigWigs:CancelAuraTexture(texture)
+	local i = 0
+	while true do
+		local buffIndex = GetPlayerBuff(i, "HELPFUL")
+		i = i + 1
+		if buffIndex == -1 then
+			break
+		end
+		local buffTexture = GetPlayerBuffTexture(buffIndex)
+		if string.find(buffTexture, texture) then
+			CancelPlayerBuff(buffIndex)
+			return true
+		end
+	end
+
+	return false
 end
 

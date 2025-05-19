@@ -132,7 +132,7 @@ function module:CHAT_MSG_SPELL_AURA_GONE_SELF(msg)
 
 		-- Auto-cancel restoration potion if enabled
 		if self.db.profile.cancelrestopot then
-			self:CancelAura(11359) -- Restoration Potion
+			self:CancelRestoPot()
 		end
 	end
 end
@@ -221,20 +221,15 @@ function module:DoomOfMedivh(count)
 	self:IntervalBar(string.format(L["bar_doom"], count), timer.doomMin, timer.doomMax, icon.doom, true, barColor)
 end
 
-function module:CancelAura(spellId)
-	local i = 0
-	while true do
-		local buffIndex = GetPlayerBuff(i, "HELPFUL")
-		i = i + 1
-		if buffIndex == -1 then
-			break
-		end
-		local buffId = GetPlayerBuffID(buffIndex)
-		buffId = (buffId < -1) and (buffId + 65536) or buffId
-		if buffId == spellId then
+function module:CancelRestoPot()
+	if GetPlayerBuffID then
+		-- use spell id if superwow available to avoid potentially canceling the wrong buff
+		if BigWigs:CancelAuraId(11359) then
 			self:Message(L["resto_pot_cancelling"], "Positive")
-			CancelPlayerBuff(buffIndex)
-			break
+		end
+	else
+		if BigWigs:CancelAuraTexture("Spell_Holy_DispelMagic") then
+			self:Message(L["resto_pot_cancelling"], "Positive")
 		end
 	end
 end
