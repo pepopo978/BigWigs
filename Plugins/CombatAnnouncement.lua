@@ -188,6 +188,7 @@ BigWigsCombatAnnouncement.defaultDB = {
 	challengingshout = true,
 	intimidatingshout = false,
 	concussionblow = true,
+	mockingblow = false,
 	-- Rogue
 	kick = true,
 	kidneyshot = true,
