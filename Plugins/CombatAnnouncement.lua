@@ -726,6 +726,9 @@ local CCspellToVerbMapping = {
 	fear = "Feared",
 	stun = "Stunned", 
 	root = "Rooted",
+	sleep = "Asleep",
+	polymorph = "Polymorphed",
+	disarm = "Disarmed",
 }
 
 BigWigsCombatAnnouncement.revision = 20007
@@ -740,6 +743,7 @@ function BigWigsCombatAnnouncement:DebuffReceived(msg)
 	local spellName = string.match(msg, "You are afflicted by (.+)%.$")
 	-- DEFAULT_CHAT_FRAME:AddMessage("DEBUG: spellname " .. spellName)
 	-- UnitXP("debug", "breakpoint");
+	--TODO add some settings enable / disable
 	if spellName and CrowdControllEffects[spellName] then
 		local spellType = CrowdControllEffects[spellName].cctype
 		local verbalisedCCType = CCspellToVerbMapping[spellType]
