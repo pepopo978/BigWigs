@@ -644,16 +644,117 @@ BigWigsCombatAnnouncement.consoleOptions = {
 	args = abilityOptions
 }
 
+-------------------------------
+--Crowd Controll Announcement--
+-------------------------------
+
+local CrowdControllEffects = {
+    -- Stratholme
+    ["Silence"] = {
+        cctype = "silence",
+        spellSchool = "magic",
+        area = "stratholme",
+    },
+    ["Terrifying Howl"] = {
+        cctype = "fear",
+        area = "stratholme",
+    },
+    ["Encasing Webs"] = {
+        cctype = "root",
+        area = "stratholme",
+    },
+    ["Deafening Screech"] = {
+        cctype = "silence",
+        area = "stratholme",
+    },
+    ["Knockout"] = {
+        cctype = "stun",
+        area = "stratholme",
+    },
+
+    -- Karazhan 10
+    ["Phantom Scream"] = {
+        cctype = "fear",
+        area = "kara10",
+    },
+
+    -- Zul'Gurub (zg)
+    ["Axe Flurry"] = {
+        cctype = "stun",
+        area = "zg",
+    },
+    ["Web Spin"] = {
+        cctype = "stun",
+        area = "zg",
+    },
+    ["Enveloping Webs"] = {
+        cctype = "root", 
+        area = "zg",
+    },
+    ["Sonic Burst"] = {
+        cctype = "silence",
+        area = "zg",
+    },
+    ["Intimidating Roar"] = {
+        cctype = "fear",
+        area = "zg",
+    },
+
+    -- Lower Blackrock Spire (lbrs)
+    ["War Stomp"] = {
+        cctype = "stun",
+        area = "lbrs",
+    },
+    ["Crystallize"] = {
+        cctype = "stun", 
+        area = "lbrs",
+    },
+
+    -- Wailing Caverns (wc)
+    ["Terrify"] = {
+        cctype = "fear",
+        area = "wc",
+    },
+    ["Sleep"] = {
+        cctype = "sleep",
+        area = "wc",
+    },
+}
+
+local CCspellToVerbMapping = {
+	silence = "Silenced",
+	fear = "Feared",
+	stun = "Stunned", 
+	root = "Rooted",
+}
+
 BigWigsCombatAnnouncement.revision = 20007
 BigWigsCombatAnnouncement.external = true
 
 ------------------------------
---      Initialization      --
-------------------------------
-
-------------------------------
 --         Events           --
 ------------------------------
+
+function BigWigsCombatAnnouncement:DebuffReceived(msg)
+	-- DEFAULT_CHAT_FRAME:AddMessage("DEBUG msg : " .. msg)
+	local spellName = string.match(msg, "You are afflicted by (.+)%.$")
+	-- DEFAULT_CHAT_FRAME:AddMessage("DEBUG: spellname " .. spellName)
+	-- UnitXP("debug", "breakpoint");
+	if spellName and CrowdControllEffects[spellName] then
+		local spellType = CrowdControllEffects[spellName].cctype
+		local verbalisedCCType = CCspellToVerbMapping[spellType]
+		local annoucmentString = "I am " .. (verbalisedCCType) --TODO add timer
+		--TODO add some decurse me msg and schoolType
+		BigWigsCombatAnnouncement:AnnounceAbility(annoucmentString)
+	end
+end
+
+function BigWigsCombatAnnouncement:TestDebuffReceived()
+    -- Simulate a debuff message
+    local testMsg = "You are afflicted by Silence."
+    self:DebuffReceived(testMsg)
+end
+
 
 function BigWigsCombatAnnouncement:CastEvent(id, name, rank, fullname, caststart, caststop, castduration, castdelay, activetarget)
 	if not BigWigsCombatAnnouncement:IsBroadcasting() then
@@ -677,6 +778,7 @@ end
 
 function BigWigsCombatAnnouncement:OnEnable()
 	self:RegisterEvent("SpellStatusV2_SpellCastInstant", "CastEvent")
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "DebuffReceived")
 
 	if class == "DRUID" then
 		self:RegisterEvent("SpellStatusV2_SpellCastCastingFinish", "CastEvent")
