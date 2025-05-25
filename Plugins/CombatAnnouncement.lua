@@ -649,6 +649,93 @@ BigWigsCombatAnnouncement.consoleOptions = {
 -------------------------------
 
 local CrowdControllEffects = {
+	-- PvP effects
+	["Blind"] = {
+        cctype = "blind",
+        dispelType = "", --Magic, Curse, Disease, Magic
+		dispellable = true,
+        area = "any",
+    },
+    ["Sap"] = {
+        cctype = "sleep",
+        spellSchool = "",
+        area = "any",
+    },
+    ["Kidney Shot"] = {
+        cctype = "stun",
+        spellSchool = "",
+        area = "any",
+    },
+    ["Freezing Trap"] = {
+        cctype = "root",
+        spellSchool = "",
+        area = "any",
+    },
+    ["Fear"] = {
+        cctype = "fear",
+        spellSchool = "",
+        area = "any",
+    },
+    ["Intimidating Shout"] = {
+        cctype = "fear",
+        spellSchool = "",
+        area = "any",
+    },
+    ["Psychic Scream"] = {
+        cctype = "fear",
+        spellSchool = "",
+        area = "any",
+    },
+    ["Sleep"] = {
+        cctype = "sleep",
+        spellSchool = "",
+        area = "any",
+    },
+    ["Wyvern Sting"] = {
+        cctype = "sleep",
+        spellSchool = "",
+        area = "any",
+    },
+    ["Hibernate"] = {
+        cctype = "sleep",
+        spellSchool = "",
+        area = "any",
+    },
+    ["Mind Control"] = {
+        cctype = "mindcontrol",
+        spellSchool = "",
+        area = "any",
+    },
+	["Polymorph"] = {
+        cctype = "polymorph",
+        spellSchool = "",
+        area = "any",
+    },
+	["Disarm"] = {
+        cctype = "disarm",
+        spellSchool = "",
+        area = "any",
+    },
+	["Hammer of Justice"] = {
+        cctype = "stun",
+        spellSchool = "",
+        area = "any",
+    },
+	["Seduce"] = {
+        cctype = "blind",
+        spellSchool = "",
+        area = "any",
+    },
+	["Death Coil"] = {
+        cctype = "fear",
+        spellSchool = "",
+        area = "any",
+    },
+	["Frost Nova"] = {
+        cctype = "root",
+        spellSchool = "",
+        area = "any",
+    },
     -- Stratholme
     ["Silence"] = {
         cctype = "silence",
@@ -671,10 +758,15 @@ local CrowdControllEffects = {
         cctype = "stun",
         area = "stratholme",
     },
+	["Hex"] = {
+        cctype = "polymorph",
+        spellSchool = "",
+        area = "any",
+    },
 
     -- Karazhan 10
     ["Phantom Scream"] = {
-        cctype = "fear",
+        cctype = "silence",
         area = "kara10",
     },
 
@@ -715,9 +807,26 @@ local CrowdControllEffects = {
         cctype = "fear",
         area = "wc",
     },
-    ["Sleep"] = {
-        cctype = "sleep",
-        area = "wc",
+	-- Molten Core (mc)
+	["Panic"] = {
+        cctype = "fear",
+        area = "molten core",
+    },
+    ["Fist of Ragnaros"] = {
+        cctype = "stun",
+        area = "molten core",
+    },
+    ["Ground Stomp"] = {
+        cctype = "stun",
+        area = "molten core",
+    },
+    ["Pyroclast Barrage"] = {
+        cctype = "stun", -- Not a CC, but included for completeness
+        area = "molten core",
+    },
+    ["Ancient Despair"] = {
+        cctype = "blind",
+        area = "molten core",
     },
 }
 
@@ -729,6 +838,8 @@ local CCspellToVerbMapping = {
 	sleep = "Asleep",
 	polymorph = "Polymorphed",
 	disarm = "Disarmed",
+	blind = "Blinded",
+	mindcontrol = "Mind Controlled",
 }
 
 BigWigsCombatAnnouncement.revision = 20007
@@ -747,18 +858,26 @@ function BigWigsCombatAnnouncement:DebuffReceived(msg)
 	if spellName and CrowdControllEffects[spellName] then
 		local spellType = CrowdControllEffects[spellName].cctype
 		local verbalisedCCType = CCspellToVerbMapping[spellType]
-		local annoucmentString = "I am " .. (verbalisedCCType) --TODO add timer
+		local annoucmentString = "I am " .. (verbalisedCCType) .. " (" .. spellType .. ")"--TODO add timer
 		--TODO add some decurse me msg and schoolType
 		BigWigsCombatAnnouncement:AnnounceAbility(annoucmentString)
 	end
 end
-
+-------------------------------------------------
+-- Simulate a debuff message invoked my macros --
+-- Delete it afterwards      --------------------
+-- /run BigWigsCombatAnnouncement:TestDebuffReceived() --
+-------------------------------------------------
 function BigWigsCombatAnnouncement:TestDebuffReceived()
-    -- Simulate a debuff message
     local testMsg = "You are afflicted by Silence."
     self:DebuffReceived(testMsg)
 end
 
+-- timeleft = GetPlayerBuffTimeLeft(this.bid, this.btype)
+-- buff.bid = GetPlayerBuff(PLAYER_BUFF_START_ID+buff.id, buff.btype)
+--/run GetPlayerBuffTimeLeft(GetPlayerBuff(4, 0))
+--/GetPlayerBuffName
+--/run local i=GetPlayerBuff(1,0) DEFAULT_CHAT_FRAME:AddMessage(GetPlayerBuffName(i))
 
 function BigWigsCombatAnnouncement:CastEvent(id, name, rank, fullname, caststart, caststop, castduration, castdelay, activetarget)
 	if not BigWigsCombatAnnouncement:IsBroadcasting() then
