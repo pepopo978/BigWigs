@@ -763,13 +763,21 @@ local CrowdControllEffects = {
         spellSchool = "",
         area = "any",
     },
+	["Ice Tomb"] = {
+        cctype = "polymorph",
+        spellSchool = "",
+        area = "any",
+    },
 
     -- Karazhan 10
     ["Phantom Scream"] = {
         cctype = "silence",
         area = "kara10",
     },
-
+    ["Venom Influx"] = {
+        cctype = "stun",
+        area = "kara10",
+    },
     -- Zul'Gurub (zg)
     ["Axe Flurry"] = {
         cctype = "stun",
@@ -821,13 +829,43 @@ local CrowdControllEffects = {
         area = "molten core",
     },
     ["Pyroclast Barrage"] = {
-        cctype = "stun", -- Not a CC, but included for completeness
+        cctype = "stun",
         area = "molten core",
     },
     ["Ancient Despair"] = {
         cctype = "blind",
         area = "molten core",
     },
+	-- Blackrock deeps
+	["Hand of Thaurissan"] = {
+        cctype = "stun",
+        area = "",
+    },
+	["Banish"] = {
+        cctype = "stun",
+        area = "",
+    },
+	["Backhand"] = {
+        cctype = "stun",
+        area = "",
+    },
+	["Ground Tremor"] = {
+        cctype = "stun",
+        area = "",
+    },
+	["Bellowing Roar"] = {
+		cctype = "fear",
+		area = "",
+	},
+	-- idk
+	["Petrify"] = {
+		cctype = "stun",
+		area = "",
+	},
+	["Knockdown"] = {
+		cctype = "stun",
+		area = "",
+	},
 }
 
 local CCspellToVerbMapping = {
@@ -858,7 +896,7 @@ function BigWigsCombatAnnouncement:DebuffReceived(msg)
 	if spellName and CrowdControllEffects[spellName] then
 		local spellType = CrowdControllEffects[spellName].cctype
 		local verbalisedCCType = CCspellToVerbMapping[spellType]
-		local annoucmentString = "I am " .. (verbalisedCCType) .. " (" .. spellType .. ")"--TODO add timer
+		local annoucmentString = "I am " .. (verbalisedCCType) .. " (" .. spellName .. ")"--TODO add timer
 		--TODO add some decurse me msg and schoolType
 		BigWigsCombatAnnouncement:AnnounceAbility(annoucmentString)
 	end
@@ -878,6 +916,7 @@ end
 --/run GetPlayerBuffTimeLeft(GetPlayerBuff(4, 0))
 --/GetPlayerBuffName
 --/run local i=GetPlayerBuff(1,0) DEFAULT_CHAT_FRAME:AddMessage(GetPlayerBuffName(i))
+--UnitXP("debug", "breakpoint");
 
 function BigWigsCombatAnnouncement:CastEvent(id, name, rank, fullname, caststart, caststop, castduration, castdelay, activetarget)
 	if not BigWigsCombatAnnouncement:IsBroadcasting() then
@@ -932,7 +971,7 @@ function BigWigsCombatAnnouncement:AnnounceAbility(msg, target, spellName)
 		return
 	end
 
-	if self.db.profile.broadcastsay and (GetNumPartyMembers("player") > 0 or UnitInRaid("player")) then
+	if self.db.profile.broadcastsay and (GetNumPartyMembers("player") >= 0 or UnitInRaid("player")) then
 		SendChatMessage(msg, "SAY")
 	end
 	if self.db.profile.broadcastparty and GetNumPartyMembers("player") > 0 then
