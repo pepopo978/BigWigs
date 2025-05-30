@@ -39,9 +39,9 @@ L:RegisterTranslations("enUS", function()
 		bar_overflowingHatredCast = "Overflowing Hatred",
 		msg_overflowingHatred = "Overflowing Hatred casting - Hide!",
 
-		msg_phaseShiftedYou = "Phase Shift on YOU - KILL SHADES!",
+		msg_phaseShiftedYou = "Phase Shift on YOU - KILL NetherWalkers!",
 		msg_phaseShiftedOther = "Phase Shift on %s!",
-		bar_phaseShiftedExpires = "Phase Shift - KILL SHADES",
+		bar_phaseShiftedExpires = "Phase Shift - KILL NetherWalkers",
 	}
 end)
 
@@ -137,7 +137,7 @@ function module:PhaseShifted(player)
 	if self.db.profile.phaseshifted then
 		if player == UnitName("player") then
 			self:Message(L["msg_phaseShiftedYou"], "Important", true, "Alarm")
-			self:WarningSign(icon.phaseShifted, 5, true, "KILL SHADES")
+			self:WarningSign(icon.phaseShifted, 5, true, "KILL NetherWalkers")
 			-- Add personal expiration bar with yellow color
 			self:Bar(L["bar_phaseShiftedExpires"], timer.phaseShiftedDuration, icon.phaseShifted, true, "yellow")
 		else
