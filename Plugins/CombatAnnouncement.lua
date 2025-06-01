@@ -645,16 +645,279 @@ BigWigsCombatAnnouncement.consoleOptions = {
 	args = abilityOptions
 }
 
+-------------------------------
+--Crowd Controll Announcement--
+-------------------------------
+
+local CrowdControllEffects = {
+	-- PvP effects
+	["Blind"] = {
+        cctype = "blind",
+        dispelType = "", --Magic, Curse, Disease, Magic
+		dispellable = true,
+        area = "any",
+    },
+    ["Sap"] = {
+        cctype = "sleep",
+        spellSchool = "",
+        area = "any",
+    },
+    ["Kidney Shot"] = {
+        cctype = "stun",
+        spellSchool = "",
+        area = "any",
+    },
+    ["Freezing Trap"] = {
+        cctype = "root",
+        spellSchool = "",
+        area = "any",
+    },
+    ["Fear"] = {
+        cctype = "fear",
+        spellSchool = "",
+        area = "any",
+    },
+    ["Intimidating Shout"] = {
+        cctype = "fear",
+        spellSchool = "",
+        area = "any",
+    },
+    ["Psychic Scream"] = {
+        cctype = "fear",
+        spellSchool = "",
+        area = "any",
+    },
+    ["Sleep"] = {
+        cctype = "sleep",
+        spellSchool = "",
+        area = "any",
+    },
+    ["Wyvern Sting"] = {
+        cctype = "sleep",
+        spellSchool = "",
+        area = "any",
+    },
+    ["Hibernate"] = {
+        cctype = "sleep",
+        spellSchool = "",
+        area = "any",
+    },
+    ["Mind Control"] = {
+        cctype = "mindcontrol",
+        spellSchool = "",
+        area = "any",
+    },
+	["Polymorph"] = {
+        cctype = "polymorph",
+        spellSchool = "",
+        area = "any",
+    },
+	["Disarm"] = {
+        cctype = "disarm",
+        spellSchool = "",
+        area = "any",
+    },
+	["Hammer of Justice"] = {
+        cctype = "stun",
+        spellSchool = "",
+        area = "any",
+    },
+	["Seduce"] = {
+        cctype = "blind",
+        spellSchool = "",
+        area = "any",
+    },
+	["Death Coil"] = {
+        cctype = "fear",
+        spellSchool = "",
+        area = "any",
+    },
+	["Frost Nova"] = {
+        cctype = "root",
+        spellSchool = "",
+        area = "any",
+    },
+    -- Stratholme
+    ["Silence"] = {
+        cctype = "silence",
+        spellSchool = "magic",
+        area = "stratholme",
+    },
+    ["Terrifying Howl"] = {
+        cctype = "fear",
+        area = "stratholme",
+    },
+    ["Encasing Webs"] = {
+        cctype = "root",
+        area = "stratholme",
+    },
+    ["Deafening Screech"] = {
+        cctype = "silence",
+        area = "stratholme",
+    },
+    ["Knockout"] = {
+        cctype = "stun",
+        area = "stratholme",
+    },
+	["Hex"] = {
+        cctype = "polymorph",
+        spellSchool = "",
+        area = "any",
+    },
+	["Ice Tomb"] = {
+        cctype = "polymorph",
+        spellSchool = "",
+        area = "any",
+    },
+
+    -- Karazhan 10
+    ["Phantom Scream"] = {
+        cctype = "silence",
+        area = "kara10",
+    },
+    ["Venom Influx"] = {
+        cctype = "stun",
+        area = "kara10",
+    },
+    -- Zul'Gurub (zg)
+    ["Axe Flurry"] = {
+        cctype = "stun",
+        area = "zg",
+    },
+    ["Web Spin"] = {
+        cctype = "stun",
+        area = "zg",
+    },
+    ["Enveloping Webs"] = {
+        cctype = "root", 
+        area = "zg",
+    },
+    ["Sonic Burst"] = {
+        cctype = "silence",
+        area = "zg",
+    },
+    ["Intimidating Roar"] = {
+        cctype = "fear",
+        area = "zg",
+    },
+
+    -- Lower Blackrock Spire (lbrs)
+    ["War Stomp"] = {
+        cctype = "stun",
+        area = "lbrs",
+    },
+    ["Crystallize"] = {
+        cctype = "stun", 
+        area = "lbrs",
+    },
+
+    -- Wailing Caverns (wc)
+    ["Terrify"] = {
+        cctype = "fear",
+        area = "wc",
+    },
+	-- Molten Core (mc)
+	["Panic"] = {
+        cctype = "fear",
+        area = "molten core",
+    },
+    ["Fist of Ragnaros"] = {
+        cctype = "stun",
+        area = "molten core",
+    },
+    ["Ground Stomp"] = {
+        cctype = "stun",
+        area = "molten core",
+    },
+    ["Pyroclast Barrage"] = {
+        cctype = "stun",
+        area = "molten core",
+    },
+    ["Ancient Despair"] = {
+        cctype = "blind",
+        area = "molten core",
+    },
+	-- Blackrock deeps
+	["Hand of Thaurissan"] = {
+        cctype = "stun",
+        area = "",
+    },
+	["Banish"] = {
+        cctype = "stun",
+        area = "",
+    },
+	["Backhand"] = {
+        cctype = "stun",
+        area = "",
+    },
+	["Ground Tremor"] = {
+        cctype = "stun",
+        area = "",
+    },
+	["Bellowing Roar"] = {
+		cctype = "fear",
+		area = "",
+	},
+	-- idk
+	["Petrify"] = {
+		cctype = "stun",
+		area = "",
+	},
+	["Knockdown"] = {
+		cctype = "stun",
+		area = "",
+	},
+}
+
+local CCspellToVerbMapping = {
+	silence = "Silenced",
+	fear = "Feared",
+	stun = "Stunned", 
+	root = "Rooted",
+	sleep = "Asleep",
+	polymorph = "Polymorphed",
+	disarm = "Disarmed",
+	blind = "Blinded",
+	mindcontrol = "Mind Controlled",
+}
+
 BigWigsCombatAnnouncement.revision = 20007
 BigWigsCombatAnnouncement.external = true
 
 ------------------------------
---      Initialization      --
-------------------------------
-
-------------------------------
 --         Events           --
 ------------------------------
+
+function BigWigsCombatAnnouncement:DebuffReceived(msg)
+	-- DEFAULT_CHAT_FRAME:AddMessage("DEBUG msg : " .. msg)
+	local spellName = string.match(msg, "You are afflicted by (.+)%.$")
+	-- DEFAULT_CHAT_FRAME:AddMessage("DEBUG: spellname " .. spellName)
+	-- UnitXP("debug", "breakpoint");
+	--TODO add some settings enable / disable
+	if spellName and CrowdControllEffects[spellName] then
+		local spellType = CrowdControllEffects[spellName].cctype
+		local verbalisedCCType = CCspellToVerbMapping[spellType]
+		local annoucmentString = "I am " .. (verbalisedCCType) .. " (" .. spellName .. ")"--TODO add timer
+		--TODO add some decurse me msg and schoolType
+		BigWigsCombatAnnouncement:AnnounceAbility(annoucmentString)
+	end
+end
+-------------------------------------------------
+-- Simulate a debuff message invoked my macros --
+-- Delete it afterwards      --------------------
+-- /run BigWigsCombatAnnouncement:TestDebuffReceived() --
+-------------------------------------------------
+function BigWigsCombatAnnouncement:TestDebuffReceived()
+    local testMsg = "You are afflicted by Silence."
+    self:DebuffReceived(testMsg)
+end
+
+-- timeleft = GetPlayerBuffTimeLeft(this.bid, this.btype)
+-- buff.bid = GetPlayerBuff(PLAYER_BUFF_START_ID+buff.id, buff.btype)
+--/run GetPlayerBuffTimeLeft(GetPlayerBuff(4, 0))
+--/GetPlayerBuffName
+--/run local i=GetPlayerBuff(1,0) DEFAULT_CHAT_FRAME:AddMessage(GetPlayerBuffName(i))
+--UnitXP("debug", "breakpoint");
 
 function BigWigsCombatAnnouncement:CastEvent(id, name, rank, fullname, caststart, caststop, castduration, castdelay, activetarget)
 	if not BigWigsCombatAnnouncement:IsBroadcasting() then
@@ -678,6 +941,7 @@ end
 
 function BigWigsCombatAnnouncement:OnEnable()
 	self:RegisterEvent("SpellStatusV2_SpellCastInstant", "CastEvent")
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "DebuffReceived")
 
 	if class == "DRUID" then
 		self:RegisterEvent("SpellStatusV2_SpellCastCastingFinish", "CastEvent")
@@ -708,7 +972,7 @@ function BigWigsCombatAnnouncement:AnnounceAbility(msg, target, spellName)
 		return
 	end
 
-	if self.db.profile.broadcastsay and (GetNumPartyMembers("player") > 0 or UnitInRaid("player")) then
+	if self.db.profile.broadcastsay and (GetNumPartyMembers("player") >= 0 or UnitInRaid("player")) then
 		SendChatMessage(msg, "SAY")
 	end
 	if self.db.profile.broadcastparty and GetNumPartyMembers("player") > 0 then
