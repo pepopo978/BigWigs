@@ -2,7 +2,7 @@ local module, L = BigWigs:ModuleDeclaration("Mephistroth", "Karazhan")
 
 module.revision = 30002
 module.enabletrigger = module.translatedName
-module.toggleoptions = { "shacklescast", "shacklesdebuff", "shackleshatter", "shards", "doomofoutland", "doommark", "sleepparalysis", "sleepparalysismark", "terror", "rainofoutland", -1, "bosskill", "debug_superwow" }
+module.toggleoptions = { "shacklescast", "shacklesdebuff", "shackleshatter", "shards", "doomofoutland", "doommark", "sleepparalysis", "sleepparalysismark", "terror", "rainofoutland", "burninghatred", -1, "bosskill", "debug_superwow" }
 module.zonename = {
     AceLibrary("AceLocale-2.2"):new("BigWigs")["Tower of Karazhan"],
     AceLibrary("Babble-Zone-2.2")["Tower of Karazhan"],
@@ -22,6 +22,7 @@ module.defaultDB = {
     sleepparalysismark = true,
     terror = true,
     rainofoutland = true,
+    burninghatred = true,
     bosskill = true,
     debug_superwow = false,
 }
@@ -71,6 +72,10 @@ L:RegisterTranslations("enUS", function()
         rainofoutland_name = "Rain of Outland Alert",
         rainofoutland_desc = "Warn for Rain of Outland.",
 
+        burninghatred_cmd = "burninghatred",
+        burninghatred_name = "Burning Hatred Alert",
+        burninghatred_desc = "Warn for Burning Hatred.",
+
         debug_superwow_cmd = "debug_superwow",
         debug_superwow_name = "Enable Superwow Mode",
         debug_superwow_desc = "Use superwow API to handle shackle cast, shard cast, shard channel, etc.",
@@ -108,6 +113,9 @@ L:RegisterTranslations("enUS", function()
         trigger_doomDebuffOther = "(.+) is afflicted by Doom of Outland", -- CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE, CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
         trigger_doomDebuffFade = "Doom of Outland fades from (.+).", -- CHAT_MSG_SPELL_AURA_GONE_SELF, CHAT_MSG_SPELL_AURA_GONE_PARTY, CHAT_MSG_SPELL_AURA_GONE_OTHER
 
+        trigger_burningHatred = "Mephistroth gains Burning Hatred",
+        trigger_burningHatredEnd = "Burning Hatred fades from Mephistroth",
+
         trigger_bossDeath = "Mephistroth dies", -- CHAT_MSG_COMBAT_HOSTILE_DEATH
 
         -- Messages & Bars
@@ -144,6 +152,11 @@ L:RegisterTranslations("enUS", function()
         bar_rainOfOutland = "Rain of Outland",
         msg_rainOfOutland = "Rain of Outland! Go kill adds!",
         msg_rainOfOutlandEnd = "Rain of Outland ended.",
+
+        bar_burningHatred = "Burning Hatred",
+        bar_burningHatredCD = "Burning Hatred Cooldown",
+        msg_burningHatred = "Burning Hatred! Avoid AoE damage!",
+        msg_burningHatredEnd = "Burning Hatred ended",
     }
 end)
 
@@ -163,6 +176,9 @@ local timer = {
 
     doomDuration = 8,
     rainOfOutland = 25,
+
+    burningHatredDuration = 8,
+    burningHatredCD = {30, 60},
 }
 
 local icon = {
@@ -174,6 +190,7 @@ local icon = {
     terror = "spell_shadow_deathcoil",
     sleepParalysis = "inv_misc_eye_01",
     rainOfOutland = "spell_shadow_rainoffire",
+    burningHatred = "spell_fire_incinerate",
 }
 
 local color = {
@@ -186,6 +203,7 @@ local color = {
     sleepParalysis = "Blue",
     terror = "Yellow",
     rainOfOutland = "Red",
+    burningHatred = "Red",
 }
 
 local syncName = {
@@ -205,6 +223,8 @@ local syncName = {
     sleepParalysisFade = "MephistrothSleepParalysisFade" .. module.revision,
     rainOfOutland = "MephistrothRainOfOutland" .. module.revision,
     rainOfOutlandEnd = "MephistrothRainOfOutlandEnd" .. module.revision,
+    burningHatred = "MephistrothBurningHatred" .. module.revision,
+    burningHatredEnd = "MephistrothBurningHatredEnd" .. module.revision,
 }
 
 local fail_shards = 0
@@ -269,6 +289,8 @@ function module:OnEnable()
     self:ThrottleSync(2, syncName.sleepParalysisFade)
     self:ThrottleSync(5, syncName.rainOfOutland)
     self:ThrottleSync(5, syncName.rainOfOutlandEnd)
+    self:ThrottleSync(3, syncName.burningHatred)
+    self:ThrottleSync(3, syncName.burningHatredEnd)
 end
 
 function module:OnEngage()
@@ -293,6 +315,7 @@ function module:OnDisengage()
     self:RemoveBar(L["bar_shardsChannel"])
     self:TriggerEvent("BigWigs_StopCounterBar", self, L["bar_shardsCounter"])
     self:RemoveBar(L["bar_terrorCD"])
+    self:RemoveBar(L["bar_burningHatredCD"])
 end
 
 function module:CheckBossHP()
@@ -465,6 +488,13 @@ function module:Event(msg)
          shardDeathsSelfCount = 0
         self:Sync(syncName.shardsEnrage)
     end
+
+    -- burning hatred
+    if string.find(msg, L["trigger_burningHatred"]) then
+        self:Sync(syncName.burningHatred)
+    elseif string.find(msg, L["trigger_burningHatredEnd"]) then
+        self:Sync(syncName.burningHatredEnd)
+    end
 end
 
 function module:BigWigs_RecvSync(sync, rest, nick)
@@ -502,6 +532,10 @@ function module:BigWigs_RecvSync(sync, rest, nick)
         self:RainOfOutland()
     elseif sync == syncName.rainOfOutlandEnd and self.db.profile.rainofoutland then
         self:RainOfOutlandEnd()
+    elseif sync == syncName.burningHatred and self.db.profile.burninghatred then
+        self:BurningHatred()
+    elseif sync == syncName.burningHatredEnd and self.db.profile.burninghatred then
+        self:BurningHatredEnd()
     end
 end
 
@@ -607,7 +641,7 @@ end
 function module:DoomDebuff(player)
     if not self.db.profile.doomofoutland then return end
     if player == UnitName("player") then
-        self:Message(L["msg_doomDebuffYou"], "Personal", false, nil, false)
+        self:Message(L["msg_doomDebuffYou"], "Alert", false, nil, false)
     else
         self:Message(string.format(L["msg_doomDebuffOther"], player), "Urgent", false, nil, false)
     end
@@ -628,7 +662,7 @@ end
 function module:SleepParalysis(player)
     if not self.db.profile.sleepparalysis then return end
     if player == UnitName("player") then
-        self:Message(L["msg_sleepParalysisYou"], "Personal", false, nil, false)
+        self:Message(L["msg_sleepParalysisYou"], "Alert", false, nil, false)
     else
         self:Message(string.format(L["msg_sleepParalysisOther"], player), "Urgent", false, nil, false)
     end
@@ -665,6 +699,21 @@ function module:RainOfOutlandEnd()
     if not self.db.profile.rainofoutland then return end
     self:Message(L["msg_rainOfOutlandEnd"], "Positive", false, nil, false)
     self:RemoveBar(L["bar_rainOfOutland"])
+end
+
+function module:BurningHatred()
+    if not self.db.profile.burninghatred then return end
+    self:Message(L["msg_burningHatred"], "Alert", false, nil, false)
+    self:Sound("Alert")
+    self:RemoveBar(L["bar_burningHatredCD"])
+    self:Bar(L["bar_burningHatred"], timer.burningHatredDuration, icon.burningHatred, true, color.burningHatred)
+    self:DelayedIntervalBar(timer.burningHatredDuration, L["bar_burningHatredCD"], timer.burningHatredCD[1]-timer.burningHatredDuration, timer.burningHatredCD[2]-timer.burningHatredDuration, icon.burningHatred, true, color.burningHatred)
+end
+
+function module:BurningHatredEnd()
+    if not self.db.profile.burninghatred then return end
+    self:Message(L["msg_burningHatredEnd"], "Positive", false, nil, false)
+    self:RemoveBar(L["bar_burningHatred"])
 end
 
 --------------------------------------------------------------------------------
@@ -806,6 +855,9 @@ if false then
 
 /script BigWigs:TriggerEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Doom of Outland fades from you.") 
 /script BigWigs:TriggerEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", "Doom of Outland fades from Tbcisbest.")
+
+/script BigWigs:TriggerEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "Mephistroth gains Burning Hatred (1).")
+/script BigWigs:TriggerEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "Burning Hatred fades from Mephistroth.")
 
 /script BigWigs:TriggerEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH", "Mephistroth dies.")
 
