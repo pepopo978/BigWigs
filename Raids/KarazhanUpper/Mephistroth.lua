@@ -54,7 +54,7 @@ L:RegisterTranslations("enUS", function()
 
         doommark_cmd = "doommark",
         doommark_name = "Mark Doom Target",
-        doommark_desc = "Mark Doomed players with Skull.",
+        doommark_desc = "Mark Doomed players with Triangle.",
 
         sleepparalysis_cmd = "sleepparalysis",
         sleepparalysis_name = "Sleep Paralysis Alert",
@@ -208,9 +208,7 @@ local color = {
 
 local syncName = {
     shacklesCast = "MephistrothShacklesCast" .. module.revision,
-    shacklesDebuff = "MephistrothShacklesDebuff" .. module.revision,
     shackleShatter = "MephistrothShackleShatter" .. module.revision,
-    shacklesFade = "MephistrothShacklesFade" .. module.revision,
     shards = "MephistrothShardsOfHellfury" .. module.revision,
     shardsChannel = "MephistrothShardsOfHellfuryChannel" .. module.revision,
     shardsChannelEnd = "MephistrothShardsOfHellfuryChannelEnd" .. module.revision,
@@ -274,9 +272,7 @@ function module:OnEnable()
     self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH") -- Shards death, Boss death
 
     self:ThrottleSync(2, syncName.shacklesCast)
-    self:ThrottleSync(2, syncName.shacklesDebuff)
     self:ThrottleSync(2, syncName.shackleShatter)
-    self:ThrottleSync(2, syncName.shacklesFade)
     self:ThrottleSync(2, syncName.shards)
     self:ThrottleSync(5, syncName.shardsChannel)
     self:ThrottleSync(5, syncName.shardsChannelEnd)
@@ -422,18 +418,18 @@ function module:Event(msg)
     end
 
     -- shackle debuff
-    if string.find(msg, L["trigger_shacklesDebuffYou"]) then
-        self:Sync(syncName.shacklesDebuff .. " " .. UnitName("player"))
-    elseif string.find(msg, L["trigger_shacklesDebuffOther"]) then
-        local _, _, player = string.find(msg, L["trigger_shacklesDebuffOther"])
-        self:Sync(syncName.shacklesDebuff .. " " .. player)
+    if string.find(msg, L["trigger_shacklesDebuffYou"]) and self.db.profile.shacklesdebuff then
+        self:Message(L["msg_shacklesDebuffYou"], "Personal", false, nil, false)
+        self:WarningSign(icon.shackles, timer.shacklesDebuff + 0.3, true, L["msg_shacklesDebuffYou"])
+        self:Sound("Alarm")
+        self:Bar(string.format(L["bar_shacklesDebuff"]), timer.shacklesDebuff + 0.3, icon.shackles, true, color.shacklesDebuff)
     end
 
     -- shackles fade
     local _, _, player = string.find(msg, L["trigger_shacklesFade"])
-    if player then
-        player = player == "you" and UnitName("player") or player
-        self:Sync(syncName.shacklesFade .. " " .. player)
+    if player and player == "you" and self.db.profile.shacklesdebuff then
+        self:RemoveBar(L["bar_shacklesDebuff"])
+        self:RemoveWarningSign(icon.shackles)
     end
 
     -- doom of outland
@@ -501,10 +497,6 @@ function module:BigWigs_RecvSync(sync, rest, nick)
     if sync == syncName.shacklesCast then
         local castTime = tonumber(rest) or timer.shacklesCast
         self:ShacklesCast(castTime)
-    elseif sync == syncName.shacklesDebuff and rest then
-        self:ShacklesDebuff(rest)
-    elseif sync == syncName.shacklesFade and rest then
-        self:ShacklesFade(rest)
     elseif sync == syncName.shackleShatter and rest then
         self:ShackleShatter(rest)
     elseif sync == syncName.shards then
@@ -548,24 +540,6 @@ function module:ShacklesCast(castTime)
     self:RemoveBar(L["bar_shacklesCD"])
     self:Bar(L["bar_shacklesCast"], dur, icon.shackles, true, color.shacklesCast)
     self:DelayedIntervalBar(dur, L["bar_shacklesCD"], timer.shacklesCD[1]-timer.shacklesCast, timer.shacklesCD[2]-timer.shacklesCast, icon.shackles, true, color.shacklesCast)
-end
-
-function module:ShacklesDebuff(player)
-    if not self.db.profile.shacklesdebuff then return end
-    if player == UnitName("player") then
-        self:Message(L["msg_shacklesDebuffYou"], "Personal", false, nil, false)
-        self:WarningSign(icon.shackles, timer.shacklesDebuff + 0.3, true, L["msg_shacklesDebuffYou"])
-        self:Sound("Alarm")
-        self:Bar(string.format(L["bar_shacklesDebuff"]), timer.shacklesDebuff + 0.3, icon.shackles, true, color.shacklesDebuff)
-    end
-end
-
-function module:ShacklesFade(player)
-    if not self.db.profile.shacklesdebuff then return end
-    if player == UnitName("player") then
-        self:RemoveBar(L["bar_shacklesDebuff"])
-        self:RemoveWarningSign(icon.shackles)
-    end
 end
 
 function module:ShackleShatter(player)
@@ -647,7 +621,7 @@ function module:DoomDebuff(player)
     end
     self:Bar(string.format(L["bar_doomDebuff"], player), timer.doomDuration, icon.doom, true, color.doomDebuff)
     if self.db.profile.doommark then
-        self:SetRaidTargetForPlayer(player, 8)
+        self:SetRaidTargetForPlayer(player, 4)
     end
 end
 
@@ -681,7 +655,7 @@ end
 function module:Terror()
     terrorThresholdReached = true
     if not self.db.profile.terror then return end
-    self:RemoveBar("bar_terrorCD")
+    self:RemoveBar(L["bar_terrorCD"])
     self:Message(L["msg_terror"], "Urgent", false, nil, false)
     self:Sound("Alarm")
     self:WarningSign(icon.terror, timer.terrorCast)
