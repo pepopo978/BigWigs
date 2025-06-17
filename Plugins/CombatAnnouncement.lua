@@ -57,6 +57,7 @@ local SpellTranslation = {
 	["pummel"] = BS["Pummel"],
 	["shieldbash"] = BS["Shield Bash"],
 	["taunt"] = BS["Taunt"],
+	["mockingblow"] = BS["Mocking Blow"],
 	["handofreckoning"] = L["Hand of Reckoning"],
 	["earthshakerslam"] = L["Earthshaker Slam"],
 	["innervate"] = BS["Innervate"], -- Added Innervate to the spell translations
@@ -90,6 +91,7 @@ local SpellVerbMapping = {
 	["counterspell"] = "Interrupting",
 	["earthshock"] = "Interrupting",
 	["taunt"] = "Taunting",
+	["mockingblow"] = "Taunting",
 	["growl"] = "Taunting",
 	["handofreckoning"] = "Taunting",
 	["challengingshout"] = "AOE Taunting",
@@ -185,6 +187,7 @@ BigWigsCombatAnnouncement.defaultDB = {
 	challengingshout = false,
 	intimidatingshout = false,
 	concussionblow = false,
+	mockingblow = false,
 	-- Rogue
 	kick = false,
 	kidneyshot = false,
@@ -262,6 +265,18 @@ if class == "WARRIOR" then
 			end,
 			set = function(v)
 				BigWigsCombatAnnouncement.db.profile.taunt = v
+			end,
+		},
+		mockingblow = {
+			type = "toggle",
+			name = BS["Mocking Blow"],
+			order = 3,
+			desc = string.format(L["Toggle %s display."], BS["Mocking Blow"]),
+			get = function()
+				return BigWigsCombatAnnouncement.db.profile.mockingblow
+			end,
+			set = function(v)
+				BigWigsCombatAnnouncement.db.profile.mockingblow = v
 			end,
 		},
 		disarm = {
