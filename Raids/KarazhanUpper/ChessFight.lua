@@ -143,6 +143,8 @@ local bowed = {}
 local baseChatFrameOnEvent = ChatFrame_OnEvent
 
 function module:OnEnable()
+	self.lastSubservience = 0
+
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "AfflictionEvent")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "AfflictionEvent")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "AfflictionEvent")
@@ -252,6 +254,10 @@ end
 function module:AfflictionEvent(msg)
 	-- Dark Subservience
 	if string.find(msg, L["trigger_subservienceYou"]) then
+		-- make sure we get alerted for subservience
+		-- throttling/addon rate limiting can cause syncs to be missed
+		self:Subservience(UnitName("player"))
+
 		self:Sync(syncName.subservience .. " " .. UnitName("player"))
 		return
 	else
@@ -372,6 +378,12 @@ function module:Subservience(player)
 	end
 
 	if player == UnitName("player") then
+		if GetTime() - self.lastSubservience < timer.subservience then
+			-- avoid double alerts
+			return
+		end
+
+		self.lastSubservience = GetTime()
 		self:Message(L["msg_subservienceYou"], "Important")
 		self:WarningSign(icon.subservience, timer.subservience, true, L["warning_bow"])
 		self:Bar(L["bar_subservience"], timer.subservience, icon.subservience)
@@ -544,6 +556,12 @@ function module:Test()
 
 		-- Subservience events for self
 		{ time = 3, func = function()
+			local msg = "You are afflicted by Dark Subservience"
+			module:AfflictionEvent(msg)
+			print("Test: " .. msg)
+		end },
+
+		{ time = 4, func = function()
 			local msg = "You are afflicted by Dark Subservience"
 			module:AfflictionEvent(msg)
 			print("Test: " .. msg)
