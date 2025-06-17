@@ -1,6 +1,6 @@
 local module, L = BigWigs:ModuleDeclaration("C'Thun", "Ahn'Qiraj")
 
-module.revision = 30078
+module.revision = 30079
 module.enabletrigger = { "Eye of C'Thun", "C'Thun" }
 module.toggleoptions = {
 	"cthuneyebeam",
@@ -253,6 +253,7 @@ local doCheckForWipe = false
 local cthunStarted = nil
 local phase = "phase1"
 local eyeTarget = nil
+local lastEyeTarget = nil
 
 local firstStomachTentacleDead = nil
 local secondTentacleLowWarn = nil
@@ -323,6 +324,7 @@ function module:OnEngage()
 	cthunStarted = nil
 	phase = "phase1"
 	eyeTarget = nil
+	lastEyeTarget = nil
 
 	firstStomachTentacleDead = nil
 	secondTentacleLowWarn = nil
@@ -562,8 +564,9 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 end
 
 function module:EyeBeam()
-	self:ScheduleEvent("CThunDelayedEyeBeamCheck", self.DelayedEyeBeamCheck, 0.1, self) -- has to be done delayed since the target change is delayed
+	self:ScheduleEvent("CThunDelayedEyeBeamCheck", self.DelayedEyeBeamCheck, 0.2, self) -- has to be done delayed since the target change is delayed
 end
+
 function module:DelayedEyeBeamCheck()
 	local name = "Unknown"
 	self:CheckTarget()
@@ -571,12 +574,10 @@ function module:DelayedEyeBeamCheck()
 	if eyeTarget then
 		name = eyeTarget
 
-		if self.db.profile.raidicon and (IsRaidLeader() or IsRaidOfficer()) then
-			for i = 1, GetNumRaidMembers() do
-				if UnitName("raid" .. i) == name then
-					SetRaidTarget("raid" .. i, 8)
-				end
-			end
+		if self.db.profile.raidicon and name ~= lastEyeTarget then
+			self:RestorePreviousRaidTargetForPlayer(lastEyeTarget)
+			lastEyeTarget = name
+			self:SetRaidTargetForPlayer(name, 8)
 		end
 
 		if name == UnitName("player") then
@@ -620,6 +621,9 @@ function module:CheckTarget()
 end
 
 function module:DarkGlare()
+	self:RestorePreviousRaidTargetForPlayer(lastEyeTarget)
+	lastEyeTarget = nil
+
 	self:Bar(L["bar_darkGlareCasting"], timer.darkGlareCasting, icon.darkGlare, true, color.darkGlareCast)
 	self:WarningSign(icon.darkGlare, timer.darkGlareCasting)
 	self:Message(L["msg_darkGlareCasting"], "Urgent", false, nil, false)

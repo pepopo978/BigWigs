@@ -66,6 +66,8 @@ local sounds = {
 
 	DispelPoison = "Interface\\AddOns\\BigWigs\\Sounds\\DispelPoison.mp3",
 
+	GoBow = "Interface\\AddOns\\BigWigs\\Sounds\\GoBow.mp3",
+
 	Dance = "Interface\\AddOns\\BigWigs\\Sounds\\Dance.mp3",
 	FunDance = "Interface\\AddOns\\BigWigs\\Sounds\\FunDance.mp3",
 

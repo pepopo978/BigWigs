@@ -546,7 +546,7 @@ function module:DelayedVoidZoneEvent()
 		if target == UnitName("player") then
 			self:Message("Void Zone on YOU !!!", "Important")
 			self:TriggerEvent("BigWigs_Sound", "VoidZoneMove")
-			SendChatMessage("Void Zone On Me !", "SAY")
+			SendChatMessage("Void Zone On Me!", "SAY")
 		else
 			self:Message("Void Zone on " .. target .. " !!!", "Important")
 		end
@@ -770,17 +770,4 @@ function module:Shieldwall(mob)
 		self:Bar(string.format(L["shieldwallbar"], mob), timer.shieldwall, icon.shieldwall, true, "Blue")
 		self:DelayedMessage(timer.shieldwall, string.format(L["shieldwall_warn_over"], mob), "Positive")
 	end
-end
-
-function string:split(delimiter)
-	local result = {}
-	local from = 1
-	local delim_from, delim_to = string.find(self, delimiter, from)
-	while delim_from do
-		table.insert(result, string.sub(self, from, delim_from - 1))
-		from = delim_to + 1
-		delim_from, delim_to = string.find(self, delimiter, from)
-	end
-	table.insert(result, string.sub(self, from))
-	return result
 end
