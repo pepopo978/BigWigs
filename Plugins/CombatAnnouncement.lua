@@ -112,7 +112,7 @@ local SpellVerbMapping = {
 	["tranquilshot"] = "Taunting",
 	["deathcoil"] = "Fearing",
 	["psychicscream"] = "AOE Fearing",
-	["earthshakerslam"] = "Stunning"
+	["earthshakerslam"] = "Taunting"
 }
 
 local SharedBroadcastOptions = {

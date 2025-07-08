@@ -16,16 +16,15 @@ local L = AceLibrary("AceLocale-2.2"):new("BigWigsFarclip")
 
 L:RegisterTranslations("enUS", function()
 	return {
-		["Active"] = true,
 		["Farclip"] = true,
 		["farclip"] = true,
 		["notify"] = "Notify when raising/lowering farclip",
 		["NaxxFarclip"] = "Whether to lower farclip in Naxx.",
-		["Farclip value outside Naxx"] = true,
-		["Naxx farclip value"] = true,
-		["lowering_farclip"] = "Lowering farclip for Naxxramas to %d and saving your current farclip of %d.  You can configure this in the Farclip plugin in BigWigs.",
+		["KaraFarclip"] = "Whether to lower farclip in Kara.",
+		["Farclip value outside Raids"] = true,
+		["Raid farclip value"] = "Value to set farclip to in Naxx/Kara",
+		["lowering_farclip"] = "Lowering farclip for %s to %d and saving your current farclip of %d.  You can configure this in the Farclip plugin in BigWigs.",
 		["restoring_farclip"] = "Restoring lowered farclip to your saved value of %d.",
-		["Reduces the terrain distance to the minimum in Naxxramas to avoid screen freezes."] = true,
 	}
 end)
 
@@ -37,13 +36,24 @@ end)
 --      Module Declaration      --
 ----------------------------------
 
+local function isInNaxx()
+	return AceLibrary("Babble-Zone-2.2")["Naxxramas"] == GetRealZoneText()
+end
+
+local function isInKara()
+	return AceLibrary("Babble-Zone-2.2")["Tower of Karazhan"] == GetRealZoneText() or
+			GetRealZoneText() == "Outland" or
+			GetRealZoneText() == "???"
+end
+
 BigWigsFarclip = BigWigs:NewModule(L["Farclip"])
 BigWigsFarclip.revision = 20012
 BigWigsFarclip.defaultDB = {
-	active = false,
 	notify = true,
 	defaultFarclip = 777,
 	lowFarClip = 250, -- using 177 will cause invisible mobs and portals to not load
+	naxx = true,
+	kara = true,
 }
 BigWigsFarclip.consoleCmd = L["farclip"]
 
@@ -52,18 +62,30 @@ BigWigsFarclip.consoleOptions = {
 	name = L["Farclip"],
 	desc = L["Farclip"],
 	args = {
-		active = {
+		naxx = {
 			type = "toggle",
 			name = L["NaxxFarclip"],
 			desc = L["NaxxFarclip"],
 			order = 1,
 			get = function()
-				return BigWigsFarclip.db.profile.active
+				return BigWigsFarclip.db.profile.naxx
 			end,
 			set = function(v)
-				BigWigsFarclip.db.profile.active = v
+				BigWigsFarclip.db.profile.naxx = v
 			end,
 			--passValue = "reverse",
+		},
+		kara = {
+			type = "toggle",
+			name = L["KaraFarclip"],
+			desc = L["KaraFarclip"],
+			order = 2,
+			get = function()
+				return BigWigsFarclip.db.profile.kara
+			end,
+			set = function(v)
+				BigWigsFarclip.db.profile.kara = v
+			end,
 		},
 		notify = {
 			type = "toggle",
@@ -79,8 +101,8 @@ BigWigsFarclip.consoleOptions = {
 		},
 		defaultfarclip = {
 			type = "range",
-			name = L["Farclip value outside Naxx"],
-			desc = L["Farclip value outside Naxx"],
+			name = L["Farclip value outside Raids"],
+			desc = L["Farclip value outside Raids"],
 			order = 10,
 			min = 177,
 			max = 777,
@@ -91,15 +113,15 @@ BigWigsFarclip.consoleOptions = {
 			set = function(v)
 				BigWigsFarclip.db.profile.defaultFarclip = v
 
-				if not BigWigsFarclip.db.profile.active or AceLibrary("Babble-Zone-2.2")["Naxxramas"] ~= GetRealZoneText() then
+				if not isInNaxx() and not isInKara() then
 					SetCVar("farclip", v)
 				end
 			end,
 		},
-		naxxfarclip = {
+		raidfarclip = {
 			type = "range",
-			name = L["Naxx farclip value"],
-			desc = L["Naxx farclip value"],
+			name = L["Raid farclip value"],
+			desc = L["Raid farclip value"],
 			order = 15,
 			min = 177,
 			max = 777,
@@ -123,29 +145,37 @@ function BigWigsFarclip:OnEnable()
 end
 
 function BigWigsFarclip:ZONE_CHANGED_NEW_AREA()
-	if self.db.profile.active then
 		local farclip = GetCVar("farclip")
 		local isAtLowFarclip = tonumber(farclip) == tonumber(self.db.profile.lowFarClip)
 
-		if AceLibrary("Babble-Zone-2.2")["Naxxramas"] == GetRealZoneText() then
+	if self.db.profile.naxx and isInNaxx() then
 			if not isAtLowFarclip then
 				if self.db.profile.notify then
-					local msg = string.format(L["lowering_farclip"], tonumber(self.db.profile.lowFarClip), tonumber(farclip))
+					local msg = string.format(L["lowering_farclip"], "Naxx", tonumber(self.db.profile.lowFarClip), tonumber(farclip))
 					self:Message(msg, "Cyan", false, nil, false)
 				end
 
 				self.db.profile.defaultFarclip = GetCVar("farclip")
 				SetCVar("farclip", self.db.profile.lowFarClip) -- http://wowwiki.wikia.com/wiki/CVar_farclip
 			end
-		else
-			if isAtLowFarclip then
-				if self.db.profile.notify then
-					local msg = string.format(L["restoring_farclip"], tonumber(self.db.profile.defaultFarclip))
-					self:Message(msg, "Cyan", false, nil, false)
-				end
-
-				SetCVar("farclip", self.db.profile.defaultFarclip)
+	elseif self.db.profile.kara and isInKara() then
+		if not isAtLowFarclip then
+			if self.db.profile.notify then
+				local msg = string.format(L["lowering_farclip"], "Naxx", tonumber(self.db.profile.lowFarClip), tonumber(farclip))
+				self:Message(msg, "Cyan", false, nil, false)
 			end
+
+			self.db.profile.defaultFarclip = GetCVar("farclip")
+			SetCVar("farclip", self.db.profile.lowFarClip) -- http://wowwiki.wikia.com/wiki/CVar_farclip
+		end
+	else
+		if isAtLowFarclip then
+			if self.db.profile.notify then
+				local msg = string.format(L["restoring_farclip"], tonumber(self.db.profile.defaultFarclip))
+				self:Message(msg, "Cyan", false, nil, false)
+			end
+
+			SetCVar("farclip", self.db.profile.defaultFarclip)
 		end
 	end
 end
