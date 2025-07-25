@@ -1,8 +1,8 @@
 local module, L = BigWigs:ModuleDeclaration("Rupturan the Broken", "Karazhan")
 
-module.revision = 30001
+module.revision = 30002
 module.enabletrigger = module.translatedName
-module.toggleoptions = { "livingstone", "dirtmound", "flamestrike", "bosskill" }
+module.toggleoptions = { "livingstone", "dirtmound", "dirtmoundmark", "flamestrike", "bosskill" }
 module.zonename = {
 	AceLibrary("AceLocale-2.2"):new("BigWigs")["Tower of Karazhan"],
 	AceLibrary("Babble-Zone-2.2")["Tower of Karazhan"],
@@ -11,9 +11,10 @@ module.zonename = {
 }
 
 module.defaultDB = {
-	livingstone = true,
-	dirtmound   = true,
-	flamestrike = true,
+	livingstone   = true,
+	dirtmound     = true,
+	dirtmoundmark = false,
+	flamestrike   = true,
 }
 
 -------------------------------------------------------------------------------
@@ -30,16 +31,20 @@ L:RegisterTranslations("enUS", function() return {
 	dirtmound_name       = "Dirt Mound Indicators",
 	dirtmound_desc       = "Warn when Dirt Mound Quake hits you and when one is spawned.",
 
-	flamestrike_cmd        = "flamestrike",
-	flamestrike_name       = "Flamestrike Indicators",
-	flamestrike_desc       = "Warn when Flamestrike (Ignite Rock) is casting.",
+	dirtmoundmark_cmd    = "dirtmoundmark",
+	dirtmoundmark_name   = "Mark Dirt Mound Target",
+	dirtmoundmark_desc   = "Mark the player Dirt Mound is chasing with a Diamond.",
+
+	flamestrike_cmd      = "flamestrike",
+	flamestrike_name     = "Flamestrike Indicators",
+	flamestrike_desc     = "Warn when Flamestrike (Ignite Rock) is casting.",
 
 	-- Bars / Messages
 	bar_ignite_rock      = "Flamestrike",
 	bar_ignite_rock_soon = "Flamestrike soon",
 	bar_ls_earthstomp    = "Living Stone STOMP",
 	msg_dm_quake         = "Dirt Mound Quake!  MOVE AWAY!",
-	msg_dm_target_near   = "Get away from diamond!",
+	msg_dm_target_near   = "Get away from %s!",
 	msg_dm_target_you    = "Dirt Mound chasing you!",
 
 	-- Triggers
@@ -189,12 +194,14 @@ end
 
 function module:DirtMoundSpawn(player)
 	if not player then return end
+
+	if self.db.profile.dirtmoundmark then
+		self:RestorePreviousRaidTargetForPlayer(mound_chasing)
+		self:SetRaidTargetForPlayer(player, 3) -- diamond
+		mound_chasing = player
+	end
+
 	if not self.db.profile.dirtmound then return end
-
-	self:RestorePreviousRaidTargetForPlayer(mound_chasing)
-	self:SetRaidTargetForPlayer(player,3) -- diamond
-	mound_chasing = player
-
 	if player == UnitName("player") then
 		-- you're the target: big warning
 		self:WarningSign(icon.quake, 5, true, L.msg_dm_target_you)
@@ -205,7 +212,7 @@ function module:DirtMoundSpawn(player)
 		for i=1,GetNumRaidMembers() do
 			local unit = "raid"..i
 			if UnitName(unit) == player and CheckInteractDistance(unit, 2) then
-				self:Message(L.msg_dm_target_near, "Important")
+				self:Message(format(L.msg_dm_target_near, player), "Important")
 				self:Sound("Alarm")
 				break
 			end
