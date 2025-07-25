@@ -1,6 +1,6 @@
 local module, L = BigWigs:ModuleDeclaration("Patchwork Golem", "Naxxramas")
 
-module.revision = 20001
+module.revision = 20003
 module.enabletrigger = { "Patchwork Golem" }
 module.toggleoptions = { "warstomp" }
 module.trashMod = true
