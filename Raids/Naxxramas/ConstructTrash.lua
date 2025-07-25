@@ -1,6 +1,6 @@
 local module, L = BigWigs:ModuleDeclaration("Patchwork Golem", "Naxxramas")
 
-module.revision = 20002
+module.revision = 20001
 module.enabletrigger = { "Patchwork Golem" }
 module.toggleoptions = { "warstomp" }
 module.trashMod = true
@@ -18,7 +18,7 @@ L:RegisterTranslations("enUS", function()
 end)
 
 local timer = {
-	warstomp = 7, -- 7-8
+	warstomp = 8,
 }
 
 local icon = {
