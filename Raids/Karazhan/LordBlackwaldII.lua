@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Lord Blackwald II", "Karazhan")
 
-module.revision = 30028
+module.revision = 30029
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"reaverstorm", "boon", "empoweredsoul", "summon", "bosskill"}
 module.zonename = {
@@ -45,7 +45,7 @@ L:RegisterTranslations("enUS", function() return {
 
 	trigger_yellSummon = "I call upon the Scythe of Elune, grant me your power!",--CHAT_MSG_MONSTER_YELL
 	bar_summon = "Summons add",
-	msg_yellSummon = "Shadowbane Ragefang Summonned!",
+	msg_yellSummon = "Shadowbane Ragefang Summoned!",
 	
 	trigger_engage = "You dare disturb the Dark Rider Lord?",--CHAT_MSG_MONSTER_YELL
 } end )
