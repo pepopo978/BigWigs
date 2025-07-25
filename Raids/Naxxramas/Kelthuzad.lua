@@ -3,7 +3,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Kel'Thuzad", "Naxxramas")
 
-module.revision = 30075
+module.revision = 30076
 module.enabletrigger = module.translatedName
 module.toggleoptions = {
 	"phase",
@@ -124,6 +124,9 @@ L:RegisterTranslations("enUS", function()
 
 		--Mortal Wound from Unstoppable Abomination, stacking, -10% healing, 15sec
 
+		trigger_speedrod = "We chall.nge you, master of the Scourge",
+		msg_speedrod = "Fast KT Fight Activated",
+
 		trigger_engage = "Minions, servants, soldiers of the cold dark", --CHAT_MSG_MONSTER_YELL
 		bar_phase1 = "Phase 1",
 
@@ -215,6 +218,7 @@ L:RegisterTranslations("enUS", function()
 end)
 
 local timer = {
+	speedRod = 160,
 	phase1 = 320,
 	phase2 = 15,
 
@@ -285,6 +289,8 @@ local color = {
 	bloodTap = "Yellow",
 }
 local syncName = {
+	speedRod = "KelSpeedRod" .. module.revision,
+
 	phase2 = "KelPhase2" .. module.revision,
 	phase3 = "KelPhase3" .. module.revision,
 	phase3soon = "KelPhase3soon" .. module.revision,
@@ -320,6 +326,7 @@ module.proximityCheck = function(unit)
 end
 module.proximitySilent = true
 
+local speedRod = false
 local p3warn = nil
 local mcYellTime = 0
 local frostBlastYellTime = 0
@@ -340,6 +347,7 @@ local bloodTapCounter = 0
 
 function module:OnRegister()
 	self:RegisterEvent("MINIMAP_ZONE_CHANGED")
+	self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
 end
 
 function module:OnEnable()
@@ -448,7 +456,7 @@ function module:OnEngage()
 	bloodTapCounter = 0
 
 	if self.db.profile.phase then
-		self:Bar(L["bar_phase1"], timer.phase1, icon.phase, true, color.phase)
+		self:Bar(L["bar_phase1"], speedRod and timer.speedRod or timer.phase1, icon.phase, true, color.phase)
 	end
 
 	if self.db.profile.p1adds then
@@ -537,19 +545,22 @@ end
 
 function module:UNIT_HEALTH(msg)
 	if UnitName(msg) == module.translatedName then
-		local health = UnitHealth(msg)
-		if health > 40 and health <= 45 and p3warn == nil then
+		local healthPct = UnitHealth(msg) * 100 / UnitHealthMax(msg)
+		if healthPct > 40 and healthPct <= 45 and p3warn == nil then
 			self:Sync(syncName.phase3soon)
-		elseif health > 45 and p3warn == true then
+		elseif healthPct > 45 and p3warn == true then
 			p3warn = nil
-		elseif health <= 40 and p3warn == nil then
+		elseif healthPct <= 40 and p3warn == nil then
 			p3warn = true
 		end
 	end
 end
 
 function module:CHAT_MSG_MONSTER_YELL(msg)
-	if string.find(msg, L["trigger_engage"]) then
+	if string.find(msg, L["trigger_speedrod"]) then
+		self:Sync(syncName.speedRod)
+
+	elseif string.find(msg, L["trigger_engage"]) then
 		module:SendEngageSync()
 
 	elseif msg == L["trigger_phase2_1"] or msg == L["trigger_phase2_2"] or msg == L["trigger_phase2_3"] then
@@ -677,7 +688,11 @@ function module:Event(msg)
 end
 
 function module:BigWigs_RecvSync(sync, rest, nick)
-	if sync == syncName.phase2 then
+	if sync == syncName.speedRod then
+		speedRod = true
+		self:Message(L["msg_speedrod"], "Urgent", false, nil, false)
+		self:Sound("Info")
+	elseif sync == syncName.phase2 then
 		self:Phase2()
 	elseif sync == syncName.phase3soon then
 		self:Phase3soon()
