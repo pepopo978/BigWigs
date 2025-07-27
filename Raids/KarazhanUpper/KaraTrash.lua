@@ -2,7 +2,7 @@ local module, L = BigWigs:ModuleDeclaration("Kara Trash", "Karazhan")
 
 local has_superwow = SUPERWOW_VERSION or SetAutoloot
 
-module.revision = 30001
+module.revision = 30002
 module.trashMod = true -- how does this affect things
 module.enabletrigger = {
 	"Manascale Drake",
@@ -12,6 +12,7 @@ module.enabletrigger = {
 	"Arcane Anomaly",
 	"Crumbling Protector",
 	"Lingering Magus",
+	"Lingering Astrologist",
  }
 module.toggleoptions = {
 	"frigid_mana_breath",
@@ -21,6 +22,7 @@ module.toggleoptions = {
 	"unstable_mana",
 	"overflowing_arcana",
 	"self_destruct",
+	"astral_insight", -- added toggle
 }
 module.zonename = {
 	AceLibrary("AceLocale-2.2"):new("BigWigs")["Tower of Karazhan"],
@@ -61,6 +63,10 @@ L:RegisterTranslations("enUS", function()
 		draconic_thrash_name = "Manascale Threat Drop",
 		draconic_thrash_desc = "Warn when Manascale Drake is about to wing buffet.",
 
+		astral_insight_cmd = "astral_insight",
+		astral_insight_name = "Astral Insight Alert",
+		astral_insight_desc = "Warn and stop casting if you are afflicted by Astral Insight.",
+
 		self_destruct_cmd = "self_destruct",
 		self_destruct_name = "Self Destruction Protocol Alert",
 		self_destruct_desc = "Warn when Self Destruction Protocol is casting.",
@@ -71,6 +77,10 @@ L:RegisterTranslations("enUS", function()
 		trigger_self_destruct = "Crumbling Protector begins to cast Self Destruction Protocol",
 
 		trigger_remove_mana_buildup = "Your Mana Buildup is removed",
+
+		bar_astral_insight = "Astral Insight (stop casting!)",
+		msg_astral_insight = "Stop casting!",
+		trigger_astral_insight = "(.+) ...? afflicted by Astral Insight",
 
 		-- todo, add this, add tracking for maguses
 		-- 4/20 23:07:11.741  Lingering Magus casts Enveloped Flames(58004) on Misandria.
@@ -105,6 +115,7 @@ module.defaultDB = {
 	overflowing_arcana = true,
 	self_destruct = false,
 
+	astral_insight = true, -- default enabled
 	-- bosskill           = nil,
 }
 
@@ -115,6 +126,7 @@ local timer = {
 	self_destruct = 4,
 	frigid_mana_breath = {14, 19},
 	draconic_thrash = {12, 14},
+	astral_insight = 7, -- 7 sec timer bar
 }
 
 local icon = {
@@ -124,6 +136,7 @@ local icon = {
 	self_destruct = "Spell_Shadow_LifeDrain",
 	frigid_mana_breath = "Spell_Frost_FrostShock",
 	draconic_thrash = "INV_Misc_MonsterScales_05",
+	astral_insight = "Ability_Creature_Cursed_03",
 }
 
 local syncName = {
@@ -141,10 +154,8 @@ local tracked_guids = {}
 function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
 
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "AfflictionEvent")
+	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "SelfAfflictionEvent")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", "AfflictionEvent")
-	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", "AfflictionEvent")
-
 	self:RegisterEvent("CHAT_MSG_SPELL_BREAK_AURA", "RemoveEvent")
 
 	if has_superwow then
@@ -172,7 +183,6 @@ function module:UNIT_FLAGS(unit)
 end
 
 function module:CheckDrakeTarget()
-	print("checking-tar")
 	local drakeTarget = nil
 
 	if UnitName("target") == "Manascale Drake" then
@@ -257,6 +267,20 @@ function module:AfflictionEvent(msg)
 		self:Sync(syncName.overflowing_arcana .. " " .. playerOA .. (n or 1))
 		return
 	end
+end
+
+function module:SelfAfflictionEvent(msg)
+	if self.db.profile.astral_insight then
+		-- Astral Insight handling using trigger
+		local _, _, playerAI = string.find(msg, L.trigger_astral_insight)
+		if playerAI then
+			self:WarningSign(icon.astral_insight, timer.astral_insight, true, L.msg_astral_insight)
+			self:Bar(L.bar_astral_insight, timer.astral_insight, icon.astral_insight)
+			return
+		end
+	end
+	-- Fallback to original AfflictionEvent logic for self
+	module.AfflictionEvent(self, msg)
 end
 
 function module:RemoveEvent(msg)
@@ -349,6 +373,11 @@ function module:Test()
 			"Unstable Mana",
 			"CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE",
 			UnitName("raid2") .. " is afflicted by Unstable Mana (1)." },
+		-- Astral Insight unit test
+		{ 20,
+			"Astral Insight affliction (self):",
+			"CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE",
+			"You are afflicted by Astral Insight." },
 		{ 26,
 			"Overflowing Arcana",
 			"CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE",
