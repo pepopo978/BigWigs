@@ -161,7 +161,7 @@ function BigWigsFarclip:ZONE_CHANGED_NEW_AREA()
 	elseif self.db.profile.kara and isInKara() then
 		if not isAtLowFarclip then
 			if self.db.profile.notify then
-				local msg = string.format(L["lowering_farclip"], "Naxx", tonumber(self.db.profile.lowFarClip), tonumber(farclip))
+				local msg = string.format(L["lowering_farclip"], "Kara", tonumber(self.db.profile.lowFarClip), tonumber(farclip))
 				self:Message(msg, "Cyan", false, nil, false)
 			end
 
