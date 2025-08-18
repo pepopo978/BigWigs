@@ -269,7 +269,7 @@ BigWigs.cmdtable = {
 }
 BigWigs:RegisterChatCommand({ "/bw", "/BigWigs" }, BigWigs.cmdtable)
 BigWigs.debugFrame = ChatFrame1
-BigWigs.revision = 30122
+BigWigs.revision = 30123
 BigWigs.markUnitsWhenNotRaidLeader = false -- too many people marking causes issues, can turn on if needed
 
 function BigWigs:EditLayout()

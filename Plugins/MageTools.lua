@@ -23,7 +23,7 @@ local surface = AceLibrary("Surface-1.0")
 
 local timer = {
 	scorch = 30,
-	ignite = 6,
+	ignite = 4,
 }
 local syncName = {
 	scorch = "ScorchHit",
@@ -147,8 +147,10 @@ L:RegisterTranslations("enUS", function()
 		scorch_afflict_test = "^(.+) is afflicted by Fire Vulnerability(.*)", -- for stacks 2-5 will be "Fire Vulnerability (2)".
 		scorch_gains_test = "^(.+) gains Fire Vulnerability(.*)", -- for stacks 2-5 will be "Fire Vulnerability (2)".
 		scorch_test = ".+ Scorch (.+)s (.+) for",
+		fireblast_test = ".+ Fire Blast (.+)s (.+) for",
 		scorch_fades_test = "Fire Vulnerability fades from (.+).",
 		scorch_resist_test = "(.+) Scorch was resisted by (.+).",
+		fireblast_resist_test = "(.+) Fire Blast was resisted by (.+).",
 		fire_vuln_resist_test = "(.+) Fire Vulnerability was resisted by (.+).", -- Scorch can hit but fire vulnerability can resist independently
 
 		ignite_afflict_test = "^(.+) is afflicted by Ignite(.*)", -- for stacks 2-5 will be "Ignite (2)".
@@ -593,7 +595,7 @@ BigWigsMageTools.consoleOptions = {
 	}
 }
 
-BigWigsMageTools.revision = 30066
+BigWigsMageTools.revision = 30067
 BigWigsMageTools.external = true
 
 BigWigsMageTools.active = false
@@ -777,6 +779,9 @@ function BigWigsMageTools:ScorchEvent(msg)
 
 	-- otherwise check for scorch hits
 	local _, _, hitType, scorchTarget = string.find(msg, L["scorch_test"])
+	if not scorchTarget then
+		_, _, hitType, scorchTarget = string.find(msg, L["fireblast_test"])
+	end
 	-- only need to update bars if at 5 stacks, otherwise afflicted by message will handle it
 	if scorchTarget then
 		self:Debug(msg)
@@ -800,6 +805,9 @@ function BigWigsMageTools:ScorchEvent(msg)
 
 	-- otherwise check for scorch resists
 	local _, _, caster, resistTarget = string.find(msg, L["scorch_resist_test"])
+	if not resistTarget then
+		_, _, caster, resistTarget = string.find(msg, L["fireblast_resist_test"])
+	end
 	if not resistTarget then
 		_, _, caster, resistTarget = string.find(msg, L["fire_vuln_resist_test"])
 	end
