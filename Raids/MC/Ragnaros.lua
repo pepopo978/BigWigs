@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Ragnaros", "Molten Core")
 
-module.revision = 30078
+module.revision = 30079
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"emerge", "wrathofragnaros", "lava", "adds", "melt", "elementalfire", "bosskill"}
 module.wipemobs = {"Son of Flame"}
@@ -13,8 +13,8 @@ L:RegisterTranslations("enUS", function() return {
 	cmd = "Ragnaros",
 
 	emerge_cmd = "emerge",
-	emerge_name = "Emerge / Submerge Alert",
-	emerge_desc = "Warn for Ragnaros Emerge / Submerge",
+	emerge_name = "Emerge Alert",
+	emerge_desc = "Warn for Ragnaros Emerge",
 	
 	wrathofragnaros_cmd = "wrathofragnaros",
 	wrathofragnaros_name = "Wrath of Ragnaros (Knockback) Alert",
@@ -59,8 +59,6 @@ L:RegisterTranslations("enUS", function() return {
 	
 	msg_emergeSoon = "Emerge in 10 seconds!",
 	msg_emerge = "Ragnaros Emerged!",
-	bar_nextSubmerge = "Submerge",
-	msg_submergeSoon = "Submerge in 10 seconds!",
 	
 		--melee knockback
 	trigger_knockback = "TASTE THE FLAMES OF SULFURON!", --CHAT_MSG_MONSTER_YELL
@@ -91,7 +89,6 @@ local timer = {
 	domoStart5 = 23.9,
 	
 	nextEmerge = 90,
-	nextSubmerge = 180,
 	
 	knockbackCd = 25, --supposed to be 25,30
 	knockbackSoon = 8,
@@ -102,7 +99,6 @@ local icon = {
 	domoStart = "inv_misc_pocketwatch_01",
 	
 	emerge = "ability_stealth",
-	submerge = "spell_fire_lavaspawn",
 	
 	knockback = "ability_smash",
 	
@@ -150,7 +146,6 @@ local phase = nil
 
 local lastKnockTime = 0
 local submergeTime = 0
-local emergeTime = 0
 
 function module:OnRegister()
 	self:RegisterEvent("MINIMAP_ZONE_CHANGED")
@@ -205,7 +200,6 @@ function module:OnEngage()
 	
 	lastKnockTime = 0
 	submergeTime = 0
-	emergeTime = 0
 end
 
 function module:OnDisengage()
@@ -266,11 +260,6 @@ function module:TrueEngage()
 			self:DelayedMessage(timer.knockbackCd - 3, L["msg_knockbackSoon"], "Urgent", false, nil, false)
 			self:DelayedSound(timer.knockbackCd - 3, "RunAway")
 		end
-	end
-	
-	if self.db.profile.emerge then
-		self:Bar(L["bar_nextSubmerge"], timer.nextSubmerge, icon.submerge, true, color.emerge)
-		self:DelayedMessage(timer.nextSubmerge - 10, L["msg_submergeSoon"], "Attention", false, nil, false)
 	end
 end
 
@@ -363,10 +352,6 @@ function module:Knockback()
 end
 
 function module:Submerge()
-	if UnitName("Player") == "Dreadsome" or UnitName("Player") == "Relar" then
-		DEFAULT_CHAT_FRAME:AddMessage("   BigWigs_Ragnaros:Debug -- Submerge")
-	end
-	
 	phase = "submerged"
 	
 		--knockback stuff
@@ -377,10 +362,6 @@ function module:Submerge()
 	self:RemoveWarningSign(icon.knockback)
 	self:CancelDelayedMessage(L["msg_knockbackSoon"])
 	self:CancelDelayedSound("RunAway")
-	
-		--submerge stuff
-	self:RemoveBar(L["bar_nextSubmerge"])
-	self:CancelDelayedMessage(L["msg_submergeSoon"])
 	
 	submergeTime = GetTime()
 
@@ -394,25 +375,17 @@ function module:Submerge()
 	self:ScheduleRepeatingEvent("CheckForEmerge", self.CheckForEmerge, 1, self)
 end
 
-function module:Emerge()
-	if UnitName("Player") == "Dreadsome" or UnitName("Player") == "Relar" then
-		DEFAULT_CHAT_FRAME:AddMessage("   BigWigs_Ragnaros:Debug -- Emerge")
-	end
-	
+function module:Emerge()	
 	self:CancelScheduledEvent("CheckForEmerge")
 	
 	phase = "emerged"
 	addDead = 0
-	emergeTime = GetTime()
 	
 	self:RemoveBar(L["bar_nextEmerge"])
 	self:CancelDelayedMessage(L["msg_emergeSoon"])
 	
 	if self.db.profile.emerge then
 		self:Message(L["msg_emerge"], "Attention", false, nil, false)
-		
-		self:Bar(L["bar_nextSubmerge"], timer.nextSubmerge, icon.submerge, true, color.emerge)
-		self:DelayedMessage(timer.nextSubmerge - 10, L["msg_submergeSoon"], "Attention", false, nil, false)
 	end
 	
 	
