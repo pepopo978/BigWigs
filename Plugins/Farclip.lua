@@ -43,7 +43,7 @@ end
 local function isInKara()
 	return AceLibrary("Babble-Zone-2.2")["Tower of Karazhan"] == GetRealZoneText() or
 			GetRealZoneText() == "Outland" or
-			GetRealZoneText() == "???"
+			GetRealZoneText() == "The Rock of Desolation"
 end
 
 BigWigsFarclip = BigWigs:NewModule(L["Farclip"])

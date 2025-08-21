@@ -28,7 +28,7 @@ module.zonename = {
 	AceLibrary("AceLocale-2.2"):new("BigWigs")["Tower of Karazhan"],
 	AceLibrary("Babble-Zone-2.2")["Tower of Karazhan"],
 	"Outland",
-	"???"
+	"The Rock of Desolation"
 }
 
 local guid_patterns = {
