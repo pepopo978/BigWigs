@@ -55,7 +55,7 @@ L:RegisterTranslations("enUS", function()
 		highRedOwl = "High Red Owl",
 		highBlueOwl = "High Blue Owl",
 
-		trigger_lunarShiftCast = "Keeper Gnarlmoon begins to cast Lunar Shift",
+		trigger_lunarShiftCast = "Keeper Gnarlmoon begins to perform Lunar Shift",
 		bar_lunarShiftCast = "Lunar Shift Casting!",
 		bar_lunarShiftCD = "Next Lunar Shift",
 		msg_lunarShift = "Lunar Shift casting!",
