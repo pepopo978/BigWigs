@@ -10,11 +10,11 @@ module.zonename = {
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Incindis",
-	
+
 	firenova_cmd = "firenova",
 	firenova_name = "Fire Nova Alert",
 	firenova_desc = "Warn for incoming Fire Nova after Quaking Stomp",
-	
+
 	trigger_quakingStomp = "Incindis's Quaking Stomp hits (.+) for",
 	bar_fireNova = "Fire Nova!",
 	msg_fireNova = "FIRE NOVA - RUN AWAY!",
@@ -36,7 +36,7 @@ local syncName = {
 function module:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE", "Event")
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE", "Event")
-	
+
 	self:ThrottleSync(1, syncName.quakingStomp)
 end
 
@@ -64,7 +64,7 @@ end
 
 function module:QuakingStomp()
 	self:RemoveBar(L["bar_fireNova"])
-	
+
 	self:Message(L["msg_fireNova"], "Urgent", false, nil, false)
 	self:Bar(L["bar_fireNova"], timer.fireNova, icon.fireNova, true, color.fireNova)
 	self:Sound("RunAway")

@@ -10,18 +10,18 @@ module.zonename = {
 
 L:RegisterTranslations("enUS", function() return {
 	cmd = "Thaurissan",
-	
+
 	runeofdetonation_cmd = "runeofdetonation",
 	runeofdetonation_name = "Rune of Detonation Alert",
 	runeofdetonation_desc = "Personal alert when you have both Rune of Detonation and Rune of Power",
-	
+
 	trigger_runeOfDetonationYou = "You are afflicted by Rune of Detonation",
 	trigger_runeOfDetonationStackYou = "You are afflicted by Rune of Detonation %((.+)%)",
 	trigger_runeOfDetonationFade = "Rune of Detonation fades from you",
-	
+
 	trigger_runeOfPowerYou = "You are afflicted by Rune of Power",
 	trigger_runeOfPowerFade = "Rune of Power fades from you",
-	
+
 	msg_runeCombo = "Rune of Detonation MOVE!",
 	bar_runeDetonation = "Rune of Detonation",
 } end)
@@ -33,7 +33,7 @@ local timer = {
 	runeDetonation = 6,
 }
 local icon = {
-	runeDetonation = "inv_enchant_essenceastralsmall",
+	runeDetonation = "Spell_Shadow_Teleport",
 }
 local color = {
 	runeDetonation = "Red",
@@ -96,7 +96,7 @@ function module:Test()
 	BigWigs:EnableModule(self:ToString())
 
 	print("Testing Thaurissan Rune combinations...")
-	
+
 	-- Schedule the sequence of events
 	self:ScheduleEvent("ThaurissanTest1", function()
 		print("Test 1: Gaining Rune of Power (no alert expected)")
@@ -122,7 +122,7 @@ function module:Test()
 		print("Test 5: Losing Rune of Detonation (alert icon should clear)")
 		self:TriggerEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Rune of Detonation fades from you.")
 	end, 7)
-	
+
 	self:ScheduleEvent("ThaurissanTestComplete", function()
 		print("Thaurissan test sequence complete!")
 	end, 8)
