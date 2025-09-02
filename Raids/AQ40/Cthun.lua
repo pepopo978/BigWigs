@@ -1,6 +1,6 @@
 local module, L = BigWigs:ModuleDeclaration("C'Thun", "Ahn'Qiraj")
 
-module.revision = 30079
+module.revision = 30080
 module.enabletrigger = { "Eye of C'Thun", "C'Thun" }
 module.toggleoptions = {
 	"cthuneyebeam",
@@ -337,7 +337,12 @@ function module:OnEngage()
 	lastspawn = 0
 
 	if self.db.profile.map then
-		cthunmap:Show()
+		if not cthunmap then
+			self:SetupMap()
+		end
+		if cthunmap then
+			cthunmap:Show()
+		end
 	end
 
 	if self.db.profile.cthuneyebeam then

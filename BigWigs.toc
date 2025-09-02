@@ -151,6 +151,8 @@ Raids\MC\Shazzrah.lua
 Raids\MC\Garr.lua
 Raids\MC\Sulfuron.lua
 Raids\MC\Golemagg.lua
+Raids\MC\Incindis.lua
+Raids\MC\Thaurissan.lua
 Raids\MC\AncientCoreHound.lua
 Raids\MC\FlameImp.lua
 Raids\MC\Surger.lua
