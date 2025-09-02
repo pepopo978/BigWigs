@@ -143,7 +143,6 @@ Raids\BWL\Wyrmguards.lua
 
 Raids\MC\Lucifron.lua
 Raids\MC\BaronGeddon.lua
-Raids\MC\Gehennas.lua
 Raids\MC\Magmadar.lua
 Raids\MC\Majordomo.lua
 Raids\MC\Ragnaros.lua
