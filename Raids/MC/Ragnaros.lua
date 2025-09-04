@@ -78,7 +78,7 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_lavaYou = "You lose (.+) health for swimming in lava.", --CHAT_MSG_COMBAT_SELF_HITS
 	msg_lavaYou = "You're standing in lava!",
 
-	msg_addDead = "/8 Son of Flame Dead",
+	msg_addDead = "/10 Son of Flame Dead",
 	
 	trigger_meltWeapon = "Ragnaros casts Melt Weapon on you: (.+) damaged.", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 	bar_melt = "Melt Damage: ",
@@ -230,7 +230,7 @@ function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
 
 	if (msg == string.format(UNITDIESOTHER, "Son of Flame")) then
 		addDead = addDead + 1
-		if addDead <= 8 then
+		if addDead <= 10 then
 			self:Sync(syncName.addDead .. " " .. addDead)
 		end
 	end
@@ -461,7 +461,7 @@ end
 function module:AddDead(rest)
 	self:Message(rest..L["msg_addDead"], "Positive", false, nil, false)
 	
-	if tonumber(rest) == 8 and phase == "submerged" then
+	if tonumber(rest) == 10 and phase == "submerged" then
 		self:Sync(syncName.emerge)
 	end
 end
