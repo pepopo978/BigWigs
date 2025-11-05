@@ -595,7 +595,7 @@ BigWigsMageTools.consoleOptions = {
 	}
 }
 
-BigWigsMageTools.revision = 30067
+BigWigsMageTools.revision = 30068
 BigWigsMageTools.external = true
 
 BigWigsMageTools.active = false
@@ -746,7 +746,11 @@ end
 
 function BigWigsMageTools:Debug(msg)
 	if self.db.profile.debug then
-		DEFAULT_CHAT_FRAME:AddMessage(msg)
+		if CombatLogAdd then
+			CombatLogAdd(msg)
+		else
+			DEFAULT_CHAT_FRAME:AddMessage(msg)
+		end
 	end
 end
 
@@ -1473,7 +1477,7 @@ function BigWigsMageTools:HideAnchors()
 end
 
 local barCache = {
-	-- [i] = {id}
+	-- [id] = true (set-like structure to prevent duplicates)
 }
 
 function BigWigsMageTools:StartScorchBar(target, timeleft, stacks)
@@ -1526,7 +1530,7 @@ function BigWigsMageTools:StartScorchBar(target, timeleft, stacks)
 		candybar:StartCandyBar(id, true)
 	end
 	candybar:SetTimeLeft(id, timeleft)
-	tinsert(barCache, id)
+	barCache[id] = true
 end
 
 function BigWigsMageTools:StartIgniteBar(target, text, timeleft, stacks, igniteHasScorch)
@@ -1594,7 +1598,7 @@ function BigWigsMageTools:StartIgniteBar(target, text, timeleft, stacks, igniteH
 		candybar:Pause(id, true)
 	end
 
-	tinsert(barCache, id)
+	barCache[id] = true
 end
 
 function BigWigsMageTools:CalcIgniteTicksTillAggro(target, percent, threat)
@@ -1677,7 +1681,7 @@ function BigWigsMageTools:StartThreatBar(target, owner, percent, threat)
 	end
 	candybar:Pause(id, true)
 
-	tinsert(barCache, id)
+	barCache[id] = true
 end
 
 function BigWigsMageTools:StopBar(id)
@@ -1685,11 +1689,12 @@ function BigWigsMageTools:StopBar(id)
 		return
 	end
 	candybar:UnregisterCandyBar(id)
+	barCache[id] = nil
 end
 
 function BigWigsMageTools:StopAllBars()
-	for i = 1, table.getn(barCache) do
-		BigWigsMageTools:StopBar(barCache[i])
+	for id, _ in pairs(barCache) do
+		BigWigsMageTools:StopBar(id)
 	end
 	barCache = {}
 end
