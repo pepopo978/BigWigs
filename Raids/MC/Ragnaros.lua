@@ -1,9 +1,9 @@
 
 local module, L = BigWigs:ModuleDeclaration("Ragnaros", "Molten Core")
 
-module.revision = 30079
+module.revision = 30080
 module.enabletrigger = module.translatedName
-module.toggleoptions = {"emerge", "wrathofragnaros", "lava", "adds", "melt", "elementalfire", "bosskill"}
+module.toggleoptions = {"emerge", "wrathofragnaros", "lava", "adds", "melt", "elementalfire", "elementalfiresay", "elementalfiremark", "bosskill"}
 module.wipemobs = {"Son of Flame"}
 module.defaultDB = {
 	adds = false,
@@ -35,6 +35,14 @@ L:RegisterTranslations("enUS", function() return {
 	elementalfire_cmd = "elementalfire",
 	elementalfire_name = "Elemental Fire Alert",
 	elementalfire_desc = "Warn for Elemental Fire",
+	
+	elementalfiresay_cmd = "elementalfiresay",
+	elementalfiresay_name = "Elemental Fire Announce",
+	elementalfiresay_desc = "Announce to /say when you get Elemental Fire",
+	
+	elementalfiremark_cmd = "elementalfiremark",
+	elementalfiremark_name = "Elemental Fire Mark",
+	elementalfiremark_desc = "Mark victims of Elemental Fire (and unmark them once it runs out)",
 	
 
 		--74.137
@@ -70,7 +78,7 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_lavaYou = "You lose (.+) health for swimming in lava.", --CHAT_MSG_COMBAT_SELF_HITS
 	msg_lavaYou = "You're standing in lava!",
 
-	msg_addDead = "/8 Son of Flame Dead",
+	msg_addDead = "/10 Son of Flame Dead",
 	
 	trigger_meltWeapon = "Ragnaros casts Melt Weapon on you: (.+) damaged.", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 	bar_melt = "Melt Damage: ",
@@ -78,7 +86,11 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_elementalFireYou = "You are afflicted by Elemental Fire.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 	trigger_elementalFireOther = "(.+) is afflicted by Elemental Fire.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE //CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 	trigger_elementalFireFade = "Elemental Fire fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHERà
-	bar_elementalFire = " Elemental Fire",
+	bar_elementalFire = "%s - Elemental Fire",
+	say_elementalFire = "Get away from me - Elemental Fire!",
+	msg_elementalFire = "Elemental Fire on %s - move away from them!",
+	msg_elementalFireYou = "Elemental Fire on YOU - get away from others!",
+	warn_elementalFire = "Damage Aura!",
 } end)
 
 local timer = {
@@ -218,7 +230,7 @@ function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
 
 	if (msg == string.format(UNITDIESOTHER, "Son of Flame")) then
 		addDead = addDead + 1
-		if addDead <= 8 then
+		if addDead <= 10 then
 			self:Sync(syncName.addDead .. " " .. addDead)
 		end
 	end
@@ -273,7 +285,9 @@ function module:Event(msg)
 		
 		
 	elseif msg == L["trigger_elementalFireYou"] then
-		self:Sync(syncName.elementalFire .. " " .. UnitName("Player"))
+		local elementalFirePerson = UnitName("Player")
+		self:Sync(syncName.elementalFire .. " " .. elementalFirePerson)
+		self:ElementalFire(elementalFirePerson) -- let's not miss a sync
 	
 	elseif string.find(msg, L["trigger_elementalFireOther"]) then
 		local _,_, elementalFirePerson, _ = string.find(msg, L["trigger_elementalFireOther"])
@@ -298,9 +312,9 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 	elseif sync == syncName.addDead and rest and self.db.profile.adds then
 		self:AddDead(rest)
 		
-	elseif sync == syncName.elementalFire and rest and self.db.profile.elementalfire then
+	elseif sync == syncName.elementalFire and rest and rest ~= UnitName("player") then
 		self:ElementalFire(rest)
-	elseif sync == syncName.elementalFireFade and rest and self.db.profile.elementalfire then
+	elseif sync == syncName.elementalFireFade and rest then
 		self:ElementalFireFade(rest)
 	end
 end
@@ -447,7 +461,7 @@ end
 function module:AddDead(rest)
 	self:Message(rest..L["msg_addDead"], "Positive", false, nil, false)
 	
-	if tonumber(rest) == 8 and phase == "submerged" then
+	if tonumber(rest) == 10 and phase == "submerged" then
 		self:Sync(syncName.emerge)
 	end
 end
@@ -479,10 +493,119 @@ function module:MeltWeapon(rest)
 	end
 end
 
-function module:ElementalFire(rest)
-	self:Bar(rest..L["bar_elementalFire"], timer.elementalFire, icon.elementalFire, true, color.elementalFire)
+function module:ElementalFire(player)
+	if player == UnitName("player") then
+		-- Don't spam tanks; infer tank status from FR >= 200
+		local _, FR = UnitResistance("player",2)
+		if self.db.profile.elementalfire and FR < 200 then
+			self:WarningSign(icon.elementalFire, 2, true, L["warn_elementalFire"])
+			self:Message(L["msg_elementalFireYou"], "Important")
+			self:Sound("Beware")
+		end
+		if self.db.profile.elementalfiresay then
+			SendChatMessage(L["say_elementalFire"], "SAY")
+		end
+	elseif self.db.profile.elementalfire then
+		self:Message(string.format(L["msg_elementalFire"], player), "Urgent")
+	end
+	if self.db.profile.elementalfire then
+		self:Bar(string.format(L["bar_elementalFire"], player), timer.elementalFire, icon.elementalFire, true, color.elementalFire)
+	end
+	if self.db.profile.elementalfiremark then
+		local markToUse = self:GetAvailableRaidMark()
+		if markToUse then
+			self:SetRaidTargetForPlayer(player, markToUse)
+		end
+	end
 end
 
-function module:ElementalFireFade(rest)
-	self:RemoveBar(rest..L["bar_elementalFire"])
+function module:ElementalFireFade(player)
+	self:RemoveBar(string.format(L["bar_elementalFire"], player))
+	if self.db.profile.elementalfiremark then
+		self:RestorePreviousRaidTargetForPlayer(player)
+	end
 end
+
+function module:OnFriendlyDeath(msg)
+	-- Remove bar and raid marker when a player dies
+	local _, _, player = string.find(msg, "(.+) die")
+	if player then
+		if player == "You" then player = UnitName("player") end
+		self:ElementalFireFade(player)
+	end
+end
+
+function module:Test() --Only for Elemental Fire for now!
+	-- Initialize module state
+	self:Engage()
+
+	local events = {
+		-- Self Test
+		-- Gain and fade
+		{ time = 2, func = function()
+			local msg = "You are afflicted by Elemental Fire."
+			print("Test: " .. msg)
+			module:TriggerEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", msg)
+		end },
+		{ time = 10, func = function()
+			local msg = "Elemental Fire fades from you."
+			print("Test: " .. msg)
+			module:TriggerEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", msg)
+		end },
+		-- Gain and die
+		{ time = 12, func = function()
+			local msg = "You are afflicted by Elemental Fire."
+			print("Test: " .. msg)
+			module:TriggerEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", msg)
+		end },
+		{ time = 14, func = function()
+			local msg = "You die."
+			print("Test: " .. msg)
+			module:OnFriendlyDeath(msg)
+		end },
+
+		-- Raid Member Test
+		-- Gain and fade
+		{ time = 18, func = function()
+			local name = UnitName("raid1") or "raid1"
+			local msg = name.." is afflicted by Elemental Fire."
+			print("Test: " .. msg)
+			module:TriggerEvent("CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE", msg)
+		end },
+		{ time = 20, func = function()
+			local name = UnitName("raid2") or "raid2"
+			local msg = name.." is afflicted by Elemental Fire."
+			print("Test: " .. msg)
+			module:TriggerEvent("CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE", msg)
+		end },
+		{ time = 24, func = function()
+			local name = UnitName("raid1") or "raid1"
+			local msg = "Elemental Fire fades from "..name.."."
+			print("Test: " .. msg)
+			module:TriggerEvent("CHAT_MSG_SPELL_AURA_GONE_PARTY", msg)
+		end },
+		{ time = 26, func = function()
+			local name = UnitName("raid2") or "raid2"
+			local msg = name.." dies."
+			print("Test: " .. msg)
+			module:OnFriendlyDeath(msg)
+		end },
+
+		-- End of Test
+		{ time = 28, func = function()
+			print("Test: Disengage")
+			module:Disengage()
+		end },
+	}
+
+	-- Schedule each event at its absolute time
+	for i, event in ipairs(events) do
+		self:ScheduleEvent("RagnarosTest" .. i, event.func, event.time)
+	end
+
+	self:Message("Ragnaros test started", "Positive")
+	return true
+end
+
+-- Test command:
+-- /run local m=BigWigs:GetModule("Ragnaros"); BigWigs:SetupModule("Ragnaros");m:Test();
