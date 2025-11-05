@@ -57,8 +57,8 @@ L:RegisterTranslations("enUS", function()
 		bar_soulwell = "Soulwell!",
 		msg_soulwell = "Soulwell! Get your Cookie",
 
-		trigger_shutdown = "Shutdown in (.+) (.+)", --CHAT_MSG_SYSTEM
-		trigger_restart = "Restart in (.+) (.+)", --CHAT_MSG_SYSTEM
+		trigger_shutdown = "Shutdown in (%d+) (%a+)", --CHAT_MSG_SYSTEM
+		trigger_restart = "Restart in (%d+) (%a+)", --CHAT_MSG_SYSTEM
 		trigger_restartMinSec = "Shutdown in (.+) Minutes (.+) Seconds.", --CHAT_MSG_SYSTEM
 		trigger_shutdownMinSec = "Restart in (.+) Minutes (.+) Seconds.", --CHAT_MSG_SYSTEM
 		bar_shutDown = "Server Shutdown/Restart",
@@ -661,7 +661,7 @@ function BigWigsCommonAuras:CHAT_MSG_SYSTEM(msg)
 
 
 	elseif string.find(msg, L["trigger_restart"]) or string.find(msg, L["trigger_shutdown"]) then
-		local _, _, digits, minSec = string.find(msg, " in (.+) (.+)")
+		local _, _, digits, minSec = string.find(msg, " in (%d+) (%a+)")
 		if string.find(minSec, "inute") then
 			timeToShutdown = tonumber(digits) * 60
 		else
