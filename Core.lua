@@ -269,7 +269,7 @@ BigWigs.cmdtable = {
 }
 BigWigs:RegisterChatCommand({ "/bw", "/BigWigs" }, BigWigs.cmdtable)
 BigWigs.debugFrame = ChatFrame1
-BigWigs.revision = tonumber(GetAddOnMetadata("BigWigs", "Revision")) or 0
+BigWigs.revision = tonumber(GetAddOnMetadata("BigWigs", "X-Revision")) or 0
 BigWigs.markUnitsWhenNotRaidLeader = false -- too many people marking causes issues, can turn on if needed
 
 function BigWigs:EditLayout()
