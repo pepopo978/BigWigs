@@ -1,8 +1,10 @@
 local name = "Common Auras"
 local L = AceLibrary("AceLocale-2.2"):new("BigWigs" .. name)
 local BS = AceLibrary("Babble-Spell-2.3")
+local roster = AceLibrary:HasInstance("RosterLib-2.0") and AceLibrary("RosterLib-2.0") or nil
 
 local spellStatus = nil
+local has_superwow = SUPERWOW_STRING or SetAutoloot
 
 local whZone = nil
 local whColor = nil
@@ -10,10 +12,6 @@ local whText = nil
 
 local portalColor = nil
 local portalText = nil
-
--- Use for detecting instant cast target (Fear Ward)
-local spellTarget = nil
-local spellCasting = nil
 
 local timeToShutdown = nil
 local shutdownBigWarning = nil
@@ -39,6 +37,9 @@ L:RegisterTranslations("enUS", function()
 
 		msg_challengingRoar = " Challenging Roar",
 		bar_challengingRoar = " Challenging Roar",
+
+		msg_spiritLink = "Spirit Link on ",
+		bar_spiritLink = " Spirit Link",
 
 		msg_divineIntervention = "Divine Intervention on ",
 		bar_divineIntervention = " Divine Intervention",
@@ -130,6 +131,7 @@ BigWigsCommonAuras.defaultDB = {
 	lifegivinggem = true,
 	challengingshout = true,
 	challengingroar = true,
+	spiritlink = true,
 	di = true,
 	portal = true,
 	wormhole = true,
@@ -147,7 +149,7 @@ BigWigsCommonAuras.defaultDB = {
 	autofocus = false
 }
 BigWigsCommonAuras.consoleCmd = L["commonauras"]
-BigWigsCommonAuras.revision = 30064
+BigWigsCommonAuras.revision = 30065
 BigWigsCommonAuras.external = true
 BigWigsCommonAuras.consoleOptions = {
 	type = "group",
@@ -292,6 +294,17 @@ BigWigsCommonAuras.consoleOptions = {
 						BigWigsCommonAuras.db.profile.challengingroar = v
 					end,
 				},
+				["spiritlink"] = {
+					type = "toggle",
+					name = BS["Spirit Link"],
+					desc = string.format(L["Toggle %s display."], BS["Spirit Link"]),
+					get = function()
+						return BigWigsCommonAuras.db.profile.spiritlink
+					end,
+					set = function(v)
+						BigWigsCommonAuras.db.profile.spiritlink = v
+					end,
+				},
 				["di"] = {
 					type = "toggle",
 					name = BS["Divine Intervention"],
@@ -401,6 +414,7 @@ local timer = {
 	laststand = 20,
 	lifegivingGem = 20,
 	challenging = 6,
+	spiritLink = 20,
 	di = 60,
 	portal = 60,
 	wormhole = 8,
@@ -416,6 +430,7 @@ local icon = {
 	lifegivingGem = L["iconPrefix"] .. "inv_misc_gem_pearl_05",
 	challengingShout = L["iconPrefix"] .. "ability_bullrush",
 	challengingRoar = L["iconPrefix"] .. "ability_druid_challangingroar",
+	spiritLink = L["iconPrefix"] .. "spell_shaman_spiritlink",
 	di = L["iconPrefix"] .. "spell_nature_timestop",
 	wormhole = L["iconPrefix"] .. "Inv_Misc_EngGizmos_12",
 	orange = L["iconPrefix"] .. "inv_misc_food_41",
@@ -431,6 +446,7 @@ local color = {
 	lifegivingGem = "Red",
 	challengingShout = "Red",
 	challengingRoar = "Red",
+	spiritLink = "Cyan",
 	di = "Blue",
 	wormhole = "Cyan",
 	orange = "Green",
@@ -448,8 +464,12 @@ function BigWigsCommonAuras:OnEnable()
 	self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF")
 	self:RegisterEvent("LOOT_OPENED")
 
-	if UnitClass("player") == "Warrior" or UnitClass("player") == "Druid" or UnitClass("player") == "Priest" then
-		self:RegisterEvent("SpellStatusV2_SpellCastInstant")
+	if UnitClass("player") == "Warrior" or UnitClass("player") == "Druid" or UnitClass("player") == "Priest" or UnitClass("player") == "Shaman" then
+		if has_superwow then
+			self:RegisterEvent("UNIT_CASTEVENT") -- more reliable target info, anyone can sync
+		else
+			self:RegisterEvent("SpellStatusV2_SpellCastInstant")
+		end
 	elseif UnitClass("player") == "Mage" then
 		if not spellStatus then
 			spellStatus = AceLibrary("SpellStatusV2-2.0")
@@ -458,33 +478,41 @@ function BigWigsCommonAuras:OnEnable()
 		self:RegisterEvent("SpellStatusV2_SpellCastFailure")
 	end
 
+	local throttle_delta = 0.4
 	self:RegisterEvent("BigWigs_RecvSync")
 	-- XXX Lets have a low throttle because you'll get 2 syncs from yourself, so
 	-- it results in 2 messages.
-	self:TriggerEvent("BigWigs_ThrottleSync", "BWCAFW", .4) -- Fear Ward
-	self:TriggerEvent("BigWigs_ThrottleSync", "BWCASW", .4) -- Shield Wall
-	self:TriggerEvent("BigWigs_ThrottleSync", "BWCALS", .4) -- Last Stand
-	self:TriggerEvent("BigWigs_ThrottleSync", "BWCALG", .4) -- Last Stand
-	self:TriggerEvent("BigWigs_ThrottleSync", "BWCACS", .4) -- Challenging Shout
-	self:TriggerEvent("BigWigs_ThrottleSync", "BWCACR", .4) -- Challenging Roar
-	self:TriggerEvent("BigWigs_ThrottleSync", "BWCAP", .4) -- Portal
-	self:TriggerEvent("BigWigs_ThrottleSync", "BWCAWH", .4) -- Wormhole
-	self:TriggerEvent("BigWigs_ThrottleSync", "BWCAOR", .4) -- Orange
-	self:TriggerEvent("BigWigs_ThrottleSync", "BWCAWL", .4) -- Soulwell
-	self:TriggerEvent("BigWigs_ThrottleSync", "BWCAAF", .4) -- AutoFocus
+	self:TriggerEvent("BigWigs_ThrottleSync", "BWCAFW", throttle_delta) -- Fear Ward
+	self:TriggerEvent("BigWigs_ThrottleSync", "BWCASW", throttle_delta) -- Shield Wall
+	self:TriggerEvent("BigWigs_ThrottleSync", "BWCALS", throttle_delta) -- Last Stand
+	self:TriggerEvent("BigWigs_ThrottleSync", "BWCALG", throttle_delta) -- Last Stand
+	self:TriggerEvent("BigWigs_ThrottleSync", "BWCACS", throttle_delta) -- Challenging Shout
+	self:TriggerEvent("BigWigs_ThrottleSync", "BWCACR", throttle_delta) -- Challenging Roar
+	self:TriggerEvent("BigWigs_ThrottleSync", "BWCASL", throttle_delta) -- Spirit Link
+	self:TriggerEvent("BigWigs_ThrottleSync", "BWCAP", throttle_delta) -- Portal
+	self:TriggerEvent("BigWigs_ThrottleSync", "BWCAWH", throttle_delta) -- Wormhole
+	self:TriggerEvent("BigWigs_ThrottleSync", "BWCAOR", throttle_delta) -- Orange
+	self:TriggerEvent("BigWigs_ThrottleSync", "BWCAWL", throttle_delta) -- Soulwell
+	self:TriggerEvent("BigWigs_ThrottleSync", "BWCAAF", throttle_delta) -- AutoFocus
 
 	self:TriggerEvent("BigWigs_ThrottleSync", "BWCAAQ40INSIGNIA", 60) -- AQ40 boss insignia
 	self:TriggerEvent("BigWigs_ThrottleSync", "BWCAAQ40ARTIFACT", 60) -- Artifact
 end
 
-function BigWigsCommonAuras:SpellStatusV2_SpellCastInstant(sId, sName, sRank, sFullName, sCastTime)
+-- equip spellcasts with their target, advantage that anyone with superwow can send the sync not just the caster
+function BigWigsCommonAuras:UNIT_CASTEVENT(caster,target,action,spell_id,cast_time)
+	if not (target and action == "CAST" and roster:GetUnitObjectFromUnit(caster)) then return end
+	
+	-- this technically false-postives on cast completions but it shouldn't matter for our purpose
+	local name,rank = SpellInfo(spell_id)
+	local fullname = rank == "" and name or format("%s(%s)",name,rank)
+	self:SpellStatusV2_SpellCastInstant(spell_id, name, rank, fullname, cast_time, UnitName(target))
+end
+
+function BigWigsCommonAuras:SpellStatusV2_SpellCastInstant(sId, sName, sRank, sFullName, sCastTime, target)
+	local targetName = target
 	if sName == BS["Fear Ward"] then
-		local targetName = nil
-		if spellTarget then
-			targetName = spellTarget
-			spellCasting = nil
-			spellTarget = nil
-		else
+		if not targetName then
 			if UnitExists("target") and UnitIsPlayer("target") and not UnitIsEnemy("target", "player") then
 				targetName = UnitName("target")
 			else
@@ -509,6 +537,15 @@ function BigWigsCommonAuras:SpellStatusV2_SpellCastInstant(sId, sName, sRank, sF
 		self:TriggerEvent("BigWigs_SendSync", "BWCACS")
 	elseif sName == BS["Challenging Roar"] then
 		self:TriggerEvent("BigWigs_SendSync", "BWCACR")
+	elseif sName == BS["Spirit Link"] then
+		if not targetName then
+			if UnitExists("target") and UnitIsPlayer("target") and not UnitIsEnemy("target", "player") then
+				targetName = UnitName("target")
+			else
+				targetName = UnitName("player")
+			end
+		end
+		self:TriggerEvent("BigWigs_SendSync", "BWCASL " .. targetName)
 	end
 end
 
@@ -785,6 +822,15 @@ function BigWigsCommonAuras:BigWigs_RecvSync(sync, rest, nick)
 		self:SetCandyBarOnClick("BigWigsBar " .. nick .. L["bar_challengingRoar"], function(name, button, extra)
 			TargetByName(extra, true)
 		end, nick)
+
+
+	elseif self.db.profile.spiritlink and sync == "BWCASL" and rest then
+		-- self:TriggerEvent("BigWigs_Message", L["msg_spiritLink"] .. rest, "Important", false, nil, false) -- noise
+		self:TriggerEvent("BigWigs_Sound", "Info")
+		self:TriggerEvent("BigWigs_StartBar", self, rest .. L["bar_spiritLink"], timer.spiritLink, icon.spiritLink, true, color.spiritLink)
+		self:SetCandyBarOnClick("BigWigsBar " .. rest .. L["bar_spiritLink"], function(name, button, extra)
+			TargetByName(extra, true)
+		end, rest)
 
 	elseif self.db.profile.di and sync == "BWCADI" then
 		self:TriggerEvent("BigWigs_Message", L["msg_divineIntervention"] .. nick, "Urgent", false, nil, false)
