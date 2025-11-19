@@ -1,7 +1,6 @@
 local name = "Common Auras"
 local L = AceLibrary("AceLocale-2.2"):new("BigWigs" .. name)
 local BS = AceLibrary("Babble-Spell-2.3")
-local roster = AceLibrary:HasInstance("RosterLib-2.0") and AceLibrary("RosterLib-2.0") or nil
 
 local spellStatus = nil
 local has_superwow = SUPERWOW_STRING or SetAutoloot
@@ -466,7 +465,7 @@ function BigWigsCommonAuras:OnEnable()
 
 	if UnitClass("player") == "Warrior" or UnitClass("player") == "Druid" or UnitClass("player") == "Priest" or UnitClass("player") == "Shaman" then
 		if has_superwow then
-			self:RegisterEvent("UNIT_CASTEVENT") -- more reliable target info, anyone can sync
+			self:RegisterEvent("UNIT_CASTEVENT") -- more reliable target info, for instance if you cast without targeting
 		else
 			self:RegisterEvent("SpellStatusV2_SpellCastInstant")
 		end
@@ -499,14 +498,14 @@ function BigWigsCommonAuras:OnEnable()
 	self:TriggerEvent("BigWigs_ThrottleSync", "BWCAAQ40ARTIFACT", 60) -- Artifact
 end
 
--- equip spellcasts with their target, advantage that anyone with superwow can send the sync not just the caster
+-- equip your spellcasts with their target
 function BigWigsCommonAuras:UNIT_CASTEVENT(caster,target,action,spell_id,cast_time)
-	if not (target and action == "CAST" and roster:GetUnitObjectFromUnit(caster)) then return end
-	
+	if not (action == "CAST" and UnitIsUnit(caster,"player")) then return end
+
 	-- this technically false-postives on cast completions but it shouldn't matter for our purpose
 	local name,rank = SpellInfo(spell_id)
 	local fullname = rank == "" and name or format("%s(%s)",name,rank)
-	self:SpellStatusV2_SpellCastInstant(spell_id, name, rank, fullname, cast_time, UnitName(target))
+	self:SpellStatusV2_SpellCastInstant(spell_id, name, rank, fullname, cast_time, target and UnitName(target))
 end
 
 function BigWigsCommonAuras:SpellStatusV2_SpellCastInstant(sId, sName, sRank, sFullName, sCastTime, target)
