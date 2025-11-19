@@ -1,7 +1,7 @@
 ## Interface: 11200
 
-## Revision: 30127
-## Title: |cFFFF8080Pepopo|r Big Wigs |cff7fff7f30127|r |cffabd473Turtle-WoW|r
+## X-Revision: 30130
+## Title: |cFFFF8080Pepopo|r Big Wigs |cff7fff7f30130|r |cffabd473Turtle-WoW|r
 ## Title-zhCN: |cffabd473Turtle-WoW|r Big Wigs
 ## Notes: Boss Mods with Timer bars.
 ## Notes-esES: Módulos para Jefes con barras temporizadoras.
