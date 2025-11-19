@@ -1,7 +1,6 @@
 local name = "Common Auras"
 local L = AceLibrary("AceLocale-2.2"):new("BigWigs" .. name)
 local BS = AceLibrary("Babble-Spell-2.3")
-local roster = AceLibrary:HasInstance("RosterLib-2.0") and AceLibrary("RosterLib-2.0") or nil
 
 local spellStatus = nil
 local has_superwow = SUPERWOW_STRING or SetAutoloot
@@ -501,7 +500,7 @@ end
 
 -- equip your spellcasts with their target
 function BigWigsCommonAuras:UNIT_CASTEVENT(caster,target,action,spell_id,cast_time)
-	if not (UnitIsUnit(caster,"player") and action == "CAST" and roster:GetUnitObjectFromUnit(caster)) then return end
+	if not (action == "CAST" and UnitIsUnit(caster,"player")) then return end
 
 	-- this technically false-postives on cast completions but it shouldn't matter for our purpose
 	local name,rank = SpellInfo(spell_id)
