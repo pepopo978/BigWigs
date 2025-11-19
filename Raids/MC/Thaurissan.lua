@@ -1,6 +1,6 @@
 local module, L = BigWigs:ModuleDeclaration("Sorcerer-Thane Thaurissan", "Molten Core")
 
-module.revision = 30001
+module.revision = 30002
 module.enabletrigger = module.translatedName
 module.toggleoptions = {"runeofdetonation", "bosskill"}
 module.zonename = {
@@ -16,7 +16,6 @@ L:RegisterTranslations("enUS", function() return {
 	runeofdetonation_desc = "Personal alert when you have both Rune of Detonation and Rune of Power",
 
 	trigger_runeOfDetonationYou = "You are afflicted by Rune of Detonation",
-	trigger_runeOfDetonationStackYou = "You are afflicted by Rune of Detonation %((.+)%)",
 	trigger_runeOfDetonationFade = "Rune of Detonation fades from you",
 
 	trigger_runeOfPowerYou = "You are afflicted by Rune of Power",
@@ -28,6 +27,7 @@ L:RegisterTranslations("enUS", function() return {
 
 local hasRuneOfDetonation = false
 local hasRuneOfPower = false
+local hasAlerted = false
 
 local timer = {
 	runeDetonation = 6,
@@ -47,16 +47,19 @@ end
 function module:OnSetup()
 	hasRuneOfDetonation = false
 	hasRuneOfPower = false
+	hasAlerted = false
 end
 
 function module:OnEngage()
 	hasRuneOfDetonation = false
 	hasRuneOfPower = false
+	hasAlerted = false
 end
 
 function module:OnDisengage()
 	hasRuneOfDetonation = false
 	hasRuneOfPower = false
+	hasAlerted = false
 end
 
 function module:Event(msg)
@@ -80,51 +83,22 @@ function module:Event(msg)
 end
 
 function module:CheckRuneCombination()
-	if hasRuneOfDetonation and hasRuneOfPower and self.db.profile.runeofdetonation then
-		self:Message(L["msg_runeCombo"], "Personal", false, nil, false)
-		self:Sound("RunAway")
-		self:WarningSign(icon.runeDetonation, 3)
+	if not self.db.profile.runeofdetonation then return end
+
+	if hasRuneOfDetonation and hasRuneOfPower then
+		-- Only alert when transitioning into having both debuffs
+		if not hasAlerted then
+			self:Message(L["msg_runeCombo"], "Personal", false, nil, false)
+			self:Sound("RunAway")
+			self:WarningSign(icon.runeDetonation, 3)
+			hasAlerted = true
+		end
+	else
+		self:ClearRuneAlerts()
+		hasAlerted = false
 	end
 end
 
 function module:ClearRuneAlerts()
 	self:RemoveWarningSign(icon.runeDetonation)
 end
-
-function module:Test()
-	BigWigs:ToggleActive(true)
-	BigWigs:EnableModule(self:ToString())
-
-	print("Testing Thaurissan Rune combinations...")
-
-	-- Schedule the sequence of events
-	self:ScheduleEvent("ThaurissanTest1", function()
-		print("Test 1: Gaining Rune of Power (no alert expected)")
-		self:TriggerEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "You are afflicted by Rune of Power.")
-	end, 0)
-
-	self:ScheduleEvent("ThaurissanTest2", function()
-		print("Test 2: Gaining Rune of Detonation while having Rune of Power (ALERT EXPECTED)")
-		self:TriggerEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "You are afflicted by Rune of Detonation.")
-	end, 1)
-
-	self:ScheduleEvent("ThaurissanTest3", function()
-		print("Test 3: Losing Rune of Power while keeping Rune of Detonation (alert icon should clear)")
-		self:TriggerEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Rune of Power fades from you.")
-	end, 3)
-
-	self:ScheduleEvent("ThaurissanTest4", function()
-		print("Test 4: Regaining Rune of Power while having Rune of Detonation (ALERT EXPECTED)")
-		self:TriggerEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "You are afflicted by Rune of Power.")
-	end, 5)
-
-	self:ScheduleEvent("ThaurissanTest5", function()
-		print("Test 5: Losing Rune of Detonation (alert icon should clear)")
-		self:TriggerEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "Rune of Detonation fades from you.")
-	end, 7)
-
-	self:ScheduleEvent("ThaurissanTestComplete", function()
-		print("Thaurissan test sequence complete!")
-	end, 8)
-end
--- /run BigWigs:GetModule("Sorcerer-Thane Thaurissan"):Test()
