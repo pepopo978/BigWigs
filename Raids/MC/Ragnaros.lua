@@ -7,6 +7,8 @@ module.toggleoptions = {"emerge", "wrathofragnaros", "lava", "adds", "melt", "el
 module.wipemobs = {"Son of Flame"}
 module.defaultDB = {
 	adds = false,
+	elementalfire = false, -- only trigger the "say" by default
+	elementalfiremark = false
 }
 
 L:RegisterTranslations("enUS", function() return {
