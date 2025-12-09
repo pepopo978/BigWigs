@@ -608,12 +608,14 @@ function BigWigsMageTools:CheckTalents()
 		self.hasIgniteTalent = false
 
 		local nameTalent, icon, tier, column, currRank, maxRank = GetTalentInfo(2, 3);
-		if nameTalent == "Ignite" and currRank > 0 then
+		-- ignite talent
+		if currRank > 0 then
 			self.hasIgniteTalent = true
 		end
 
 		nameTalent, icon, tier, column, currRank, maxRank = GetTalentInfo(2, 10);
-		if nameTalent == "Improved Scorch" and currRank > 0 then
+		-- scorch talent
+		if currRank > 0 then
 			self.hasScorchTalent = true
 		end
 
