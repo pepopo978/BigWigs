@@ -80,6 +80,8 @@ Plugins\AutoReply.lua
 Plugins\Proximity.lua
 Plugins\WorldBuffTimers.lua
 Plugins\MageTools.lua
+Plugins\MageToolEventsV1.lua
+Plugins\MageToolEventsV2.lua
 Plugins\FRBuffMacro.lua
 Plugins\Farclip.lua
 Plugins\FrostBlast.lua

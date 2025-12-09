@@ -37,10 +37,8 @@ local syncName = {
 	ignitePyroRequest = "IgnitePyroRequest",
 	ignitePyroRequestSpace = "IgnitePyroRequest ",
 
-	fetishStart = "FetishStart",
-	fetishFade = "FetishFade",
-	eyeOfDimStart = "eyeOfDimStart",
-	eyeOfDimFade = "eyeOfDimFade",
+	igniteDropRequest = "IgniteDropRequest",
+	igniteDropRequestSpace = "IgniteDropRequest ",
 }
 
 local scorchIcon = "Interface\\Icons\\Spell_Fire_SoulBurn"
@@ -131,9 +129,6 @@ L:RegisterTranslations("enUS", function()
 		["IgniteAutoWarning"] = "Automated ignite warning",
 		["IgniteAutoWarningDesc"] = "Warning message when small number of ignite ticks will pull aggro for the ignite owner",
 
-		["ThreatTrinketAlerts"] = "Threat Trinket Alerts",
-		["ThreatTrinketAlertsDesc"] = "Notify when other mages use Fetish or Eye of Diminution",
-
 		["IgnitePlayerWarning"] = "Ignite player warnings",
 		["IgnitePlayerWarningDesc"] = "Whether to display + play sounds for manual player warnings",
 		["IgnitePlayerWarningTrigger"] = "Trigger ignite warning",
@@ -144,30 +139,10 @@ L:RegisterTranslations("enUS", function()
 		["IgnitePyroRequestTrigger"] = "Trigger pyro request",
 		["IgnitePyroRequestTriggerDesc"] = "/bw extra magetools ignitepyrotrigger",
 
-		scorch_afflict_test = "^(.+) is afflicted by Fire Vulnerability(.*)", -- for stacks 2-5 will be "Fire Vulnerability (2)".
-		scorch_gains_test = "^(.+) gains Fire Vulnerability(.*)", -- for stacks 2-5 will be "Fire Vulnerability (2)".
-		scorch_test = ".+ Scorch (.+)s (.+) for",
-		fireblast_test = ".+ Fire Blast (.+)s (.+) for",
-		scorch_fades_test = "Fire Vulnerability fades from (.+).",
-		scorch_resist_test = "(.+) Scorch was resisted by (.+).",
-		fireblast_resist_test = "(.+) Fire Blast was resisted by (.+).",
-		fire_vuln_resist_test = "(.+) Fire Vulnerability was resisted by (.+).", -- Scorch can hit but fire vulnerability can resist independently
-
-		ignite_afflict_test = "^(.+) is afflicted by Ignite(.*)", -- for stacks 2-5 will be "Ignite (2)".
-		ignite_gains_test = "^(.+) gains Ignite(.*)", -- for stacks 2-5 will be "Ignite (2)".
-		self_ignite_crit_test = "^(Your) (.+) crits (.+) for .+ Fire damage",
-		other_ignite_crit_test = "^(.+)'s (.+) crits (.+) for .+ Fire damage",
-		ignite_dmg = "^(.+) suffers (.+) Fire damage from (.+) Ignite",
-		ignite_fades_test = "Ignite fades from (.+).",
-
-		arcane_shroud_test = "You gain Arcane Shroud", -- Fetish of the sand reaver
-		arcane_shroud_fades_test = "Arcane Shroud fades from you",
-		eye_of_diminution_test = "You gain The Eye of Diminution", -- Eye of Diminution
-		eye_of_diminution_fades_test = "The Eye of Diminution fades from you",
-
-		slain_test = "(.+) is slain by (.+)",
-		self_slain_test = "You have slain (.+)",
-		death_test = "(.+) dies.",
+		["IgniteDropRequest"] = "Drop ignite requests",
+		["IgniteDropRequestDesc"] = "Whether to display + play sounds for manual player drop ignite requests",
+		["IgniteDropRequestTrigger"] = "Trigger drop ignite request",
+		["IgniteDropRequestTriggerDesc"] = "/bw extra magetools ignitedroptrigger",
 	}
 end)
 
@@ -179,6 +154,7 @@ BigWigsMageTools = BigWigs:NewModule(name)
 BigWigsMageTools.defaultDB = {
 	enable = isMage,
 	debug = false,
+	fileDebug = false,
 	barspacing = 5,
 	texture = "BantoBar",
 	posx = nil,
@@ -204,7 +180,7 @@ BigWigsMageTools.defaultDB = {
 	igniteautowarning = true,
 	igniteplayerwarning = true,
 	ignitepyrorequest = true,
-	threattrinketalerts = true,
+	ignitedroprequest = true,
 }
 
 BigWigsMageTools.consoleCmd = L["MageToolsCmd"]
@@ -521,18 +497,6 @@ BigWigsMageTools.consoleOptions = {
 			name = " ",
 			order = 11,
 		},
-		threattrinketalerts = {
-			type = "toggle",
-			name = L["ThreatTrinketAlerts"],
-			desc = L["ThreatTrinketAlertsDesc"],
-			order = 12,
-			get = function()
-				return BigWigsMageTools.db.profile.threattrinketalerts
-			end,
-			set = function(v)
-				BigWigsMageTools.db.profile.threattrinketalerts = v
-			end,
-		},
 		igniteautowarning = {
 			type = "toggle",
 			name = L["IgniteAutoWarning"],
@@ -569,6 +533,18 @@ BigWigsMageTools.consoleOptions = {
 				BigWigsMageTools.db.profile.ignitepyrorequest = v
 			end,
 		},
+		ignitedroprequest = {
+			type = "toggle",
+			name = L["IgniteDropRequest"],
+			desc = L["IgniteDropRequestDesc"],
+			order = 16,
+			get = function()
+				return BigWigsMageTools.db.profile.ignitedroprequest
+			end,
+			set = function(v)
+				BigWigsMageTools.db.profile.ignitedroprequest = v
+			end,
+		},
 		spacer = {
 			type = "header",
 			name = " ",
@@ -592,10 +568,19 @@ BigWigsMageTools.consoleOptions = {
 				BigWigsMageTools:Sync(syncName.ignitePyroRequestSpace .. BigWigsMageTools.playerName)
 			end,
 		},
+		ignitedroptrigger = {
+			type = "execute",
+			name = L["IgniteDropRequestTrigger"],
+			desc = L["IgniteDropRequestTriggerDesc"],
+			order = 23,
+			func = function()
+				BigWigsMageTools:Sync(syncName.igniteDropRequestSpace .. BigWigsMageTools.playerName)
+			end,
+		},
 	}
 }
 
-BigWigsMageTools.revision = 30068
+BigWigsMageTools.revision = 30069
 BigWigsMageTools.external = true
 
 BigWigsMageTools.active = false
@@ -680,19 +665,28 @@ function BigWigsMageTools:Activate()
 
 		self:RegisterEvent("PLAYER_REGEN_ENABLED")
 		self:RegisterEvent("PLAYER_TARGET_CHANGED")
-		self:RegisterEvent("CHAT_MSG_COMBAT_HOSTILE_DEATH")
 
-		self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_OTHER", "AuraFadeEvents")
-		self:RegisterEvent("CHAT_MSG_SPELL_AURA_GONE_SELF", "TrinketEvents")
-		self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS", "TrinketEvents")
+		self.eventVersion = 1
+		if GetNampowerVersion and SUPERWOW_VERSION then
+			local major, minor = GetNampowerVersion()
 
-		self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS", "PlayerDamageEvents")
-		self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE", "PlayerDamageEvents")
-		self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE", "PlayerDamageEvents")
-		self:RegisterEvent("CHAT_MSG_SPELL_SELF_DAMAGE", "PlayerDamageEvents")
-		self:RegisterEvent("CHAT_MSG_SPELL_PARTY_DAMAGE", "PlayerDamageEvents")
-		self:RegisterEvent("CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE", "PlayerDamageEvents")
-		self:RegisterEvent("CHAT_MSG_SPELL_DAMAGESHIELDS_ON_SELF", "PlayerDamageEvents")
+			if major > 2 or (major == 2 and minor >= 14) then
+				self.eventVersion = 2
+			end
+		end
+
+		-- Initialize event handlers
+		if self.eventVersion == 2 then
+			DEFAULT_CHAT_FRAME:AddMessage("BigWigs: Using MageTools V2")
+			-- V2: Structured event system with GUIDs and spell IDs
+			BigWigsMageToolEventsV2:Initialize(self)
+			BigWigsMageToolEventsV2:RegisterEvents()
+		else
+			DEFAULT_CHAT_FRAME:AddMessage("BigWigs: Using MageTools V1.  Update nampower and get superwow for improved event handling.")
+			-- V1: Text-based chat message parsing (legacy)
+			BigWigsMageToolEventsV1:Initialize(self)
+			BigWigsMageToolEventsV1:RegisterEvents()
+		end
 
 		if not self:IsEventRegistered("CHARACTER_POINTS_CHANGED") then
 			self:RegisterEvent("CHARACTER_POINTS_CHANGED", "CheckTalentEvent")
@@ -708,13 +702,12 @@ function BigWigsMageTools:Activate()
 			end)
 		end
 
-		self.target = UnitName("target")
-		self:ThrottleSync(warningSyncSpeed, syncName.ignitePlayerWarning)
-		self:ThrottleSync(warningSyncSpeed, syncName.ignitePyroRequest)
-		self:ThrottleSync(1, syncName.eyeOfDimStart)
-		self:ThrottleSync(1, syncName.eyeOfDimFade)
-		self:ThrottleSync(1, syncName.fetishStart)
-		self:ThrottleSync(1, syncName.fetishFade)
+		-- Set initial target
+		self:UpdateTarget()
+
+	self:ThrottleSync(warningSyncSpeed, syncName.ignitePlayerWarning)
+	self:ThrottleSync(warningSyncSpeed, syncName.ignitePyroRequest)
+	self:ThrottleSync(warningSyncSpeed, syncName.igniteDropRequest)
 
 		self.active = true
 	end
@@ -737,248 +730,21 @@ end
 -----------------------------------------------------------------------
 --      Event Handlers
 -----------------------------------------------------------------------
-function BigWigsMageTools:PlayerDamageEvents(msg)
-	local eventHandled, crit, _ = self:ScorchEvent(msg)
-	if not eventHandled or crit then
-		self:IgniteEvent(msg)
-	end
-end
+-- Note: PlayerDamageEvents, DeathEvent, AuraFadeEvents, and TrinketEvents
+-- are now handled by MageToolEventsV1.lua and will be injected during initialization
 
 function BigWigsMageTools:Debug(msg)
 	if self.db.profile.debug then
-		if CombatLogAdd then
-			CombatLogAdd(msg)
-		else
-			DEFAULT_CHAT_FRAME:AddMessage(msg)
-		end
+		DEFAULT_CHAT_FRAME:AddMessage("MageTools: " .. msg)
+	end
+
+	if self.db.profile.fileDebug and CombatLogAdd then
+			CombatLogAdd("MageTools: " .. msg)
 	end
 end
 
-function BigWigsMageTools:ScorchEvent(msg)
-	if not self.db.profile.scorchenable then
-		return
-	end
-
-	-- check for afflicted by messages first
-	local _, _, afflictedTarget, stackInfo = string.find(msg, L["scorch_afflict_test"])
-	if not afflictedTarget then
-		-- check for gains messages (shouldn't happen but just to be safe)
-		_, _, afflictedTarget, stackInfo = string.find(msg, L["scorch_gains_test"])
-	end
-
-	if afflictedTarget then
-		self:Debug(msg)
-		local _, _, stacks = string.find(stackInfo, "(%d+)")
-		if stacks then
-			self.scorchStacks[afflictedTarget] = tonumber(stacks)
-		else
-			self.scorchStacks[afflictedTarget] = 1
-		end
-
-		self.scorchTimers[afflictedTarget] = GetTime()
-		self:Scorch(afflictedTarget)
-
-		return true, false, afflictedTarget  -- handled, crit, target
-	end
-
-	-- otherwise check for scorch hits
-	local _, _, hitType, scorchTarget = string.find(msg, L["scorch_test"])
-	if not scorchTarget then
-		_, _, hitType, scorchTarget = string.find(msg, L["fireblast_test"])
-	end
-	-- only need to update bars if at 5 stacks, otherwise afflicted by message will handle it
-	if scorchTarget then
-		self:Debug(msg)
-		if not self.scorchStacks[scorchTarget] then
-			-- may have missed afflicted msg, resync stacks
-			self:ResyncStacks()
-		end
-
-		-- update scorch timer after a half second to give time to check if fire vulnerability was resisted
-		self:ScheduleEvent(scorchTimerUpdateEvent .. scorchTarget, self.UpdateScorchTimer, 0.2, self, scorchTarget, GetTime())
-
-		local igniteStacks = self.igniteStacks[scorchTarget] or 1
-
-		--check if scorch crit got into the ignite
-		if hitType == "crit" and igniteStacks < 5 then
-			self.igniteHasScorch[scorchTarget] = true
-		end
-
-		return true, hitType == "crit", scorchTarget  -- handled, crit, target
-	end
-
-	-- otherwise check for scorch resists
-	local _, _, caster, resistTarget = string.find(msg, L["scorch_resist_test"])
-	if not resistTarget then
-		_, _, caster, resistTarget = string.find(msg, L["fireblast_resist_test"])
-	end
-	if not resistTarget then
-		_, _, caster, resistTarget = string.find(msg, L["fire_vuln_resist_test"])
-	end
-	if resistTarget then
-		self:Debug(msg)
-		-- cancel timer update
-		if self:IsEventScheduled(scorchTimerUpdateEvent .. resistTarget) then
-			self:CancelScheduledEvent(scorchTimerUpdateEvent .. resistTarget)
-		end
-		self:Message(resistTarget .. " resisted " .. caster .. " scorch", "Attention", false)
-		if self.db.profile.scorchresistsound then
-			self:Sound("ScorchResist")
-		end
-		return true, false, resistTarget  -- handled, crit, target
-	end
-
-	return false, false, nil
-end
-
-function BigWigsMageTools:UpdateScorchTimer(target, time)
-	self.scorchTimers[target] = time
-	self:Scorch(target)
-end
-
-function BigWigsMageTools:IsMageFireSpell(spellName)
-	return spellName == "Fireball" or
-			spellName == "Pyroblast" or
-			spellName == "Scorch" or
-			spellName == "Fire Blast" or
-			spellName == "Flamestrike" or
-			spellName == "Blast Wave"
-
-end
-
-function BigWigsMageTools:UpdateIgniteOwner(playername, target)
-	local playerName = ""
-	-- playername can be "your" or "name 's"
-	if string.lower(playername) == "your" then
-		playerName = self.playerName        -- add ignite owner if it's not already set
-	else
-		--	strip the 's and the space that is currently inserted after the player name
-		playerName = string.gsub(playername, "(%s?)'s", "")
-	end
-	BigWigsThreat:EnableEventsForPlayerName(playerName)
-	self.igniteOwners[target] = playerName
-end
-
-function BigWigsMageTools:IgniteEvent(msg)
-	if not self.db.profile.igniteenable then
-		return
-	end
-
-	-- check for afflicted by messages first
-	local _, _, afflictedTarget, stackInfo = string.find(msg, L["ignite_afflict_test"])
-	if not afflictedTarget then
-		-- check for gains messages (seems to happen for ignite)
-		_, _, afflictedTarget, stackInfo = string.find(msg, L["ignite_gains_test"])
-	end
-
-	if afflictedTarget then
-		self:Debug(msg)
-		local _, _, stacks = string.find(stackInfo, "(%d+)")
-		if stacks then
-			self.igniteStacks[afflictedTarget] = tonumber(stacks)
-		else
-			self.igniteStacks[afflictedTarget] = 1
-		end
-		self.igniteTimers[afflictedTarget] = GetTime()
-		self:Ignite(afflictedTarget)
-		return true, false, afflictedTarget  -- handled, crit, target
-	else
-		-- check for ignite crits
-		local _, _, playerName, spellName, critTarget = string.find(msg, L["self_ignite_crit_test"])
-		if not critTarget then
-			_, _, playerName, spellName, critTarget = string.find(msg, L["other_ignite_crit_test"])
-		end
-		if critTarget and self:IsMageFireSpell(spellName) then
-			self:Debug(msg)
-			if not self.igniteStacks[critTarget] then
-				-- may have missed msg, resync stacks
-				self:ResyncStacks()
-			end
-			-- if no owner is set, set it.  Ignite tick will correct it if wrong
-			if not self.igniteOwners[critTarget] then
-				self:UpdateIgniteOwner(playerName, critTarget)
-			end
-
-			self.igniteTimers[critTarget] = GetTime()
-			self:Ignite(critTarget)
-			return true, true, critTarget  -- handled, crit, target
-		end
-	end
-
-	-- check for ignite tick damage
-	local _, _, igniteTickTarget, igniteDmg, igniteOwner = string.find(msg, L["ignite_dmg"])
-	if igniteTickTarget then
-		self:Debug(msg)
-		self.igniteDamage[igniteTickTarget] = tonumber(igniteDmg)
-		if igniteOwner then
-			self:UpdateIgniteOwner(igniteOwner, igniteTickTarget)
-		end
-		self:ResyncStacks()
-		self:Ignite(igniteTickTarget)
-		return true, false, igniteTickTarget  -- handled, crit, target
-	end
-end
-
--- reset data if your target dies
-function BigWigsMageTools:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
-	self:Debug(msg)
-	local _, _, deadTarget, _ = string.find(msg, L["slain_test"])
-	if not deadTarget then
-		_, _, deadTarget = string.find(msg, L["self_slain_test"])
-	end
-	if not deadTarget then
-		_, _, deadTarget = string.find(msg, L["death_test"])
-	end
-	if deadTarget then
-		-- reset everything for that target
-		self.scorchTimers[deadTarget] = nil
-		self.scorchStacks[deadTarget] = nil
-		self:StopBar(scorchBarPrefix .. deadTarget)
-
-		self.igniteHasScorch[deadTarget] = nil
-		self.igniteTimers[deadTarget] = nil
-		self.igniteStacks[deadTarget] = nil
-		self.igniteOwners[deadTarget] = nil
-		self.igniteDamage[deadTarget] = nil
-		self:StopBar(igniteBarPrefix .. deadTarget)
-		self:StopBar(threatBarPrefix .. deadTarget)
-	end
-end
-
-function BigWigsMageTools:AuraFadeEvents(msg)
-	local _, _, scorchTarget = string.find(msg, L["scorch_fades_test"])
-	if scorchTarget then
-		self:Debug(msg)
-		self.scorchTimers[scorchTarget] = nil
-		self.scorchStacks[scorchTarget] = nil
-		self:StopBar(scorchBarPrefix .. scorchTarget)
-		return
-	end
-
-	local _, _, igniteTarget = string.find(msg, L["ignite_fades_test"])
-	if igniteTarget then
-		self:Debug(msg)
-		self.igniteHasScorch[igniteTarget] = nil
-		self.igniteTimers[igniteTarget] = nil
-		self.igniteStacks[igniteTarget] = nil
-		self.igniteOwners[igniteTarget] = nil
-		self.igniteDamage[igniteTarget] = nil
-		self:StopBar(igniteBarPrefix .. igniteTarget)
-		self:StopBar(threatBarPrefix .. igniteTarget)
-	end
-end
-
-function BigWigsMageTools:TrinketEvents(msg)
-	if string.find(msg, L["arcane_shroud_test"]) then
-		self:Sync(syncName.fetishStart .. " " .. self.playerName)
-	elseif string.find(msg, L["arcane_shroud_fades_test"]) then
-		self:Sync(syncName.fetishFade .. " " .. self.playerName)
-	elseif string.find(msg, L["eye_of_diminution_test"]) then
-		self:Sync(syncName.eyeOfDimStart .. " " .. self.playerName)
-	elseif string.find(msg, L["eye_of_diminution_fades_test"]) then
-		self:Sync(syncName.eyeOfDimFade .. " " .. self.playerName)
-	end
-end
+-- Note: ScorchEvent, IgniteEvent, UpdateScorchTimer, IsMageFireSpell, and UpdateIgniteOwner are now in MageToolEventsV1.lua
+-- Note: DeathEvent, AuraFadeEvents are also in MageToolEventsV1.lua
 
 function BigWigsMageTools:PLAYER_REGEN_ENABLED()
 	self:StopAllBars()
@@ -1006,57 +772,17 @@ function BigWigsMageTools:PLAYER_REGEN_ENABLED()
 	end
 end
 
-function BigWigsMageTools:ResyncStacks()
-	local target = UnitName("target")
-	self.target = target
-
-	if target then
-		local foundScorch = false
-		local foundIgnite = false
-		-- check debuffs
-		for i = 1, 16 do
-			local texture, stacks = UnitDebuff("target", i)
-			if (texture and stacks) then
-				if texture == scorchIcon then
-					self.scorchStacks[target] = tonumber(stacks)
-					foundScorch = true
-				elseif texture == igniteIcon then
-					self.igniteStacks[target] = tonumber(stacks)
-					foundIgnite = true
-				end
-			else
-				-- once we start getting nil we can break
-				break
-			end
-		end
-		-- if we didn't find it check buffs as well
-		if not foundScorch or not foundIgnite then
-			for i = 1, 32 do
-				local texture, stacks = UnitBuff("target", i)
-				if (texture and stacks) then
-					if texture == scorchIcon then
-						self.scorchStacks[target] = tonumber(stacks)
-					elseif texture == igniteIcon then
-						self.igniteStacks[target] = tonumber(stacks)
-					end
-				else
-					-- once we start getting nil we can break
-					break
-				end
-			end
-		end
-	end
-end
-
 function BigWigsMageTools:RecheckTargetChange()
-	local target = UnitName("target")
-	self.target = target
+	self:UpdateTarget()
+
+	if self.eventVersion ~= 1 then
+		return
+	end
+
+	local target = self.target
 
 	-- if this target has been scorched, query current stacks
-	if target and self.scorchTimers[target] or self.igniteStacks[target] then
-		-- resync stacks
-		self:ResyncStacks()
-
+	if target and (self.scorchTimers[target] or self.igniteStacks[target]) then
 		local timeleft = self:GetTargetScorchTimeLeft(target)
 		if self.scorchStacks[target] and timeleft then
 			self:StartScorchBar(target, timeleft, self.scorchStacks[target])
@@ -1080,48 +806,51 @@ end
 
 function BigWigsMageTools:Scorch(target)
 	if not self.target then
-		self.target = UnitName("target")
+		self:UpdateTarget()
 	end
 
-	if target == self.target then
-		local timeleft = self:GetTargetScorchTimeLeft(target)
-		self:StartScorchBar(target, timeleft, self.scorchStacks[target])
-		self:ScheduleEvent("ScorchYellowUpdate", self.ScorchYellowUpdate, 20, self, target)
-		self:ScheduleEvent("ScorchRedUpdate", self.ScorchRedUpdate, 25, self, target)
+	if self.eventVersion == 1 and target ~= self.target then
+		return
+	end
 
-		if self.db.profile.scorchsound then
-			self:ScheduleEvent(warningSoundEvent, self.ScorchSoundWarning, 25, self, target)
-		end
-		if self.db.profile.scorchwarningsign then
-			self:ScheduleEvent(warningSignEvent, self.ScorchSignWarning, 25, self, target)
-		end
+	local timeleft = self:GetTargetScorchTimeLeft(target)
+	self:StartScorchBar(target, timeleft, self.scorchStacks[target])
+	self:ScheduleEvent("ScorchYellowUpdate", self.ScorchYellowUpdate, 20, self, target)
+	self:ScheduleEvent("ScorchRedUpdate", self.ScorchRedUpdate, 25, self, target)
+
+	if self.db.profile.scorchsound then
+		self:ScheduleEvent(warningSoundEvent, self.ScorchSoundWarning, 25, self, target)
+	end
+	if self.db.profile.scorchwarningsign then
+		self:ScheduleEvent(warningSignEvent, self.ScorchSignWarning, 25, self, target)
 	end
 end
 
 function BigWigsMageTools:Ignite(target)
 	if not self.target then
-		self.target = UnitName("target")
+		self:UpdateTarget()
 	end
 
-	if target == self.target then
-		local timeleft = self:GetTargetIgniteTimeLeft(target)
-		self:StartIgniteBar(target, self:GetTargetIgniteText(target), timeleft, self.igniteStacks[target], self.igniteHasScorch[target])
+	if self.eventVersion == 1 and target ~= self.target then
+		return
+	end
 
-		--	if there's an ignite owner and we have threat data, start a threat bar as well
-		local hadThreatData = false
-		if self.igniteOwners[target] then
-			local owner = self.igniteOwners[target]
-			local threatData = BigWigsThreat:GetPlayerInfo(owner)
-			self:Debug("Owner threat data " .. tostring(owner) .. " "
-					.. tostring(threatData['threat']) .. " " .. tostring(threatData['perc']))
-			if threatData['perc'] then
-				hadThreatData = true
-				self:StartThreatBar(target, owner, threatData['perc'], threatData['threat'])
-			end
+	local timeleft = self:GetTargetIgniteTimeLeft(target)
+	self:StartIgniteBar(target, self:GetTargetIgniteText(target), timeleft, self.igniteStacks[target], self.igniteHasScorch[target])
+
+	-- Threat bars remain tied to the current target only
+	if target == self.target and self.igniteOwners[target] then
+		local owner = self.igniteOwners[target]
+		-- Convert GUID to name for threat tracking
+		local ownerName = self:GetOwnerDisplayName(owner)
+		local threatData = BigWigsThreat:GetPlayerInfo(ownerName)
+		self:Debug("Owner threat data " .. tostring(ownerName) .. " (guid: " .. tostring(owner) .. ") "
+				.. tostring(threatData['threat']) .. " " .. tostring(threatData['perc']))
+		if threatData['perc'] then
+			self:StartThreatBar(target, owner, threatData['perc'], threatData['threat'])
+			return
 		end
-		if not hadThreatData then
-			self:Debug("No threat data for target " .. tostring(target) .. " owner " .. tostring(self.igniteOwners[target]))
-		end
+		self:Debug("No threat data for target " .. tostring(target) .. " owner " .. tostring(self.igniteOwners[target]))
 	end
 end
 
@@ -1132,9 +861,9 @@ function BigWigsMageTools:ThreatUpdate(player, threat, perc, tank, melee)
 
 	if self.igniteOwners[self.target] then
 		local owner = self.igniteOwners[self.target]
-		if player == owner and perc then
-			self:Debug("Threat data update " .. tostring(player) .. " "
-					.. tostring(threat) .. " " .. tostring(perc))
+		-- Convert GUID to name for comparison with player name
+		local ownerName = self:GetOwnerDisplayName(owner)
+		if player == ownerName and perc then
 			self:StartThreatBar(self.target, owner, perc, threat)
 		end
 	end
@@ -1151,18 +880,11 @@ function BigWigsMageTools:BigWigs_RecvSync(sync, arg1, arg2)
 			self:Bar(arg1 .. " has requested pyro!!!", 3, "spell_fire_fireball02", false, "Red")
 			BigWigsSound:BigWigs_Sound("Pyro")
 		end
-	elseif sync == syncName.eyeOfDimStart then
-		if self.active and self.db.profile.threattrinketalerts then
-			self:Bar(arg1 .. " used Eye of Dim", 20, "INV_Trinket_Naxxramas02", false, "Blue")
+	elseif sync == syncName.igniteDropRequest then
+		if self.active and self.db.profile.ignitedroprequest then
+			self:Bar(arg1 .. " has called to drop ignite!!!", 3, "spell_fire_incinerate", false, "Red")
+			BigWigsSound:BigWigs_Sound("DropIgnite")
 		end
-	elseif sync == syncName.eyeOfDimFade then
-		self:RemoveBar(arg1 .. " used Eye of Dim")
-	elseif sync == syncName.fetishStart then
-		if self.active and self.db.profile.threattrinketalerts then
-			self:Bar(arg1 .. " used Fetish", 20, "INV_Misc_AhnQirajTrinket_03", false, "Blue")
-		end
-	elseif sync == syncName.fetishFade then
-		self:RemoveBar(arg1 .. " used Fetish")
 	end
 end
 
@@ -1195,6 +917,48 @@ end
 -----------------------------------------------------------------------
 --      Util
 -----------------------------------------------------------------------
+
+-- Update self.target based on event version (GUID for V2, name for V1)
+function BigWigsMageTools:UpdateTarget()
+	if self.eventVersion == 2 then
+		local _, guid = UnitExists("target")
+		if guid then
+			self.target = guid
+		else
+			self.target = nil
+		end
+	else
+		self.target = UnitName("target")
+	end
+end
+
+-- Convert GUID or name to display name
+-- WoW Lua functions like UnitName() accept GUIDs directly
+function BigWigsMageTools:GetDisplayName(guidOrName)
+	if not guidOrName then
+		return nil
+	end
+
+	-- Check if it's a GUID (starts with 0x)
+	if type(guidOrName) == "string" and string.sub(guidOrName, 1, 2) == "0x" then
+		-- If UnitName returns nil, return the GUID for debugging
+		return UnitName(guidOrName) or guidOrName
+	end
+
+	-- Not a GUID, return as-is (it's already a name)
+	return guidOrName
+end
+
+-- Get owner name from GUID or name (for ignite owner display)
+function BigWigsMageTools:GetOwnerDisplayName(guidOrName)
+	if not guidOrName then
+		return nil
+	end
+
+	-- UnitName() works with GUIDs directly
+	return self:GetDisplayName(guidOrName)
+end
+
 function BigWigsMageTools:GetTargetScorchTimeLeft(target)
 	if self.scorchTimers[target] then
 		local timeleft = timer.scorch - (GetTime() - self.scorchTimers[target])
@@ -1221,7 +985,9 @@ function BigWigsMageTools:GetTargetIgniteText(target)
 		igniteText = self.igniteDamage[target]
 	end
 	if self.igniteOwners[target] then
-		igniteText = igniteText .. " - " .. self.igniteOwners[target]
+		-- Convert GUID to name if needed
+		local ownerName = self:GetOwnerDisplayName(self.igniteOwners[target])
+		igniteText = igniteText .. " - " .. (ownerName or "Unknown")
 	end
 	return igniteText
 end
@@ -1492,6 +1258,9 @@ function BigWigsMageTools:StartScorchBar(target, timeleft, stacks)
 		self:SetupFrames()
 	end
 
+	-- Convert GUID to name for display
+	local displayName = self:GetDisplayName(target)
+
 	local maxTime = timer.scorch
 	if timeleft > maxTime then
 		maxTime = timeleft
@@ -1500,10 +1269,10 @@ function BigWigsMageTools:StartScorchBar(target, timeleft, stacks)
 	local groupId = self.frames.anchor.candyBarGroupId
 	-- check if bar already exists
 	if not candybar:IsRegistered(id) then
-		candybar:RegisterCandyBar(id, maxTime, target, scorchIcon)
+		candybar:RegisterCandyBar(id, maxTime, displayName, scorchIcon)
 		candybar:RegisterCandyBarWithGroup(id, groupId, 1)
 	else
-		candybar:SetText(id, target)
+		candybar:SetText(id, displayName)
 	end
 
 	candybar:SetCandyBarTexture(id, surface:Fetch(self.db.profile.texture))
@@ -1616,16 +1385,16 @@ function BigWigsMageTools:StartThreatBar(target, owner, percent, threat)
 	if not owner or not self.db.profile.ignitethreatenable then
 		return
 	end
-	if self.db.profile.debug then
-		self:Debug("threat bar " .. tostring(target) .. " " .. tostring(owner) .. " " .. tostring(percent))
-	end
 
 	local id = threatBarPrefix .. target
 	if not self.frames.anchor then
 		self:SetupFrames()
 	end
 
-	local text = owner .. " " .. string.format("%2.f", percent) .. "%"
+	-- Convert owner GUID to name for display
+	local ownerDisplayName = self:GetOwnerDisplayName(owner)
+
+	local text = ownerDisplayName .. " " .. string.format("%2.f", percent) .. "%"
 	local groupId = self.frames.anchor.candyBarGroupId
 	-- check if bar already exists
 	if not candybar:IsRegistered(id) then
