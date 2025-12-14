@@ -13,6 +13,9 @@ local COLOR_GREY = "808080"
 
 local isInitialQuery = true
 
+local fork = GetAddOnMetadata("BigWigs", "X-Fork")
+local website = GetAddOnMetadata("BigWigs", "X-Website")
+
 ---------------------------------
 --      Localization           --
 ---------------------------------
@@ -32,6 +35,7 @@ L:RegisterTranslations("enUS", function()
 		["Version"] = true,
 		["Current zone"] = true,
 		["<zone>"] = true,
+		["The given zone is invalid."] = true,
 		["Version query done."] = true,
 		["Runs a version query on your current zone."] = true,
 		["Closes the version query window."] = true,
@@ -39,20 +43,23 @@ L:RegisterTranslations("enUS", function()
 		["Runs a version query on the given zone."] = true,
 		["Zone"] = true,
 		["zone"] = true,
-		["N/A"] = true,
+		["missing module"] = true,
+		["offline"] = true,
+		["no response"] = true,
+		["unknown"] = true,
+		["Legacy"] = true,
 		["BigWigs"] = true,
 		["Runs a version query on the BigWigs core."] = true,
 		["Nr Replies"] = true,
-		["Ancient"] = true,
 
-		["OutOfDate"] = "Your version of Big Wigs might be out of date!\nPlease use the github addons manager or visit https://github.com/pepopo978/BigWigs to get the latest version.",
+		["OutOfDate"] = "Your "..fork.." Big Wigs might be out of date!\nPlease visit "..website.." to get the latest version.",
 		["Close"] = true,
 		["Cancel"] = true,
 
-		["People with outdated BigWigs:"] = true,
+		["People with outdated [fork] BigWigs:"] = "People with outdated "..fork.." BigWigs:",
 		["Notify old versions"] = true,
 		["List people with old versions to raid chat."] = true,
-		["Download newest version from https://github.com/pepopo978/BigWigs"] = true,
+		["Download newest version from [website]"] = "Download newest version from "..website,
 
 		["Show popup"] = true,
 		["Show popup warning on out of date version"] = true,
@@ -134,7 +141,6 @@ end
 function BigWigsVersionQuery:OnEnable()
 	self.queryRunning = nil
 	self.responseTable = {}
-	self.pepoResponseTable = {}
 	self.zoneRevisions = nil
 	self.currentZone = ""
 	self.OutOfDateShown = false
@@ -147,7 +153,7 @@ function BigWigsVersionQuery:OnEnable()
 	self:TriggerEvent("BigWigs_ThrottleSync", "BWVR", 0)
 	self:TriggerEvent("BigWigs_ThrottleSync", "PEPO_BWVR", 0)
 
-	self:ScheduleEvent("versionquerytest", BigWigsVersionQuery.Test, 1, self) -- check version in 1s
+	self:ScheduleEvent("versionquerytest", BigWigsVersionQuery.Test, 3, self) -- automatically check version after joining a raid, 3s delay to populate raid information after a relog
 end
 
 function BigWigsVersionQuery:PopulateRevisions()
@@ -225,12 +231,12 @@ function BigWigsVersionQuery:UpdateTablet()
 end
 
 function BigWigsVersionQuery:UpdateVersions()
-	for name, version in pairs(self.responseTable) do
+	for name, entry in pairs(self.responseTable) do
 		if not self.zoneRevisions then
 			return
 		end
-		if version > 20000 and version < 40000 and self.pepoResponseTable[name] then
-			if self.zoneRevisions[self.currentZone] and version > self.zoneRevisions[self.currentZone] then
+		if entry[2] == fork then
+			if self.zoneRevisions[self.currentZone] and entry[1] > self.zoneRevisions[self.currentZone] then
 				self:IsOutOfDate()
 			end
 		end
@@ -260,17 +266,15 @@ function BigWigsVersionQuery:IsOutOfDate()
 				end,
 				OnShow = function(self, data)
 					local editbox = getglobal(this:GetName() .. "WideEditBox")
-					editbox:SetText("https://github.com/pepopo978/BigWigs")
+					editbox:SetText(website)
 					editbox:SetWidth(250)
 					editbox:ClearFocus()
 					editbox:HighlightText()
-					--self.editBox:SetText("Some text goes here")
 					getglobal(this:GetName() .. "Button2"):Hide()
 				end,
 				hasEditBox = true,
 				hasWideEditBox = true,
 				maxLetters = 42,
-				--EditBox:setText("Text"),
 				timeout = 0,
 				whileDead = true,
 				hideOnEscape = true,
@@ -283,8 +287,8 @@ end
 
 function BigWigsVersionQuery:NotifyOldVersions()
 	local line = ""
-	for name, version in pairs(self.pepoResponseTable) do
-		if self.zoneRevisions[self.currentZone] and version < self.zoneRevisions[self.currentZone] then
+	for name, entry in pairs(self.responseTable) do
+		if entry[2] == fork and self.zoneRevisions[self.currentZone] and entry[1] < self.zoneRevisions[self.currentZone] then
 			if line == "" then
 				line = name
 			else
@@ -292,9 +296,9 @@ function BigWigsVersionQuery:NotifyOldVersions()
 			end
 		end
 	end
-	SendChatMessage("People with outdated Pepo BigWigs:", "RAID")
+	SendChatMessage(L["People with outdated [fork] BigWigs:"], "RAID")
 	SendChatMessage(line, "RAID")
-	SendChatMessage("Download newest version from https://github.com/pepopo978/BigWigs", "RAID")
+	SendChatMessage(L["Download newest version from [website]"], "RAID")
 end
 
 function BigWigsVersionQuery:OnTooltipUpdate()
@@ -317,32 +321,29 @@ function BigWigsVersionQuery:OnTooltipUpdate()
 			"child_justify1", "LEFT",
 			"child_justify2", "RIGHT"
 	)
-	for name, version in pairs(self.responseTable) do
-		if version == -1 then
-			cat:AddLine("text", name, "text2", "|cff" .. COLOR_RED .. L["N/A"] .. "|r")
+	for name, entry in pairs(self.responseTable) do
+		if entry[1] == -1 then
+			cat:AddLine("text", name, "text2", "|cff" .. COLOR_RED .. entry[2] .. " " ..  L["missing module"] .. "|r")
 		else
-			if not self.zoneRevisions then
-				self:PopulateRevisions()
-			end
 			local color = COLOR_GREY
 
-			-- check if they are using pepo version
-			if self.pepoResponseTable[name] then
+			-- if they are using the same fork as us, compare revisions
+			if entry[2] == fork then
 				color = COLOR_WHITE
-				if self.zoneRevisions[self.currentZone] and version > self.zoneRevisions[self.currentZone] then
-					color = COLOR_RED
-					if version > 20000 and version < 40000 then
-						self:IsOutOfDate()
-						color = COLOR_GREEN
-					end
-				elseif self.zoneRevisions[self.currentZone] and version < self.zoneRevisions[self.currentZone] then
+				if not self.zoneRevisions then
+					self:PopulateRevisions()
+				end
+				if self.zoneRevisions[self.currentZone] and entry[1] > self.zoneRevisions[self.currentZone] then
+					self:IsOutOfDate()
+					color = COLOR_GREEN
+				elseif self.zoneRevisions[self.currentZone] and entry[1] < self.zoneRevisions[self.currentZone] then
 					color = COLOR_RED
 				end
-
-				cat:AddLine("text", name, "text2", "|cff" .. color .. "Pepo " .. version .. "|r")
-			else
-				cat:AddLine("text", name, "text2", "|cff" .. color .. version .. "|r")
+			elseif entry[1] == -3 then -- no response
+				color = COLOR_RED
 			end
+			
+			cat:AddLine("text", name, "text2", "|cff" .. color .. entry[2] .. " " .. entry[1] .. "|r")
 		end
 	end
 
@@ -377,7 +378,7 @@ function BigWigsVersionQuery:QueryVersion(zone)
 	end
 
 	if not zone then
-		error("The given zone is invalid.")
+		error(L["The given zone is invalid."])
 		return
 	end
 
@@ -403,53 +404,48 @@ function BigWigsVersionQuery:QueryVersion(zone)
 	end, 5)
 
 	self.responseTable = {}
-	self.pepoResponseTable = {}
 
 	if GetNumRaidMembers() > 0 then
-		for i = 0, GetNumRaidMembers() do
+		for i = 1, GetNumRaidMembers() do
 			if GetRaidRosterInfo(i) then
 				local n, _, _, _, _, _, z = GetRaidRosterInfo(i);
 
 				if z == 'Offline' then
-					self.responseTable[n] = -2
+					self.responseTable[n] = {-2, L["offline"]}
 				else
-					self.responseTable[n] = 0
+					self.responseTable[n] = {-3, L["no response"]}
 				end
 			end
 		end
+	else
+		self.responseTable[UnitName("player")] = {}
 	end
 
 	if not self.zoneRevisions then
 		self:PopulateRevisions()
 	end
 	if not self.zoneRevisions[zone] then
-		self.responseTable[UnitName("player")] = -1
-		self.pepoResponseTable[UnitName("player")] = -1
+		self.responseTable[UnitName("player")][1] = -1
 	else
-		self.responseTable[UnitName("player")] = self.zoneRevisions[zone]
-		self.pepoResponseTable[UnitName("player")] = self.zoneRevisions[zone]
+		self.responseTable[UnitName("player")][1] = self.zoneRevisions[zone]
 	end
+	self.responseTable[UnitName("player")][2] = fork
 	self.responses = 1
 	self:TriggerEvent("BigWigs_SendSync", "BWVQ " .. zone)
 end
 
---[[ Parses the new style reply, which is "1111 <nick>" ]]
-function BigWigsVersionQuery:ParseReply2(reply)
-	-- If there's no space, it's just a version number we got.
-	local first, last = string.find(reply, " ")
-	if not first or not last then
-		return reply, nil
-	end
-
-	local rev = string.sub(reply, 1, first)
-	local nick = string.sub(reply, last + 1, string.len(reply))
-
-	-- We need to check if rev or nick contains ':' - if it does, this is an old
-	-- style reply.
-	if tonumber(rev) == nil or string.find(rev, ":") or string.find(nick, ":") then
-		return self:ParseReply(reply), nil
-	end
-	return tonumber(rev), nick
+--[[ Parses new style ("<rev> <nick>") with arbitrary additional payload ]]
+function BigWigsVersionQuery:SplitReply(reply) --adapted from TWLC2 by CosminPOP
+    local output = {}
+    local from = 1
+    local delim_from, delim_to = string.find(reply, " ", from)
+    while delim_from do
+        table.insert(output, string.sub(reply, from, delim_from - 1))
+        from = delim_to + 1
+        delim_from, delim_to = string.find(reply, " ", from)
+    end
+    table.insert(output, string.sub(reply, from))
+    return unpack(output)
 end
 
 --[[ Parses the old style reply, which was MC:REV BWL:REV, etc. ]]
@@ -478,6 +474,7 @@ end
 --  Old Style:           MC:REV BWL:REV ZG:REV
 --  First Working Style: REV
 --  New Style:           REV QuereeNick
+--  Fork Style:          REV QuereeNick Fork
 --]]
 
 function BigWigsVersionQuery:BigWigs_RecvSync(sync, rest, nick)
@@ -494,18 +491,28 @@ function BigWigsVersionQuery:BigWigs_RecvSync(sync, rest, nick)
 		-- Means it's either a old style or new style reply.
 		-- The "working style" is just the number, which was the second type of
 		-- version reply we had.
-		local revision, queryNick = nil, nil
-		if tonumber(rest) == nil then
-			revision, queryNick = self:ParseReply2(rest)
-		else
+		local revision, queryNick, remoteFork = nil, nil, nil
+
+		if string.find(rest, ":") then -- old style
+			revision = BigWigsVersionQuery:ParseReply(rest)
+			remoteFork = L["Legacy"]
+		elseif tonumber(rest) then -- first working style
 			revision = tonumber(rest)
-		end
-		if queryNick == nil or queryNick == UnitName("player") then
-			self.responseTable[nick] = tonumber(revision)
-			-- if pepo response add to that table as well
-			if sync == "PEPO_BWVR" then
-				self.pepoResponseTable[nick] = tonumber(revision)
+			remoteFork = L["Legacy"]
+		else -- new style & fork style & future payloads
+			revision, queryNick, remoteFork = self:SplitReply(rest)
+			if remoteFork == nil then -- backwards compatibility
+				if sync == "PEPO_BWVR" then
+					remoteFork = "Pepo"
+				else
+					remoteFork = L["unknown"]
+				end				
 			end
+		end
+
+		if queryNick == nil or queryNick == UnitName("player") then
+			self.responseTable[nick][1] = tonumber(revision)
+			self.responseTable[nick][2] = remoteFork
 
 			self.responses = self.responses + 1
 			self:UpdateVersions()
