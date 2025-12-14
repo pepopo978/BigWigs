@@ -2,7 +2,7 @@
 
 ## X-Revision: 30132
 ## X-Fork: Pepo
-## Title: |cFFFF8080Pepopo|r Big Wigs |cff7fff7f30131|r |cffabd473Turtle-WoW|r
+## Title: |cFFFF8080Pepopo|r Big Wigs |cff7fff7f30132|r |cffabd473Turtle-WoW|r
 ## Title-zhCN: |cffabd473Turtle-WoW|r Big Wigs
 ## Notes: Boss Mods with Timer bars.
 ## Notes-esES: Módulos para Jefes con barras temporizadoras.
