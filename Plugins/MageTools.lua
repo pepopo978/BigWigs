@@ -115,6 +115,8 @@ L:RegisterTranslations("enUS", function()
 		["IgniteBarWidthDesc"] = "Sets the width of the ignite bar at 5 stacks",
 		["IgniteBarHeight"] = "Ignite bar height",
 		["IgniteBarHeightDesc"] = "Sets the height of the ignite bar",
+		["IgniteBarMax"] = "Max Ignite Bars",
+		["IgniteBarMaxDesc"] = "Maximum number of ignite bars shown simultaneously (0 = unlimited)",
 
 		["IgniteThreatBarOptions"] = "Ignite Threat Bar Options",
 		["IgniteThreatEnable"] = "Show ignite threat bar",
@@ -172,6 +174,7 @@ BigWigsMageTools.defaultDB = {
 	ignitetimermode = false,
 	ignitewidth = 200,
 	igniteheight = 20,
+	ignitebarmax = 5,
 
 	ignitethreatenable = true,
 	ignitethreatthreshold = 80,
@@ -424,6 +427,21 @@ BigWigsMageTools.consoleOptions = {
 					set = function(v)
 						BigWigsMageTools.db.profile.igniteheight = v
 					end,
+				},
+				ignitebarmax = {
+					type = "range",
+					name = L["IgniteBarMax"],
+					desc = L["IgniteBarMaxDesc"],
+					order = 9,
+					min = 0,
+					max = 20,
+					step = 1,
+					get = function()
+						return BigWigsMageTools.db.profile.ignitebarmax
+					end,
+					set = function(v)
+						BigWigsMageTools.db.profile.ignitebarmax = v
+					end,
 				}
 			}
 		},
@@ -580,7 +598,7 @@ BigWigsMageTools.consoleOptions = {
 	}
 }
 
-BigWigsMageTools.revision = 30069
+BigWigsMageTools.revision = 30070
 BigWigsMageTools.external = true
 
 BigWigsMageTools.active = false
@@ -1304,6 +1322,40 @@ function BigWigsMageTools:StartScorchBar(target, timeleft, stacks)
 	barCache[id] = true
 end
 
+function BigWigsMageTools:EnforceIgniteBarLimit()
+	local maxBars = self.db.profile.ignitebarmax
+	if maxBars == 0 then
+		return  -- unlimited
+	end
+
+	-- Collect active ignite bars with metadata
+	local igniteList = {}
+	for id, _ in pairs(barCache) do
+		if string.sub(id, 1, string.len(igniteBarPrefix)) == igniteBarPrefix then
+			local target = string.sub(id, string.len(igniteBarPrefix) + 1)
+			table.insert(igniteList, {
+				id = id,
+				target = target,
+				stacks = self.igniteStacks[target] or 0,
+				time = self.igniteTimers[target] or 0,
+			})
+		end
+	end
+
+	-- Sort by stacks DESC, then time DESC (most recent as tiebreaker)
+	table.sort(igniteList, function(a, b)
+		if a.stacks ~= b.stacks then
+			return a.stacks > b.stacks
+		end
+		return a.time > b.time
+	end)
+
+	-- Remove excess bars (keep top N)
+	for i = maxBars + 1, table.getn(igniteList) do
+		self:StopBar(igniteList[i].id)
+	end
+end
+
 function BigWigsMageTools:StartIgniteBar(target, text, timeleft, stacks, igniteHasScorch)
 	if not text or not timeleft or not stacks or not self.db.profile.igniteenable then
 		return
@@ -1370,6 +1422,7 @@ function BigWigsMageTools:StartIgniteBar(target, text, timeleft, stacks, igniteH
 	end
 
 	barCache[id] = true
+	self:EnforceIgniteBarLimit()
 end
 
 function BigWigsMageTools:CalcIgniteTicksTillAggro(target, percent, threat)
@@ -1591,4 +1644,69 @@ function BigWigsMageTools:Test2()
 	for i, v in ipairs(events) do
 		self:ScheduleEvent("logtest" .. i, testEvent, 0.4 * i, v)
 	end
+end
+
+function BigWigsMageTools:Test3()
+	-- Test ignite bar limit functionality
+	-- This test creates ignites on multiple targets with different stack counts
+	-- to verify that the bar limit is enforced and sorting works correctly
+
+	print("Testing ignite bar limit (max: " .. tostring(self.db.profile.ignitebarmax) .. " bars)")
+
+	-- Simulate ignites on different targets with varying stacks
+	local targets = {
+		{name = "Boss1", stacks = 5, damage = 1000},
+		{name = "Boss2", stacks = 3, damage = 800},
+		{name = "Boss3", stacks = 4, damage = 900},
+		{name = "Mob1", stacks = 2, damage = 500},
+		{name = "Mob2", stacks = 1, damage = 300},
+		{name = "Mob3", stacks = 5, damage = 1100},
+		{name = "Mob4", stacks = 4, damage = 850},
+		{name = "Mob5", stacks = 3, damage = 700},
+		{name = "Mob6", stacks = 2, damage = 600},
+		{name = "Mob7", stacks = 1, damage = 400},
+	}
+
+	-- Create ignites on all targets
+	for i, target in ipairs(targets) do
+		local delay = 0.2 * i
+		local targetName = target.name
+		local targetStacks = target.stacks
+		local targetDamage = target.damage
+		self:ScheduleEvent("ignitetest_" .. i, function()
+			-- Set up ignite data
+			self.igniteStacks[targetName] = targetStacks
+			self.igniteTimers[targetName] = GetTime()
+			self.igniteDamage[targetName] = targetDamage
+			self.igniteOwners[targetName] = "TestMage"
+
+			-- Create the bar
+			local text = targetName .. " (" .. targetStacks .. " stacks, " .. targetDamage .. " dmg)"
+			self:StartIgniteBar(targetName, text, 4, targetStacks, false)
+
+			-- Print status
+			local barCount = 0
+			for id, _ in pairs(barCache) do
+				if string.sub(id, 1, string.len(igniteBarPrefix)) == igniteBarPrefix then
+					barCount = barCount + 1
+				end
+			end
+			print("Created ignite on " .. targetName .. " - Total ignite bars: " .. barCount)
+		end, delay)
+	end
+
+	-- Print final summary after all bars are created
+	self:ScheduleEvent("ignitetest_summary", function()
+		local barList = {}
+		for id, _ in pairs(barCache) do
+			if string.sub(id, 1, string.len(igniteBarPrefix)) == igniteBarPrefix then
+				local target = string.sub(id, string.len(igniteBarPrefix) + 1)
+				table.insert(barList, target .. " (" .. (self.igniteStacks[target] or 0) .. " stacks)")
+			end
+		end
+		print("Test complete. Showing " .. table.getn(barList) .. " ignite bars:")
+		for i, bar in ipairs(barList) do
+			print("  " .. i .. ". " .. bar)
+		end
+	end, 3)
 end
