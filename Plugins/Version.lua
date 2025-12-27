@@ -511,6 +511,10 @@ function BigWigsVersionQuery:BigWigs_RecvSync(sync, rest, nick)
 		end
 
 		if queryNick == nil or queryNick == UnitName("player") then
+			if not self.responseTable[nick] then
+          self.responseTable[nick] = {}
+      end
+
 			self.responseTable[nick][1] = tonumber(revision)
 			self.responseTable[nick][2] = remoteFork
 
