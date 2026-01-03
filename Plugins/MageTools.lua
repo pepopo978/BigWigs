@@ -605,7 +605,7 @@ BigWigsMageTools.active = false
 BigWigsMageTools.frames = {}
 
 BigWigsMageTools.target = nil
-BigWigsMageTools.playerName = nil
+BigWigsMageTools.playerName = UnitName("player")
 BigWigsMageTools.scorchTimers = {}
 BigWigsMageTools.scorchStacks = {}
 BigWigsMageTools.igniteTimers = {}
