@@ -3,7 +3,7 @@ local module, L = BigWigs:ModuleDeclaration("King", "Karazhan")
 -- module variables
 module.revision = 30003
 module.enabletrigger = module.translatedName
-module.toggleoptions = { "subservience", "kingsfury", "charmingpresence", "decursebow", "marksubservience", "markmindcontrol", "throttlebow", "bishoptonguesalert", "voidzone", "bosskill" }
+module.toggleoptions = { "subservience", "kingsfury", "charmingpresence", "decursebow", "marksubservience", "markmindcontrol", "throttlebow", "bishoptonguesalert", "voidzone", "shieldbashbar", "bosskill" }
 module.zonename = {
 	AceLibrary("AceLocale-2.2"):new("BigWigs")["Tower of Karazhan"],
 	AceLibrary("Babble-Zone-2.2")["Tower of Karazhan"],
@@ -23,6 +23,7 @@ module.defaultDB = {
 	throttlebow = true,
 	bishoptonguesalert = true,
 	voidzone = true,
+	shieldbashbar = false,
 }
 
 -- localization
@@ -68,6 +69,11 @@ L:RegisterTranslations("enUS", function()
 		trigger_voidzone = "King casts Blunder.",
 		msg_voidzone = "Void Zone MOVE!",
 
+		shieldbashbar_cmd = "shieldbashbar",
+		shieldbashbar_name = "Shield Bash Timer Bar",
+		shieldbashbar_desc = "Shows a timer bar for Rook's Shield Bash",
+		bar_shieldbash = "Shield Bash",
+
 		trigger_subservienceYou = "You are afflicted by Dark Subservience",
 		trigger_subservienceOther = "(.+) is afflicted by Dark Subservience",
 		trigger_subservienceFade = "Dark Subservience fades from (.+)",
@@ -108,6 +114,7 @@ local timer = {
 	throttlebow = 1.5, -- bow throttle rate
 	bishopScan = 5, -- check bishop debuffs every 5 seconds
 	voidzone = 2, -- duration for void zone warning sign
+	shieldbash = 11, -- rook shield bash cooldown
 }
 
 local icon = {
@@ -116,6 +123,7 @@ local icon = {
 	charmingpresence = "Spell_Shadow_ShadowWordDominate", -- icon for charming presence
 	kingscurse = "Spell_Shadow_GrimWard", -- icon for King's curse
 	voidzone = "spell_shadow_antishadow", -- icon for void zone
+	shieldbash = "Ability_Warrior_ShieldBash", -- icon for shield bash
 }
 
 local kingsCurseTexture = "Interface\\Icons\\Spell_Shadow_GrimWard"
@@ -128,6 +136,7 @@ local syncName = {
 	charmingPresence = "ChessCharmingPresence" .. module.revision,
 	bishopNoCurse = "ChessBishopNoCurse" .. module.revision,
 	voidzone = "ChessVoidZone" .. module.revision,
+	shieldbash = "ChessShieldBash" .. module.revision,
 }
 
 local spellIds = {
@@ -135,6 +144,7 @@ local spellIds = {
 	charmingpresence = 41644,
 	kingscurse = 41635,
 	blunder = 52667, -- Void Zone
+	shieldbash = 51219, -- Shield Bash
 }
 
 -- Track players afflicted with King's Curse
@@ -192,6 +202,7 @@ function module:OnEnable()
 	if SUPERWOW_VERSION then
 		self:RegisterCastEventsForUnitName("Queen", "QueenCastEvent")
 		self:RegisterCastEventsForUnitName("King", "KingCastEvent")
+		self:RegisterCastEventsForUnitName("Rook", "RookCastEvent")
 	end
 
 	self:ThrottleSync(1, syncName.subservience)
@@ -201,6 +212,7 @@ function module:OnEnable()
 	self:ThrottleSync(2, syncName.charmingPresence)
 	self:ThrottleSync(2, syncName.bishopNoCurse)
 	self:ThrottleSync(2, syncName.voidzone)
+	self:ThrottleSync(5, syncName.shieldbash)
 end
 
 function module:OnSetup()
@@ -219,6 +231,10 @@ function module:OnEngage()
 	bowed = {}
 
 	self.queenTarget = ""
+
+	if self.db.profile.shieldbashbar then
+		self:Bar(L["bar_shieldbash"], timer.shieldbash, icon.shieldbash)
+	end
 end
 
 function module:OnDisengage()
@@ -240,6 +256,12 @@ function module:KingCastEvent(casterGuid, targetGuid, eventType, spellId, castTi
 		if voidZoneTarget then
 			self:Sync(syncName.voidzone .. " " .. voidZoneTarget)
 		end
+	end
+end
+
+function module:RookCastEvent(casterGuid, targetGuid, eventType, spellId, castTime)
+	if spellId == spellIds.shieldbash and eventType == "CAST" then
+		self:Sync(syncName.shieldbash)
 	end
 end
 
@@ -344,6 +366,15 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 		self:BishopNeedsCurseOfTongues()
 	elseif sync == syncName.voidzone and rest then
 		self:VoidZoneAlert(rest)
+	elseif sync == syncName.shieldbash then
+		self:ShieldBash()
+	end
+end
+
+function module:ShieldBash()
+	if self.db.profile.shieldbashbar then
+		self:RemoveBar(L["bar_shieldbash"])
+		self:Bar(L["bar_shieldbash"], timer.shieldbash, icon.shieldbash)
 	end
 end
 
@@ -677,8 +708,20 @@ function module:Test()
 			L["bishop_name"] = originalName
 		end },
 
-		-- Add to the events table inside the Test function
-		{ time = 43, func = function()
+		-- First Shield Bash
+		{ time = 35, func = function()
+			print("Test: Rook casts Shield Bash")
+			module:ShieldBash()
+		end },
+
+		-- Second Shield Bash (11s after first)
+		{ time = 46, func = function()
+			print("Test: Rook casts Shield Bash")
+			module:ShieldBash()
+		end },
+
+		-- Void Zone on player
+		{ time = 48, func = function()
 			print("Test: King casts Void Zone (Blunder) on player")
 			-- Simulate KingCastEvent with current player as target
 			local _, playerGuid = UnitExists("player")
@@ -686,8 +729,8 @@ function module:Test()
 			module:KingCastEvent(kingGuid, playerGuid, "CAST", spellIds.blunder, 0)
 		end },
 
-		-- Add to the events table inside the Test function
-		{ time = 48, func = function()
+		-- Void Zone on raid1
+		{ time = 50, func = function()
 			print("Test: King casts Void Zone (Blunder) on raid1")
 			-- Simulate KingCastEvent with current player as target
 			local _, playerGuid = UnitExists("raid1")
