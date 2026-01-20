@@ -1,0 +1,14 @@
+Forks are variants of BigWigs with independent versioning. Only people with the same fork will be notified of outdated versions.
+
+To customize your own fork, simply change the following parameters in BigWigs.toc:
+## X-Revision: 30000
+## X-Fork: Prefix
+## Title: Big Wigs Fork Edition
+## X-Website: https://github.com/
+
+X-Revision is the version number and has to be a 5-digit integer.
+X-Fork is the short one-word prefix that will be used to uniquely identify your fork on the Version Check interface. Space (" ") and colon (":") are disallowed characters as they are used to delimit internal responses.
+Title is where you can enter the full name of your fork. This string will be used on some in-game messages.
+X-Website is where you enter your download source. This link will only be shown if someone in your raid group has a newer version of the same fork as you.
+
+Take note that there is currently no clean way to "dissolve" a fork. Version numbers are only compared for matching forks, so if a fork is discontinued the people using it will never receive in-game notifications about having an outdated BigWigs. Should you ever decide to switch your fork prefix, it will be treated as an entirely new fork, so make sure you pick one you want to stick with to enable continuity.

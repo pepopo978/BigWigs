@@ -483,9 +483,9 @@ function BigWigsVersionQuery:BigWigs_RecvSync(sync, rest, nick)
 			self:PopulateRevisions()
 		end
 		if not self.zoneRevisions[rest] then
-			self:TriggerEvent("BigWigs_SendSync", "PEPO_BWVR -1 " .. nick)
+			self:TriggerEvent("BigWigs_SendSync", "BWVR -1 " .. nick .. " " .. fork)
 		else
-			self:TriggerEvent("BigWigs_SendSync", "PEPO_BWVR " .. self.zoneRevisions[rest] .. " " .. nick)
+			self:TriggerEvent("BigWigs_SendSync", "BWVR " .. self.zoneRevisions[rest] .. " " .. nick .. " " .. fork)
 		end
 	elseif string.find(sync, "BWVR") and self.queryRunning and nick and rest then
 		-- Means it's either a old style or new style reply.
