@@ -62,6 +62,8 @@ L:RegisterTranslations("enUS", function()
 		trigger_arcaneDampeningFade = "Arcane Dampening fades from (.+)",
 
 		bar_manaboundExpire = "Manabound stacks expire",
+
+		spellEffectWarning = "BigWigs: Your spellEffectLevel is set to 0, this makes void/pink zones impossible to see.  Consider changing this in your graphics options or typing /run SetCVar(\"spellEffectLevel\", 2).",
 	}
 end)
 
@@ -114,6 +116,12 @@ function module:OnEnable()
 	self:ThrottleSync(3, syncName.arcaneDampeningFade)
 
 	self:UpdateManaboundStatusFrame()
+
+	-- check if spellEffectLevel is set to 0 and warn
+	if GetCVar("spellEffectLevel") == "0" then
+		self:Message(L["spellEffectWarning"], "Attention")
+		DEFAULT_CHAT_FRAME:AddMessage(L["spellEffectWarning"], 1, 1, 0)
+	end
 end
 
 function module:OnSetup()

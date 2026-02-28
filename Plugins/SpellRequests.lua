@@ -65,6 +65,14 @@ local Spells = {
 		targetRequester = false,
 		allowRequests = true,
 	},
+	pws = {
+		spellName = "Power Word: Shield",
+		spellIcon = "Spell_Holy_PowerWordShield",
+		spellSlot = nil,
+		hasSpell = nil,
+		targetRequester = true,
+		allowRequests = true,
+	},
 	-- check cooldowns only
 	cshout = {
 		spellName = "Challenging Shout",

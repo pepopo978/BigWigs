@@ -213,7 +213,7 @@ L:RegisterTranslations("enUS", function()
 		bar_bloodTapA = "Blood Tap +",
 		bar_bloodTapB = "% Damage",
 
-		spellEffectWarning = "BigWigs: Your spellEffectLevel is set to 0, this makes fissures extremely hard to see.  Consider changing this in your graphics options or typing /run SetCVar(\"spellEffectLevel\", 2)."
+		spellEffectWarning = "BigWigs: Your spellEffectLevel is set to 0, this makes void/pink zones impossible to see.  Consider changing this in your graphics options or typing /run SetCVar(\"spellEffectLevel\", 2)."
 	}
 end)
 
@@ -430,7 +430,7 @@ function module:OnEnable()
 	-- check if spellEffectLevel is set to 0 and warn
 	if GetCVar("spellEffectLevel") == "0" then
 		self:Message(L["spellEffectWarning"], "Attention")
-		DEFAULT_CHAT_FRAME:AddMessage(L["spellEffectWarning"])
+		DEFAULT_CHAT_FRAME:AddMessage(L["spellEffectWarning"], 1, 1, 0)
 	end
 end
 

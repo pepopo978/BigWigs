@@ -331,8 +331,9 @@ end
 
 function module:Sunder(rest)
 	local sunderPlayer = strsub(rest,0,strfind(rest," ") - 1)
-	local sunderQty = tonumber(strsub(rest,strfind(rest," "),strlen(rest)))
-	
+	local sunderQty = tonumber(strsub(rest,strfind(rest," ") + 1,strlen(rest)))
+	if not sunderQty then return end
+
 	self:RemoveBar(sunderPlayer.." ".."1"..L["bar_sunder"])
 	self:RemoveBar(sunderPlayer.." ".."2"..L["bar_sunder"])
 	self:RemoveBar(sunderPlayer.." ".."3"..L["bar_sunder"])

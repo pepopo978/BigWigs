@@ -25,6 +25,7 @@ L:RegisterTranslations("enUS", function()
 		["Raid farclip value"] = "Value to set farclip to in Naxx/Kara",
 		["lowering_farclip"] = "Lowering farclip for %s to %d and saving your current farclip of %d.  You can configure this in the Farclip plugin in BigWigs.",
 		["restoring_farclip"] = "Restoring lowered farclip to your saved value of %d.",
+		["low_spell_effects"] = "WARNING: Spell Effect Level is set to %d. Certain boss effects like void/pink zones may be hard or impossible to see. Click the bar to raise it, or type: /script SetCVar(\"spellEffectLevel\", \"2\")",
 	}
 end)
 
@@ -158,6 +159,18 @@ function BigWigsFarclip:ZONE_CHANGED_NEW_AREA()
 				self.db.profile.defaultFarclip = GetCVar("farclip")
 				SetCVar("farclip", self.db.profile.lowFarClip) -- http://wowwiki.wikia.com/wiki/CVar_farclip
 			end
+			local spellEffectLevel = tonumber(GetCVar("spellEffectLevel")) or 2
+			if spellEffectLevel < 2 then
+				local spellEffectMsg = string.format(L["low_spell_effects"], spellEffectLevel)
+				self:Message(spellEffectMsg, "Red", false, nil, false)
+				DEFAULT_CHAT_FRAME:AddMessage("BIGWIGS: " .. spellEffectMsg, 1, 1, 0)
+				self:Bar(">CLICK ME< Set spellEffectLevel=2", 10, "Spell_Magic_LesserInvisibilty", true, "Red")
+				self:SetCandyBarOnClick("BigWigsBar >CLICK ME< Set spellEffectLevel=2", function()
+					SetCVar("spellEffectLevel", 2)
+					DEFAULT_CHAT_FRAME:AddMessage("BigWigs: spellEffectLevel set to " .. GetCVar("spellEffectLevel"), 0, 1, 0)
+					self:RemoveBar(">CLICK ME< Set spellEffectLevel=2")
+				end)
+			end
 	elseif self.db.profile.kara and isInKara() then
 		if not isAtLowFarclip then
 			if self.db.profile.notify then
@@ -167,6 +180,18 @@ function BigWigsFarclip:ZONE_CHANGED_NEW_AREA()
 
 			self.db.profile.defaultFarclip = GetCVar("farclip")
 			SetCVar("farclip", self.db.profile.lowFarClip) -- http://wowwiki.wikia.com/wiki/CVar_farclip
+		end
+		local spellEffectLevel = tonumber(GetCVar("spellEffectLevel")) or 2
+		if spellEffectLevel < 2 then
+			local spellEffectMsg = string.format(L["low_spell_effects"], spellEffectLevel)
+			self:Message(spellEffectMsg, "Red", false, nil, false)
+			DEFAULT_CHAT_FRAME:AddMessage("BIGWIGS: " .. spellEffectMsg, 1, 1, 0)
+			self:Bar(">CLICK ME< Set spellEffectLevel=2", 10, "Spell_Magic_LesserInvisibilty", true, "Red")
+			self:SetCandyBarOnClick("BigWigsBar >CLICK ME< Set spellEffectLevel=2", function()
+				SetCVar("spellEffectLevel", 2)
+				DEFAULT_CHAT_FRAME:AddMessage("BigWigs: spellEffectLevel set to " .. GetCVar("spellEffectLevel"), 0, 1, 0)
+				self:RemoveBar(">CLICK ME< Set spellEffectLevel=2")
+			end)
 		end
 	else
 		if isAtLowFarclip then

@@ -112,6 +112,8 @@ L:RegisterTranslations("enUS", function()
 		proximity_cmd = "proximity",
 		proximity_name = "Proximity Warning",
 		proximity_desc = "Show Proximity Warning Frame",
+
+		spellEffectWarning = "BigWigs: Your spellEffectLevel is set to 0, this makes void/pink zones impossible to see.  Consider changing this in your graphics options or typing /run SetCVar(\"spellEffectLevel\", 2).",
 	}
 end)
 
@@ -185,6 +187,12 @@ function module:OnEnable()
 	self:ThrottleSync(5, syncName.meteortimer)
 
 	self:UpdateBossStatusFrame()
+
+	-- check if spellEffectLevel is set to 0 and warn
+	if GetCVar("spellEffectLevel") == "0" then
+		self:Message(L["spellEffectWarning"], "Attention")
+		DEFAULT_CHAT_FRAME:AddMessage(L["spellEffectWarning"], 1, 1, 0)
+	end
 end
 
 function module:OnSetup()
