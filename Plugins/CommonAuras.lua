@@ -148,7 +148,7 @@ BigWigsCommonAuras.defaultDB = {
 	autofocus = false
 }
 BigWigsCommonAuras.consoleCmd = L["commonauras"]
-BigWigsCommonAuras.revision = 30065
+BigWigsCommonAuras.revision = 30066
 BigWigsCommonAuras.external = true
 BigWigsCommonAuras.consoleOptions = {
 	type = "group",
@@ -505,10 +505,10 @@ function BigWigsCommonAuras:UNIT_CASTEVENT(caster,target,action,spell_id,cast_ti
 	-- this technically false-postives on cast completions but it shouldn't matter for our purpose
 	local name,rank = SpellInfo(spell_id)
 	local fullname = rank == "" and name or format("%s(%s)",name,rank)
-	self:SpellStatusV2_SpellCastInstant(spell_id, name, rank, fullname, cast_time, target and UnitName(target))
+	self:SpellStatusV2_SpellCastInstant(spell_id, name, rank, fullname, cast_time, nil, nil, nil, target and UnitName(target))
 end
 
-function BigWigsCommonAuras:SpellStatusV2_SpellCastInstant(sId, sName, sRank, sFullName, sCastTime, target)
+function BigWigsCommonAuras:SpellStatusV2_SpellCastInstant(sId, sName, sRank, sFullName, sCastTime, sStopTime, sDuration, sDelay, target)
 	local targetName = target
 	if sName == BS["Fear Ward"] then
 		if not targetName then
