@@ -56,7 +56,7 @@ local timer = {
 	boon = 15,--timer TBD
 	empoweredSoul = 10,
 	firstSummon = 30,
-	summon = 60,--unknown, is more than 40sec
+	summon = 45,
 }
 local icon = {
 	reaverstorm = "Ability_Whirlwind",
