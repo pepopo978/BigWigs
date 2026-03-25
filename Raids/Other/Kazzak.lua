@@ -72,6 +72,76 @@ L:RegisterTranslations("enUS", function() return {
 	msg_corruptSoul = " Healed Lord Kazzak by dying!",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Kazzak",
+
+    berserk_cmd = "berserk",
+    berserk_name = "狂暴警报",
+    berserk_desc = "狂暴出现时进行警告。",
+
+    markofkazzak_cmd = "markofkazzak",
+    markofkazzak_name = "卡扎克印记警报",
+    markofkazzak_desc = "卡扎克印记（法力吸取减益）出现时进行警告。",
+
+    puticon_cmd = "puticon",
+    puticon_name = "标记卡扎克印记目标的团队图标",
+    puticon_desc = "在获得卡扎克印记的人身上放置团队图标。\n\n（需要助理或更高权限）",
+
+    twistedreflection_cmd = "twistedreflection",
+    twistedreflection_name = "扭曲反射警报",
+    twistedreflection_desc = "扭曲反射（每次击中治疗卡扎克25k生命值）出现时进行警告。",
+
+    voidbolt_cmd = "voidbolt",
+    voidbolt_name = "虚空箭警报",
+    voidbolt_desc = "虚空箭出现时进行警告。",
+
+    corruptsoul_cmd = "corruptsoul",
+    corruptsoul_name = "腐蚀灵魂警报",
+    corruptsoul_desc = "当卡扎克因随机死亡而得到治疗时进行警告。",
+
+    lowmana_cmd = "lowmana",
+    lowmana_name = "低法力警报",
+    lowmana_desc = "当你的法力值过低时进行警告。",
+	
+	
+	trigger_engage1 = "All mortals will perish!", --CHAT_MSG_MONSTER_YELL
+	trigger_engage2 = "The Legion will conquer all!", --CHAT_MSG_MONSTER_YELL
+	trigger_bossDead = "The Legion... will never... fall.", --CHAT_MSG_MONSTER_YELL
+	
+	trigger_berserk = "Lord Kazzak gains Berserk.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS to be confirmed
+    bar_berserk = "狂暴",
+    msg_berserk60 = "1分钟后狂暴！",
+    msg_berserk10 = "10秒后狂暴！",
+    msg_berserk = "狂暴！",
+	
+	trigger_markOfKazzakYou = "You are afflicted by Mark of Kazzak.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_markOfKazzakOther = "(.+) is afflicted by Mark of Kazzak.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_markOfKazzakFade = "Mark of Kazzak fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_markOfKazzakCd = "卡扎克印记 CD",
+    bar_markOfKazzakDur = " 卡扎克印记",
+    msg_markOfKazzak = " 被卡扎克印记 - 驱散！",
+    msg_markOfKazzakYou = "你中了卡扎克印记 - 法力不能耗尽！",
+    msg_lowMana = "警告 - 你的法力很低 - 卡扎克印记可能致命！",
+	
+	trigger_twistedReflectionYou = "You are afflicted by Twisted Reflection.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_twistedReflectionOther = "(.+) is afflicted by Twisted Reflection.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_twistedReflectionFade = "Twisted Reflection fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_twistedReflectionCd = "扭曲反射 CD",
+    bar_twistedReflectionDur = " 扭曲反射",
+    msg_twistedReflection = " 被扭曲反射 - 驱散！",
+	
+	trigger_voidBolt = "Lord Kazzak begins to cast Void Bolt.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_voidBoltCd = "虚空箭 CD",
+    bar_voidBoltCast = "虚空箭！",
+		
+	trigger_deadYou = "You die.", --CHAT_MSG_COMBAT_FRIENDLY_DEATH
+	trigger_deadOther = "(.+) dies.", --CHAT_MSG_COMBAT_FRIENDLY_DEATH
+    msg_corruptSoul = " 死亡治疗了魔王卡扎克！",
+    you = "you",
+} end )
 local timer = {
 	berserk = 180,
 	

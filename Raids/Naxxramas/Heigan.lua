@@ -61,6 +61,57 @@ L:RegisterTranslations("enUS", function()
 	}
 end)
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Heigan",
+
+    disease_cmd = "disease",
+    disease_name = "衰弱瘟疫警报",
+    disease_desc = "衰弱瘟疫出现时进行警告",
+    
+    manaBurn_cmd = "manaBurn",
+    manaBurn_name = "法力燃烧警报",
+    manaBurn_desc = "法力燃烧出现时进行警告",
+    
+    teleport_cmd = "teleport",
+    teleport_name = "传送警报",
+    teleport_desc = "传送出现时进行警告",
+
+    erruption_cmd = "erruption",
+    erruption_name = "爆发警报",
+    erruption_desc = "爆发出现时进行警告",
+
+    trigger_engage1 = "你现在是我的了！",--CHAT_MSG_MONSTER_YELL
+    trigger_engage2 = "你是下一个！",--CHAT_MSG_MONSTER_YELL
+    trigger_engage3 = "我看见你！",--CHAT_MSG_MONSTER_YELL
+    
+    trigger_die = "takes his last breath.",--to be confirmed
+    
+    trigger_disease = "受到了衰弱瘟疫效果的影响。",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    bar_disease = "衰弱瘟疫冷却",
+    msg_disease = "衰弱瘟疫",
+    
+    trigger_manaBurn = "肮脏的希尔盖的法力燃烧",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+    bar_manaBurn = "法力燃烧冷却",
+    
+    trigger_manaBurnYou = "肮脏的希尔盖的法力燃烧击中你",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+    msg_manaBurnYou = "法力燃烧命中你！",
+
+    trigger_danceStart = "末日就在你身上。",--CHAT_MSG_MONSTER_YELL
+    msg_danceStart = "传送！",
+    bar_dancing = "跳舞结束",
+    bar_dancingSoon = "即将跳舞",
+    
+    msg_fightStart = "战斗开始！",
+    bar_fighting = "开始跳舞",
+    
+    bar_erruption = "爆发",	
+
+    ["Eye Stalk"] = "眼柄",
+    ["Rotting Maggot"] = "腐烂的蛆虫",
+} end )
 local timer = {
 	firstDiseaseCD = 30,
 	firstDiseaseAfterDanceCD = 5,

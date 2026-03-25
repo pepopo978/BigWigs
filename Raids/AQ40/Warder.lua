@@ -52,6 +52,54 @@ L:RegisterTranslations("enUS", function() return {
 	msg_foundDust = "Dust - Next ability is Roots or Fear", --can't be Silence
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Warder",
+
+    fear_cmd = "fear",
+    fear_name = "恐惧警报",
+    fear_desc = "恐惧出现时进行警告",
+
+    silence_cmd = "silence",
+    silence_name = "沉默警报",
+    silence_desc = "沉默出现时进行警告",
+
+    roots_cmd = "roots",
+    roots_name = "缠绕根须警报",
+    roots_desc = "缠绕根须出现时进行警告",
+
+    dust_cmd = "dust",
+    dust_name = "尘雾之云警报",
+    dust_desc = "尘雾之云出现时进行警告",
+
+    warnings_cmd = "warnings",
+    warnings_name = "第二技能警告",
+    warnings_desc = "警告第二技能可能为何。",
+
+	
+    trigger_fear = "Anubisath Warder begins to cast Fear.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_fearCast = "恐惧！",
+    bar_fearCd = "恐惧 CD",
+
+    trigger_silence = "Anubisath Warder begins to cast Silence.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_silenceCast = "沉默！",
+    bar_silenceCd = "沉默 CD",
+
+    trigger_roots = "Anubisath Warder begins to cast Entangling Roots.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_rootsCast = "缠绕根须！",
+    bar_rootsCd = "缠绕根须 CD",
+
+    trigger_dust = "Anubisath Warder begins to perform Dust Cloud.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_dustCast = "尘雾之云！",
+    bar_dustCd = "尘雾之云 CD",
+    
+    msg_foundFear = "恐惧 - 下一个技能可能是沉默或尘雾之云", --can't be Roots
+    msg_foundSilence = "沉默 - 下一个技能可能是缠绕根须或恐惧", --can't be Dust
+    msg_foundRoots = "缠绕根须 - 下一个技能可能是沉默或尘雾之云", --can't be Fear
+    msg_foundDust = "尘雾之云 - 下一个技能可能是缠绕根须或恐惧", --can't be Silence
+} end )
 local timer = {
 	fearCd = {15,20}, --saw 15.4, 17.2, 20.5
 	fearCast = 1.5,

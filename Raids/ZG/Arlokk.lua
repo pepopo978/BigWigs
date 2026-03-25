@@ -69,6 +69,74 @@ L:RegisterTranslations("enUS", function() return {
 	msg_swp = " Shadow Word: Pain - Dispel!",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Arlokk",
+	
+	phase_cmd = "phase",
+    phase_name = "阶段变化警报",
+    phase_desc = "阶段变化时进行警告",
+	
+	mark_cmd = "mark",
+    mark_name = "娅尔罗的印记警报",
+    mark_desc = "娅尔罗的印记出现时进行警告",
+
+	whirlwind_cmd = "whirlwind",
+    whirlwind_name = "旋风斩警报",
+    whirlwind_desc = "旋风斩出现时进行警告",
+
+	ravage_cmd = "ravage",
+    ravage_name = "毁灭警报",
+    ravage_desc = "毁灭出现时进行警告",
+
+	gouge_cmd = "gouge",
+    gouge_name = "凿击警报",
+    gouge_desc = "凿击出现时进行警告",
+	
+	swp_cmd = "swp",
+    swp_name = "暗言术：痛警报",
+    swp_desc = "暗言术：痛出现时进行警告",
+	
+	
+	trigger_engage = "贝泰克，你的女祭司召唤你的力量！",--CHAT_MSG_MONSTER_YELL
+	
+    msg_trollPhase = "巨魔阶段 - 施放凿击和暗言术：痛", --supposed to cast gouge in troll form only, is it the case on twow?
+    msg_pantherPhase = "豹形阶段 - 伤害增加35% - 施放背刺和毁灭",
+    msg_vanishPhase = "消失阶段 - 施放娅尔罗的印记",
+    bar_return = "重新出现冷却",
+    bar_returnSoon = "即将重新出现...",
+    bar_nextVanish = "下一次消失",
+    bar_nestTroll = "下一次巨魔阶段", --need data on timer
+	
+	trigger_markYou = "你受到了娅尔罗的印记效果的影响。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_markOther = "(.+)受到了娅尔罗的印记效果的影响。", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_markFade = "娅尔罗的印记效果从(.+)身上消失了。", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    msg_mark = " 被标记！",
+    bar_mark = " 标记",
+	
+	trigger_ww = "高阶女祭司娅尔罗的旋风斩",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+    bar_ww = "旋风斩冷却",
+	
+	trigger_ravageYou = "你受到了毁灭效果的影响。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_ravageOther = "(.+)受到了毁灭效果的影响。", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_ravageFade = "毁灭效果从(.+)身上消失了。", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_ravage = " 毁灭昏迷",
+	
+	trigger_gougeYou = "You are afflicted by Gouge.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_gougeOther = "(.+) is afflicted by Gouge.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_gougeFade = "Gouge fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_gouge = " 被凿击",
+	
+	trigger_swpYou = "你受到了暗言术：痛效果的影响。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_swpOther = "(.+)受到了暗言术：痛效果的影响。", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_swpFade = "暗言术：痛效果从(.+)身上消失了。",	--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_swp = " 暗言术：痛",
+    msg_swp = " 暗言术：痛 - 驱散！",
+    you = "你",
+    clickme = " >点击我<",
+} end )
 local timer = {
 	firstVanish = 35,
 	vanish = 75,

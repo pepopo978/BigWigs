@@ -117,6 +117,89 @@ L:RegisterTranslations("enUS", function()
 	}
 end)
 
+
+L:RegisterTranslations("zhCN", function() return {
+
+    cmd = "Horsemen",
+
+    mark_cmd = "mark",
+    mark_name = "印记警报",
+    mark_desc = "印记出现时进行警告",
+    
+    meteor_cmd = "meteor",
+    meteor_name = "流星警报",
+    meteor_desc = "库尔塔兹领主施放流星时进行警告。",
+    
+    wrath_cmd = "wrath",
+    wrath_name = "神圣之怒警报",
+    wrath_desc = "瑟里耶克爵士施放神圣之怒时进行警告。",
+    
+    void_cmd = "void",
+    void_name = "虚空领域警报",
+    void_desc = "女公爵布劳缪克丝施放虚空领域时进行警告。",
+    
+    shieldwall_cmd = "shieldwall",
+    shieldwall_name = "盾墙警报",
+    shieldwall_desc = "盾墙出现时进行警告",
+    
+    taunt_cmd = "taunt",
+    taunt_name = "嘲讽抵抗/成功警报",
+    taunt_desc = "嘲讽抵抗和嘲讽成功时进行警告",
+    
+    tankswarn_cmd = "tankswarn",
+    tankswarn_name = "嘲讽抵抗警报",
+    tankswarn_desc = "嘲讽抵抗时进行警告",
+	
+	
+    bar_markCount = "印记 ",
+    msg_markCount = "印记 ",
+    trigger_markZeliek = "受到了瑟里耶克印记效果的影响",
+    trigger_markKorthAzz = "受到了库尔塔兹印记效果的影响",
+    trigger_markBlaumeux = "受到了布劳缪克丝印记效果的影响",
+    trigger_markMograine = "受到了莫格莱尼印记效果的影响",
+    
+    trigger_markZeliekFade = "Mark of Zeliek fades from you.", --CHAT_MSG_SPELL_AURA_GONE_SELF
+    trigger_markKorthAzzFade = "Mark of Korth'azz fades from you.", --CHAT_MSG_SPELL_AURA_GONE_SELF
+    trigger_markBlaumeuxFade = "Mark of Blaumeux fades from you.", --CHAT_MSG_SPELL_AURA_GONE_SELF
+    trigger_markMograineFade = "Mark of Mograine fades from you.", --CHAT_MSG_SPELL_AURA_GONE_SELF
+    msg_zeliekTankReady = "准备好对瑟里耶克爵士进行坦克",
+    msg_korthAzzTankReady = "准备好对库尔塔兹领主进行坦克",
+    msg_blaumeuxTankReady = "准备好对女公爵布劳缪克丝进行坦克",
+    msg_mograineTankReady = "准备好对大领主莫格莱尼进行坦克",
+    
+    trigger_markYou = "你受到了(.+)印记效果的影响",
+    msg_doubleMark = "你被超过一个印记命中 - 注意位置！",
+    
+    trigger_mark4 = "你受到了(.+)印记效果的影响%（4%）",
+    msg_mark4 = "你身上有4层印记 - 快跑开/吃暗抗！",
+    msg_mark4Tank = "身上有4层印记 - 替换我！",
+	
+    --trigger_void = "Lady Blaumeux casts Void Zone"
+    trigger_void2 = "你的命就是我的了！",
+    bar_void = "虚空领域",
+    msg_voidYou = "虚空领域在你身上！",
+    
+    --trigger_meteor = "Thane Korth'azz's Meteor hits ",
+    trigger_meteor2 = "我喜欢我的肉特别脆",
+    bar_meteor = "流星 CD",
+
+    --trigger_wrath = "Sir Zeliek's Holy Wrath hits ",
+    trigger_wrath2 = "我别无选择，只能服从！",
+    bar_wrath = "神圣之怒 CD",
+    
+    trigger_shieldWall = "(.*)获得了盾墙的效果。",
+    bar_shieldWall = " - 盾墙",
+    msg_shieldWallUp = " - 盾墙持续20秒",
+    msg_shieldWallFade = " - 盾墙结束！",
+    
+    trigger_tauntResist = "你的嘲讽被(.+)抵抗了。", --CHAT_MSG_SPELL_SELF_DAMAGE
+    trigger_growlResist = "你的低吼被(.+)抵抗了。", --CHAT_MSG_SPELL_SELF_DAMAGE
+    msg_tauntResist = "嘲讽被抵抗",
+    
+    trigger_tauntSuccess = "你对(.+)使用嘲讽。", --CHAT_MSG_SPELL_SELF_DAMAGE
+    trigger_growlSuccess = "你对(.+)使用低吼。", --CHAT_MSG_SPELL_SELF_DAMAGE
+    msg_tauntSuccess = "嘲讽成功",
+} end )
 local timer = {
 	firstMark = 20,
 	mark = 12,

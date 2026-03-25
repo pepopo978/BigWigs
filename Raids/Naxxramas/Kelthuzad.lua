@@ -217,6 +217,164 @@ L:RegisterTranslations("enUS", function()
 	}
 end)
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Kelthuzad",
+
+	phase_cmd = "phase",
+    phase_name = "阶段警报",
+    phase_desc = "阶段变化时进行警告。",
+	
+	p1adds_cmd = "p1adds",
+    p1adds_name = "第一阶段增援警报",
+    p1adds_desc = "第一阶段增援出现时进行提醒。",
+	
+	mc_cmd = "mc",
+    mc_name = "精神控制警报",
+    mc_desc = "精神控制发生时进行警告。",
+
+	--mcicon_cmd = "mcicon",
+    mcicon_name = "精神控制标记",
+    mcicon_desc = "在被精神控制的目标上标记团队标记。",
+
+	fissure_cmd = "fissure",
+    fissure_name = "红圈警报",
+    fissure_desc = "红圈出现时进行警告。",
+
+	frostblast_cmd = "frostblast",
+    frostblast_name = "冰墓警报",
+    frostblast_desc = "冰墓施放时进行警告。",
+	
+	frostblastframe_cmd = "frostblastframe",
+    frostblastframe_name = "冰墓目标框架",
+    frostblastframe_desc = "显示一个包含冰墓目标及其血量条的框架。",
+	
+	detonate_cmd = "detonate",
+    detonate_name = "法力爆炸警报",
+    detonate_desc = "法力爆炸施放时进行警告。",
+
+	detonateicon_cmd = "detonateicon",
+    detonateicon_name = "法力爆炸标记",
+    detonateicon_desc = "在法力爆炸的目标上标记团队标记。",
+	
+	frostbolt_cmd = "frostbolt",
+    frostbolt_name = "单体冰霜箭警报",
+    frostbolt_desc = "单体冰霜箭施放时进行警告。",
+
+	volley_cmd = "volley",
+    volley_name = "群体寒冰箭警报",
+    volley_desc = "群体寒冰箭施放时进行警告。",
+
+	guardian_cmd = "guardian",
+    guardian_name = "小强出现警报",
+    guardian_desc = "第三阶段小强出现时进行警告。",
+
+	shackle_cmd = "shackle",
+    shackle_name = "束缚亡灵计数",
+    shackle_desc = "统计对小强施放的束缚亡灵次数。",
+	
+	bloodtap_cmd = "bloodtap",
+    bloodtap_name = "血液分流计数",
+    bloodtap_desc = "统计小强身上的血液分流增益次数。",
+
+	proximity_cmd = "proximity",
+    proximity_name = "近距离警告",
+    proximity_desc = "显示近距离警告框架",
+	
+	
+	--Mortal Wound from Unstoppable Abomination, stacking, -10% healing, 15sec
+	
+	trigger_engage = "冰冷黑暗的爪牙、仆人、士兵，听从克尔苏加德的召唤！", --CHAT_MSG_MONSTER_YELL
+    bar_phase1 = "第一阶段",
+	
+	trigger_phase2_1 = "祈求怜悯！", --CHAT_MSG_MONSTER_YELL
+	trigger_phase2_2 = "尖叫出你的临终呼吸！", --CHAT_MSG_MONSTER_YELL
+	trigger_phase2_3 = "末日就在你身上！", --CHAT_MSG_MONSTER_YELL
+    bar_phase2 = "克尔苏加德激活",
+    msg_phase2 = "第二阶段 - 15秒后克尔苏加德激活！",
+	
+    msg_phase3soon = "即将进入第三阶段 - 在40%血量时开始",
+	
+	trigger_phase3 = "掌握！我需要援助！", --CHAT_MSG_MONSTER_YELL
+    msg_phase3 = "第三阶段 - 5个小强即将到来 - 最多束缚 3 个！",
+	
+	--supposedly 14 of each, saw 13 weaver in logs. Also 117 Soldier of the Frozen Wastes, useful?
+    bar_abom = "/14 憎恶死亡",
+    bar_weaver = "/14 女妖死亡",
+	
+    msg_abom = "憎恶已刷新 ",
+    msg_weaver = "女妖已刷新 ",
+		
+	trigger_mcYell1 = "你的灵魂，现在与我绑定了！",
+	trigger_mcYell2 = "将无处可逃！",
+    msg_mc = "精神控制！",
+	
+	trigger_mcYou = "你受到了克尔苏加德锁链效果的影响。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_mcOther = "(.+)受到了克尔苏加德锁链效果的影响。", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_mcFade = "克尔苏加德的锁链效果从(.+)身上消失了。", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_mcAfflic = " 精神控制",
+    bar_mcCd = "精神控制 CD",
+	trigger_friendlyDead = "(.+)死亡了。", --CHAT_MSG_COMBAT_FRIENDLY_DEATH
+	
+	trigger_fissure = "克尔苏加德施放了暗影裂隙。", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_fissure = "离开红圈！",
+    msg_fissure = "红圈！",
+	
+	trigger_frostBlastYell = "我要冻结你血管里的血液！", --CHAT_MSG_MONSTER_YELL
+	trigger_frostBlastYou = "你受到了冰霜冲击效果的影响。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_frostBlastOther = "(.+)受到了冰霜冲击效果的影响。", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE, CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
+    bar_frostBlastCd = "冰墓 CD",
+    bar_frostBlastAfflic = "冰墓",
+    msg_frostBlast = "冰墓！",
+		--unused
+	trigger_frostBlastFade = "冰霜冲击效果从(.+)身上消失。", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+
+	trigger_detonateYou = "你受到了自爆法力效果的影响。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_detonateOther = "(.+)受到了自爆法力效果的影响。", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
+	trigger_detonateFade = "自爆法力效果从(.+)身上消失。", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_detonateAfflic = " 法力爆炸",
+	bar_detonateCd = "法力爆炸 CD",
+	msg_detonate = "法力爆炸在 ",
+
+	trigger_frostbolt = "克尔苏加德开始施放冰霜箭。", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_frostbolt = "冰霜箭",
+	msg_frostbolt = "冰霜箭 - 打断！",
+	
+	trigger_attack1 = "克尔苏加德击中", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_MISSES
+	trigger_attack2 = "克尔苏加德没有击中", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_MISSES
+	trigger_attack3 = "克尔苏加德击中", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS
+	trigger_attack4 = "克尔苏加德的致命一击", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS
+	trigger_kick1 = "脚踢击中克尔苏加德", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_kick2 = "脚踢对克尔苏加德", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_kick3 = "脚踢被克尔苏加德", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_pummel1 = "拳击击中克尔苏加德", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_pummel2 = "拳击对克尔苏加德", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_pummel3 = "拳击被克尔苏加德", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_shieldBash1 = "盾击击中克尔苏加德", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_shieldBash2 = "盾击对克尔苏加德", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_shieldBash3 = "盾击被克尔苏加德", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_earthShock1 = "地震术击中克尔苏加德", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_earthShock2 = "地震术致命一击对克尔苏加德", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	
+	trigger_volley = "克尔苏加德的群体寒冰箭击中", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
+	bar_volley = "群体寒冰箭 CD",
+
+	bar_guardian = "小强 %d",
+
+	trigger_shackle = "寒冰皇冠卫士受到了束缚亡灵效果的影响。", --CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE
+	trigger_shackleFade = "束缚亡灵效果从寒冰皇冠卫士身上消失。", --CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_shackle = "束缚亡灵（最多3个）",
+	msg_shackle = "%s/3",
+
+	trigger_bloodTap = "寒冰皇冠卫士获得了鲜血分流的效果%（(.+)%）。", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	bar_bloodTapA = "血液分流 +",
+	bar_bloodTapB = "% 伤害",
+	clickme = " >点击我！<",
+	you = "你",
+
+} end )
 local timer = {
 	speedRod = 160,
 	phase1 = 320,

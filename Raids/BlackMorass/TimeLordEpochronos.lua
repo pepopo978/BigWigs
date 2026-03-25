@@ -65,6 +65,64 @@ L:RegisterTranslations("enUS", function()
 	}
 end)
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "TimeLordEpochronos",
+
+    sandbreath_cmd = "sandbreath",
+    sandbreath_name = "沙尘之息警报",
+    sandbreath_desc = "沙尘之息出现时进行警告",
+    
+    banish_cmd = "banish",
+    banish_name = "放逐警报",
+    banish_desc = "放逐出现时进行警告",
+    
+    dnd_cmd = "dnd",
+    dnd_name = "死亡凋零警报",
+    dnd_desc = "死亡凋零出现时进行警告",
+    
+    devouringplague_cmd = "devouringplague",
+    devouringplague_name = "噬灵瘟疫警报",
+    devouringplague_desc = "噬灵瘟疫出现时进行警告",
+    
+    deathcoil_cmd = "deathcoil",
+    deathcoil_name = "死亡缠绕警报",
+    deathcoil_desc = "死亡缠绕出现时进行警告",
+    
+    
+    trigger_engage = "Time moves in our favor, your intrusion ends here!",--CHAT_MSG_MONSTER_YELL
+    
+    trigger_sandBreath = "Time-Lord Epochronos begins to perform Sand Breath.",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_sandBreathCast = "正在施放沙尘之息",
+    bar_sandBreathCd = "沙尘之息冷却",
+    
+    trigger_lkSpawn = "Time-Lord Epochronos is afflicted by Banish.",--CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE
+    trigger_banishFade = "Banish fades from Time-Lord Epochronos.",--CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_banish = "放逐",
+    msg_banish = "击杀出现的小型Boss！",
+    
+    trigger_dndCast = "Echo of the Lich King begins to cast Death & Decay.",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_dndCast = "正在施放死亡凋零",
+    msg_dndCast = "正在施放死亡凋零，打断！",
+    
+    --to be confirmed
+    trigger_dndDamage = "You suffer (.+) Shadow damage from Death & Decay.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    
+    trigger_devouringPlagueYou = "You are afflicted by Devouring Plague.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_devouringPlagueOther = "(.+) is afflicted by Devouring Plague.",--CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    trigger_devouringPlagueFade = "Devouring Plague fades from (.+).",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_devouringPlague = "噬灵瘟疫",
+    
+    trigger_deathCoilYou = "You are afflicted by Death Coil.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_deathCoilOther = "(.+) is afflicted by Death Coil.",--CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+    trigger_deathCoilFade = "Death Coil fades from (.+).",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_deathCoil = "死亡缠绕",
+    
+    --Lady Vashj -> Thunderstorm Cloud -> CLOG
+    you = "you",
+} end )
 local timer = {
 	sandBreathCast = 2,
 	sandBreathCd = 13,

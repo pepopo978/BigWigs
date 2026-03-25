@@ -63,6 +63,66 @@ L:RegisterTranslations("enUS", function() return {
 	firstcrystal_warn = "CLICK IT NOW!!!",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Ossirian",
+	
+    bigicon_cmd = "bigicon",
+    bigicon_name = "大图标警告标志",
+    bigicon_desc = "沙尘暴、虚弱和萨满的根基图腾的大警告标志",
+
+	warstomp_cmd = "warstomp",
+	warstomp_name = "战争践踏计时条",
+	warstomp_desc = "奥斯里安的战争践踏计时条",
+
+	cyclone_cmd = "cyclone",
+	cyclone_name = "飓风术计时条",
+	cyclone_desc = "奥斯里安的飓风术计时条",
+
+	sandstorm_cmd = "sandstorm",
+	sandstorm_name = "沙尘暴伤害警告",
+	sandstorm_desc = "受到沙尘暴的伤害时进行警告",
+	
+	supreme_cmd = "supreme",
+	supreme_name = "狂暴警报",
+	supreme_desc = "狂暴姿态出现时进行警告",
+	
+	weakness_cmd = "weakness",
+	weakness_name = "奥斯里安的弱点警报",
+	weakness_desc = "警告奥斯里安的新弱点是什么",
+
+	clickit_cmd = "clickit",
+	clickit_name = "现在点击水晶",
+	clickit_desc = "计时器，如果在此计时器后点击，他将变为狂暴状态",
+
+	supreme_trigger = "无疤者奥斯里安获得了奥斯里安之力的效果。",
+	supreme_trigger2 = "无疤者奥斯里安受到了奥西里安之力的影响。",
+	supreme_bar = "狂暴姿态",
+	supremewarn = "无疤者奥斯里安狂暴姿态!",
+	supremedelaywarn = "狂暴将在 %d 秒后出现！",
+
+	debuff_trigger = "无疤者奥斯里安受到了(.+)虚弱效果的影响。",
+	debuff_trigger2 = "无疤者奥斯里安获得了(.+)虚弱的效果。",
+	debuffwarn = "奥斯里安现在弱点是：",
+
+	ossiLostSupreme = "无疤者奥斯里安的奥斯里安之力效果消失了。",-- CHAT_MSG_SPELL_AURA_GONE_OTHER",
+
+	expose = "虚弱",
+	
+	cyclone_trigger = "包围之风",
+	cyclone_bar = "飓风术",
+	warstomp_trigger = "战争践踏",
+	warstomp_bar = "战争践踏",
+	
+	sandstorm_trigger = "沙尘漩涡的强风击中你造成",
+	
+	clickit_bar = "点击水晶或死亡",
+
+	firstcrystal_bar = "在0秒时点击第一个水晶",
+	firstcrystal_warn = "现在点击它！！！",
+} end )
 local timer = {
 	weakness = 45,
 	supreme = 45,

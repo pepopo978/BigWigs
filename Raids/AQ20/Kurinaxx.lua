@@ -33,6 +33,37 @@ L:RegisterTranslations("enUS", function() return {
 	msg_enrage = "Kurinnaxx is Enraged!",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Kurinnaxx",
+
+    wound_cmd = "wound",
+    wound_name = "重伤警报",
+    wound_desc = "重伤出现时进行警告",
+
+    trap_cmd = "trap",
+    trap_name = "陷阱警报",
+    trap_desc = "为每个中陷阱的玩家显示计时条",
+
+    enrage_cmd = "enrage",
+    enrage_name = "激怒警报",
+    enrage_desc = "激怒出现时进行警告",
+    
+    
+    trigger_trap = "流沙陷阱的沙漠陷阱击中(.+)造成", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    msg_sandTrap = "沙尘陷阱",
+    bar_trap = " 沙尘陷阱",
+    
+    trigger_woundYou = "你受到了重伤效果的影响%（(.+)%）。",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_woundOther = "(.+)受到了重伤效果的影响%（(.+)%）。",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+    bar_wound = " 重伤",
+
+    trigger_enrage = "库林纳克斯获得了狂怒的效果。", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    msg_enrage = "库林纳克斯激怒了！",
+    you = "你",
+} end )
 local timer = {
 	wound = 15,
 	trap = 20,

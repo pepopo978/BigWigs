@@ -88,6 +88,87 @@ L:RegisterTranslations("enUS", function()
 		msg_enrage = "Enraged!",
 	}
 end)
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Guardian",
+
+    reflect_cmd = "reflect",
+    reflect_name = "法术反射警报",
+    reflect_desc = "显示守护者拥有的反射法术的计时条",
+
+    plague_cmd = "plague",
+    plague_name = "瘟疫警报",
+    plague_desc = "瘟疫出现时进行警告",
+
+    icon_cmd = "icon",
+    icon_name = "瘟疫团队标记",
+    icon_desc = "在最后一个被瘟疫感染的人身上放置团队标记（需要助理或更高权限）",
+
+    thunderclap_cmd = "thunderclap",
+    thunderclap_name = "雷霆一击警报",
+    thunderclap_desc = "雷霆一击出现时进行警告",
+
+    shadowstorm_cmd = "shadowstorm",
+    shadowstorm_name = "暗影风暴警报",
+    shadowstorm_desc = "暗影风暴出现时进行警告",
+
+    meteor_cmd = "meteor",
+    meteor_name = "流星警报",
+    meteor_desc = "流星出现时进行警告",
+
+    explode_cmd = "explode",
+    explode_name = "爆炸警报",
+    explode_desc = "爆炸出现时进行警告",
+
+    enrage_cmd = "enrage",
+    enrage_name = "激怒警报",
+    enrage_desc = "激怒出现时进行警告",
+	
+	
+	trigger_arcaneFireReflect1 = "月火术被阿努比萨斯守卫者反弹回来。",--CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
+	trigger_arcaneFireReflect2 = "灼烧被阿努比萨斯守卫者反弹回来。",--CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
+	trigger_arcaneFireReflect3 = "烈焰震击被阿努比萨斯守卫者反弹回来。",--CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
+	trigger_arcaneFireReflect4 = "火球术被阿努比萨斯守卫者反弹回来。",--CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
+	trigger_arcaneFireReflect5 = "烈焰鞭笞被阿努比萨斯守卫者反弹回来。",--CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
+	trigger_arcaneFireReflect6 = "侦测魔法被阿努比萨斯守卫者反弹回来。",--CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
+    bar_fireArcaneReflect = "火焰 & 奥术反射",
+	
+	trigger_shadowFrostReflect1 = "暗言术：痛被阿努比萨斯守卫者反弹回来。",--CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
+	trigger_shadowFrostReflect2 = "腐蚀术被阿努比萨斯守卫者反弹回来。",--CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
+	trigger_shadowFrostReflect3 = "寒冰箭被阿努比萨斯守卫者反弹回来。",--CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
+	trigger_shadowFrostReflect4 = "冰霜震击被阿努比萨斯守卫者反弹回来。",--CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_SELF_DAMAGE
+	trigger_shadowFrostReflect5 = "阿努比萨斯守卫者受到了侦测魔法效果的影响。",--CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE
+    bar_shadowFrostReflect = "暗影 & 冰霜反射",
+	
+	trigger_selfReflect = "你的(.*)被阿努比萨斯守卫者反弹回来。",--CHAT_MSG_SPELL_SELF_DAMAGE
+    msg_selfReflect = "法术反射 - 停止自残！",
+	
+	trigger_plagueYou = "你受到了瘟疫效果的影响。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_plagueOther = "(.+)受到了瘟疫效果的影响。", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    bar_plague = "瘟疫",
+    msg_plague = "瘟疫在 ",
+	
+	trigger_thunderClap = "阿努比萨斯守卫者的雷霆震击", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_thunderClap = "雷霆一击",
+    msg_thunderClap = "雷霆一击 - 远程远离！",
+
+	trigger_shadowStorm = "阿努比萨斯守卫者的暗影风暴", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_shadowStorm = "暗影风暴",
+    msg_shadowStorm = "暗影风暴 - 远程靠近！",
+
+	trigger_meteor = "阿努比萨斯守卫者的流星", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_meteor = "流星",
+    msg_meteor = "流星！",
+	
+	trigger_explode = "阿努比萨斯守卫者获得了爆炸的效果。", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    bar_explode = "即将爆炸！",
+    msg_explode = "即将爆炸！快跑！！！",
+
+	trigger_enrage = "阿努比萨斯守卫者获得了狂怒的效果。", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    msg_enrage = "狂暴！加大治疗！",
+} end )
 local timer = {
 	--the timers for tClap, sStorm, meteor vary too much,
 	--will just put 600 so bars tell people what abilities they have

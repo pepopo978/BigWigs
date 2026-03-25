@@ -39,6 +39,38 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_engage = "So it was you I smelled! Such a foul taint.",--CHAT_MSG_MONSTER_YELL
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "ClawlordHowlfang",
+
+    terrifyingpresence_cmd = "terrifyingpresence",
+    terrifyingpresence_name = "恐怖气场警报",
+    terrifyingpresence_desc = "恐怖气场出现时进行警告",
+
+    curse_cmd = "curse",
+    curse_name = "诅咒警报",
+    curse_desc = "诅咒出现时进行警告",
+    
+    enrage_cmd = "enrage",
+    enrage_name = "激怒警报",
+    enrage_desc = "激怒出现时进行警告",
+    
+
+
+    trigger_terrifyingPresenceSelf = "You are afflicted by Terrifying Presence %((.+)%).",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    --trigger_terrifyingPresence = "(.+) is afflicted by Terrifying Presence %((.+)%).",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+    bar_terrifyingPresence = "% 减益效果",
+    
+    trigger_curse = "afflicted by Shadowbane Curse.",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    msg_curse = "影刃诅咒，快驱散！",
+    
+    trigger_yellEnrage = "My pack shall tear you apart, bone by bone!",--CHAT_MSG_MONSTER_YELL
+    msg_enrage = "激怒！",
+    
+    trigger_engage = "So it was you I smelled! Such a foul taint.",--CHAT_MSG_MONSTER_YELL
+} end )
 local timer = {
 	terrifyingPresence = 10,
 }

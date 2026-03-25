@@ -70,6 +70,38 @@ L:RegisterTranslations("esES", function() return {
 	you = "Tu",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Buru",
+
+	watch_cmd = "watch",
+	watch_name = "凝视警报",
+	watch_desc = "警告谁正在被凝视",
+	
+	dismember_cmd = "dismember",
+	dismember_name = "肢解警报",
+	dismember_desc = "肢解出现时进行警告",
+	
+	phase_cmd = "phase",
+	phase_name = "阶段警报",
+	phase_desc = "阶段转换时进行警告",
+	
+	trigger_watch = "sets eyes on (.+)!",--CHAT_MSG_MONSTER_EMOTE
+	msg_watch = " 被布鲁盯上了！",
+	trigger_watchEnd = "Buru Egg's Explosion hits Buru the Gorger for",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	msg_watchEnd = "布鲁不再跟踪你了。",
+	
+	trigger_dismemberYouOne = "You are afflicted by Dismember.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_dismemberYouMore = "You are afflicted by Dismember %((.+)%).",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_dismemberOtherOne = "(.+) is afflicted by Dismember.",--CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+		trigger_dismemberOtherMore = "(.+) is afflicted by Dismember %((.+)%).",--CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	bar_dismember = " 斩杀",
+	
+	msg_phase2 = "第二阶段，DPS全力输出布鲁!",
+	you = "你",
+} end )
 local timer = {
 	dismember = 10,
 }

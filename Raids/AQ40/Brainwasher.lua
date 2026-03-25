@@ -36,6 +36,35 @@ L:RegisterTranslations("enUS", function()
 	}
 end)
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "BrainWasher",
+
+    mc_cmd = "mc",
+    mc_name = "精神控制警报",
+    mc_desc = "精神控制出现时进行警告",
+
+    mindflay_cmd = "mindflay",
+    mindflay_name = "心灵震爆警报",
+    mindflay_desc = "心灵震爆出现时进行警告",
+
+
+    trigger_mcYou = "You are afflicted by Cause Insanity.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_mcOther = "(.+) is afflicted by Cause Insanity.",--CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
+    trigger_mcFade = "Cause Insanity fades from (.+).",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_mc = " 精神控制",
+
+    trigger_mindFlayYou = "你受到了精神鞭笞效果的影响。",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_mindFlayOther = "(.+)受到了精神鞭笞效果的影响。",--CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
+    trigger_mindFlayFade = "精神鞭笞效果从(.+)身上消失了。",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_mindFlay = " 精神鞭笞（死缠效果）",
+
+    ["You have slain %s!"] = "你已经击败了%s！",
+    clickme = " >点击我<",
+    you = "你",
+} end )
 local timer = {
 	mc = 10,
 	mindFlay = 8,

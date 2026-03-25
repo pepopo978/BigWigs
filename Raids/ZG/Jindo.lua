@@ -59,6 +59,58 @@ L:RegisterTranslations("enUS", function()
 	}
 end)
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Jindo",
+	
+	curse_cmd = "curse",
+    curse_name = "诅咒警报",
+    curse_desc = "当玩家受到金度的欺骗时进行警告。",
+
+	hex_cmd = "hex",
+    hex_name = "妖术警报",
+    hex_desc = "当玩家受到妖术时进行警告。",
+	
+	brainwash_cmd = "brainwash",
+    brainwash_name = "洗脑图腾警报",
+    brainwash_desc = "当金度召唤洗脑图腾时进行警告。",
+
+	healingward_cmd = "healingward",
+    healingward_name = "治疗图腾警报",
+    healingward_desc = "当金度召唤强力治疗图腾时进行警告。",
+
+	autotarget_cmd = "autotarget",
+    autotarget_name = "自动标记图腾",
+    autotarget_desc = "自动标记图腾",
+	
+	
+	trigger_engage = "朋友，欢迎参加这场盛宴。来吧，狂欢至死吧！",--CHAT_MSG_MONSTER_YELL
+	
+	trigger_hexYou = "你受到了妖术效果的影响。",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+	trigger_hexOther = "(.+)受到了妖术效果的影响。",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+	trigger_hexFade = "妖术效果从(.+)身上消失了。",----CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
+    bar_hex = " 妖术",
+    msg_hex = " 被妖术 - 驱散！",
+	
+	trigger_curseYou = "你受到了金度的欺骗效果的影响。",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    msg_curseYou = "你被诅咒了！转火影子！",
+	trigger_curseOther = "(.+)受到了金度的欺骗效果的影响。",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+    bar_curse = " 被诅咒",
+	trigger_curseFade = "金度的欺骗效果从(.+)身上消失了。",--CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
+	
+	trigger_curseDispel = "金度的欺骗被移除了。",--CHAT_MSG_SPELL_BREAK_AURA
+    msg_curseDispel = "金度的欺骗被驱散了！",
+	
+	trigger_brainWash = "妖术师金度施放了召唤洗脑图腾。",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF
+    msg_brainWash = "快打洗脑图腾！",
+	--trigger_brainWashDeath = "Brain Wash Totem is destroyed.",--CHAT_MSG_COMBAT_HOSTILE_DEATH
+	
+	trigger_healingWard = "妖术师金度施放了强力治疗结界。",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF
+    msg_healingWard = "快打治疗图腾！",
+	--trigger_healingWardDeath = "Powerful Healing Ward is destroyed.",--CHAT_MSG_COMBAT_HOSTILE_DEATH
+} end )
 local timer = {
 	hexDuration = 5,
 	curseDuration = 20,

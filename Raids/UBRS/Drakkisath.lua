@@ -54,6 +54,48 @@ L:RegisterTranslations("enUS", function() return {
 	msg_bringBossBack = "Adds are dead, bring Drakkisath back!",
 } end)
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Drakkisath",
+
+    flamestrike_cmd = "flamestrike",
+    flamestrike_name = "烈焰风暴警报",
+    flamestrike_desc = "当站在烈焰风暴范围时进行警告",
+
+    conflag_cmd = "conflag",
+    conflag_name = "燃烧警报",
+    conflag_desc = "燃烧出现时进行警告",
+
+    conflagproxy_cmd = "conflagproxy",
+    conflagproxy_name = "附近燃烧伤害警报",
+    conflagproxy_desc = "对附近友方造成的燃烧伤害进行警告",
+
+    adds_cmd = "adds",
+    adds_name = "已死亡增援计数",
+    adds_desc = "通报死亡的多彩精英卫兵数量",
+
+
+
+    trigger_conflagSelf = "You are afflicted by Conflagration.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_conflagOther = "(.+) is afflicted by Conflagration.",--CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    trigger_conflagFade = "Conflagration fades from (.+).",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_Other
+    bar_conflag = " 燃烧",
+    msg_conflag = " 燃烧",
+
+    trigger_flamestrike = "You are afflicted by Flamestrike.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_flamestrikeFade = "Flamestrike fades from you.",--CHAT_MSG_SPELL_AURA_GONE_SELF
+    msg_flamestrike = "从烈焰风暴中离开！",
+
+    trigger_conflagProxy = "Conflagration hits you for",--CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+    msg_conflagProxy = "远离附近燃烧的人，你这个傻瓜！！！",
+
+    msg_addDead = "/2 增援死亡",
+    msg_bringBossBack = "增援死了，把达基萨斯拉回来！",
+    generaldrakkisathdies = "达基萨斯将军已死。",
+    you = "you",
+} end)
 local timer = {
 	conflag = 10,
 }

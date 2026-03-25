@@ -23,6 +23,22 @@ L:RegisterTranslations("enUS", function() return {
 	bar_fear = "Intimidating Shout CD",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Champion",
+
+    fear_cmd = "fear",
+    fear_name = "破胆怒吼警报",
+    fear_desc = "破胆怒吼出现时进行警告",
+
+
+    trigger_fear = "afflicted by Intimidating Shout", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
+    trigger_fear2 = "Qiraji Champion's Intimidating Shout was resisted", --to be confirmed
+    trigger_fear3 = "Qiraji Champion's Intimidating Shout fail", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
+    bar_fear = "破胆怒吼 CD",
+} end )
 local timer = {
 	fearCd = {19,40},--saw 19, saw 40
 }

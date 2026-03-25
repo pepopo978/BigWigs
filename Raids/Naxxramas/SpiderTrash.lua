@@ -22,6 +22,21 @@ L:RegisterTranslations("enUS", function()
 	}
 end)
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "SpiderTrash",
+
+    charge_cmd = "charge",
+    charge_name = "毒性充能",
+    charge_desc = "显示毒性充能的冷却时间和图标。",
+    
+    charge_trigger = "受到了毒性充能效果的影响。",
+    chargeself_trigger = "你受到了毒性充能效果的影响。",
+    chargegone_self = "毒性充能效果从你身上消失",
+    charge_bar = "毒性充能 CD",
+} end )
 local timer = {
 	charge = { 10, 15 },
 }

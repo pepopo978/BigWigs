@@ -98,6 +98,79 @@ local rendDead = nil
 local gythDead = nil
 local bwPlayerIsAttacking = nil
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Gyth",
+	
+	flamebreath_cmd = "flamebreath",
+    flamebreath_name = "烈焰吐息",
+    flamebreath_desc = "烈焰吐息出现时进行警告",
+	
+	freeze_cmd = "freeze",
+    freeze_name = "冰冻",
+    freeze_desc = "提示团队驱散你的冰冻效果。",
+	
+	dismount_cmd = "dismount",
+    dismount_name = "下马",
+    dismount_desc = "当雷德下马时进行警告",
+	
+	whirlwind_cmd = "whirlwind",
+    whirlwind_name = "旋风斩",
+    whirlwind_desc = "雷德旋风斩的计时器。",
+	
+	enrage_cmd = "enrage",
+    enrage_name = "激怒",
+    enrage_desc = "激怒提示。",
+	
+	waves_cmd = "waves",
+    waves_name = "波次",
+    waves_desc = "波次警告。",
+	
+	
+	
+	trigger_flamebreath = "Gyth begins to cast Flame Breath.",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_flamebreathCd = "烈焰吐息冷却",
+    bar_flamebreathCast = "烈焰吐息",
+	
+	trigger_freezeYou = "You are afflicted by Freeze.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_freezeOther = "(.+) is afflicted by Freeze.",--CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    msg_freeze = "驱散冰冻！",
+	
+	trigger_dismount = "Gyth casts Summon Rend Blackhand.",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF
+    msg_dismount = "雷德已经下马！",
+	
+	trigger_whirlwind = "Warchief Rend Blackhand gains Whirlwind.",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    bar_whirlwindCd = "旋风斩冷却",
+    bar_whirlwindCast = "旋风斩！",
+	
+	trigger_enrage = "Warchief Rend Blackhand gains Enrage.",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS",
+    msg_enrage = "雷德激怒了！",
+	
+	trigger_engage = "Excellent... it would appear as if the meddlesome insects have arrived just in time to feed my legion. Welcome, mortals!",--CHAT_MSG_MONSTER_YELL
+	trigger_bossNext = "THIS CANNOT BE!!! Rend, deal with these insects.",--CHAT_MSG_MONSTER_YELL
+	
+    bar_beforeWave1 = "波次开始",
+    bar_beforeWave2 = "波次 2/7 开始",
+    bar_beforeWave3 = "波次 3/7 开始",
+    bar_beforeWave4 = "波次 4/7 开始",
+    bar_beforeWave5 = "波次 5/7 开始",
+    bar_beforeWave6 = "波次 6/7 开始",
+    bar_beforeWave7 = "波次 7/7 开始",
+    bar_beforeWaveBoss = "Gyth",
+
+    bar_waves1 = "波次 1/7",
+    bar_waves2 = "波次 2/7",
+    bar_waves3 = "波次 3/7",
+    bar_waves4 = "波次 4/7",
+    bar_waves5 = "波次 5/7",
+    bar_waves6 = "波次 6/7",
+    bar_waves7 = "波次 7/7 - 下一个是Boss！",
+    c_chromaticwhelp = "多彩雏龙",
+    c_chromaticdragonspawn = "多彩龙人",
+    c_blackhanddragonhandler = "黑手驭龙者",
+} end )
 local timer = {
 	beforeWave1 = 13.5,
 	beforeWave2 = 40,

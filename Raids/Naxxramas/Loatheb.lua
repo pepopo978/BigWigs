@@ -169,6 +169,93 @@ LoathebDebuff:Hide()
 LoathebDebuff:SetFrameStrata("TOOLTIP")
 LoathebDebuff:SetOwner(WorldFrame, "ANCHOR_NONE")
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Loatheb",
+
+	doom_cmd = "doom",
+    doom_name = "必然厄运警报",
+    doom_desc = "必然厄运出现时进行警告",
+
+    curse_cmd = "curse",
+    curse_name = "厄运爆炸警报",
+    curse_desc = "必然厄运爆炸时进行警告",
+
+	spore_cmd = "spore",
+    spore_name = "孢子警报",
+    spore_desc = "孢子生成时进行警告",
+
+	debuff_cmd = "debuff",
+    debuff_name = "孢子效果",
+    debuff_desc = "当你的孢子效果即将消失时显示图标",
+
+	groups_cmd = "groups",
+    groups_name = "孢子分组",
+    groups_desc = "关闭以在孢子计时器上显示分组编号（7组战术）",
+	
+	corruptedmind_cmd = "堕落心灵开始",
+    corruptedmind_name = "个人堕落心灵计时器",
+    corruptedmind_desc = "你的堕落心灵减益效果的计时器",
+	
+	
+    doombar = "必然厄运 %d",
+    doomwarn = "必然厄运%d！距下一次%d秒！",
+    doomwarn5sec = "5秒后必然厄运%d！",
+    doomtrigger = "受到了必然的厄运效果的影响。",
+
+	cursewarn = "下一次喷毒！",
+    cursebar = "毒性光环",
+    cursetrigger  = "受到了毒性光环效果的影响。",
+
+	doomtimerbar = "每15秒一次厄运（狂暴）",
+    doomtimerwarn = "厄运计时器在 %s 秒后改变！",
+    doomtimerwarnnow = "必然厄运现在每15秒发生一次！",
+
+    cursetimerbar = "必然厄运计时器",
+    cursetimerwarn = "厄运爆炸，下一次在 %s 秒后！",
+
+    startwarn = "洛欧塞布已激活，2分钟后将出现必然厄运！",
+	
+	trigger_corruptedMind = "你受到了堕落心灵效果的影响。",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    bar_corruptedMind = "你的堕落心灵倒计时",
+	trigger_corruptedMindFade = "堕落心灵效果从你身上消失了。",--CHAT_MSG_SPELL_AURA_GONE_SELF
+	
+	--sporewarn = "Spore spawned",
+    sporebar = "下一个孢子 %d",
+    sporebar_group = "下一孢子 - 分组 %d",
+
+    you = "你",
+    are = "受到了",
+	fungalBloom = "蘑菇花",
+
+	--LoathebTactical
+	graphic_cmd = "graphic",
+    graphic_name = "图形标志",
+    graphic_desc = "选中后显示图形标志",
+
+	sound_cmd = "sound",
+    sound_name = "声效",
+    sound_desc = "选中后播放声效",
+
+	consumable_cmd = "consumable",
+    consumable_name = "不警告团队使用消耗品（A）",
+    consumable_desc = "选中后不通过团队警告来提示使用消耗品。需要助理权限（A）",
+
+    shadowpot = "-- 喝暗抗！ --",
+    bandage = "-- 使用绷带！ --",
+    wrtorhs = "-- 喝糖水茶/吃糖！ --",
+    shadowpotandbandage = "-- 喝暗抗并用绷带！ --",
+    noconsumable = "-- 现在不用消耗品！ --",
+
+	soundshadowpot = "Interface\\Addons\\BigWigs\\Sounds\\potion.wav",
+	soundbandage = "Interface\\Addons\\BigWigs\\Sounds\\bandage.wav",
+	soundwrtorhs = "Interface\\Addons\\BigWigs\\Sounds\\healthstone.wav",
+	soundshadowpotandbandage = "Interface\\Addons\\BigWigs\\Sounds\\potionandbandage.wav",
+	soundgoforbuff = "Interface\\Addons\\BigWigs\\Sounds\\goforbuff.wav",
+
+} end )
 local timer = {
 	softEnrage = 300,
 	firstDoom = 120,

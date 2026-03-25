@@ -50,6 +50,52 @@ L:RegisterTranslations("enUS", function() return {
 	msg_berserk10 = "Berserk in 10 seconds!",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Sartura",
+
+    adds_cmd = "adds",
+    adds_name = "萨特拉的皇家卫兵死亡计数器",
+    adds_desc = "宣布萨特拉的皇家卫兵死亡。",
+
+    whirlwind_cmd = "whirlwind",
+    whirlwind_name = "旋风斩",
+    whirlwind_desc = "旋风斩的计时器和计时条。",
+
+    enrage_cmd = "enrage",
+    enrage_name = "激怒",
+    enrage_desc = "在Boss血量为20%时警告激怒。",
+
+    berserk_cmd = "berserk",
+    berserk_name = "狂暴",
+    berserk_desc = "警告Boss在10分钟后获得的狂暴。",
+
+
+    trigger_engage = "你将因玷污这些神圣的土地而受到审判！上古法则不容挑战！入侵者将被消灭！", --CHAT_MSG_MONSTER_YELL
+    trigger_bossDead = "我服务到最后！", --CHAT_MSG_MONSTER_YELL
+
+    trigger_addDead = "沙尔图拉皇家卫士死亡了。", --CHAT_MSG_COMBAT_HOSTILE_DEATH
+    msg_addDead = "%d/3 沙尔图拉皇家卫士死亡！",
+
+    trigger_whirlwind = "沙尔图拉获得了旋风斩的效果。", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    bar_whirlwind = "旋风斩！",
+    msg_whirlwind = "旋风斩！",
+    bar_whirlwindCd = "旋风斩 CD",
+
+    trigger_whirlwindFade = "Whirlwind fades from Battleguard Sartura.", --CHAT_MSG_SPELL_AURA_GONE_OTHER
+    msg_whirlwindFade = "旋风斩结束！",
+
+    trigger_enrage = "沙尔图拉生气了！", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    msg_enrage = "激怒 - 疯狂治疗！",
+
+    trigger_berserk = "沙尔图拉陷入狂暴状态！", --to be confirmed
+    msg_berserk = "狂暴！",
+    bar_berserk = "狂暴",
+    msg_berserk60 = "60秒后狂暴！",
+    msg_berserk10 = "10秒后狂暴！",
+} end )
 local timer = {
 	firstWhirlwind = {8,12},
 	whirlwindCd = {5,10},

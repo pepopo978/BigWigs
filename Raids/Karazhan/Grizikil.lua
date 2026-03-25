@@ -37,6 +37,36 @@ L:RegisterTranslations("enUS", function() return {
 	msg_pullAll = "Pull --ALL-- imp packs before engaging Grizikil!",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Grizikil",
+
+    rainoffire_cmd = "rainoffire",
+    rainoffire_name = "火焰之雨警报",
+    rainoffire_desc = "火焰之雨出现时进行警告",
+
+    flamewave_cmd = "flamewave",
+    flamewave_name = "烈焰波警报",
+    flamewave_desc = "烈焰波出现时进行警告",
+    
+
+    
+    trigger_rainOfFireYou = "You suffer (.+) Fire damage from Grizikil's Grellkin Rain of Fire.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    msg_rainOfFireYou = "离开火焰之雨区域！",
+    
+    trigger_flamewave = "Grizikil is afflicted by Flamewave.",--CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE
+    trigger_flamewaveFade = "Flamewave fades from Grizikil.",--CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_flamewave = "烈焰波",
+    msg_flamewave = "烈焰波，近战快躲开！",
+    
+    trigger_yellSmt = "You-you-you no defeat me, I am strong!",--CHAT_MSG_MONSTER_YELL
+    
+    trigger_engage = "Whats this? You're here for the orb?! ITS MINE, Grellkin, get them!",--CHAT_MSG_MONSTER_YELL
+    
+    msg_pullAll = "在与格里兹基尔交战前，拉清--所有--小鬼群！",
+} end )
 local timer = {
 	flamewave = 9,
 }

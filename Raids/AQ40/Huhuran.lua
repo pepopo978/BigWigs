@@ -60,6 +60,59 @@ L:RegisterTranslations("enUS", function() return {
 	msg_enrage5sec = "Enrage in 5 seconds",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Huhuran",
+
+    wyvernsting_cmd = "wyvernsting",
+    wyvernsting_name = "飞龙钉刺警报",
+    wyvernsting_desc = "飞龙钉刺出现时进行警告",
+
+    frenzy_cmd = "frenzy",
+    frenzy_name = "狂乱警报",
+    frenzy_desc = "狂乱出现时进行警告",
+
+    noxiouspoison_cmd = "noxiouspoison",
+    noxiouspoison_name = "剧毒警报",
+    noxiouspoison_desc = "剧毒出现时进行警告",
+    
+    berserk_cmd = "berserk",
+    berserk_name = "低血量狂暴警报",
+    berserk_desc = "低血量狂暴出现时进行警告",
+    
+    enrage_cmd = "enrage",
+    enrage_name = "定时狂怒警报",
+    enrage_desc = "定时狂怒出现时进行警告",
+    
+    
+    trigger_wyvernSting = "受到了翼龙钉刺效果的影响。",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    trigger_wyvernStingYou = "受到了翼龙钉刺效果的影响。",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_wyvernStingYouFade = "翼龙钉刺效果从你身上消失了。",--CHAT_MSG_SPELL_AURA_GONE_SELF
+    bar_wyvernStingDuration = "翼龙钉刺效果",
+    bar_wyvernStingCd = "翼龙钉刺冷却",
+    
+    trigger_frenzyGain = "哈霍兰公主获得了疯狂的效果。",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    trigger_frenzyFade = "疯狂效果从哈霍兰公主身上消失。",--CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_frenzyDuration = "狂乱！",
+    bar_frenzyCd = "狂乱冷却",
+    msg_frenzy = "狂乱 - 宁神射击！",
+
+    trigger_noxiousPoison = "受到了致命剧毒效果的影响。",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    trigger_noxiousPoisonYou = "你受到了致命剧毒效果的影响。",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_noxiousPoisonYouFade = "致命剧毒效果从你身上消失了。",--CHAT_MSG_SPELL_AURA_GONE_SELF
+    bar_noxiousPoisonDuration = "沉默效果",
+    bar_noxiousPoisonCd = "剧毒冷却",
+    
+    trigger_berserk = "哈霍兰公主获得了狂暴的效果。",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    msg_berserk = "狂暴！开管家铃！召唤各种小弟！",
+    
+    trigger_enrage = "哈霍兰公主获得了狂怒的效果。",--5min timer, string to be confirmed
+    bar_enrage = "狂怒",
+    msg_enrage1min = "60秒内狂怒",
+    msg_enrage5sec = "5秒内狂怒",
+} end )
 local timer = {
 	wyvernStingCdFirst = {18,28},
 	wyvernStingCd = {3,20},--15,32 minus 12sec duration

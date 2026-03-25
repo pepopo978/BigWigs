@@ -42,6 +42,43 @@ L:RegisterTranslations("enUS", function() return {
 	subStringDead = "(.+) dies.",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "TwilightCorrupter",
+
+	creatureofnightmare_cmd = "creatureofnightmare",
+    creatureofnightmare_name = "精神控制警报",
+    creatureofnightmare_desc = "精神控制出现时进行警告",
+
+	soulcorruption_cmd = "soulcorruption",
+    soulcorruption_name = "灵魂腐蚀警报",
+    soulcorruption_desc = "灵魂腐蚀出现时进行警告",
+	
+	swellofsouls_cmd = "swellofsouls",
+    swellofsouls_name = "死亡增加攻击力警报",
+    swellofsouls_desc = "当前死亡增加攻击力时进行警告",
+	
+	
+		--MC, 1 person, 30sec duration, then 8sec CD
+	trigger_creatureOfNightmare = "(.+) is afflicted by Creature of Nightmare.",--CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
+	trigger_creatureOfNightmareYou = "You are afflicted by Creature of Nightmare.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_creatureOfNightmareFade = "Creature of Nightmare fades from (.+).",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY //CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_creatureOfNightmareAfflic = " 精神控制",
+    bar_creatureOfNightmareCd = "精神控制 CD",
+	
+		--AoE, 40yd, 15sec DoT + knockback, cd is min20 max30sec
+	trigger_soulCorruption = "afflicted by Soul Corruption.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    bar_soulCorruptionCd = "灵魂腐蚀 CD",
+    bar_soulCorruptionSoon = "灵魂腐蚀 即将到来...",
+	
+    bar_swellOfSouls = " 攻击力增益",
+	
+    subStringDead = "(.+) dies.",
+    clickme = " >点击我！<",
+    you = "you",
+} end )
 local timer = {
 	creatureOfNightmareAfflic = 30,
 	creatureOfNightmareCd = 8,

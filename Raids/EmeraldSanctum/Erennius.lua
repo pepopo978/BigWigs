@@ -38,6 +38,41 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_someYell = "Your efforts...",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Erennius",
+
+    wailoferennius_cmd = "wailoferennius",
+    wailoferennius_name = "埃伦纽斯之嚎警报",
+    wailoferennius_desc = "埃伦纽斯之嚎出现时进行警告",
+
+    howloferennius_cmd = "howloferennius",
+    howloferennius_name = "埃伦纽斯之吼警报",
+    howloferennius_desc = "埃伦纽斯之吼出现时进行警告",
+    
+    volley_cmd = "volley",
+    volley_name = "毒箭齐射警报",
+    volley_desc = "毒箭齐射出现时进行警告",
+    
+    --Erennius vv
+    trigger_wailOfErenniusCast = "埃伦纽斯开始施放",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_wailOfErenniusCast = "正在施放群体睡眠",
+    bar_wailOfErenniusAfflicted = "群体睡眠",
+    bar_wailOfErenniusCd = "群体睡眠冷却",
+    
+    trigger_howlOfErennius = "受到了埃伦纽斯之嚎效果的影响。",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_howlOfErenniusResist = "Howl of Erennius was resisted",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE
+    bar_howlOfErenniusCD = "沉默冷却",
+    bar_howlOfErenniusAfflicted = "沉默！",
+    
+    trigger_volley = "受到了毒箭之雨效果的影响。",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    bar_volley = "毒箭齐射",
+    --Erennius ^^
+    
+    trigger_someYell = "Your efforts...",
+} end )
 local timer = {
 	wailOfErenniusCast = 6,
 	wailOfErenniusAfflicted = 3,

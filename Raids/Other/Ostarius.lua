@@ -158,6 +158,157 @@ L:RegisterTranslations("enUS", function()
 	}
 end)
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Ostarius",
+
+    conflagbar_cmd = "conflagbar",
+    conflagbar_name = "燃烧计时",
+    conflagbar_desc = "燃烧技能的计时条",
+
+    conflagyou_cmd = "conflagyou",
+    conflagyou_name = "燃烧伤害警告",
+    conflagyou_desc = "燃烧造成伤害时进行警告",
+
+    chainlightning_cmd = "chainlightning",
+    chainlightning_name = "闪电链警报",
+    chainlightning_desc = "闪电链出现时进行警告",
+
+    blizzard_cmd = "blizzard",
+    blizzard_name = "暴风雪警告",
+    blizzard_desc = "暴风雪出现时进行警告",
+
+    rainoffire_cmd = "rainoffire",
+    rainoffire_name = "火焰之雨警告",
+    rainoffire_desc = "火焰之雨出现时进行警告",
+
+    sonicburst_cmd = "sonicburst",
+    sonicburst_name = "音爆警告",
+    sonicburst_desc = "音爆出现时进行警告",
+
+    activation_cmd = "activation",
+    activation_name = "激活计时",
+    activation_desc = "Boss激活的计时器",
+
+    phase_cmd = "phase",
+    phase_name = "阶段警告",
+    phase_desc = "阶段出现变化时进行警告",
+
+    portals_cmd = "portals",
+    portals_name = "传送门警报",
+    portals_desc = "传送门出现时进行警告",
+
+    traps_cmd = "traps",
+    traps_name = "陷阱警告",
+    traps_desc = "陷阱阶段开始/结束时进行警告",
+
+    eq_cmd = "eq",
+    eq_name = "地震警告",
+    eq_desc = "地震出现时进行警告",
+	
+    stomp_cmd = "stomp",
+    stomp_name = "坦克践踏警报",
+    stomp_desc = "坦克被践踏时进行警告",
+	
+		--using self only because affects many people within the same second
+	trigger_conflagYou = "You are afflicted by Conflagration.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    say_conflagYou = "我中了燃烧！快跑开！",
+    bar_conflag = " 燃烧",
+	trigger_conflagYouFade = "Conflagration fades from you.", --CHAT_MSG_SPELL_AURA_GONE_SELF
+	
+	trigger_conflagHitYou = "'s Conflagration hits you for", --CHAT_MSG_SPELL_SELF_DAMAGE
+    msg_conflagHitYou = "远离燃烧效果！",
+	
+	trigger_chainLightning = "Ostarius's Chain Lightning",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_chainLightning = "下一次闪电链",
+	
+	trigger_blizzardPhase = "Elusive... Then face the might of the frost!", --CHAT_MSG_MONSTER_YELL
+    msg_blizzardPhase = "不再施放火焰之雨 - 现在施放暴风雪！",
+	trigger_blizzardYou = "You are afflicted by Blizzard.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    msg_blizzardYou = "远离暴风雪区域！",
+	trigger_blizzardYouFade = "Blizzard fades from you.", --CHAT_MSG_SPELL_AURA_GONE_SELF
+	
+	trigger_rainOfFirePhase = "Fire will burn your corruption!", --CHAT_MSG_MONSTER_YELL
+    msg_rainOfFirePhase = "现在施放火焰之雨！",
+	trigger_rainOfFireYou = "You are afflicted by Rain of Fire.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    msg_rainOfFireYou = "远离火焰之雨区域！",
+	trigger_rainOfFireYouFade = "Rain of Fire fades from you.", --CHAT_MSG_SPELL_AURA_GONE_SELF
+	
+	trigger_sonicBurstYou = "You are afflicted by Sonic Burst.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    msg_sonicBurstYou = "音爆影响范围为20码...",
+	
+	
+    bar_activeX = "奥兹塔里亚斯 激活",
+	trigger_active33 = "Welcome, honored guests, to the research facility.", --CHAT_MSG_MONSTER_YELL
+    msg_active33 = "奥兹塔里亚斯 33秒后激活！",
+	
+	trigger_active27 = "Please wait for the initial scanning...", --CHAT_MSG_MONSTER_YELL
+    msg_active27 = "奥兹塔里亚斯 27秒后激活！",
+	
+	trigger_active17 = "WARNING! Curse of the flesh detected!", --CHAT_MSG_MONSTER_YELL
+    msg_active17 = "奥兹塔里亚斯 17秒后激活！",
+	
+	trigger_active13 = "Initiating manual gate override... Gate locked successfully.",--CHAT_MSG_MONSTER_YELL
+    msg_active13 = "奥兹塔里亚斯 13秒后激活！",
+	
+	trigger_active6 = "Activating defensive system for threat elimination.", --CHAT_MSG_MONSTER_YELL
+    msg_active6 = "奥兹塔里亚斯 6秒后激活！",
+	
+	trigger_activeNow = "Guardians, awaken and smite these intruders!", --CHAT_MSG_MONSTER_YELL
+    msg_activeNow = "奥兹塔里亚斯 已激活！",
+	
+    bar_portals = "下一次传送门",
+    msg_portals = "传送门！",
+	
+	trigger_engage = "Ostarius gains Defensive Storm.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	
+	
+	--unused
+		--p1 only, from adds, blue beam, stunnable, may cause clutter if warning this + conflag
+	trigger_mortalityScan = "You are afflicted by Mortality Scan.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_mortalityScanFade = "Mortality Scan fades from you.", --CHAT_MSG_SPELL_AURA_GONE_SELF
+	
+	--unused
+		--p2 only, from traps and pillars, better to stand in this than other ability, so may not want to warn about
+	trigger_frostBreath = "You are afflicted by Frost Breath.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_frostBreathFade = "Frost Breath fades from you.", --CHAT_MSG_SPELL_AURA_GONE_SELF
+
+	--p3 only, 30-28%, 20-18%, 10-8%
+	trigger_earthquake = "'s Earthquake", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    msg_earthquakeSoon = "地震即将来临！近战退后！",
+    msg_earthquakeDone = "地震结束！近战输出！",
+	
+	trigger_stomp = "(.+) is afflicted by Stomp.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_stompYou = "You are afflicted by Stomp.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_stompFade = "Stomp fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_stomp = " 被践踏",
+	
+	--is there a yell for all phases?
+	--is p2 or p3 the slow part?
+    msg_phase2 = "第二阶段 - 范围伤害技能",
+    msg_phase3 = "第三阶段 -- 不再施放暴风雪 -- 缓慢输出...",
+    msg_phase4 = "第四阶段 - 击败Boss！",
+    msg_traps = "启动陷阱！看见就解除！",
+    msg_trapsFade = "陷阱阶段结束！",
+		
+	trigger_p3 = "Still you persist, servants of the old ones? Very well.", --CHAT_MSG_MONSTER_YELL
+	trigger_p4 = "NO! I will not fail again!", --CHAT_MSG_MONSTER_YELL
+	
+	--[[
+	Frost Breath?
+	Mortality Scan, 11sec, channel, casted by Ostarius or not? Overlaps many. Kickable?
+	
+	Stomp?
+	Harsh Winds?
+	
+	Chain Lightning, interruptible? Happenned 3x, at 15sec interval
+	The yells?
+	Gate Construct, there is 8, do they spawn at the same time?
+	]]--
+	you = "you",
+} end )
 local timer = {
 	active33 = 33,
 	active27 = 27,

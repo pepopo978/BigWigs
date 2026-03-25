@@ -29,6 +29,23 @@ module.defaultDB = {
 	bosskill = nil,
 }
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "darkriderchampion",
+
+    reaverstorm_cmd = "reaverstorm",
+    reaverstorm_name = "掠夺者风暴警报",
+    reaverstorm_desc = "掠夺者风暴施放时进行警告",
+
+
+    trigger_reaverstorm = "Dark Rider Champion begins to perform Reaver Storm.",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_reaverstormCd = "掠夺者风暴冷却",
+    bar_reaverstormCast = "掠夺者风暴施放",
+
+    ["You have slain %s!"] = "你杀死了%s！",
+} end )
 local timer = {
 	reaverstormCd = 5.5,
 	reaverstormCast = 1.5,

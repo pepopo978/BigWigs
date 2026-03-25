@@ -33,6 +33,24 @@ module.defaultDB = {
 	bosskill = nil,
 }
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "SanctumDragonkin",
+
+    reflect_cmd = "reflect",
+    reflect_name = "反射警报",
+    reflect_desc = "圣所龙人获得反射时进行警告",
+
+    trigger_reflect = "圣所龙人获得了反射的效果。",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    trigger_reflectFade = "反射效果从圣所龙人身上消失。",--CHAT_MSG_SPELL_AURA_GONE_OTHER
+        
+    bar_reflect = "龙人法术反射",
+    msg_reflect = "龙人法术反射",
+    
+    ["You have slain %s!"] = "你已经击败了%s！",
+} end )
 local timer = {
 	reflect = 5,
 }
