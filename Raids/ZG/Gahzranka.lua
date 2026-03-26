@@ -71,6 +71,40 @@ L:RegisterTranslations("deDE", function() return {
 	massivegeyser_desc = "Warnen wenn Gahz'ranka beginnt Massiver Geysir zu wirken.",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Gahzranka",
+
+    frostbreath_cmd = "frostbreath",
+    frostbreath_name = "冰霜吐息警报",
+    frostbreath_desc = "当Boss开始施放冰霜吐息时进行警告",
+
+    geyser_cmd = "geyser",
+    geyser_name = "巨型喷泉警报",
+    geyser_desc = "当Boss开始施放巨型喷泉时进行警告",
+
+    slam_cmd = "slam",
+    slam_name = "猛击警报",
+    slam_desc = "当Boss施放猛击时进行警告",
+
+    trigger_frostbreathCast = "Gahz'ranka begins to perform Frost Breath.",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_frostbreathCast = "冰霜吐息伤害+法力燃烧",
+    msg_frostbreathCast = "冰霜吐息，伤害 + 法力燃烧",
+    bar_frostbreathCd = "冰霜吐息冷却",
+    trigger_frostbreathYou = "Frost Breath hits you",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+    msg_frostBreathYou = "你被冰霜吐息法力燃烧了！",
+
+    trigger_geyserBegin = "Gahz'ranka begins to cast Massive Geyser.",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_geyserCast = "击飞 - 仇恨减少",
+    msg_geyserCast = "击飞 - 仇恨减少",
+    trigger_geyserCast = "Gahz'ranka casts Massive Geyser.",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_geyserCd = "击飞仇恨减少冷却",
+
+    trigger_slam = "Gahz'ranka Slam",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_slam = "击退 -冷却",
+} end )
 local timer = {
 	frostbreathCast = 2,
 	frostbreathCd = 7,--9 -2sec for cast = 7 (need more data)

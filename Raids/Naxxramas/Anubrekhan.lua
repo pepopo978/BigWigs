@@ -56,6 +56,59 @@ L:RegisterTranslations("enUS", function() return {
 	bar_webDur = "Webbed!",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Anubrekhan",
+
+    locust_cmd = "locust",
+    locust_name = "蝗虫群警报",
+    locust_desc = "蝗虫群出现时进行警告。",
+
+    impale_cmd = "impale",
+    impale_name = "穿刺警报",
+    impale_desc = "穿刺出现时进行警告。",
+
+    enrage_cmd = "enrage",
+    enrage_name = "地穴卫士激怒警报",
+    enrage_desc = "地穴卫士激怒时进行警告。",
+
+    web_cmd = "web",
+    web_name = "地穴卫士网警报",
+    web_desc = "地穴卫士放网时进行警告。",
+	
+	
+	trigger_engage1 = "一些小点心",
+	trigger_engage2 = "对，跑吧！那样伤口出血就更多了！",
+	trigger_engage3 = "你们逃不掉的。",
+	
+    trigger_locustSwarmCast = "阿努布雷坎开始施放虫群风暴。", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF
+    msg_locustSwarmCasting = "正在施放虫群风暴！",
+    bar_locustSwarmCasting = "正在施放虫群风暴！",
+
+    trigger_locustSwarmGain = "阿努布雷坎受到了虫群风暴效果的影响。", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    bar_locustSwarmIsUp = "虫群风暴！",
+
+    trigger_locustSwarmEnds = "虫群风暴效果从阿努布雷坎身上消失。", --CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_locustSwarmCd = "虫群风暴 CD",
+    bar_locustSwarmOffCd = "虫群风暴随时可能开始！",
+	
+    trigger_locustSwarmYou = "你受到了虫群风暴效果的影响", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    msg_locustYou = "远离Boss！",
+    trigger_locustSwarmYouFade = "虫群风暴效果从你身上消失了。", --CHAT_MSG_SPELL_AURA_GONE_SELF
+    
+    trigger_impale = "阿努布雷坎的穿刺击中", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_impale = "穿刺 CD",
+    
+    trigger_enrage = "地穴卫士变得愤怒了！", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    msg_enrage = "地穴卫士激怒 - 使用眩晕和陷阱！",
+    
+    trigger_web = "受到了蛛网效果的影响。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    trigger_web2 = "蛛网效果从", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_webCd = "蛛网 CD",
+    bar_webDur = "被网住了！",
+} end )
 local timer = {
 	firstLocustSwarm = {80,120},--96
 	readyFirstLocustSwarm = 40,

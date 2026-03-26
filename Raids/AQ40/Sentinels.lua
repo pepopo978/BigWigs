@@ -68,6 +68,67 @@ L:RegisterTranslations("enUS", function() return {
 	["You have slain %s!"] = true,
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Sentinel",
+
+    abilities_cmd = "abilities",
+    abilities_name = "技能警报",
+    abilities_desc = "技能出现时进行警告",
+
+    selfreflect_cmd = "selfreflect",
+    selfreflect_name = "自身反射法术警报",
+    selfreflect_desc = "当法术被反射回自己时进行警告",
+
+
+    bar_knockBack = " 有击退",
+    buffIcon_knockBack = "Interface\\Icons\\Ability_UpgradeMoonGlaive",
+
+    bar_manaBurn = " 有法力燃烧",
+    buffIcon_manaBurn = "Interface\\Icons\\Spell_Shadow_ManaBurn",
+
+    bar_mending = " 有治愈",
+    buffIcon_mending = "Interface\\Icons\\Spell_Nature_ResistNature",
+
+    bar_mortalStrike = " 有致死打击",
+    buffIcon_mortalStrike = "Interface\\Icons\\Ability_Warrior_SavageBlow",
+
+    bar_shadowStorm = " 有暗影风暴",
+    buffIcon_shadowStorm = "Interface\\Icons\\Spell_Shadow_Haunting",
+
+    bar_thorns = " 有荆棘术",
+    buffIcon_thorns = "Interface\\Icons\\Spell_Nature_Thorns",
+
+    bar_thunderClap = " 有雷霆一击",
+    buffIcon_thunderClap = "Interface\\Icons\\Ability_ThunderClap",
+
+    trigger_fireArcaneReflect1 = "你的月火术被阿努比萨斯哨兵反弹回来。",--CHAT_MSG_SPELL_SELF_DAMAGE
+    trigger_fireArcaneReflect2 = "你的灼烧被阿努比萨斯哨兵反弹回来。",--CHAT_MSG_SPELL_SELF_DAMAGE
+    trigger_fireArcaneReflect3 = "你的烈焰震击被阿努比萨斯哨兵反弹回来。",--CHAT_MSG_SPELL_SELF_DAMAGE
+    trigger_fireArcaneReflect4 = "你的火球术被阿努比萨斯哨兵反弹回来。",--CHAT_MSG_SPELL_SELF_DAMAGE
+    trigger_fireArcaneReflect5 = "你的烈焰鞭笞被阿努比萨斯哨兵反弹回来。",--CHAT_MSG_SPELL_SELF_DAMAGE
+    trigger_fireArcaneReflect6 = "你的侦测魔法被阿努比萨斯哨兵反弹回来。",--CHAT_MSG_SPELL_SELF_DAMAGE
+    trigger_fireArcaneReflectOther = "(.+)的侦测魔法被阿努比萨斯哨兵反弹回来。",--CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE
+    bar_fireArcaneReflect = " 反射火焰 & 奥术",
+        --not used for TurtleWoW
+    --buffIcon_fireArcaneReflect = "nil",
+    
+    trigger_shadowFrostReflect1 = "你的暗言术：痛被阿努比萨斯哨兵反弹回来。",--CHAT_MSG_SPELL_SELF_DAMAGE
+    trigger_shadowFrostReflect2 = "你的腐蚀术被阿努比萨斯哨兵反弹回来。",--CHAT_MSG_SPELL_SELF_DAMAGE
+    trigger_shadowFrostReflect3 = "你的寒冰箭被阿努比萨斯哨兵反弹回来。",--CHAT_MSG_SPELL_SELF_DAMAGE
+    trigger_shadowFrostReflect4 = "你的冰霜震击被阿努比萨斯哨兵反弹回来。",--CHAT_MSG_SPELL_SELF_DAMAGE
+    trigger_shadowFrostReflectOther = "(.+)的腐蚀术被阿努比萨斯哨兵反弹回来。",--CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE
+    bar_shadowFrostReflect = " 反射暗影 & 冰霜",
+        --not used for TurtleWoW
+    --buffIcon_shadowFrostReflect = "Interface\\Icons\\Spell_Arcane_Blink",
+    
+    trigger_selfReflect = "你的(.*)被阿努比萨斯哨兵反弹回来。",--CHAT_MSG_SPELL_SELF_DAMAGE
+    msg_selfReflect = "停止自残！",
+    
+    ["You have slain %s!"] = "你杀死了%s！",
+} end )
 local timer = {
 	knockBack = 600,
 	manaBurn = 600,

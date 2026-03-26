@@ -87,6 +87,82 @@ L:RegisterTranslations("enUS", function() return {
 	msg_vemDead = "Vem is Dead - ENRAGE!",	
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "BugFamily",
+
+    panic_cmd = "panic",
+    panic_name = "恐惧",
+    panic_desc = "警告亚尔基公主的恐慌技能。",
+
+    volley_cmd = "volley",
+    volley_name = "毒性箭雨",
+    volley_desc = "警告克里勋爵的毒性箭雨。",
+
+    heal_cmd = "heal",
+    heal_name = "强效治疗",
+    heal_desc = "警告亚尔基公主的治疗。",
+
+    enrage_cmd = "enrage",
+    enrage_name = "激怒",
+    enrage_desc = "激怒计时器。",
+
+    vapors_cmd = "vapors",
+    vapors_name = "毒云警报",
+    vapors_desc = "警告你是否站在毒性蒸汽中。",
+
+    deathspecials_cmd = "deathspecials",
+    deathspecials_name = "死亡特效",
+    deathspecials_desc = "让人们知道哪个Boss被杀死以及他们具有的特殊能力。",
+
+
+    trigger_panic = "受到了恐慌效果的影响。",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_panicResist = "恐慌被抵抗了。",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE
+    trigger_panicImmune = "恐慌施放失败。(.+)对此免疫。",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    bar_panic = "恐慌 CD",
+
+    trigger_volleyHit = "毒性箭雨击中",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+    trigger_volleyAfflicted = "受到了毒性箭雨效果的影响。",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_volleyResist = "毒性箭雨被抵抗了",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE
+    trigger_volleyImmune = "毒性箭雨施放失败",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    bar_volley = "毒性箭雨",
+
+    trigger_heal = "亚尔基公主开始施放强效治疗术。",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF
+    bar_heal = "强效治疗",
+    msg_heal = "亚尔基正在施放治疗 - 打断它！",
+	
+	trigger_attack1 = "亚尔基公主发起攻击", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_MISSES
+	trigger_attack2 = "亚尔基公主没有击中", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_MISSES
+	trigger_attack3 = "亚尔基公主击中", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS
+	trigger_attack4 = "亚尔基公主的致命一击", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS
+	trigger_kick1 = "脚踢击中亚尔基公主", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE
+	trigger_kick2 = "脚踢对亚尔基公主", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE
+	trigger_kick3 = "脚踢被亚尔基公主", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE
+	trigger_pummel1 = "拳击击中亚尔基公主", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE
+	trigger_pummel2 = "拳击对亚尔基公主", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE
+	trigger_pummel3 = "拳击被亚尔基公主", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE
+	trigger_shieldBash1 = "盾击击中亚尔基公主", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE
+	trigger_shieldBash2 = "盾击对亚尔基公主", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE
+	trigger_shieldBash3 = "盾击被亚尔基公主", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE
+	trigger_earthShock1 = "地震术击中亚尔基公主", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE
+	trigger_earthShock2 = "地震术致命一击对亚尔基公主", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE
+	
+    trigger_enrage = "%s进入了狂暴状态！",--CHAT_MSG_MONSTER_EMOTE (not confirmed)
+    bar_enrage = "狂暴",
+    msg_enrage60 = "60秒后狂暴！",
+    msg_enrage10 = "10秒后狂暴！",
+    msg_enrage = "狂暴了！",
+
+    trigger_toxicVapors = "你受到(%d+)点自然伤害（克里勋爵的毒性蒸汽）。",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+   trigger_toxicVaporsFade = "毒性蒸汽效果从你身上消失了。",--CHAT_MSG_SPELL_AURA_GONE_SELF
+    msg_toxicVapors = "远离毒云！",
+
+    msg_kriDead = "克里勋爵死了 - 毒云！",
+    msg_yaujDead = "亚尔基公主死了 - 杀死幼虫！",
+    msg_vemDead = "维姆死了 - 复仇！",
+} end )
 local timer = {
 	earliestFirstPanic = 10,
 	latestFirstPanic = 20,

@@ -31,6 +31,25 @@ module.defaultDB = {
 	bosskill = nil,
 }
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "SanctumSupressor",
+
+    emeraldsupression_cmd = "emeraldsupression",
+    emeraldsupression_name = "翡翠镇压警报",
+    emeraldsupression_desc = "翡翠镇压出现时进行警告",
+    
+    trigger_emeraldSupressionYou = "你受到了翡翠镇压效果的影响。",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_emeraldSupressionOther = "(.+)受到了翡翠镇压效果的影响。",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+    trigger_emeraldSupressionFade = "翡翠镇压效果从(.+)身上消失了。",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY
+    
+    bar_emeraldSupression = " 被镇压（驱散魔法）！！",
+    
+    ["You have slain %s!"] = "你已击败了%s！",
+    you = "你",
+} end )
 local timer = {
 	emeraldSupression = 12,
 }

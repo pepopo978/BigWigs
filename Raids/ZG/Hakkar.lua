@@ -110,6 +110,111 @@ L:RegisterTranslations("enUS", function()
 	}
 end)
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Hakkar",
+
+	mc_cmd = "mc",
+    mc_name = "心控警报",
+    mc_desc = "心控出现时进行警告",
+
+	siphon_cmd = "siphon",
+    siphon_name = "吸血警报",
+    siphon_desc = "吸血出现时进行警告",
+
+	enrage_cmd = "enrage",
+    enrage_name = "激怒警报",
+    enrage_desc = "激怒出现时进行警告",
+
+	aspectjeklik_cmd = "aspectjeklik",
+    aspectjeklik_name = "耶克里克变形警报",
+    aspectjeklik_desc = "耶克里克变形出现时进行警告",
+
+	aspectvenoxis_cmd = "aspectvenoxis",
+    aspectvenoxis_name = "温诺希斯变形警报",
+    aspectvenoxis_desc = "温诺希斯变形出现时进行警告",
+
+	aspectmarli_cmd = "aspectmarli",
+    aspectmarli_name = "玛尔里变形警报",
+    aspectmarli_desc = "玛尔里变形出现时进行警告",
+
+	aspectthekal_cmd = "aspectthekal",
+    aspectthekal_name = "塞卡尔变形警报",
+    aspectthekal_desc = "塞卡尔变形出现时进行警告",
+
+	aspectarlokk_cmd = "aspectarlokk",
+    aspectarlokk_name = "娅尔罗变形警报",
+    aspectarlokk_desc = "娅尔罗变形出现时进行警告",
+	
+	
+	trigger_engage = "骄傲预示着你的世界的终结。来吧，凡人！面对夺魂者的愤怒！", --CHAT_MSG_MONSTER_YELL
+	
+	trigger_enrage = "面对夺魂者的愤怒！", --to be confirmed
+    bar_enrage = "狂暴",
+    msg_enrage = "哈卡狂暴了！",
+    msg_enrage60 = "1分钟后狂暴！",
+    msg_enrage10 = "10秒后狂暴！",
+	
+	trigger_causeInsanityYou = "你受到了疯狂效果的影响。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_causeInsanityOther = "(.+)受到了疯狂效果的影响。", --CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_causeInsanityFade = "疯狂效果从(.+)身上消失。", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	trigger_causeInsanityTotem = "哈卡的疯狂施放失败。根基图腾对此免疫。",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE
+    msg_causeInsanity = "心控",
+    bar_causeInsanity = "心控",
+    bar_causeInsanityCd = "心控冷却",
+	
+	trigger_bloodSiphon = "哈卡获得了血液虹吸的效果。", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    msg_bloodSiphon30 = "30秒后吸血！",
+    bar_bloodSiphonDur = "吸血！",
+    bar_bloodSiphonCd = "下一次吸血",
+	
+	--unreliable, as if someone dies this will trigger
+	--trigger_bloodSiphonFade = "Blood Siphon fades from Hakkar.", --CHAT_MSG_SPELL_AURA_GONE_OTHER
+	
+	trigger_poisonousBloodYou = "你受到了酸性血液效果的影响。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_poisonousBloodOther = "(.+)受到了酸性血液效果的影响。", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE //CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
+	trigger_poisonousBloodFade = "酸性血液效果从(.+)身上消失了。", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_poisonousBlood = " 毒血",
+	
+	--1.5k dmg + silence 5sec, 45yard
+	trigger_aspectOfJeklik = "受到了耶克里克的守护效果的影响。", --guessing CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE //CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
+	trigger_aspectOfJeklikResist = "哈卡的耶克里克的守护", --guessing ???
+    bar_aspectOfJeklikCd = "沉默冷却 - 耶克里克",
+    bar_aspectOfJeklikDur = "沉默！ - 耶克里克",
+	
+	--30yard, poison volley, 10sec dot, 438dmg + 236 per 2sec, 1.6k dmg total
+	trigger_aspectOfVenoxis = "哈卡的温诺希斯的守护击中", --guessing ???
+	trigger_aspectOfVenoxisResist = "哈卡的温诺希斯的守护被", --guessing ???
+    bar_aspectOfVenoxisCd = "毒性冷却 - 温诺希斯",
+	
+	--6sec stun, single target
+	trigger_aspectOfMarliYou = "你受到了玛尔里的守护效果的影响。", --guessing CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_aspectOfMarliOther = "(.+)受到了玛尔里的守护效果的影响。", --guessing CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE //CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
+	trigger_aspectOfMarliResist = "哈卡的玛尔里的守护", --guessing ???
+	trigger_aspectOfMarliFade = "玛尔里的守护效果从(.+)身上消失了。", --guessing CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_aspectOfMarliCd = "昏迷冷却 - 玛尔里",
+    bar_aspectOfMarliDur = "昏迷 - 玛尔里",
+	
+	--frenzy, 150% attack speed
+	trigger_aspectOfThekal = "哈卡获得了塞卡尔的守护的效果。", --guessing CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	trigger_aspectOfThekalFade = "塞卡尔的守护效果从哈卡身上消失。", --guessing CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_aspectOfThekalCd = "狂暴冷却 - 塞卡尔",
+    bar_aspectOfThekalDur = "狂暴！ - 塞卡尔",
+    msg_aspectOfThekal = "狂暴 - 宁神射击！",
+
+	--2sec stun, single target
+	trigger_aspectOfArlokkYou = "You are afflicted by Aspect of Arlokk.", --guessing CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_aspectOfArlokkOther = "(.+) is afflicted by Aspect of Arlokk.", --guessing CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE //CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
+	trigger_aspectOfArlokkResist = "Hakkar's Aspect of Arlokk", --guessing ???
+	trigger_aspectOfArlokkFade = "Aspect of Arlokk fades from (.+).", --guessing CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_aspectOfArlokkCd = "哈卡隐身冷却 - 娅尔罗",
+    bar_aspectOfArlokkDur = "隐身 - 娅尔罗",
+    c_sonofhakkar = "哈卡之子",
+    you = "你",
+    clickme = " >点击我<",
+} end)
 local timer = {
 	causeInsanityFirstCd = 17,
 	causeInsanityDur = 10,

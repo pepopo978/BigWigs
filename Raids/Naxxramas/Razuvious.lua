@@ -43,6 +43,45 @@ L:RegisterTranslations("enUS", function()
 	}
 end)
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Razuvious",
+
+    shout_cmd = "shout",
+    shout_name = "怒吼警报",
+    shout_desc = "瓦解怒吼时进行警告",
+
+    mc_cmd = "mc",
+    mc_name = "精神控制计时条",
+    mc_desc = "显示精神控制计时条",
+
+    unbalance_cmd = "unbalancing",
+    unbalance_name = "重压打击警报",
+    unbalance_desc = "重压打击出现时进行警告",
+
+    shieldwall_cmd = "shieldwall",
+    shieldwall_name = "盾墙计时器",
+    shieldwall_desc = "显示盾墙计时器",
+
+
+	trigger_shout = "%s发出胜利的呼喊。", --CHAT_MSG_RAID_BOSS_EMOTE
+    bar_shout = "瓦解怒吼",
+    msg_shout = "瓦解怒吼！",
+	
+	trigger_mcYou = "你获得了精神控制的效果。", --CHAT_MSG_SPELL_PERIODIC_SELF_BUFFS
+	trigger_mcFadeYou = "精神控制效果从你身上消失了。", --CHAT_MSG_SPELL_AURA_GONE_SELF
+    mc_bar = " 精神控制",
+    mcLocked_bar = "无法精神控制 ",
+	
+	trigger_unbalance = "受到了重压打击效果的影响。", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_unbalance2 = "教官拉苏维奥斯的重压打击", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+    bar_unbalance = "重压打击",
+	
+	trigger_shieldWall = "死亡骑士学员获得了盾墙的效果。", --CHAT_MSG_SPELL_PERIODIC_PARTY_BUFFS // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_BUFFS
+    bar_shieldWall = "盾墙",
+} end )
 local timer = {
 	firstShout = 14, -- 1 sec buffer to be safe
 	shout = 25,

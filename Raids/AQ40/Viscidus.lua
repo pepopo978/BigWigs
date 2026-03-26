@@ -66,6 +66,69 @@ L:RegisterTranslations("enUS", function()
 	}
 end)
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Viscidus",
+
+    volley_cmd = "volley",
+    volley_name = "毒箭齐射警报",
+    volley_desc = "毒箭齐射出现时进行警告",
+
+    toxin_cmd = "toxin",
+    toxin_name = "站在毒云中警报",
+    toxin_desc = "站在毒云中时进行警告",
+
+    freezestages_cmd = "freezestages",
+    freezestages_name = "冰冻状态警报",
+    freezestages_desc = "不同冰冻状态时进行警告",
+    
+    freezecount_cmd = "freezecount",
+    freezecount_name = "计算冰霜伤害",
+    freezecount_desc = "计算冰霜伤害击中维希度斯的次数以冻结它",
+    
+    pokecount_cmd = "pokecount",
+    pokecount_name = "计算戳击伤害",
+    pokecount_desc = "计算物理伤害击中维希度斯的次数以使其粉碎",
+    
+    glob_cmd = "glob",
+    glob_name = "水珠死亡计数器",
+    glob_desc = "计数水珠的死亡次数",
+
+
+    trigger_volley = "受到了毒箭之雨效果的影响。",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    bar_volley = "毒箭齐射",
+    
+    trigger_toxin = "你受到了剧毒效果的影响。",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    msg_toxin = "远离毒云！",
+    trigger_toxinFade = "剧毒效果从你身上消失了。",--CHAT_MSG_SPELL_AURA_GONE_OTHER",
+
+    trigger_frostDmg = "冰霜伤害",--CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE
+    trigger_chilledDmg = "获得冰冻",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    trigger_wintersChill = "获得深冬之寒",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    bar_frostDmg = "剩余冰霜击中次数",
+    
+    trigger_pokeYou = "击中维希度斯",--CHAT_MSG_COMBAT_SELF_HITS
+    trigger_pokeOther = "击中维希度斯",--CHAT_MSG_COMBAT_PARTY_HITS // CHAT_MSG_COMBAT_FRIENDLYPLAYER_HITS
+    trigger_pokeCritYou = "击中维希度斯",--CHAT_MSG_COMBAT_SELF_HITS
+    trigger_pokeCritOther = "击中维希度斯",--CHAT_MSG_COMBAT_PARTY_HITS // CHAT_MSG_COMBAT_FRIENDLYPLAYER_HITS
+    bar_poke = "剩余戳击次数",
+    
+    trigger_slow = "开始变慢！",--CHAT_MSG_RAID_BOSS_EMOTE
+    trigger_freezing = "冻僵了！",--CHAT_MSG_RAID_BOSS_EMOTE
+    trigger_frozen = "冻成固体了！",--CHAT_MSG_RAID_BOSS_EMOTE
+    trigger_crack = "开始破裂！",--CHAT_MSG_RAID_BOSS_EMOTE
+    trigger_shatter = "看起来就要崩溃了！",--CHAT_MSG_RAID_BOSS_EMOTE
+    
+    msg_slow = "冻结计数：100 / 200",
+    msg_freezing = "冻结计数：150 / 200",
+    msg_frozen = "冻结计数：200 / 200 - 已冻结，赶快戳击它！",
+    msg_crack = "戳击计数：50 / 150",
+    msg_shatter = "戳击计数：100 / 150",
+    
+    bar_glob = "剩余水珠数量",
+} end )
 local timer = {
 	volley = { 10, 15 },
 	toxin = 10,

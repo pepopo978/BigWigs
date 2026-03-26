@@ -26,6 +26,21 @@ L:RegisterTranslations("enUS", function()
 	}
 end)
 
+L:RegisterTranslations("zhCN", function()
+	return {
+		cmd = "TwinGolems",
+
+		bulwark_cmd = "bulwark",
+		bulwark_name = "熔火壁垒警报",
+		bulwark_desc = "为熔火壁垒提供计时条和切换目标提示",
+
+		trigger_bulwarkGain = "(.+)获得了熔火壁垒的效果",
+		trigger_bulwarkFade = "熔火壁垒效果从(.+)身上消失。",
+		msg_switch = "切换攻击 %s",
+		bar_bulwark = "%s 壁垒",
+	}
+end)
+
 -- timer and icon variables
 local timer = {
 	bulwark = 15,

@@ -91,6 +91,94 @@ L:RegisterTranslations("enUS", function() return {
 	msg_p2 = "Phase 2",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Jeklik",
+
+	heal_cmd = "heal",
+    heal_name = "治疗警报",
+    heal_desc = "治疗时进行警告",
+	
+	fear_cmd = "fear",
+    fear_name = "恐惧警报",
+    fear_desc = "恐惧出现时进行警告",
+	
+	fire_cmd = "fire",
+    fire_name = "火蝠警报",
+    fire_desc = "站在火中的警告",
+	
+	mindflay_cmd = "mindflay",
+    mindflay_name = "精神鞭笞警报",
+    mindflay_desc = "施放精神鞭笞时进行警告",
+
+	silence_cmd = "silence",
+    silence_name = "沉默警报",
+    silence_desc = "沉默时进行警告",
+
+	swarm_cmd = "swarm",
+    swarm_name = "蝙蝠群警报",
+    swarm_desc = "蝙蝠群出现时进行警告",
+	
+	phase_cmd = "phase",
+    phase_name = "阶段通知",
+    phase_desc = "Boss阶段转换时进行警告",
+	
+	
+	trigger_engage = "Lord Hir'eek, grant me wings of vengance!",--CHAT_MSG_MONSTER_YELL
+	
+	trigger_heal = "High Priestess Jeklik begins to cast Great Heal.",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF",
+    bar_healCast = "治疗 - 打断！",
+    bar_healCd = "治疗冷却",
+    msg_healCast = "治疗！打断它！",
+	
+	trigger_attack1 = "High Priestess Jeklik attacks", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_MISSES
+	trigger_attack2 = "High Priestess Jeklik misses", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_MISSES // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_MISSES
+	trigger_attack3 = "High Priestess Jeklik hits", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS
+	trigger_attack4 = "High Priestess Jeklik crits", --CHAT_MSG_COMBAT_CREATURE_VS_SELF_HITS // CHAT_MSG_COMBAT_CREATURE_VS_PARTY_HITS // CHAT_MSG_COMBAT_CREATURE_VS_CREATURE_HITS
+	trigger_kick1 = "Kick hits High Priestess Jeklik", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_kick2 = "Kick crits High Priestess Jeklik", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_kick3 = "Kick was blocked by High Priestess Jeklik", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_pummel1 = "Pummel hits High Priestess Jeklik", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_pummel2 = "Pummel crits High Priestess Jeklik", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_pummel3 = "Pummel was blocked by High Priestess Jeklik", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_shieldBash1 = "Shield Bash hits High Priestess Jeklik", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_shieldBash2 = "Shield Bash crits High Priestess Jeklik", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_shieldBash3 = "Shield Bash was blocked by High Priestess Jeklik", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_earthShock1 = "Earth Shock hits High Priestess Jeklik", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	trigger_earthShock2 = "Earth Shock crits High Priestess Jeklik", --CHAT_MSG_SPELL_SELF_DAMAGE // CHAT_MSG_SPELL_PARTY_DAMAGE // CHAT_MSG_SPELL_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_HOSTILEPLAYER_DAMAGE
+	
+	--this happens in P1
+	trigger_terrifyingScreech1 = "afflicted by Terrifying Screech",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_terrifyingScreech2 = "Terrifying Screech was resisted",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_terrifyingScreech3 = "Terrifying Screech fail",--TBD
+	
+	--guessing this happens in P2
+	trigger_psychicScream1 = "afflicted by Psychic Scream",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_psychicScream2 = "Psychic Scream was resisted",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_psychicScream3 = "Psychic Scream fail",--TBD
+
+    bar_fearCd = "恐惧冷却",
+	
+	trigger_liquidFire = "Liquid Fire hits you for",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+    msg_liquidFire = "远离火焰！",
+	
+	trigger_mindflay = "afflicted by Mind Flay",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE //CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+		--mindflay chains, this trigger is unreliable
+	--trigger_mindflayFade = "Mind Flay fades",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_mindflay = "精神鞭笞 - 打断！",
+	
+	trigger_silence = "Sonic Burst hits",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_silenceAfflicted = "被沉默",
+    bar_silenceCd = "沉默冷却",
+	
+	trigger_swarm = "TBD",--TBD, is there a trigger or it's on a fixed timer?
+    bar_swam = "蝙蝠群",
+    msg_swarm = "蝙蝠群！AOE！",
+	
+    msg_p2 = "第二阶段",
+} end )
 local timer = {
 	healCast = 4,
 	healCd = 20,--need data

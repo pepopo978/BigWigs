@@ -29,6 +29,25 @@ module.defaultDB = {
 	bosskill = nil,
 }
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "DeathknightCavalier",
+
+    deathcoil_cmd = "deathcoil",
+    deathcoil_name = "死亡缠绕警报",
+    deathcoil_desc = "死亡缠绕出现时进行警告",
+    
+    
+    trigger_deathCoilYou = "你受到了死亡缠绕效果的影响。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_deathCoilOther = "(.+)受到了死亡缠绕效果的影响。", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    trigger_deathCoilFade = "死亡缠绕效果从(.+)身上消失了。", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_PARTY_OTHER // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_deathCoil = " 死亡缠绕",
+
+    ["You have slain %s!"] = "你杀死了%s！",
+    you = "你",
+} end )
 local timer = {
 	deathCoil = 3,
 }

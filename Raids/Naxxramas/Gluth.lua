@@ -68,6 +68,64 @@ L:RegisterTranslations("enUS", function() return {
 	bar_wound = " Wounds",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Gluth",
+
+	fear_cmd = "fear",
+    fear_name = "恐惧警报",
+    fear_desc = "恐惧出现时进行警告",
+
+    frenzy_cmd = "frenzy",
+    frenzy_name = "疯狂警报",
+    frenzy_desc = "疯狂出现时进行警告",
+
+    enrage_cmd = "enrage",
+    enrage_name = "狂暴计时器",
+    enrage_desc = "狂暴出现时进行警告",
+
+    decimate_cmd = "decimate",
+    decimate_name = "屠杀警报",
+    decimate_desc = "屠杀出现时进行警告",
+    
+    zombies_cmd = "zombies",
+    zombies_name = "僵尸刷新",
+    zombies_desc = "显示僵尸刷新计时器",
+    
+    wound_cmd = "wound",
+    wound_name = "重伤警报",
+    wound_desc = "重伤出现时进行警告",
+	
+	
+	trigger_frenzyGain = "格拉斯获得了疯狂的效果。", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	trigger_frenzyFade = "疯狂效果从格拉斯身上消失。",--CHAT_MSG_SPELL_AURA_GONE_OTHER
+    msg_frenzy = "疯狂 - 使用宁神射击！",
+    bar_frenzyGain = "疯狂 - 宁神射击！",
+    bar_frenzyCD = "疯狂 CD",
+	
+	trigger_enrage = "格拉斯获得了狂暴的效果。",--to be confirmed
+    msg_enrage60 = "60秒后狂暴",
+    msg_enrage10 = "10秒后狂暴",
+    msg_enrage = "狂暴！",
+    bar_enrage = "狂暴",
+		
+	trigger_decimate = "残杀击中",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+    msg_decimate = "残杀！",
+    msg_decimate5 = "5秒后残杀",
+    bar_decimate = "残杀",
+	
+    bar_zombies = "下一个僵尸 - %d",
+		
+	trigger_fear = "恐惧怒吼效果的影响",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_fearCD = "恐惧 CD",
+    msg_fear = "恐惧！",
+	
+	trigger_woundYou = "你受到了重伤效果的影响%（(.+)%）。",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_woundOther = "(.+)受到了重伤效果的影响%（(.+)%）。",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+    bar_wound = " 重伤",
+} end )
 local timer = {
 	decimate = 105,
 	zombie = 6,

@@ -63,6 +63,66 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_popcornHitsYou = "Dirt Mound's Quake hits you for", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Ouro",
+
+    sweep_cmd = "sweep",
+    sweep_name = "横扫警报",
+    sweep_desc = "奥罗横扫出现时进行警告",
+
+    sandblast_cmd = "sandblast",
+    sandblast_name = "沙尘爆裂警报",
+    sandblast_desc = "沙尘爆裂出现时进行警告",
+
+    popcorn_cmd = "popcorn",
+    popcorn_name = "爆裂物警报",
+    popcorn_desc = "受到爆裂物伤害时进行警告",
+
+    emerge_cmd = "emerge",
+    emerge_name = "浮现/下潜警报",
+    emerge_desc = "奥罗浮现或下潜时进行警告",
+
+    berserk_cmd = "berserk",
+    berserk_name = "狂暴警报",
+    berserk_desc = "奥罗进入狂暴状态时进行警告",
+
+    targeticon_cmd = "targeticon",
+    targeticon_name = "奥罗目标头上的骷髅标记",
+    targeticon_desc = "在奥罗的目标头上标记骷髅团队标志",
+	
+	
+    trigger_engage = "奥罗开始施放出生。", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF
+    
+    trigger_sweep = "奥罗开始施放横扫。", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_sweepCd = "横扫 CD",
+    bar_sweepCast = "横扫！",
+    msg_sweep = "正在施放横扫！",
+    
+    trigger_sandBlast = "奥罗开始施展沙尘爆裂。", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_sandBlastCd = "沙尘爆裂 CD",
+    bar_sandBlastCast = "沙尘爆裂！快跑！",
+    msg_sandBlast = "正在施放沙尘爆裂！",
+
+    trigger_emerge = "大地破裂", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_submergePossible = "可能下潜",
+    msg_emerge = "奥罗已浮现！",
+    
+    --there is no trigger_submerge
+    bar_submergeDuration = "奥罗浮现",
+    msg_submerge = "奥罗已下潜！",
+    msg_collapse = "10秒后奥罗浮现 - 向中部集合！",
+    
+    trigger_berserk = "奥罗获得了狂暴的效果。", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    msg_berserk = "奥罗进入狂暴状态 - 不再下潜",
+    msg_berserkSoon = "即将狂暴 - 准备！",
+    
+    bar_berserkPopcorn = "新的爆裂物出现", --10sec after enrage, should be 1 per 10sec afterwards
+
+    trigger_popcornHitsYou = "土堆的地震击中你", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+} end )
 local timer = {
 	firstSweep = {20.5,25},
 	sweepCd = 20.5,

@@ -32,6 +32,26 @@ module.defaultDB = {
 	bosskill = nil,
 }
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "SanctumDreamer",
+
+    dreamstate_cmd = "dreamstate",
+    dreamstate_name = "梦境状态警报",
+    dreamstate_desc = "梦境状态出现时进行警告",
+
+    trigger_sleepYou = "你受到了梦境效果的影响。",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_sleepFade = "梦境效果从(.+)身上消失了。",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY
+    trigger_sleepOther = "(.+)受到了梦境效果的影响。",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+    
+    --bar_dreamstate = " is Sleeping",
+    bar_dreamstate = "治疗沉睡队友！",
+    
+    ["You have slain %s!"] = "你已击败了%s！",
+    you = "你",
+} end )
 local timer = {
 	dreamstate = 10,
 }

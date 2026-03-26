@@ -37,6 +37,41 @@ L:RegisterTranslations("enUS", function() return {
 	msg_chainBurn = "AoE Mana Burn - Drain his Mana!",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Hazzarah",
+	
+    adds_cmd = "adds",
+    adds_name = "梦魇幻象增援警报",
+    adds_desc = "梦魇幻象增援出现时进行警告",
+
+    sleep_cmd = "sleep",
+    sleep_name = "沉睡警报",
+    sleep_desc = "沉睡效果出现时进行警告",
+
+    chainburn_cmd = "chainburn",
+    chainburn_name = "法力燃烧链警报",
+    chainburn_desc = "法力燃烧链效果出现时进行警告",
+
+
+    trigger_addsSpawn = "Hazza'rah casts Summon Nightmare Illusions.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF
+    bar_adds = "增援出现",
+    bar_addsCounter = "增援死亡",
+    msg_addsSpawn = "3个梦魇幻象 - 远程，击杀增援！",
+
+    trigger_sleep = "afflicted by Sleep", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    bar_sleepCd = "沉睡 冷却",
+    bar_sleepAfflic = "沉睡中！",
+    msg_sleep = "沉睡 - 施放战栗图腾！",
+
+    --did not see, wild guessing
+    trigger_chainBurn = "Chain Burn hit", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_chainBurn = "AoE法力燃烧 CD",
+    msg_chainBurn = "AoE法力燃烧 - 抽干他的法力！",
+    c_nightmareillusion = "梦魇幻象",
+} end )
 local timer = {
 	firstAdds = 21,
 	adds = 24,

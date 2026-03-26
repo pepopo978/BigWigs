@@ -26,6 +26,20 @@ module.defaultDB = {
 	bosskill = nil,
 }
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "madservant",
+
+    portal_cmd = "portal",
+    portal_name = "传送门警报",
+    portal_desc = "疯狂之门出现警告。",
+
+    trigger_portal = "Mad Servant casts Portal of Madness.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF
+    bar_portal = "虚空产生 - 传送门 ",
+    msg_portal = "如果你想保命，那就暂缓击杀其他小鬼！",
+} end )
 local timer = {
 	portal = 11,
 }

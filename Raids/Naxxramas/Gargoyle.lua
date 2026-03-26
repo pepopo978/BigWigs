@@ -39,6 +39,19 @@ module.defaultDB = {
 	bosskill = nil,
 }
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Stoneskin",
+
+    stoneskin_cmd = "stoneskin",
+    stoneskin_name = "石肤术警报",
+    stoneskin_desc = "石肤术出现时进行警告",
+
+    stoneskintrigger = "%s发出奇怪的声音。",
+    stoneskinwarn = "正在施放石肤术！",
+} end )
 local timer = {
 	stoneskin = 6,
 }

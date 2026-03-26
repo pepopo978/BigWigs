@@ -96,6 +96,95 @@ L:RegisterTranslations("enUS", function() return {
 		trigger_someoneDies = "Your struggle is futile.", --CHAT_MSG_MONSTER_YELL
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	cmd = "Concavius",
+
+	addhp_cmd = "addhp",
+	addhp_name = "古祖和梁血条",
+	addhp_desc = "显示古祖和梁的血条",
+	
+	shadowshock_cmd = "shadowshock",
+	shadowshock_name = "暗影震击警报",
+	shadowshock_desc = "暗影震击出现时进行警告",
+	
+	manaburn_cmd = "manaburn",
+	manaburn_name = "法力燃烧警报",
+	manaburn_desc = "法力燃烧出现时进行警告",
+	
+	veilofshadow_cmd = "veilofshadow",
+	veilofshadow_name = "暗影迷雾警报",
+	veilofshadow_desc = "暗影迷雾出现时进行警告",
+	
+	voidbolt_cmd = "voidbolt",
+	voidbolt_name = "虚空箭警报",
+	voidbolt_desc = "虚空箭出现时进行警告",
+	
+	piercingshadow_cmd = "piercingshadow",
+	piercingshadow_name = "刺骨暗影警报",
+	piercingshadow_desc = "刺骨暗影出现时进行警告",
+	
+	vacuum_cmd = "vacuum",
+	vacuum_name = "真空警报",
+	vacuum_desc = "真空出现时进行警告",
+	
+	
+	
+	trigger_engage = "Let the void claim you...", --CHAT_MSG_MONSTER_YELL
+	
+		--yells "Bask in the power of the infinite void!", happens at 30%, only gains Shadowform (1)?
+	trigger_p2 = "Concavius gains Shadowform", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	
+	trigger_shadowShock = "Concavius's Shadow Shock", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+	bar_shadowShock = "暗影震击冷却",
+	msg_shadowShocking = "空卡维斯 < 30%: 不再使用法力燃烧 -> 施放暗影震击和更多刺骨暗影",
+	
+	--Mana Burn / Disorient
+	trigger_manaBurnCd = "Perish.", --CHAT_MSG_MONSTER_YELL
+	trigger_manaBurnAfflic = "afflicted by Mana Burn", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	bar_manaBurnCd = "法力燃烧冷却",
+	bar_manaBurnAfflic = "失神",
+	msg_manaBurn3 = "法力燃烧将在3秒后出现 - 快躲开!",
+	
+	trigger_veilOfShadow_you = "You are afflicted by Veil of Shadow", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_veilOfShadow_other = "(.+) is afflicted by Veil of Shadow", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+	trigger_veilOfShadow_fade = "Veil of Shadow fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
+	bar_veilOfShadow = "暗影迷雾",
+	msg_veilOfShadow = "暗影迷雾 - 快解诅咒!",
+	
+		--2.6 - 3.2k dmg, 4.35 - 4.5sec cast, 9-12sec cd
+	trigger_voidBolt = "Concavius begins to cast Void Bolt.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_voidBoltCd = "虚空箭冷却",
+	bar_voidBoltCast = "正在施放虚空箭",
+	
+	trigger_piercingShadow_cast = "Concavius begins to cast Piercing Shadow.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	trigger_piercingShadow_you = "You are afflicted by Piercing Shadow", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_piercingShadow_other = "(.+) is afflicted by Piercing Shadow", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+	trigger_piercingShadow_fade = "Piercing Shadow fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
+	bar_piercingShadowCd = "刺骨暗影冷却",
+	bar_piercingShadowCast = "正在施放刺骨暗影",
+	bar_piercingShadowAfflic = "刺骨暗影",
+	msg_piercingShadow = "刺骨暗影 - 快解诅咒!",
+	
+		--pulls everyone to him, 30sec cd, 20sec from start, can it be avoided?
+	trigger_vacuum = "Embrace the void!", --CHAT_MSG_MONSTER_YELL
+	bar_vacuum = "真空冷却",
+	
+	
+	--unused
+			--hits the tank every 3-5 seconds for 150-200 dmg
+		trigger_drainLife = "Concavius's Drain Life hits (.+) for", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+			
+			--only stacks to (1)? shadow bolt hits for 150 dmg, the DoT does 40dmg per 2 seconds, doesn't stack
+		trigger_shadowBoltStack_you = "You are afflicted by Shadow Bolt %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+		trigger_shadowBoltStack_other = "(.+) is afflicted by Shadow Bolt %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+		trigger_shadowBoltStack_fade = "Shadow Bolt fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
+		
+			--does he gain a buff? or just like to nag?
+		trigger_someoneDies = "Your struggle is futile.", --CHAT_MSG_MONSTER_YELL
+		
+		["you"] = "你",
+} end )
 local timer = {
 	shadowShock = {8,16}, --saw 8.5, 9, 15.8
 	

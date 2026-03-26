@@ -78,6 +78,65 @@ L:RegisterTranslations("enUS", function()
 	}
 end)
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Twins",
+    
+    teleport_cmd = "teleport",
+    teleport_name = "传送警报",
+    teleport_desc = "传送出现时进行警告",
+    
+    enrage_cmd = "enrage",
+    enrage_name = "激怒警报",
+    enrage_desc = "激怒出现时进行警告",
+    
+    blizzard_cmd = "blizzard",
+    blizzard_name = "暴风雪警报",
+    blizzard_desc = "暴风雪出现时进行警告",
+
+    heal_cmd = "heal",
+    heal_name = "治疗警报",
+    heal_desc = "双子治疗时进行警告",
+    
+    targeticon_cmd = "targeticon",
+    targeticon_name = "双子目标团队标志",
+    targeticon_desc = "给施法的双子目标标一个星星，给近战的双子目标标一个骷髅",
+    
+    
+    trigger_tp = "获得了双子传送的效果。",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    bar_tpCd = "传送冷却",
+    bar_tpOffCd = "传送准备...",
+    msg_tpOffCd = "10秒内传送！",
+    
+    trigger_enrage = "Emperor Vek'nilash becomes enraged.",--??
+    trigger_enrage2 = "Emperor Vek'lor becomes enraged.",--??
+    bar_enrage = "狂暴",
+    msg_enrage60 = "60秒后狂暴",
+    msg_enrage10 = "10秒后狂暴",
+    msg_enrage = "双子狂暴了",
+    
+    trigger_blizzard = "你受到了暴风雪效果的影响。",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_blizzardFade = "暴风雪效果从你身上消失。",--CHAT_MSG_SPELL_AURA_GONE_SELF
+    msg_blizzard = "远离暴风雪！",
+    
+    trigger_heal = "治疗兄弟",--??
+    msg_heal = "两个BOSS距离太近，快分开他们！",
+
+    pull_trigger1 = "啊，待宰的羔羊！",
+    pull_trigger2 = "Prepare to embrace oblivion!",
+    pull_trigger3 = "兄弟，跟我一起，流血吧！",
+    pull_trigger4 = "To decorate our halls.",
+    pull_trigger5 = "不让任何人活下来！",
+    pull_trigger6 = "转身离开已经太晚了。",
+    pull_trigger7 = "看兄弟，新鲜血液！",
+    pull_trigger8 = "Like a fly in a web.",
+    pull_trigger9 = "Shall be your undoing!",
+    pull_trigger10 = "Your brash arrogance",
+
+    kill_trigger = "我的兄弟...不！",
+} end )
 local timer = {
 	tpInterval = {30,40},
 	tpReady = 10,

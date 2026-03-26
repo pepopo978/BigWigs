@@ -78,6 +78,78 @@ L:RegisterTranslations("enUS", function() return {
 	["You have slain %s!"] = true,
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Azuregos",
+	
+	chill_cmd = "chill",
+    chill_name = "冰寒警报",
+    chill_desc = "冰寒出现时进行警告",
+
+    arcanevacuum_cmd = "arcanevacuum",
+    arcanevacuum_name = "奥术真空警报",
+    arcanevacuum_desc = "奥术真空（传送）出现时进行警告",
+
+    reflection_cmd = "reflection",
+    reflection_name = "反射警报",
+    reflection_desc = "反射出现时进行警告",
+
+    selfreflect_cmd = "selfreflect",
+    selfreflect_name = "你身上的反射警报",
+    selfreflect_desc = "法术被反射回你时警告",
+
+    manastorm_cmd = "manastorm",
+    manastorm_name = "法力风暴警报",
+    manastorm_desc = "法力风暴出现时进行警告",
+
+    frostbreath_cmd = "frostbreath",
+    frostbreath_name = "冰霜吐息警报",
+    frostbreath_desc = "冰霜吐息出现时进行警告",
+	
+	
+	--increasing the time between their attacks by 300%, and movement speed by 40%
+	trigger_chillYou = "You are afflicted by Chill.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_chillOther = "(.+) is afflicted by Chill.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_chillFade = "Chill fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_chillCd = "冰寒 CD",
+    bar_chillAfflic = " 受冰寒影响",
+    msg_chill = "冰寒 - 首先驱散坦克！",
+	
+	--teleport close players (data reports 30yd, players report 10yd, probably is 30yd from dead center)
+	  --and causes aggro wipe for the teleported players only
+	trigger_arcaneVacuum = "Come, little ones. Face me!", --CHAT_MSG_MONSTER_YELL
+    bar_arcaneVacuumCd = "奥术真空 CD",
+    bar_arcaneVacuumReady = "奥术真空准备...",
+    msg_arcaneVacuum = "奥术真空 - 传送 + 只对近战玩家清除仇恨！",
+	
+	--can be dispelled by felhunter, reflects spells
+	trigger_reflection = "Azuregos gains Reflection.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	trigger_reflectionFade = "Reflection fades from Azuregos.", --CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_reflectionCd = "反射 CD",
+    bar_reflection = "反射！",
+    msg_reflectionUp = "反射 - 停止施法！",
+    msg_reflectionFade = "反射消失",
+	
+	trigger_reflectYou = "Your (.+) is reflected back by Azuregos.", --CHAT_MSG_SPELL_SELF_DAMAGE
+    msg_reflectYou = "法术反射 - 停止自残！",
+	
+	--Blizzard-like AoE but burns mana
+	trigger_manaStormYou = "You are afflicted by Manastorm.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_manaStormYouFade = "Manastorm fades from you.", --CHAT_MSG_SPELL_AURA_GONE_SELF
+    msg_manaStorm = "远离法力风暴！",
+	
+	--Frontal Cone, Dmg + slowMove + ManaBurn
+	trigger_frostBreathYou = "Azuregos's Frost Breath hits you for", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+	trigger_frostBreathCast = "Azuregos begins to perform Frost Breath.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_frostBreathCd = "冰霜吐息 CD",
+    bar_frostBreathCast = "施放冰霜吐息！",
+    msg_frostBreath = "冰霜吐息 = 法力燃烧... 不要站在前面！",
+
+    ["You have slain %s!"] = "你杀死了%s！",
+    you = "you",
+} end )
 local timer = {
 	chillFirstCd = 14,
 	chillCd = 24,

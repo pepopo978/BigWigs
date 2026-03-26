@@ -16,6 +16,15 @@ module.defaultDB = {
 	bosskill = nil,
 }
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "FleshHunter",
+	consumeother_trigger = "(.*)受到了吞噬效果的影响。",
+	consume_bar = " 被吞噬!",
+	clickme = " >点击我！<",
+} end )
 local timer = {
 	consume = 15,
 }

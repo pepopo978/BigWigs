@@ -91,6 +91,88 @@ L:RegisterTranslations("enUS", function() return {
 	msg_silence = " Silenced - Dispel!",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Ysondre",
+
+    tailsweep_cmd = "tailsweep",
+    tailsweep_name = "龙尾扫击警报",
+    tailsweep_desc = "龙尾扫击出现时进行警告",
+
+    dreamfog_cmd = "dreamfog",
+    dreamfog_name = "梦境迷雾昏睡警报",
+    dreamfog_desc = "梦境迷雾昏睡出现时进行警告",
+
+    noxiousbreath_cmd = "noxiousbreath",
+    noxiousbreath_name = "毒性吐息警报",
+    noxiousbreath_desc = "毒性吐息出现时进行警告",
+
+    lightningwave_cmd = "lightningwave",
+    lightningwave_name = "闪电波警报",
+    lightningwave_desc = "闪电波出现时进行警告",
+
+    summon_cmd = "summon",
+    summon_name = "召唤警报",
+    summon_desc = "召唤出现时进行警告",
+
+    curseofthorns_cmd = "curseofthorns",
+    curseofthorns_name = "荆棘诅咒警报",
+    curseofthorns_desc = "荆棘诅咒出现时进行警告",
+
+    silence_cmd = "silence",
+    silence_name = "沉默警报",
+    silence_desc = "沉默出现时进行警告",
+
+
+	trigger_engage = "The strands of LIFE have been severed! The Dreamers must be avenged!", --CHAT_MSG_MONSTER_YELL
+	
+	--self
+	trigger_tailSweepYou = "Tail Sweep hits you for", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+    msg_tailSweepYou = "龙尾扫击 - 不要站在龙的后面！",
+	
+	--self
+	trigger_dreamFogYou = "You are afflicted by Sleep.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_dreamFogYouFade = "Sleep fades from you.", --CHAT_MSG_SPELL_AURA_GONE_SELF
+    msg_dreamFogYou = "梦境迷雾昏睡 - 不要站在梦境迷雾之中！",
+
+	--if nox you, for loop, find bossTarget, if bossTarget not you then WarningSign + msg only tank should
+	trigger_noxiousBreathYou = "You are afflicted by Noxious Breath", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_noxiousBreathOther = "(.+) is afflicted by Noxious Breath", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    bar_noxiousBreathCd = "毒性吐息 CD",
+    msg_noxiousBreathYou = "毒性吐息 - 不要站在龙的前面！",
+
+	--if is 3+ then bar
+	trigger_noxiousBreathStackYou = "You are afflicted by Noxious Breath %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_noxiousBreathStackOther = "(.+) is afflicted by Noxious Breath %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_noxiousBreathFade = "Noxious Breath fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_noxiousBreath = " 毒性吐息",
+	
+	trigger_lightningWave = "Ysondre's Lightning Wave hits", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_lightningWave = "闪电波 CD",
+	
+	--Come forth, ye Dreamers â€“ and claim your vengeance!
+		--WTF are those weird chars?
+	trigger_summon = "Come forth, you Dreamers - and claim your vengeance!", --CHAT_MSG_MONSTER_YELL
+	trigger_summon2 = "Come forth, ye Dreamers", --CHAT_MSG_MONSTER_YELL
+    msg_summon = "狂乱的德鲁伊之魂 - 击杀小怪！",
+    msg_summonSoon = "小怪即将出现",
+	
+	
+	trigger_curseOfThornsYou = "You are afflicted by Curse of Thorns.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_curseOfThornsOther = "(.+) is afflicted by Curse of Thorns.",  --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE //CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_curseOfThornsFade = "Curse of Thorns fades from (.+).",  --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_curseOfThorns = " 荆棘",
+    msg_curseOfThorns = " 荆棘之咒 - 驱散诅咒！",
+	
+	trigger_silenceYou = "You are afflicted by Silence.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_silenceOther = "(.+)  is afflicted by Silence.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_silenceFade = "Silence fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_silence = " 沉默",
+    msg_silence = " 沉默 - 驱散！",
+    you = "you",
+} end )
 local timer = {
 	dreamFog = 5,
 	

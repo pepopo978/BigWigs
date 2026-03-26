@@ -20,6 +20,20 @@ L:RegisterTranslations("enUS", function() return {
 	bar_fearCd = "Fear CD",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Beast",
+
+    fear_cmd = "fear",
+    fear_name = "恐惧",
+    fear_desc = "恐惧冷却计时器。",
+    
+    trigger_fear = "afflicted by Terrifying Roar.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    bar_fearDuration = "恐惧持续时间",
+    bar_fearCd = "恐惧冷却",
+} end )
 local timer = {
 	fearCd = 10,
 	fearDuration = 5,

@@ -31,6 +31,25 @@ module.defaultDB = {
 	bosskill = nil,
 }
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "SanctumWyrmkin",
+
+    wyrmkinsvenom_cmd = "wyrmkinsvenom",
+    wyrmkinsvenom_name = "龙族毒液警报",
+    wyrmkinsvenom_desc = "龙族毒液出现时进行警告",
+
+    trigger_wyrmkinsVenomYou = "你受到了龙族毒液效果的影响。",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_wyrmkinsVenomFade = "龙族毒液效果从(.+)身上消失了。",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY
+    trigger_wyrmkinsVenomOther = "(.+)受到了龙族毒液效果的影响。",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+    
+    bar_wyrmkinsVenom = " 中了毒液（驱毒）！！！",
+    
+    ["You have slain %s!"] = "你已击败了%s！",
+    you = "你",
+} end )
 local timer = {
 	wyrmkinsVenom = 30,--tbd
 }

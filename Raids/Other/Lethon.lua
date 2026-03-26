@@ -73,6 +73,70 @@ L:RegisterTranslations("enUS", function() return {
 	bar_drawSpiritStun = "Stun",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Lethon",
+
+	tailsweep_cmd = "tailsweep",
+    tailsweep_name = "龙尾扫击警报",
+    tailsweep_desc = "龙尾扫击出现时进行警告",
+	
+	dreamfog_cmd = "dreamfog",
+    dreamfog_name = "梦境迷雾昏睡警报",
+    dreamfog_desc = "梦境迷雾昏睡出现时进行警告",
+	
+	noxiousbreath_cmd = "noxiousbreath",
+    noxiousbreath_name = "毒性吐息警报",
+    noxiousbreath_desc = "毒性吐息出现时进行警告",
+	
+	shadowbolt_cmd = "shadowbolt",
+    shadowbolt_name = "暗影箭警报",
+    shadowbolt_desc = "暗影箭出现时进行警告",
+	
+	summon_cmd = "summon",
+    summon_name = "召唤警报",
+    summon_desc = "召唤出现时进行警告",
+
+
+	trigger_engage = "I can sense the SHADOW on your hearts. There can be no rest for the wicked!", --CHAT_MSG_MONSTER_YELL
+	
+	--self
+	trigger_tailSweepYou = "Tail Sweep hits you for", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+    msg_tailSweepYou = "龙尾扫击 - 不要站在龙的后面！",
+	
+	--self
+	trigger_dreamFogYou = "You are afflicted by Sleep.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_dreamFogYouFade = "Sleep fades from you.", --CHAT_MSG_SPELL_AURA_GONE_SELF
+    msg_dreamFogYou = "梦境迷雾昏睡 - 不要站在梦境迷雾之中！",
+
+	--if nox you, for loop, find bossTarget, if bossTarget not you then WarningSign + msg only tank should
+	trigger_noxiousBreathYou = "You are afflicted by Noxious Breath", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_noxiousBreathOther = "(.+) is afflicted by Noxious Breath", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    bar_noxiousBreathCd = "毒性吐息 CD",
+    msg_noxiousBreathYou = "毒性吐息 - 不要站在龙的前面！",
+
+	--if is 3+ then bar
+	trigger_noxiousBreathStackYou = "You are afflicted by Noxious Breath %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_noxiousBreathStackOther = "(.+) is afflicted by Noxious Breath %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_noxiousBreathFade = "Noxious Breath fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_noxiousBreath = " 毒性吐息",
+	
+	--trigger_shadowBoltYou = "Lethon's Shadow Bolt Whirl hits you for", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+	--trigger_shadowBoltOther = "Lethon's Shadow Bolt Whirl hits (.+) for", --CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	trigger_shadowBoltGain = "Lethon gains Shadow Bolt Whirl.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    bar_shadowBolt = "暗影箭 ",
+    msg_shadowBoltSwapSide = "暗影箭换边 - 转动雷索！",
+	
+	trigger_summon = "Your wicked souls shall feed my power!", --CHAT_MSG_MONSTER_YELL
+    msg_summon = "灵魂之影 - 击杀小怪！",
+    msg_summonSoon = "小怪即将出现",
+	
+	trigger_drawSpiritStun = "afflicted by Draw Spirit.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    bar_drawSpiritStun = "眩晕",
+    you = "you",
+} end )
 local timer = {
 	dreamFog = 5,
 	

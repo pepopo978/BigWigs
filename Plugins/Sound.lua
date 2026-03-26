@@ -137,6 +137,20 @@ L:RegisterTranslations("deDE", function()
 	}
 end)
 
+L:RegisterTranslations("zhCN", function()
+	return {
+		["Sounds"] = "声音",
+		["sounds"] = "声音",
+		["Options for sounds."] = "声音相关设置。",
+		["toggle"] = "切换",
+		["Use sounds"] = "启用声音",
+		["Toggle sounds on or off."] = "打开或关闭声音提醒。",
+		["default"] = "默认",
+		["Default only"] = "仅默认音效",
+		["Use only the default sound."] = "仅使用默认报警音。",
+	}
+end)
+
 ----------------------------------
 --      Module Declaration      --
 ----------------------------------

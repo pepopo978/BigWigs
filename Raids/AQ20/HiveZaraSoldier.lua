@@ -30,6 +30,28 @@ module.defaultDB = {
 	bosskill = nil,
 }
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "HiveZaraSoldier",
+
+	retaliationgain_cmd = "retaliationgain",
+	retaliationgain_name = "反击风暴获得警报",
+	retaliationgain_desc = "警告获得反击风暴",
+	
+	retaliationhityou_cmd = "retaliationhityou",
+	retaliationhityou_name = "反击风暴警报",
+	retaliationhityou_desc = "警报反击风暴对你的攻击",
+	
+	trigger_retaliationGain = "佐拉士兵获得了反击风暴的效果。",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	msg_retaliationGain = "佐拉士兵获得了反击风暴！",
+	
+	trigger_retaliationHitYou = "佐拉士兵的反击风暴击中你造成",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+	msg_retaliationHitYou = "请停止自残！",
+	
+	["You have slain %s!"] = "你已击败%s！",
+} end )
 local timer = {
 }
 local icon = {

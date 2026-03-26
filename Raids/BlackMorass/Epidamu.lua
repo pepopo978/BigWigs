@@ -31,6 +31,31 @@ L:RegisterTranslations("enUS", function() return {
 	bar_temporalConflux = " Temporal Conflux",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Epidamu",
+
+    drainmana_cmd = "drainmana",
+    drainmana_name = "法力吸取警报",
+    drainmana_desc = "法力吸取出现时进行警告",
+    
+    temporalconflux_cmd = "temporalconflux",
+    temporalconflux_name = "时空涡流警报",
+    temporalconflux_desc = "时空涡流出现时进行警告",
+
+    trigger_drainManaYou = "You are afflicted by Drain Mana.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_drainManaOther = "(.+) is afflicted by Drain Mana.",--CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    trigger_drainManaFade = "Drain Mana fades from (.+).",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_drainMana = "法力吸取",
+    
+    trigger_temporalConfluxYou = "You are afflicted by Temporal Conflux.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_temporalConfluxOther = "(.+) is afflicted by Temporal Conflux.",--CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    trigger_temporalConfluxFade = "Temporal Conflux fades from (.+).",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_temporalConflux = "时空涡流",
+    you = "you",
+} end )
 local timer = {
 	drainMana = 5,
 	temporalConflux = 15,
