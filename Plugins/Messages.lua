@@ -170,6 +170,59 @@ L:RegisterTranslations("deDE", function()
 	}
 end)
 
+L:RegisterTranslations("zhCN", function()
+	return {
+		["Messages"] = "信息提示",
+
+		["msg"] = "消息",
+		["anchor"] = "框体锚点",
+		["reset"] = "重置",
+		["rw"] = "团队警报",
+		["color"] = "颜色",
+		["scale"] = "大小",
+
+		["Options for the message frame."] = "消息显示模式及相关设置。",
+		["Anchor"] = "信息框锚点",
+		["Show the message anchor frame."] = "显示信息框锚点。",
+		["Use RaidWarning"] = "使用团队通告",
+		["Toggle sending messages to the RaidWarnings frame."] = "切换是否发送到团队通告框。",
+		["Use colors"] = "使用彩色消息",
+		["Toggles white only messages ignoring coloring."] = "切换为仅显示白色消息。",
+		["Message frame scale"] = "信息框缩放",
+
+		["Reset position"] = "重置位置",
+		["Reset the anchor position, moving it to the default location"] = "将锚点重置到默认位置。",
+
+		["Message frame"] = "信息框",
+		["Show anchor"] = "显示锚点",
+		["Send messages to RaidWarning frame"] = "发送到团队通告框",
+		["Set the message frame scale."] = "设置消息框缩放。",
+		["Colorize messages"] = "彩色消息",
+		["Scale"] = "缩放",
+
+		["|cffff0000Co|cffff00fflo|cff00ff00r|r"] = "|cffff0000颜|cffff00ff色|cff00ff00色|r",
+		["White"] = "白色",
+		["BigWigs frame"] = "BigWigs 窗口",
+		["RaidWarning frame"] = "团队通告框",
+		["Scale is set to %s"] = "缩放已设置为 %s",
+		["Messages are now sent to the %2$s"] = "消息现在发送到 %2$s",
+		["Messages are currently sent to the %2$s"] = "消息当前发送到 %2$s",
+
+		["display"] = "显示",
+		["Display"] = "显示",
+		["Set where messages are displayed."] = "设置消息显示位置。",
+		["Display is now set to %2$s"] = "显示位置已设置为 %2$s",
+		["Display is currently set to %2$s"] = "当前显示位置为 %2$s",
+
+		["Mik's Scrolling Battle Text"] = "MSBT",
+		["Scrolling Combat Text"] = "SCT",
+		["Floating Combat Text"] = "浮动战斗信息",
+
+		["Test"] = "测试",
+		["Close"] = "关闭",
+	}
+end)
+
 ----------------------------------
 --      Module Declaration      --
 ----------------------------------
