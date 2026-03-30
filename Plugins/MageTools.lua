@@ -687,7 +687,7 @@ function BigWigsMageTools:Activate()
 		self:RegisterEvent("PLAYER_TARGET_CHANGED")
 
 		self.eventVersion = 1
-		if GetNampowerVersion and SUPERWOW_VERSION then
+		if GetNampowerVersion then
 			local major, minor = GetNampowerVersion()
 
 			if major > 2 or (major == 2 and minor >= 14) then
