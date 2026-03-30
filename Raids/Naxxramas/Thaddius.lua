@@ -102,6 +102,80 @@ L:RegisterTranslations("enUS", function()
 	}
 end)
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Thaddius",
+	
+	power_cmd = "power",
+	power_name = "能量涌动警报",
+	power_desc = "斯塔拉格能量涌动时进行警告",
+	
+	magneticPull_cmd = "magneticPull",
+	magneticPull_name = "磁性吸引警报",
+	magneticPull_desc = "磁性吸引时进行警告",
+	
+	manaburn_cmd = "manaburn",
+	manaburn_name = "静止力场警报",
+	manaburn_desc = "静止力场时进行警告",
+	
+	phase_cmd = "phase",
+	phase_name = "阶段警报",
+	phase_desc = "阶段转换时进行警告",
+	
+	enrage_cmd = "enrage",
+	enrage_name = "激怒警报",
+	enrage_desc = "激怒出现时进行警告",
+
+	polarity_cmd = "polarity",
+	polarity_name = "极性转换警报",
+	polarity_desc = "极性转换时进行警告",
+
+	selfcharge_cmd = "selfcharge",
+	selfcharge_name = "电荷变化警报",
+	selfcharge_desc = "你的正/负电荷变化时进行警告。",
+
+	
+	trigger_engage = "斯塔拉格碾压你！", --CHAT_MSG_MONSTER_YELL
+	trigger_engage1 = "喂你当主人！", --CHAT_MSG_MONSTER_YELL
+	
+	trigger_powerSurge = "斯塔拉格获得了能量涌动的效果。",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	bar_powerSurge = "能量涌动",
+	msg_powerSurge = "斯塔拉格获得能量涌动！",
+	
+	bar_magneticPull = "磁性吸引",
+	
+	trigger_manaBurn = "费尔根的静止力场击中", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+	trigger_manaBurn2 = "You absorb Feugen's Static Field.",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+	msg_manaBurn = "费尔根的静止力场！30码范围AOE",
+	
+	trigger_feugenDeadYell = "不...更多...费根...",--CHAT_MSG_MONSTER_YELL
+	trigger_stalaggDeadYell = "主宰救救我吧...",--CHAT_MSG_MONSTER_YELL
+	
+	trigger_3sec = "%s 超载！",--CHAT_MSG_RAID_BOSS_EMOTE
+	bar_phase2 = "塔迪乌斯激活",
+	msg_phase2 = "第二阶段",
+	msg_positionReminder = "+ + + + +  塔迪乌斯  - - - - -",
+	
+	trigger_enrage = "塔迪乌斯获得了狂暴的效果。", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	bar_enrage = "狂暴",
+	msg_enrage = "狂暴！",
+	msg_enrage60 = "60秒后狂暴",
+	msg_enrage10 = "10秒后狂暴",
+	
+	trigger_polarityShiftCast = "塔迪乌斯开始施放极性转化。", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_polarityShiftCast = "开始极性转换",
+	msg_polarityShift = "正在施放极性转换！",
+	
+	trigger_polarityShiftAfflic = "现在你感到疼痛了！", --CHAT_MSG_MONSTER_YELL
+	bar_polarityShiftCd = "极性转换倒计时",
+	
+	msg_noChange = "你的增益效果没有变化！",
+	msg_changeToPositive = "你变成了正电荷！",
+	msg_changeToNegative = "你变成了负电荷！",
+	bar_polarityTick = "跑位时间",
+} end )
 local timer = {
 	powerSurge = 10,
 	magneticPull = 20.5,

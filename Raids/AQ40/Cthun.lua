@@ -150,6 +150,120 @@ L:RegisterTranslations("enUS", function()
 	}
 end)
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Cthun",
+	
+	cthuneyebeam_cmd = "cthuneyebeam",
+    cthuneyebeam_name = "克苏恩的眼棱警报",
+    cthuneyebeam_desc = "克苏恩的眼棱出现时进行警告",
+	
+	darkglare_cmd = "darkglare",
+    darkglare_name = "黑暗闪耀警报",
+    darkglare_desc = "黑暗闪耀出现时进行警告",
+	
+	smalltentacle_cmd = "smalltentacle",
+    smalltentacle_name = "小眼触须警报",
+    smalltentacle_desc = "小眼触须出现时进行警告",
+	
+	smallclaw_cmd = "smallclaw",
+    smallclaw_name = "小爪子警报",
+    smallclaw_desc = "小爪触须出现时进行警告",
+	
+	gianttimer_cmd = "gianttimer",
+    gianttimer_name = "巨型利爪触须/眼睛刷新警报",
+    gianttimer_desc = "巨型利爪触须和巨眼触须刷新时进行警告",
+	
+	gianteyeeyebeam_cmd = "gianteyeeyebeam",
+    gianteyeeyebeam_name = "巨眼眼棱警报",
+    gianteyeeyebeam_desc = "巨眼眼棱出现时进行警告",
+	
+	groundtremor_cmd = "groundtremor",
+    groundtremor_name = "大地震颤警报",
+    groundtremor_desc = "大地震颤出现时进行警告",
+	
+	window_cmd = "window",
+    window_name = "机会窗口警报",
+    window_desc = "提示最佳削弱时机",
+	
+	weakened_cmd = "weakened",
+    weakened_name = "虚弱状态警报",
+    weakened_desc = "虚弱状态出现时进行警告",
+	
+	acid_cmd = "acid",
+    acid_name = "消化酸液警报",
+    acid_desc = "消化酸层数过高时进行警告",
+	
+	stomachhp_cmd = "stomachhp",
+    stomachhp_name = "胃部触须血量",
+    stomachhp_desc = "显示胃部触须的血量条和警告",
+	
+	proximity_cmd = "proximity",
+    proximity_name = "距离警告框",
+    proximity_desc = "显示距离警告框",
+	
+	stomachplayers_cmd = "stomachplayers",
+    stomachplayers_name = "胃部玩家框体",
+    stomachplayers_desc = "显示胃部的玩家框体",
+	
+	raidicon_cmd = "raidicon",
+    raidicon_name = "在眼棱目标上标记骷髅",
+    raidicon_desc = "在眼棱目标上标记骷髅",
+	
+	
+    bar_startRandomBeams = "随机眼棱开始！",
+
+	trigger_cthun_eyeBeam = "克苏恩之眼开始施放眼棱。", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_eyeBeam = "眼棱即将攻击 ",
+	
+	--no dark glare trigger
+    bar_darkGlareCd = "下一次黑暗闪耀（红光）",
+    bar_darkGlareCasting = "正在施放黑暗闪耀！",
+    bar_darkGlareDur = "黑暗闪耀！",
+    msg_darkGlareCasting = "黑暗闪耀！",
+    msg_darkGlareEndsSoon = "黑暗闪耀将在5秒内结束",
+	
+	trigger_smallEyeTentacles = "眼球触须开始施放出生。", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF
+    msg_smallEyeTentaclesSoon = "小眼触须将在3秒内出现",
+	bar_smallEyeTentacles = "小眼触须",
+	bar_smallEyesDead = "/8 小眼触须已死",
+	
+	trigger_smallClaw = "利爪触须开始施放出生。", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF
+    bar_smallClaw = "小爪刷新",
+
+    msg_phase2 = "眼睛已死 - 本体即将出现！",
+	
+	trigger_giantClaw = "巨型利爪触须开始施放出生。", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF
+    bar_giantClaw = "巨型利爪触须刷新",
+	
+	trigger_giantEye = "巨眼触须开始施放出生。", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF
+    bar_giantEye = "巨眼触须刷新",
+	
+	trigger_giantEye_eyeBeam = "巨眼触须开始施放眼棱。", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	--bar_eyeBeam = "Eye Beam on ",
+	
+	trigger_groundTremor = "受到了大地震颤效果的影响。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    bar_groundTremorDur = "大地震颤昏迷",
+	
+    bar_windowOfOpportunity = "机会窗口",
+	
+		--must be a string.find
+	trigger_weakened = "被削弱了！", --CHAT_MSG_MONSTER_EMOTE
+    bar_weakened = "虚弱时间，全力输出！",
+    msg_weakened = "克苏恩虚弱了！",
+    msg_weakenedFade = "虚弱结束",
+	
+	trigger_digestiveAcid = "你受到了消化酸液效果的影响%（(.+)%）。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    msg_digestiveAcid = " 消化酸层数过高 - 考虑离开胃部",
+	
+    hpBar_firstTentacle = "第一个触须",
+    hpBar_secondTentacle = "第二个触须",
+    msg_firstTentacleDead = "第一个触须已死",
+	
+    frameHeader_playersInStomach = "胃部玩家",
+} end )
 local timer = {
 	p1_startRandomBeams = 8,
 	eyeBeamCast = 2,

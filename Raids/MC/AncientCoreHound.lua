@@ -30,6 +30,40 @@ L:RegisterTranslations("enUS", function() return {
 	
 	msg_ancientHysteria = "Ancient Hysteria - Decurse!",
 } end )
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Corehound",
+
+    bars_cmd = "bars",
+    bars_name = "切换计时条",
+    bars_desc = "切换显示计时条的状态。",
+	
+	
+	trigger_debuff = "你受到了(.+)效果的影响。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_debuffFail = ".*的(.+)施放失败。", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	trigger_debuffResist = ".*的(.+)被.*抵抗了。", --CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_debuff = "Debuff",
+	
+    msg_ancientDread = "上古恐慌 - 驱散！",
+	
+    bar_ancientDespair = "迷惑",
+	
+    bar_groundStomp = "大地践踏",
+	
+    msg_cauterizingFlames = "灼烧之焰 - 驱散！",
+	
+    msg_witheringHeat = "枯萎热浪 - 驱散！",
+	
+    msg_ancientHysteria = "上古狂乱 - 解除诅咒！",
+    
+    s_ancientdread = "上古恐慌",
+    s_ancientdespair = "上古绝望",
+    s_groundstomp = "大地践踏",
+    s_cauterizingflames = "灼烧之焰",
+    s_witheringheat = "枯萎热浪",
+    s_ancienthysteria = "上古狂乱",
+} end )
 
 local timer = {
 	debuffFirst = 12,
@@ -86,22 +120,31 @@ function module:OnDisengage()
 
 end
 
+local function IsTrackedDebuff(name)
+	return name == L["s_ancientdread"]
+		or name == L["s_ancientdespair"]
+		or name == L["s_groundstomp"]
+		or name == L["s_cauterizingflames"]
+		or name == L["s_witheringheat"]
+		or name == L["s_ancienthysteria"]
+end
+
 function module:Event(msg)
 	if string.find(msg, L["trigger_debuff"]) then
 		local _,_, debuff, _ = string.find(msg, L["trigger_debuff"])
-		if debuff == "Ancient Dread" or "Ancient Despair" or "Ground Stomp" or "Cauterizing Flames" or "Withering Heat" or "Ancient Hysteria" then
+		if IsTrackedDebuff(debuff) then
 			self:Sync(syncName.debuff .. " " .. debuff)
 		end
 	
 	elseif string.find(msg, L["trigger_debuffFail"]) then
 		local _,_, debuff, _ = string.find(msg, L["trigger_debuffFail"])
-		if debuff == "Ancient Dread" or "Ancient Despair" or "Ground Stomp" or "Cauterizing Flames" or "Withering Heat" or "Ancient Hysteria" then
+		if IsTrackedDebuff(debuff) then
 			self:Sync(syncName.debuff .. " " .. debuff)
 		end
 	
 	elseif string.find(msg, L["trigger_debuffResist"]) then
 		local _,_, debuff, _ = string.find(msg, L["trigger_debuffResist"])
-		if debuff == "Ancient Dread" or "Ancient Despair" or "Ground Stomp" or "Cauterizing Flames" or "Withering Heat" or "Ancient Hysteria" then
+		if IsTrackedDebuff(debuff) then
 			self:Sync(syncName.debuff .. " " .. debuff)
 		end
 	end

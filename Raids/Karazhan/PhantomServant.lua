@@ -31,6 +31,26 @@ module.defaultDB = {
 	bosskill = nil,
 }
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "phantomservant",
+
+    phantomscream_cmd = "phantomscream",
+    phantomscream_name = "幻影尖叫警报",
+    phantomscream_desc = "幻影尖叫出现时进行警告",
+
+    trigger_phantomScreamYou = "You are afflicted by Phantom Scream.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_phantomScreamOther = "(.+) is afflicted by Phantom Scream.",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+    --trigger_phantomScreamFade = "Phantom Scream fades from (.+).",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+
+    bar_phantomScreamCd = "幻影尖叫冷却",
+    --bar_phantomScreamAfflicted = " Silenced",
+
+    ["You have slain %s!"] = "你杀死了%s！",
+    you = "you",
+} end )
 local timer = {
 	phantomScream = 10,
 }

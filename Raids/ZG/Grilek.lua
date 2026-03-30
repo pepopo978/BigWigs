@@ -60,6 +60,64 @@ L:RegisterTranslations("enUS", function() return {
 	bar_sweepingStrikes = "Sweeping Strikes!",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Grilek",
+	
+    avatar_cmd = "avatar",
+    avatar_name = "天神下凡警报",
+    avatar_desc = "天神下凡出现时进行警告。",
+
+    puticon_cmd = "puticon",
+    puticon_name = "在格里雷克的目标上放置图标",
+    puticon_desc = "在格里雷克的目标玩家身上标记团队图标。",
+
+    stun_cmd = "stun",
+    stun_name = "首领昏迷警报",
+    stun_desc = "格里雷克在天神下凡后昏迷（2秒）时警告。",
+
+    groundtremor_cmd = "groundtremor",
+    groundtremor_name = "地震警报",
+    groundtremor_desc = "地震出现时进行警告。",
+	
+    roots_cmd = "roots",
+    roots_name = "纠缠根须警报",
+    roots_desc = "纠缠根须出现时进行警告。",
+
+    sweepingstrikes_cmd = "sweepingstrikes",
+    sweepingstrikes_name = "横扫攻击警报",
+    sweepingstrikes_desc = "横扫攻击出现时进行警告。",
+
+
+    trigger_avatar = "Gri'lek is afflicted by Avatar.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE
+    trigger_avatarFade = "Avatar fades from Gri'lek.", --CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_avatarCd = "天神下凡 CD",
+    bar_avatarDur = "天神下凡！",
+    msg_avatar = "天神下凡 - 远离Boss！",
+	
+    trigger_stun = "Gri'lek is afflicted by Stun.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE
+    trigger_stunFade = "Stun fades from Gri'lek.", --CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_stun = "格里雷克昏迷",
+
+    trigger_groundTremor = "afflicted by Ground Tremor.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    trigger_groundTremorFade = "Ground Tremor fades from", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_groundTremorCd = "地震 CD",
+    bar_groundTremorDur = "地震昏迷",
+
+    trigger_rootsYou = "You are afflicted by Entangling Roots.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_rootsOther = "(.+) is afflicted by Entangling Roots.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    trigger_rootsFade = "Entangling Roots fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_roots = " 纠缠",
+	
+	--untested
+    trigger_sweepingStrikes = "Gri'lek gains Sweeping Strikes.", --guessing CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    trigger_sweepingStrikes2 = "Gri'lek is afflicted Sweeping Strikes.", --guessing CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE
+    trigger_sweepingStrikesFade = "Sweeping Strikes fades from Gri'lek.", --guessing CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_sweepingStrikes = "横扫攻击！",
+    you = "you",
+} end )
 local timer = {
 	firstAvatar = 25,
 	avatarCd = 10, --25s - duration

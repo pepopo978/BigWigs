@@ -81,6 +81,82 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_engage = "You desecrate the Master's lands with your filthy footsteps!",--CHAT_MSG_MONSTER_YELL
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "DarkReaverOfKarazhan",
+
+    forlornspirit_cmd = "forlornspirit",
+    forlornspirit_name = "弃灵警报",
+    forlornspirit_desc = "弃灵增援时进行警告",
+
+    lurkingshadow_cmd = "lurkingshadow",
+    lurkingshadow_name = "潜伏暗影警报",
+    lurkingshadow_desc = "潜伏暗影增援时进行警告",
+    
+    enrage_cmd = "enrage",
+    enrage_name = "激怒警报",
+    enrage_desc = "激怒出现时进行警告",
+    
+    deterrence_cmd = "deterrence",
+    deterrence_name = "威慑警报",
+    deterrence_desc = "威慑出现时进行警告",
+    
+    nimblereflexes_cmd = "nimblereflexes",
+    nimblereflexes_name = "迅捷反射警报",
+    nimblereflexes_desc = "迅捷反射出现时进行警告",
+    
+    unbalancingstrike_cmd = "unbalancingstrike",
+    unbalancingstrike_name = "重压打击警报",
+    unbalancingstrike_desc = "重压打击出现时进行警告",
+    
+    piercearmor_cmd = "piercearmor",
+    piercearmor_name = "破甲警报",
+    piercearmor_desc = "破甲出现时进行警告",
+    
+    
+        --4 adds, yells every 20secs, spawns 2sec * count later (1st = 2sec, 2nd = 4sec, 3rd = 6sec, 4th = 8sec... later)
+    trigger_forlornSpiritSpawn = "Spirits, rise, and drive back this rabble!",--CHAT_MSG_MONSTER_YELL
+    trigger_forlornSpiritSpawn2 = "Rise, spirits. Defend the Master's lands!",--CHAT_MSG_MONSTER_YELL
+    bar_forlornSpiritSpawnCd = "4个弃灵",
+    msg_forlornSpiritSpawn = "4个弃灵已出现！",
+
+        --shaman (no caps)
+        --spawns a Lurking Shadow, can be killed by only THAT class
+    trigger_lurkingShadowSpawn = "A (.+) shadow appears next to (.+)...",--CHAT_MSG_MONSTER_EMOTE
+    bar_lurkingShadowSpawn = "潜伏暗影",
+        -- SHAMAN! --  Lurking Shadow!
+    msg_lurkingShadowSpawn = " 潜伏暗影！",
+    
+    trigger_enrage = "Dark Reaver of Karazhan gains Furious Anger.",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+
+        --25% dodge and parry, 10sec
+    trigger_deterrence = "Dark Reaver of Karazhan gains Deterrence.",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    trigger_deterrenceFade = "Deterrence fades from Dark Reaver of Karazhan.",--CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_deterrence = "威慑 25% 闪避/招架",
+    
+        --75% parry, 8sec
+    trigger_nimbleReflexes = "Dark Reaver of Karazhan gains Nimble Reflexes.",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    trigger_nimbleReflexesFade = "Nimble Reflexes fades from Dark Reaver of Karazhan.",--CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_nimbleReflexes = "迅捷反射 75% 招架",
+
+        --6sec
+    trigger_unbalancingStrike = "(.+) is afflicted by Unbalancing Strike.",--CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    trigger_unbalancingStrikeYou = "You are afflicted by Unbalancing Strike.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_unbalancingStrikeFade = "Unbalancing Strike fades from (.+).",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_unbalancingStrike = " 重压打击",
+    
+        -- -50% or -75% armor, 20sec
+    trigger_pierceArmor = "(.+) is afflicted by Pierce Armor.",--CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    trigger_pierceArmorYou = "You are afflicted by Pierce Armor.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_pierceArmorFade = "Pierce Armor fades from (.+).",--CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_pierceArmor = " 破甲",
+
+    trigger_engage = "You desecrate the Master's lands with your filthy footsteps!",--CHAT_MSG_MONSTER_YELL
+    clickme = " >点击我！<",
+    you = "you",
+} end )
 local timer = {
 	--forlornSpiritSpawnCd = 22,
 	lurkingShadowSpawn = 10,

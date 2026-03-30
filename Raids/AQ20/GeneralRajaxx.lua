@@ -96,6 +96,100 @@ L:RegisterTranslations("enUS", function() return {
 	bar_thundercrash = "Thundercrash CD",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Rajaxx",
+
+	wave_cmd = "wave",
+	wave_name = "来袭警报",
+	wave_desc = "当新一批敌人来袭时发出警告",
+	
+	fear_cmd = "fear",--1
+	fear_name = "恐惧警报",
+	fear_desc = "恐惧状态出现时进行警告",
+	
+	attackorder_cmd = "attackorder",--2
+	attackorder_name = "攻击指令警报",
+	attackorder_desc = "攻击指令出现时进行警告",
+	
+	lightningcloud_cmd = "lightningcloud",--3
+	lightningcloud_name = "闪电云警报",
+	lightningcloud_desc = "闪电云出现时进行警告",
+	
+	shockwave_cmd = "shockwave",--4
+	shockwave_name = "震荡波警报",
+	shockwave_desc = "震荡波出现时进行警告",
+	
+	shield_cmd = "shield",--5
+	shield_name = "护盾警报",
+	shield_desc = "护盾出现时进行警告",
+	
+	knockback_cmd = "knockback",--6
+	knockback_name = "击退警报",
+	knockback_desc = "击退出现时进行警告",
+	
+	enlarge_cmd = "enlarge",--7
+	enlarge_name = "巨化术警报",
+	enlarge_desc = "巨化术出现时进行警告",
+	
+	thundercrash_cmd = "thundercrash",--2
+	thundercrash_name = "雷霆冲击警报",
+	thundercrash_desc = "雷霆冲击出现时进行警告",
+	
+	
+	trigger_eventStarted = "拉贾克斯，还记得我说过要杀光其他虫子之后再干掉你么？",--CHAT_MSG_MONSTER_YELL
+	bar_eventStart = "战斗开始",
+	
+	--not using trigger_wave1 -> bc if you body pull, will cause the trigger to happen at wave 2
+	--trigger_wave1 = "Kill first, ask questions later... Incoming!",--CHAT_MSG_MONSTER_YELL
+	msg_wave1 = "第1/8波 -- 4名战士，2名钉刺者，奎兹上尉 -> 恐惧",
+	trigger_fear = "受到了破胆怒吼效果的影响。",--CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	bar_fear = "恐惧冷却",
+	
+	trigger_wave2 = "奎兹上尉死亡了。",--CHAT_MSG_COMBAT_HOSTILE_DEATH
+	msg_wave2 = "第2/8波 -- 3名战士，3名钉刺者，图比德上尉 -> 标记",
+	trigger_attackOrder = "(.*)受到了攻击命令效果的影响。",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+	trigger_attackOrderYou = "你受到了攻击命令效果的影响。",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	bar_attackOrder = " 被标记",
+	trigger_attackOrderFade = "攻击命令效果从(.*)身上消失了。",--CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
+	
+	trigger_wave3 = "我们复仇的时刻到了！让敌人的内心被黑暗吞噬吧!",--CHAT_MSG_MONSTER_YELL
+	msg_wave3 = "第3/8波 -- 1名战士，5名钉刺者，德雷恩上尉 -> 闪电云",
+	trigger_lightningCloud = "你受到了闪电之云效果的影响。",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	msg_lightningCloud = "闪电云，快躲开！",
+	trigger_lightningCloudFade = "闪电之云效果从你身上消失了。",--CHAT_MSG_SPELL_AURA_GONE_SELF
+	
+	trigger_wave4 = "我们不用再呆在这座石墙里面了！我们很快就能报仇了！在我们的怒火面前，就连那些龙也会战栗！",--??\n?? CHAT_MSG_MONSTER_YELL
+	msg_wave4 = "第4/8波 -- 2名战士，4名钉刺者，库雷姆上尉 -> 范围伤害",
+	trigger_shockwave = "瑟瑞姆上尉的震荡波",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	bar_shockwave = "震荡波冷却",
+	
+	trigger_wave5 = "让敌人胆战心惊吧！让他们在恐惧中死去！",--CHAT_MSG_MONSTER_YELL
+	msg_wave5 = "第5/8波 -- 2名战士，4名钉刺者，叶吉斯少校 -> 护盾",
+	trigger_shield = "叶吉斯少校获得了拉贾克斯之盾的效果。",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	bar_shield = "免疫魔法",
+	
+	trigger_wave6 = "鹿盔将会呜咽着哀求我绕他一命，就像他那懦弱的儿子一样！一千来的屈辱会在今天洗清！",--??\n?? CHAT_MSG_MONSTER_YELL
+	msg_wave6 = "第6/8波 -- 4名战士，2名钉刺者，帕库少校 -> 击退",
+	trigger_slam = "帕库少校的横扫猛击",--
+	bar_slam = "猛击冷却",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+	
+	trigger_wave7 = "范达尔！你的死期到了！藏到翡翠梦境里去吧，祈祷我们永远都找不到你！",--??\n?? CHAT_MSG_MONSTER_YELL
+	msg_wave7 = "第7/8波 -- 3名战士，3名钉刺者，泽朗上校 -> 扩大",
+	trigger_enlarge = "泽朗上校获得了放大的效果。",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	bar_enlarge = "扩大，驱散！",
+	msg_enlarge = "扩大，驱散！",
+	trigger_enlargeFade = "放大效果从泽朗上校身上消失了。",--CHAT_MSG_SPELL_AURA_GONE_OTHER
+	
+	trigger_wave8 = "无礼的蠢货！我会亲自要了你们的命！",--CHAT_MSG_MONSTER_YELL
+	msg_wave8 = "第8/8波 -- 拉贾克斯将军",
+	trigger_thundercrash = "雷霆碰撞",
+	bar_thundercrash = "雷霆冲击 CD",
+	clickme = " >点击我！<",
+	you = "你",
+} end )
 local timer = {
 	eventStart = 34.72,
 	

@@ -48,6 +48,48 @@ L:RegisterTranslations("enUS", function() return {
 	msg_rejuvenation = "Mossheart gains Rejuvenation, Purge / Dispel!",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Mossheart",
+
+    mosscoveredhands_cmd = "mosscoveredhands",
+    mosscoveredhands_name = "苔藓覆手警报",
+    mosscoveredhands_desc = "苔藓覆手出现时进行警告",
+    
+    entanglingroots_cmd = "entanglingroots",
+    entanglingroots_name = "纠缠根须警报",
+    entanglingroots_desc = "纠缠根须出现时进行警告",
+    
+    dredgesickness_cmd = "dredgesickness",
+    dredgesickness_name = "病弱警报",
+    dredgesickness_desc = "病弱出现时进行警告",
+    
+    rejuvenation_cmd = "rejuvenation",
+    rejuvenation_name = "回春术警报",
+    rejuvenation_desc = "回春术出现时进行警告",
+    
+    
+    trigger_engage = "Who dares defile the sanctity of the morass...",--CHAT_MSG_MONSTER_YELL
+    
+    trigger_mossCoveredHandsYou = "You are afflicted by Moss Covered Hands.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_mossCoveredHandsOther = "(.+) is afflicted by Moss Covered Hands.",--CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    trigger_mossCoveredHandsFade = "Moss Covered Hands fades from (.+).",--CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_mossCoveredHands = "苔藓",
+    
+    trigger_entanglingRoots = "The very earth rises in defiance...",--CHAT_MSG_MONSTER_YELL
+    bar_entanglingRootsCd = "纠缠根须冷却",
+    
+    --50% and 25%? or timed 46sec from pull and 25sec after?
+    trigger_dredgeSickness = "afflicted by Dredge Sickness",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    
+    trigger_rejuvenation = "Mossheart gains Rejuvenation.",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    trigger_rejuvenationFade = "Rejuvenation fades from Mossheart.",--CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_rejuvenation = "回春术",
+    msg_rejuvenation = "莫斯哈特获得回春术，快驱散！",
+    you = "you",
+} end )
 local timer = {
 	mossCoveredHands = 180,
 	entanglingRootsCd = 25,

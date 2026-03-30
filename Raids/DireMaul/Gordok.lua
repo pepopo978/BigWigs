@@ -16,6 +16,31 @@ module.zonename = {
 --      Locals 			    --
 ------------------------------
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    ms_cmd = "ms",
+    ms_name = "致死打击",
+    ms_desc = "当有人受到致死打击时进行警告",
+
+    stomp_cmd = "stomp",
+    stomp_name = "战争践踏",
+    stomp_desc = "当有人受到战争践踏时进行警告",
+
+    charge_cmd = "charge",
+    charge_name = "冲锋",
+    charge_desc = "当有人受到冲锋时进行警告",
+
+    -- AceConsole strings
+    cmd = "Gordok",
+
+    warStomp_bar = "战争践踏",
+    warStomp2_bar = "第二次战争践踏",
+    ms_bar = "致死打击",
+    charge_bar = "冲锋",
+
+} end )
 local timer = {
 	firstWarStomp = 7,
 	secondWarStomp = {27,38},

@@ -59,6 +59,54 @@ L:RegisterTranslations("enUS", function() return {
 	msg_gateOpen = "The Central gate opens!",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Gothik",
+
+    room_cmd = "room",
+    room_name = "房间到达警报",
+    room_desc = "戈提克传送到房间时进行警告",
+
+    add_cmd = "add",
+    add_name = "小怪刷新警报",
+    add_desc = "小怪刷新时进行警告",
+
+    adddeath_cmd = "adddeath",
+    adddeath_name = "小怪死亡警报",
+    adddeath_desc = "小怪死亡时进行警告",
+
+
+    trigger_engage = "你公然无视超出你理解范围的力量",
+    trigger_bossDead = "完蛋了！",
+    
+    name_trainee = "无情的训练师",
+    name_traineeSpectral = "鬼灵训练师",
+    bar_trainee = "训练师 - ",
+    msg_traineeSoon = "3秒后出现11个训练师",
+    
+    name_deathKnight = "无情的死亡骑士",
+    name_deathKnightSpectral = "鬼灵死亡骑士",
+    bar_dk = "死亡骑士 - ",
+    msg_dkSoon = "3秒后出现7个死亡骑士",
+    msg_dkDead = "死亡骑士已死！",
+    
+    name_rider = "无情的骑兵",
+    name_riderSpectral = "鬼灵骑兵",
+    bar_rider = "骑兵 - ",
+    msg_riderSoon = "3秒后出现4个骑兵",
+    msg_riderDead = "骑兵已死！",
+    
+    trigger_inRoom = "我已经等够久了",
+    bar_inRoom = "进入房间",
+    msg_inRoom = "收割者戈提克传送到战场中！",
+    msg_inRoom10 = "10秒后戈提克即将到来",
+    
+    msg_gateOpen = "中央大门打开！",
+    c_unrelentingrider = "无情的骑兵",
+    c_unrelentingdeathknight = "无情的死亡骑士",
+} end )
 local timer = {
 	inroom = 274, --4:34
 	

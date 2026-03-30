@@ -33,6 +33,33 @@ L:RegisterTranslations("enUS", function() return {
 	bar_mc = " MC",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "DoctorWeavil",
+
+    mindshatter_cmd = "mindshatter",
+    mindshatter_name = "心灵碎裂警报",
+    mindshatter_desc = "心灵碎裂时进行警告",
+
+    mc_cmd = "mc",
+    mc_name = "精神控制警报",
+    mc_desc = "精神控制时进行警告",
+    
+
+        --AoE, 10sec CD, casts 0-6sec after, AoE 30 yards, 1k ish shadow damage + stun
+    trigger_mindShatter = "'s Mind Shatter", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+    bar_mindShatterCd = "心灵碎裂 CD",
+    bar_mindShatterSoon = "心灵碎裂 即将到来...",
+    
+    trigger_mcYou = "You are afflicted by Mental Domination.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_mcOther = "(.+) is afflicted by Mental Domination.", --CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    trigger_mcFade = "Mental Domination fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_mc = " 精神控制",
+    clickme = " >点击我！<",
+    you = "you",
+} end )
 local timer = {
 	mindShatterCd = 10,
 	mindShatterSoon = 6,

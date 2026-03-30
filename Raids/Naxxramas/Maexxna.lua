@@ -60,6 +60,62 @@ L:RegisterTranslations("enUS", function()
 	}
 end)
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Maexxna",
+	
+	cocoon_cmd = "cocoon",
+    cocoon_name = "蛛网之茧警报",
+    cocoon_desc = "警告被蛛网之茧的玩家",
+
+    webspray_cmd = "spray",
+    webspray_name = "撒网警报",
+    webspray_desc = "即将撒网时进行警告",
+
+    poison_cmd = "Poison",
+    poison_name = "死灵之毒警报",
+    poison_desc = "死灵之毒出现时进行警告",
+
+    enrage_cmd = "enrage",
+    enrage_name = "激怒警报",
+    enrage_desc = "激怒出现时进行警告",
+
+    spiderlings_cmd = "spiderlings",
+    spiderlings_name = "小蜘蛛警报",
+    spiderlings_desc = "小蜘蛛出现时进行警告",
+
+
+	trigger_cocoonGain = "(.+)受到了蛛网之茧效果的影响。",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+	trigger_cocoonGainYou = "你受到了蛛网之茧效果的影响。",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_cocoonFade = "蛛网之茧效果从(.+)身上消失了。",--CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
+    bar_cocoonGain = "蛛网之茧",
+    bar_cocoonCD = "蛛网之茧 CD",
+
+	trigger_webSprayGain = "受到了蛛网喷射效果的影响。",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    bar_webSprayGain = "群体被网",
+    bar_webSprayCD = "群体蛛网 CD",
+	
+	trigger_webSprayFade = "蛛网喷射效果从",--CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
+
+	trigger_poisonGain = "受到了死灵之毒效果的影响。",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    bar_poisonGain = "死灵之毒持续！",
+    bar_poisonCD = "死灵之毒 CD",
+	
+	trigger_poisonFade = "死灵之毒效果从",--CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
+	
+	trigger_enrageGain = "迈克斯纳获得了激怒的效果。",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    msg_enrageGain = "迈克斯纳激怒了！",
+    msg_enrageSoon = "迈克斯纳血量低于35% - 30%时会激怒！",
+	
+    bar_spiderlings = "小蜘蛛",
+	
+	--spray every 40sec
+		--last for 8sec
+	--cocoon after 20sec
+	--lings after 35sec
+} end )
 local timer = {
 	cocoonDuration = 600,
 	cocoonCD = 20,

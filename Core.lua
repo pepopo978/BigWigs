@@ -211,6 +211,77 @@ L:RegisterTranslations("deDE", function()
 	}
 end)
 
+L:RegisterTranslations("zhCN", function()
+	return {
+		["%s mod enabled"] = "%s 模块已启用",
+		["Target monitoring enabled"] = "目标监视已启用",
+		["Target monitoring disabled"] = "目标监视已禁用",
+		["%s engaged!"] = "%s 开战！",
+		["%s has been defeated"] = "%s 已被击败",
+		["%s have been defeated"] = "%s 已被击败",
+
+		["boss"] = "boss",
+		["Bosses"] = "Boss 模块",
+		["Options for boss modules."] = "Boss 模块设置。",
+		["Options for bosses in %s."] = "%s 的 Boss 模块设置。",
+		["Options for %s (r%s)."] = "%s (r%s) 的设置。",
+		["plugin"] = "插件",
+		["Plugins"] = "插件模块",
+		["Options for plugins."] = "插件模块设置。",
+		["extra"] = "额外",
+		["Extras"] = "额外功能",
+		["Options for extras."] = "额外功能设置。",
+		["toggle"] = "切换",
+		["Active"] = "启用",
+		["Activate or deactivate this module."] = "启用或停用此模块。",
+		["reboot"] = "重启",
+		["rebootall"] = "重启全部",
+		["Reboot"] = "重启",
+		["Reboot All"] = "重启全部",
+		["Reboot this module."] = "重启此模块。",
+		["debug"] = "调试",
+		["Debugging"] = "调试",
+		["Show debug messages."] = "显示调试信息。",
+		["Forces the module to reset for everyone in the raid.\n\n(Requires assistant or higher)"] = "强制重置团队中所有人的模块。\n\n(需要助理或更高权限)",
+		["%s has requested forced reboot for the %s module."] = "%s 请求强制重启 %s 模块。",
+		bosskill_cmd = "kill",
+		bosskill_name = "Boss 死亡",
+		bosskill_desc = "当 Boss 被击败时通告",
+
+		["Other"] = "其他",
+		["Load"] = "加载",
+		["Load All"] = "加载全部",
+		["Load all %s modules."] = "加载所有 %s 模块。",
+
+		["Zul'Gurub"] = "ZG",
+		["Molten Core"] = "MC",
+		["Blackwing Lair"] = "BWL",
+		["Ahn'Qiraj"] = "AQ40",
+		["Ruins of Ahn'Qiraj"] = "AQ20",
+		["Onyxia's Lair"] = "Onyxia",
+		["Naxxramas"] = "Naxxramas",
+		["Emerald Sanctum"] = "EmeraldSanctum",
+		["Tower of Karazhan"] = "Karazhan",
+		["Dire Maul"] = "DireMaul",
+		["Blackrock Spire"] = "BlackrockSpire",
+		["The Black Morass"] = "BlackMorass",
+		["Silithus"] = "Silithus",
+		["Outdoor Raid Bosses"] = "Outdoor",
+		["Outdoor Raid Bosses Zone"] = "Outdoor Raid Bosses",
+
+		["Battlegrounds"] = "战场",
+		["Alterac Valley"] = "Alterac Valley",
+		["Arathi Basin"] = "Arathi Basin",
+
+		["Vaelastrasz the Corrupt"] = "堕落的瓦拉斯塔兹",
+		["Lord Victor Nefarius"] = "维克多·奈法里奥斯领主",
+		["Solnius"] = "索尔纽斯",
+		["Lieutenant General Andorov"] = "安多洛夫中将",
+
+		["You have slain %s!"] = "你击杀了 %s！",
+	}
+end)
+
 
 ---------------------------------
 --      Addon Declaration      --
@@ -1546,4 +1617,3 @@ function BigWigs:CancelAuraTexture(texture)
 
 	return false
 end
-

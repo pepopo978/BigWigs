@@ -27,6 +27,26 @@ L:RegisterTranslations("enUS", function() return {
 	msg_enrage = "Enrage!",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Patchwerk",
+
+    enrage_cmd = "enrage",
+    enrage_name = "激怒警报",
+    enrage_desc = "激怒时进行警告",
+	
+	trigger_start1 = "帕奇维克想玩！",
+	trigger_start2 = "克尔苏加德让帕奇维克成为他的战争化身！",
+	
+	trigger_enrage = "陷入狂暴状态！",--CHAT_MSG_MONSTER_EMOTE
+	
+    bar_enrage = "激怒",
+    msg_enrage60 = "60秒后激怒",
+    msg_enrage10 = "10秒后激怒",
+    msg_enrage = "激怒！",
+} end )
 local timer = {
 	enrage = 420,
 }

@@ -17,6 +17,58 @@ module.zonename = {
 --      Module specific Locals --
 ---------------------------------
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Onyxia",
+    engage_trigger = "必须离开巢穴去觅食",
+
+    deepbreath_cmd = "deepbreath",
+    deepbreath_name = "深呼吸警报",
+    deepbreath_desc = "奥妮克希亚开始施放深呼吸时进行警告",
+
+    flamebreath_cmd = "flamebreath",
+    flamebreath_name = "烈焰吐息警报",
+    flamebreath_desc = "奥妮克希亚开始施放烈焰吐息时进行警告",
+
+    wingbuffet_cmd = "wingbuffet",
+    wingbuffet_name = "龙翼打击警报",
+    wingbuffet_desc = "龙翼打击出现时进行警告",
+
+    fireball_cmd = "fireball",
+    fireball_name = "火球术警报",
+    fireball_desc = "火球术出现时进行警告",
+
+    phase_cmd = "phase",
+    phase_name = "阶段警报",
+    phase_desc = "阶段改变时进行警告",
+
+    onyfear_cmd = "onyfear",
+    onyfear_name = "低沉咆哮警报",
+    onyfear_desc = "第三阶段低沉咆哮时进行警告",
+
+    deepbreath_trigger = "深吸了一口气",
+    flamebreath_trigger = "奥妮克希亚开始施放火息术。",
+    wingbuffet_trigger = "奥妮克希亚开始施放龙翼攻击。",
+    fireball_trigger = "奥妮克希亚开始施放火球术。",
+    phase2_trigger = "从上面把你们",
+    phase3_trigger = "看来你还需要再上一课",
+    fear_trigger = "奥妮克希亚开始施放低沉咆哮。",
+    fear_over_trigger = "低沉咆哮" ,
+
+    warn1 = "深呼吸即将到来！",
+    phase1text = "第一阶段",
+    phase2text = "第二阶段",
+    phase3text = "第三阶段",
+    feartext = "即将恐惧！",
+    fear_cast = "低沉咆哮",
+    fear_next = "下一次低沉咆哮",
+    deepbreath_cast = "深呼吸",
+    flamebreath_cast = "烈焰吐息",
+    wingbuffet_cast = "龙翼打击",
+	fireball_cast = "火球目标 %s",
+} end )
 local timer = {
 	firstFear = 5,
 	fear = 15,

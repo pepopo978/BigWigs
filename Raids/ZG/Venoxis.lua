@@ -90,6 +90,94 @@ L:RegisterTranslations("enUS", function() return {
 	msg_addDead = "/4 Snake Adds Dead",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Venoxis",
+
+	renew_cmd = "renew",
+    renew_name = "恢复警报",
+    renew_desc = "恢复时进行警告",
+
+	holyfire_cmd = "holyfire",
+    holyfire_name = "神圣之火警报",
+    holyfire_desc = "神圣之火时进行警告",
+	
+	holywrath_cmd = "holywrath",
+    holywrath_name = "神圣愤怒警报",
+    holywrath_desc = "神圣愤怒时进行警告",
+	
+	holynova_cmd = "holynova",
+    holynova_name = "神圣新星警报",
+    holynova_desc = "神圣新星时进行警告",
+	
+	phase_cmd = "phase",
+    phase_name = "阶段变化警报",
+    phase_desc = "蛇阶段时进行警告",
+	
+	poisoncloud_cmd = "poisoncloud",
+    poisoncloud_name = "毒云警报",
+    poisoncloud_desc = "毒云时进行警告",
+	
+	venomspit_cmd = "venomspit",
+    venomspit_name = "喷毒警报",
+    venomspit_desc = "喷毒时进行警告",
+	
+	enrage_cmd = "enrage",
+    enrage_name = "激怒警报",
+    enrage_desc = "激怒时进行警告",
+	
+	parasitic_cmd = "parasitic",
+    parasitic_name = "寄生蛇警报",
+    parasitic_desc = "寄生蛇时进行警告",
+	
+	adds_cmd = "adds",
+    adds_name = "增援死亡警报",
+    adds_desc = "增援死亡时进行警告",
+	
+	
+	trigger_renew = "High Priest Venoxis gains Renew.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	trigger_renewFade = "Renew fades from High Priest Venoxis.", --CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_renew = "恢复",
+    msg_renew = "恢复 - 驱散！",
+	
+	trigger_holyFireCast = "High Priest Venoxis begins to cast Holy Fire.", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	trigger_holyFireYou = "You are afflicted by Holy Fire.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_holyFireOther = "(.+) is afflicted by Holy Fire.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_holyFireFade = "Holy Fire fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_holyFireCast = "施放神圣之火！",
+    bar_holyFireDur = " 神圣之火",
+    msg_holyFire = "神圣之火 - 驱散！",
+	
+	trigger_holyWrath = "High Priest Venoxis's Holy Wrath", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_holyWrathCd = "神圣愤怒冷却",
+	
+	trigger_holyNova = "High Priest Venoxis's Holy Nova", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+    bar_holyNovaCd = "神圣新星冷却",
+	
+	trigger_phase2 = "Let the coils of hate unfurl!", --CHAT_MSG_MONSTER_YELL
+    msg_phase2 = "第二阶段 - 避免毒云！",
+	
+	trigger_poisonCloudYou = "You are afflicted by Poison Cloud.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_poisonCloudYouFade = "Poison Cloud fades from you.", --CHAT_MSG_SPELL_AURA_GONE_SELF
+    msg_poisonCloudYou = "远离毒云！",
+	
+	trigger_venomSpit = "High Priest Venoxis's Venom Spit hits (.+) for", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	trigger_venomSpitFade = "Venom Spit fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_venomSpit = " 喷毒",
+	
+	trigger_enrage = "High Priest Venoxis gains Enrage.",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    msg_enrage = "温诺希斯激怒了！",
+	
+	--no trigger for parasitic serpent, 1st at 11sec after p2, next is ???
+    bar_parasiticSerpent = "寄生蛇生成",
+    msg_parasiticSerpent = "杀死寄生蛇（低血量） - AoE！",
+	
+    msg_addDead = "/4 蛇增援已死",
+    c_razzashicobra = "拉扎什眼镜蛇",
+    you = "you",
+} end )
 local timer = {
 	renew = 15,
 	

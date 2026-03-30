@@ -41,6 +41,40 @@ L:RegisterTranslations("enUS", function() return {
 	msg_enrage = "Enrage!",
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Antnormi",
+
+    fear_cmd = "fear",
+    fear_name = "恐惧警报",
+    fear_desc = "恐惧出现时进行警告",
+    
+    shadowshock_cmd = "shadowshock",
+    shadowshock_name = "暗影震击警报",
+    shadowshock_desc = "暗影震击出现时进行警告",
+    
+    enrage_cmd = "enrage",
+    enrage_name = "激怒警报",
+    enrage_desc = "激怒出现时进行警告",
+    
+    
+    trigger_engage = "We are Infinite!Your journey ends here now, time will belong to US!",--CHAT_MSG_MONSTER_YELL
+    
+    trigger_fearCastStart = "is preparing for a bellowing roar!",--CHAT_MSG_RAID_BOSS_EMOTE
+    bar_fearCast = "正在施放恐惧",
+    
+    trigger_fearCastEnd = "afflicted by Cowering Roar",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    bar_fearDuration = "恐惧中！",
+    bar_fearCd = "恐惧冷却",
+    
+    trigger_shadowShock = "Antnormi's Shadow Shock",--CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_FRIENDLYPLAYER_DAMAGE
+    bar_shadowShockCd = "暗影震击冷却",
+    
+    trigger_enrage = "Antnormi gains Enrage.",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    msg_enrage = "激怒！",
+} end )
 local timer = {
 	firstFearCd = 20,
 	fearCd = 20,--25sec between each fear emote

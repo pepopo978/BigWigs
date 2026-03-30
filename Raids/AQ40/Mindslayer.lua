@@ -44,6 +44,44 @@ L:RegisterTranslations("enUS", function() return {
 	["You have slain %s!"] = true,
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Mindslayer",
+
+    mc_cmd = "mc",
+    mc_name = "精神控制警报",
+    mc_desc = "精神控制出现时进行警告",
+
+    mindflay_cmd = "mindflay",
+    mindflay_name = "精神鞭笞警报",
+    mindflay_desc = "精神鞭笞出现时进行警告",
+
+    disorient_cmd = "disorient",
+    disorient_name = "法力燃烧&迷惑警报",
+    disorient_desc = "法力燃烧&迷惑出现时进行警告",
+
+
+    trigger_mcYou = "You are afflicted by Cause Insanity.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_mcOther = "(.+) is afflicted by Cause Insanity.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
+    trigger_mcFade = "Cause Insanity fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_mc = " 精神控制",
+    msg_mc = "精神控制在 ",
+
+    trigger_mindFlayYou = "You are afflicted by Mind Flay.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_mindFlayOther = "(.*) is afflicted by Mind Flay.", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
+    trigger_mindFlayFade = "Mind Flay fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_mindFlay = " 精神鞭笞",
+
+    trigger_disorient = "afflicted by Mana Burn.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_HOSTILEPLAYER_DAMAGE
+    bar_disorient = "法力燃烧&迷惑",
+    msg_disorientSoon = "其拉斩灵者血量 < 20% HP - 即将出现30码范围法力燃烧&迷惑！",
+
+    ["You have slain %s!"] = "你已经击败了%s！",
+    clickme = " >点击我！<",
+    you = "你",
+} end )
 local timer = {
 	mc = 9.5,
 	mindFlay = 8,

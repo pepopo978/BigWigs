@@ -75,6 +75,74 @@ L:RegisterTranslations("enUS", function()
 	}
 end)
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "NerubianOverseer",
+
+	shadowshock_cmd = "shadowshock",
+    shadowshock_name = "暗影震击警报",
+    shadowshock_desc = "暗影震击出现时进行警告",
+
+    venomspit_cmd = "venomspit",
+    venomspit_name = "毒液喷吐警报",
+    venomspit_desc = "毒液喷吐出现时进行警告",
+    
+    poisoncloud_cmd = "poisoncloud",
+    poisoncloud_name = "毒云警报",
+    poisoncloud_desc = "毒云出现时进行警告",
+    
+    corrosivepoison_cmd = "corrosivepoison",
+    corrosivepoison_name = "腐蚀毒药警报",
+    corrosivepoison_desc = "腐蚀毒药出现时进行警告",
+    
+    necroticpoison_cmd = "necroticpoison",
+    necroticpoison_name = "死灵之毒警报",
+    necroticpoison_desc = "死灵之毒出现时进行警告",
+    
+    webspray_cmd = "webspray",
+    webspray_name = "蛛网喷射警报",
+    webspray_desc = "蛛网喷射出现时进行警告",
+    
+    explode_cmd = "explode",
+    explode_name = "爆炸警报",
+    explode_desc = "爆炸出现时进行警告",
+	
+	
+		--750 shadow damage, 10sec CD
+	trigger_shadowShock = "Nerubian Overseer's Shadow Shock hits",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+    bar_shadowShock = "暗影震击",
+	
+		--poison dot, 30sec flat
+	trigger_venomSpit = "afflicted by Venom Spit",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    bar_venomSpit = "毒液喷吐",
+
+	trigger_poisonCloud = "You are afflicted by Poison Cloud.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_poisonCloudFade = "Poison Cloud fades from you.",--CHAT_MSG_SPELL_AURA_GONE_SELF
+
+		-- -5k armor, 700dmg/5sec 30sec, poison
+	trigger_corrosivePoison = "(.+) is afflicted by Corrosive Poison.",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+	trigger_corrosivePoisonYou = "You are afflicted by Corrosive Poison.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_corrosivePoisonFade = "Corrosive Poison fades from (.+).",--CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
+    bar_corrosivePoison = "腐蚀毒药",
+	
+		-- -90% healing, 30sec, happens on anyone, often, only warn if on tank
+	trigger_necroticPoison = "(.+) is afflicted by Necrotic Poison.",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+	trigger_necroticPoisonYou = "You are afflicted by Necrotic Poison.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_necroticPoisonFade = "Necrotic Poison fades from (.+).",--CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
+    bar_necroticPoison = "死灵之毒",
+	
+	trigger_webSpray = "(.+) is afflicted by Web Spray.",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+	trigger_webSprayYou = "You are afflicted by Web Spray.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    bar_webSprayCd = "下一次蛛网喷射",
+    bar_webSprayAfflic = "蛛网喷射",
+	
+	trigger_explode = "(.+) explodes.",--CHAT_MSG_RAID_BOSS_EMOTE
+	trigger_explodeYou = "You explode.",--CHAT_MSG_RAID_BOSS_EMOTE
+    msg_explode = " 爆炸了，诞生了4个小蛛魔！",
+    you = "you",
+} end )
 local timer = {
 	shadowShock = 10,
 	venomSpit = 30,

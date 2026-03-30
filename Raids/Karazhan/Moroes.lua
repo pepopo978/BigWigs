@@ -68,6 +68,67 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_yellSmt = "Most impressive, it would appear your skills do match your bravery.",-- CHAT_MSG_MONSTER_YELL
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Moroes",
+
+    smokebomb_cmd = "smokebomb",
+    smokebomb_name = "烟雾弹警报",
+    smokebomb_desc = "烟雾弹出现时进行警告",
+
+    reflect_cmd = "reflect",
+    reflect_name = "法术反射警报",
+    reflect_desc = "法术反射出现时进行警告",
+    
+    shufflekick_cmd = "shufflekick",
+    shufflekick_name = "乱踢警报",
+    shufflekick_desc = "乱踢出现时进行警告",
+    
+    curse_cmd = "curse",
+    curse_name = "诅咒警报",
+    curse_desc = "诅咒出现时进行警告",
+    
+    dust_cmd = "dust",
+    dust_name = "闪光尘警报",
+    dust_desc = "闪光尘出现时进行警告",
+    
+
+
+    trigger_p1 = "New guests? It has been a while since we have had those. I assume your arrival has taken -some- effort even if you were uninvited!",--CHAT_MSG_MONSTER_YELL
+    bar_p1 = "莫罗斯阶段1",
+    
+    trigger_p1End = "Now now, why don't we save such pleasantries for a more, entertaining show. Meet me at the stage, and we shall truly decide the outcome of our engagement.",--CHAT_MSG_MONSTER_YELL
+    trigger_p2 = "It is my duty to protect and watch over this tower, as approved by my master. I shall make sure to endulge in your little spectacle. Why don't we put on a show for those in attendance, hmm? Legalbrow, if you would please, play my theme.",--CHAT_MSG_MONSTER_YELL
+    bar_p2 = "莫罗斯阶段2",
+    
+    trigger_smokeBombYou = "You are afflicted by Smoke Bomb.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_smokeBombOther = "(.+) is afflicted by Smoke Bomb.",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+    trigger_smokeBombFade = "Smoke Bomb fades from (.+).",--CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
+    bar_smokeBomb = "玩家中了烟雾弹",
+    
+    trigger_reflect = "Moroes gains Reflection.",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    trigger_reflectFade = "Reflection fades from Moroes.",--CHAT_MSG_SPELL_AURA_GONE_OTHER
+    bar_reflect = "法术反射！",
+    msg_reflect = "法术反射！",
+    
+    trigger_shuffleKickYou = "You are afflicted by Shuffle Kick.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_shuffleKick = "(.+) is afflicted by Shuffle Kick.",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+    trigger_shuffleKickFade = "Shuffle Kick fades from (.+).",--CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
+    bar_shuffleKick = " 被踢",
+    
+    trigger_curse = "afflicted by Moroes Curse.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+    msg_curse = "莫罗斯的诅咒，快驱散！",
+    
+    trigger_dustYou = "You are afflicted by Glittering Dust.",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+    trigger_dust = "(.+) is afflicted by Glittering Dust.",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+    trigger_dustFade = "Glittering Dust fades from (.+).",--CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
+    bar_dust = " 中了闪光尘",
+    
+    trigger_yellSmt = "Most impressive, it would appear your skills do match your bravery.",-- CHAT_MSG_MONSTER_YELL
+    you = "you",
+} end )
 local timer = {
 	p1 = 7,
 	p2 = 12,

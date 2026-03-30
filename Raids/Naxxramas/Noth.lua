@@ -57,6 +57,60 @@ L:RegisterTranslations("enUS", function() return {
 	bar_teleport = "Teleport",	
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "Noth",
+
+    blink_cmd = "blink",
+    blink_name = "闪现警报",
+    blink_desc = "闪现时进行警告",
+
+    teleport_cmd = "teleport",
+    teleport_name = "传送警报",
+    teleport_desc = "传送时进行警告",
+
+    curse_cmd = "curse",
+    curse_name = "诅咒警报",
+    curse_desc = "诅咒时进行警告",
+    
+    cripple_cmd = "cripple",
+    cripple_name = "残废术警报",
+    cripple_desc = "残废术生效时进行警告",
+    
+    wave_cmd = "wave",
+    wave_name = "小怪警报",
+    wave_desc = "小怪来袭时进行警告",
+
+	trigger_start1 = "Die, trespasser!",
+	trigger_start2 = "Glory to the master!",
+	trigger_start3 = "Your life is forfeit!",
+	
+	trigger_curse1 = "受到了瘟疫使者的诅咒效果的影响。",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_curse2 = "瘟疫使者的诅咒效果从你身上消失了。",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+    msg_curse = "诅咒！",
+    bar_curse = "诅咒冷却",
+	
+	trigger_cripple1 = "受到了残废术效果的影响。",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_cripple2 = "残废术效果从你身上消失了。",--CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+    msg_cripple = "残废术！",
+    bar_cripple = "残废术冷却",
+	
+	trigger_blink = "瘟疫者诺斯获得了闪现术的效果。",--CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+    msg_blink = "闪现！",
+    bar_blink = "闪现冷却",
+	
+	trigger_add = "起来吧，我的士兵们！奋起再战！",
+    bar_roomWave = "3个被感染的战士",
+	
+    bar_wave1 = "第1波",
+    bar_wave2 = "第2波",
+	
+    msg_tpToBalcony = "传送！他在阳台上！",
+    msg_tpToRoom = "回到房间中！",
+    bar_teleport = "传送",
+} end )
 local timer = {
 	firstCurse = {8,12},
 	curseAfterTeleport = {2,10},

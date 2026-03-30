@@ -29,6 +29,27 @@ module.defaultDB = {
 	bosskill = nil,
 }
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+    cmd = "BatRider",
+
+    bars_cmd = "bars",
+    bars_name = "显示计时条开关",
+    bars_desc = "切换是否显示计时条。",
+
+    bigicon_cmd = "bigicon",
+    bigicon_name = "大图标警告",
+    bigicon_desc = "爆炸时的大图标警告",
+
+    explodingTrigger = "Gurubashi Bat Rider gets a crazed look in his eye.",
+    explodingTrigger2 = "Gurubashi Bat Rider becomes fully engulfed in flames.",
+    explodingBar = "即将爆炸",
+    explodingMsg = "即将爆炸！",
+
+    ["You have slain %s!"] = "你已经击败了%s！",
+} end )
 local timer = {
 	exploding = 3,
 }

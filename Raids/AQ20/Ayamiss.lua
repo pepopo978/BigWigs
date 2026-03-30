@@ -31,6 +31,34 @@ L:RegisterTranslations("enUS", function() return {
 	larvaname = "Hive'Zara Larva",	
 } end )
 
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Ayamiss",
+
+	sacrifice_cmd = "sacrifice",
+	sacrifice_name = "祭品警报",
+	sacrifice_desc = "被作为祭品时进行警告",
+	
+	bigicon_cmd = "bigicons",
+	bigicon_name = "击杀幼虫时显示图标警报",
+	bigicon_desc = "当幼虫产生时显示大图标警告",
+	
+	
+	sacrificeother_trigger = "(.*) is afflicted by Paralyze.",
+	sacrificeyou_trigger = "(.*) are afflicted by Paralyze.",
+	sacrificeend_trigger = "Paralyze fades from",
+	
+	larva_bar = "幼虫 >点我!<",
+	nextlarva_bar = "幼虫/牺牲冷却",
+	
+	msg_sacrifice = " 牺牲，击杀幼虫!",
+	
+	p2_msg = "第二阶段",
+
+	larvaname = "札拉幼虫",	
+} end )
 local timer = {
 	sacrifice = 10,
 	larvacd = 14,

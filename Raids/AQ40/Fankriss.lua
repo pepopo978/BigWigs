@@ -27,7 +27,29 @@ L:RegisterTranslations("enUS", function() return {
 	bar_wound = " Wounds",
 } end )
 
-
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Fankriss",
+	
+	wound_cmd = "wound",
+    wound_name = "重伤堆叠5层警报",
+    wound_desc = "当重伤达到5层时进行警报",
+    
+    entangle_cmd = "entangle",
+    entangle_name = "纠缠警报",
+    entangle_desc = "纠缠出现时进行警告",
+	
+	
+	trigger_entangleYou = "你受到了纠缠效果的影响。",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_entangleOther = "(.+)受到了纠缠效果的影响。",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+	trigger_entangleFade = "纠缠效果从(.+)身上消失了。",--CHAT_MSG_SPELL_AURA_GONE_OTHER // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_SELF
+    bar_entangle = " 纠缠持续",
+	
+	trigger_woundYou = "你受到了重伤效果的影响%（(.+)%）。",--CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_woundOther = "(.+)受到了重伤效果的影响%（(.+)%）。",--CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE
+    bar_wound = " 重伤持续",
+} end )
 local timer = {
 	entangle = 8,
 	wound = 15,

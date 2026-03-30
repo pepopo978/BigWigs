@@ -79,6 +79,29 @@ L:RegisterTranslations("deDE", function()
 	}
 end)
 
+L:RegisterTranslations("zhCN", function()
+	return {
+		["|cff00ff00Module running|r"] = "|cff00ff00模块运行中|r",
+		["|cffeda55fClick|r to reset all running modules. |cffeda55fCtrl+Click|r to force reboot for everyone (Requires assistant or higher). |cffeda55fAlt+Click|r to disable them. |cffeda55fCtrl+Alt+Click|r to disable Big Wigs completely."] = "|cffeda55f点击|r重置所有运行中的模块。|cffeda55fCtrl+点击|r为全团强制重启（需要助理或更高权限）。|cffeda55fAlt+点击|r禁用这些模块。|cffeda55fCtrl+Alt+点击|r完全禁用 Big Wigs。",
+		["|cffeda55fClick|r to enable."] = "|cffeda55f点击|r启用。",
+		["Big Wigs is currently disabled."] = "Big Wigs 当前已禁用。",
+		["Active boss modules"] = "当前启用的 Boss 模块",
+		["hidden"] = "隐藏",
+		["shown"] = "显示",
+		["minimap"] = "minimap",
+		["Minimap"] = "小地图按钮",
+		["Toggle the minimap button."] = "切换小地图按钮显示。",
+		["All running modules have been reset."] = "所有运行中的模块已重置。",
+		["All running modules have been rebooted for all raid members."] = "已为所有团队成员重启所有运行中的模块。",
+		["All running modules have been disabled."] = "所有运行中的模块已禁用。",
+		["%s reset."] = "%s 已重置。",
+		["%s disabled."] = "%s 已禁用。",
+		["%s icon is now %s."] = "%s 图标现在为 %s。",
+		["Show it again with /bw plugin minimap."] = "使用 `/bw plugin minimap` 再次显示。",
+		["You need to be an assistant or raid leader to use this function."] = "你需要是助理或团长才能使用此功能。",
+	}
+end)
+
 ----------------------------------
 --      Module Declaration      --
 ----------------------------------
@@ -232,4 +255,3 @@ function BigWigsOptions:OnClick()
 
 	self:UpdateTooltip()
 end
-
