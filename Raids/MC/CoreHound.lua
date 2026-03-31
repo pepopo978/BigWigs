@@ -36,19 +36,24 @@ L:RegisterTranslations("enUS", function() return {
 L:RegisterTranslations("zhCN", function() return {
 	-- Wind汉化修复Turtle-WOW中文数据
 	-- Last update: 2024-06-22
-    cmd = "CoreHound",
+	cmd = "CoreHound",
 
 	respawn_cmd = "respawn",
-    respawn_name = "重生警报",
-    respawn_desc = "重生出现时进行警告",
+	respawn_name = "重生警报",
+	respawn_desc = "重生出现时进行警告",
+
+	despawn_cmd = "despawn",
+	despawn_name = "消失计时",
+	despawn_desc = "尸体消失倒计时",
 	
 	
 	trigger_smolder = "熔火恶犬.*开始.*smolder",
-    bar_respawn = "重生",
-    msg_respawn = "在10秒内杀死所有熔火恶犬",
+	bar_respawn = "重生",
+	msg_respawn = "在10秒内杀死所有熔火恶犬",
+	bar_despawn = "消失",
+	msg_despawn = "熔火恶犬已消失",
 
-    ["You have slain %s!"] = true,
-    ["You have slain %s!"] = "你击杀了 %s！",
+	["You have slain %s!"] = "你击杀了 %s！",
 } end )
 
 local timer = {
