@@ -1,5 +1,6 @@
 
 local module, L = BigWigs:ModuleDeclaration("Flamegor", "Blackwing Lair")
+local BC = AceLibrary("Babble-Class-2.2")
 
 module.revision = 30085
 module.enabletrigger = module.translatedName
@@ -37,6 +38,42 @@ L:RegisterTranslations("enUS", function() return {
 	bar_frenzyCd = "Frenzy CD",
 	bar_frenzyDur = "Frenzy!",
 	msg_frenzy = "Frenzy - Tranq now!",
+} end)
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Flamegor",
+
+	wingbuffet_cmd = "wingbuffet",
+	wingbuffet_name = "龙翼打击警报",
+	wingbuffet_desc = "龙翼打击出现时进行警告",
+
+	shadowflame_cmd = "shadowflame",
+	shadowflame_name = "暗影烈焰警报",
+	shadowflame_desc = "暗影烈焰出现时进行警告",
+
+	frenzy_cmd = "frenzy",
+	frenzy_name = "狂暴警报",
+	frenzy_desc = "狂暴出现时进行警告",
+	
+	
+	trigger_wingBuffet = "弗莱格尔开始施放龙翼打击。", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_wingBuffetCast = "正在施放龙翼打击！",
+	bar_wingBuffetCd = "龙翼打击冷却",
+	msg_wingBuffetCast = "正在施放龙翼打击！",
+	msg_wingBuffetSoon = "2秒后龙翼打击 - 现在嘲讽！",
+
+	trigger_shadowFlame = "弗莱格尔开始施放暗影烈焰。", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_shadowFlameCast = "正在施放暗影烈焰！",
+	bar_shadowFlameCd = "暗影烈焰冷却",
+	msg_shadowFlameCast = "正在施放暗影烈焰！",
+
+	trigger_frenzy = "弗莱格尔获得了疯狂的效果。", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	trigger_frenzyFade = "疯狂效果从弗莱格尔身上消失。", --CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_frenzyCd = "狂暴冷却",
+	bar_frenzyDur = "狂暴！",
+	msg_frenzy = "狂暴 - 立即宁神！",
 } end)
 
 local timer = {
@@ -169,7 +206,7 @@ end
 function module:Frenzy()
 	self:RemoveBar(L["bar_frenzyCd"])
 	
-	if UnitClass("Player") == "Hunter" then
+	if UnitClass("Player") == BC["Hunter"] then
 		self:Message(L["msg_frenzy"], "Urgent", false, nil, false)
 		self:Sound("Info")
 		self:WarningSign(icon.tranquil, 1)

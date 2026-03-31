@@ -38,6 +38,45 @@ L:RegisterTranslations("enUS", function() return {
 	msg_shadowOfEbonroc = " has Shadow of Ebonroc - Taunt!",
 	bar_shadowOfEbonrocDur = " Shadow of Ebonroc",
 	bar_shadowOfEbonrocCd = "Shadow of Ebonroc CD",
+	you = "you",
+	} end)
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Ebonroc",
+
+	wingbuffet_cmd = "wingbuffet",
+	wingbuffet_name = "龙翼打击警报",
+	wingbuffet_desc = "龙翼打击出现时进行警告",
+
+	shadowflame_cmd = "shadowflame",
+	shadowflame_name = "暗影烈焰警报",
+	shadowflame_desc = "暗影烈焰出现时进行警告",
+
+	curse_cmd = "curse",
+	curse_name = "埃博诺克之影警报",
+	curse_desc = "埃博诺克之影出现时进行警告",
+
+
+	trigger_wingBuffet = "埃博诺克开始施放龙翼打击。", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_wingBuffetCast = "正在施放龙翼打击！",
+	bar_wingBuffetCd = "龙翼打击冷却",
+	msg_wingBuffetCast = "正在施放龙翼打击！",
+	msg_wingBuffetSoon = "2秒后龙翼打击 - 现在嘲讽！",
+
+	trigger_shadowFlame = "埃博诺克开始施放暗影烈焰。", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_shadowFlameCast = "正在施放暗影烈焰！",
+	bar_shadowFlameCd = "暗影烈焰冷却",
+	msg_shadowFlameCast = "正在施放暗影烈焰！",
+
+	trigger_shadowOfEbonrocYou = "你受到了埃博诺克之影效果的影响。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_shadowOfEbonrocOther = "(.+)受到了埃博诺克之影效果的影响。", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_shadowOfEbonrocFade = "埃博诺克之影效果从(.+)身上消失了。", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	msg_shadowOfEbonroc = " 受到了埃博诺克之影 - 嘲讽！",
+	bar_shadowOfEbonrocDur = " 埃博诺克之影",
+	bar_shadowOfEbonrocCd = "埃博诺克之影冷却",
+	you = "你",
 } end)
 
 local timer = {
@@ -132,7 +171,7 @@ function module:Event(msg)
 		
 	elseif string.find(msg, L["trigger_shadowOfEbonrocFade"]) then
 		local _,_,shadowOfEbonrocFadePlayer,_ = string.find(msg, L["trigger_shadowOfEbonrocFade"])
-		if shadowOfEbonrocFadePlayer == "you" then shadowOfEbonrocFadePlayer = UnitName("Player") end
+		if shadowOfEbonrocFadePlayer == L["you"] then shadowOfEbonrocFadePlayer = UnitName("Player") end
 		self:Sync(syncName.shadowOfEbonrocFade .. " " .. shadowOfEbonrocFadePlayer)
 	end
 end

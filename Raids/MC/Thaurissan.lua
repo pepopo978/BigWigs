@@ -44,6 +44,42 @@ L:RegisterTranslations("enUS", function() return {
 	warn_combustion = "GET_IN",
 } end)
 
+L:RegisterTranslations("zhCN", function() return {
+	cmd = "Thaurissan",
+
+	runetimers_cmd = "runetimers",
+	runetimers_name = "符文计时",
+	runetimers_desc = "提示即将到来的和正在生效的爆炸符文与燃烧符文",
+
+	runeofdetonation_cmd = "runeofdetonation",
+	runeofdetonation_name = "爆炸符文警报",
+	runeofdetonation_desc = "当你同时拥有爆炸符文和力量符文时给出个人警报",
+
+	runeofcombustion_cmd = "runeofcombustion",
+	runeofcombustion_name = "燃烧符文警报",
+	runeofcombustion_desc = "当你拥有燃烧符文且没有力量符文时给出个人警报",
+
+	trigger_detonation = "受到了爆炸符文效果的影响",
+	trigger_combustion = "受到了燃烧符文效果的影响",
+	trigger_you = "你受到了",
+	trigger_runeOfDetonationFade = "爆炸符文效果从你身上消失了",
+	trigger_runeOfCombustionFade = "燃烧符文效果从你身上消失了",
+
+	trigger_runeOfPowerYou = "你受到了力量符文效果的影响",
+	trigger_runeOfPowerFade = "力量符文效果从你身上消失了",
+
+	msg_detonation = "离开符文圈 - 爆炸符文",
+	msg_combustion = "留在符文圈内 - 燃烧符文",
+	msg_combustion_out_of_zone = "快回到符文圈里！",
+	msg_detonation_in_zone = "快离开符文圈！",
+	bar_runeDetonation = "爆炸符文（出去）",
+	bar_runeCombustion = "燃烧符文（进来）",
+	bar_detonationNext = "下一个爆炸符文",
+	bar_combustionNext = "下一个燃烧符文",
+	warn_detonation = "出去",
+	warn_combustion = "进来",
+} end)
+
 local hasRuneOfDetonation = false
 local hasRuneOfPower = false
 local hasRuneOfCombustion = false

@@ -1,5 +1,6 @@
 
 local module, L = BigWigs:ModuleDeclaration("Garr", "Molten Core")
+local BC = AceLibrary("Babble-Class-2.2")
 
 module.revision = 30078
 module.enabletrigger = module.translatedName
@@ -38,6 +39,48 @@ L:RegisterTranslations("enUS", function() return {
 		--instead only showing the message once to remind dispels on Garr
 	trigger_immolate = "Fire damage from Firesworn's Immolate.", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
 	msg_immolate = "Immolate - Dispel!",
+	c_firesworn = "Firesworn",
+	c_garr = "Garr",
+	s_immolate = "Immolate",
+} end)
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Garr",
+	
+	pulse_cmd = "pulse",
+	pulse_name = "反魔法脉冲警报",
+	pulse_desc = "反魔法脉冲出现时进行警告",
+
+	remove_cmd = "remove",
+	remove_name = "增益移除警报",
+	remove_desc = "增益移除时进行警告",
+
+	adds_cmd = "adds",
+	adds_name = "小怪死亡警报",
+	adds_desc = "小怪死亡时进行警告",
+
+	immolate_cmd = "immolate",
+	immolate_name = "献祭警报",
+	immolate_desc = "献祭出现时进行警告",
+	
+	
+	trigger_antimagicPulse = "加尔对你使用反魔法脉冲。", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_antimagicPulse = "反魔法脉冲",
+
+	trigger_remove = "你的(.+)被移除了。", --CHAT_MSG_SPELL_BREAK_AURA
+	msg_remove = "反魔法脉冲移除了你的",
+
+	msg_addDead = "/8 火誓者死亡",
+	
+	--not tracking the afflicted since many mobs do immolate, may cause conflict
+		--instead only showing the message once to remind dispels on Garr
+	trigger_immolate = "点火焰伤害（火誓者的献祭）。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	msg_immolate = "献祭 - 驱散！",
+	c_firesworn = "火誓者",
+	c_garr = "加尔",
+	s_immolate = "献祭",
 } end)
 
 local timer = {
@@ -102,12 +145,12 @@ end
 function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
 	BigWigs:CheckForBossDeath(msg, self)
 
-	if (msg == string.format(UNITDIESOTHER, "Firesworn")) then
+	if (msg == string.format(UNITDIESOTHER, L["c_firesworn"])) then
 		addDead = addDead + 1
 		if addDead <= 8 then
 			self:Sync(syncName.addDead .. " " .. addDead)
 		end
-	elseif (msg == string.format(UNITDIESOTHER, "Garr")) then
+	elseif (msg == string.format(UNITDIESOTHER, L["c_garr"])) then
 		fightningGarr = false
 	end
 end
@@ -118,7 +161,7 @@ function module:Event(msg)
 	
 	elseif string.find(msg, L["trigger_remove"]) and fightningGarr == true and self.db.profile.remove then
 		local _,_, removedBuff, _ = string.find(msg, L["trigger_remove"])
-		if removedBuff ~= "Immolate" then
+		if removedBuff ~= L["s_immolate"] then
 			self:Remove(removedBuff)
 		end
 		
@@ -153,7 +196,7 @@ function module:AddDead(rest)
 end
 
 function module:Immolate()
-	if UnitClass("Player") == "Priest" or UnitClass("Player") == "Paladin" then
+	if UnitClass("Player") == BC["Priest"] or UnitClass("Player") == BC["Paladin"] then
 		self:Message(L["msg_immolate"], "Urgent", false, nil, false)
 		self:WarningSign(icon.immolate, 1)
 	end

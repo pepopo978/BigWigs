@@ -1,4 +1,5 @@
 local module, L = BigWigs:ModuleDeclaration("Majordomo Executus", "Molten Core")
+local BC = AceLibrary("Babble-Class-2.2")
 
 module.revision = 30075
 module.enabletrigger = module.translatedName
@@ -47,8 +48,56 @@ L:RegisterTranslations("enUS", function()
 		msg_healerDead = "/4 Flamewaker Healer Dead",
 
 		trigger_firePitYou = "You suffer (.+) points of fire damage.", --CHAT_MSG_COMBAT_SELF_HITS
+		c_flamewakerelite = "Flamewaker Elite",
+		c_flamewakerhealer = "Flamewaker Healer",
 	}
 end)
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Majordomo",
+
+	magicreflect_cmd = "magicreflect",
+	magicreflect_name = "魔法反射警报",
+	magicreflect_desc = "魔法反射出现时进行警告",
+
+	physicalreflect_cmd = "physicalreflect",
+	physicalreflect_name = "物理反射警报",
+	physicalreflect_desc = "物理反射出现时进行警告",
+	
+	adds_cmd = "adds",
+	adds_name = "小怪死亡警报",
+	adds_desc = "小怪死亡时进行警告",
+	
+	firepit_cmd = "firepit",
+	firepit_name = "火焰喷射伤害警报",
+	firepit_desc = "火焰喷射伤害出现时进行警告",
+	
+	
+	trigger_engage = "狂妄的凡人，没有人可以挑战生命之焰的儿子！", --CHAT_MSG_MONSTER_YELL
+	
+	--is MUCH longer than that
+	trigger_bossDeath = "不可能！住手吧，凡人们......我投降！我投降！", --CHAT_MSG_MONSTER_YELL
+	
+	bar_reflectCd = "反射冷却",
+	
+	trigger_magicReflect = "获得了魔法反射的效果", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS"
+	trigger_magicReflectFade = "魔法反射效果从", --CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_magicReflect = "魔法反射",
+	msg_magicReflect = "魔法反射 - 停止施法！",
+	
+	trigger_physicalReflect = "获得了伤害反射护盾的效果", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	trigger_physicalReflectFade = "伤害反射护盾效果从", --CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_physicalReflect = "物理反射",
+	msg_physicalReflect = "物理反射 - 停止攻击！",
+	
+	msg_eliteDead = "/4 烈焰行者精英死亡",
+	msg_healerDead = "/4 烈焰行者医师死亡",
+	
+	trigger_firePitYou = "你受到了(.+)点火焰伤害。", --CHAT_MSG_COMBAT_SELF_HITS
+	c_flamewakerelite = "烈焰行者精英",
+	c_flamewakerhealer = "烈焰行者医师",
+} end)
 
 local timer = {
 	reflectFirstCd = 30, --saw 29.816
@@ -123,13 +172,13 @@ end
 function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
 	BigWigs:CheckForBossDeath(msg, self)
 
-	if (msg == string.format(UNITDIESOTHER, "Flamewaker Elite")) then
+	if (msg == string.format(UNITDIESOTHER, L["c_flamewakerelite"])) then
 		eliteDead = eliteDead + 1
 		if eliteDead <= 4 then
 			self:Sync(syncName.eliteDead .. " " .. eliteDead)
 		end
 
-	elseif (msg == string.format(UNITDIESOTHER, "Flamewaker Healer")) then
+	elseif (msg == string.format(UNITDIESOTHER, L["c_flamewakerhealer"])) then
 		healerDead = healerDead + 1
 		if healerDead <= 4 then
 			self:Sync(syncName.healerDead .. " " .. healerDead)
@@ -184,7 +233,7 @@ function module:MagicReflect()
 
 	self:Bar(L["bar_magicReflect"], timer.reflectDur, icon.magicReflect, true, color.magicReflect)
 
-	if not (UnitClass("Player") == "Warrior" or UnitClass("Player") == "Rogue" or UnitClass("Player") == "Hunter") then
+	if not (UnitClass("Player") == BC["Warrior"] or UnitClass("Player") == BC["Rogue"] or UnitClass("Player") == BC["Hunter"]) then
 		self:Message(L["msg_magicReflect"], "Attention", false, nil, false)
 		self:Sound("Beware")
 		self:WarningSign(icon.magicReflect, 1)
@@ -201,7 +250,7 @@ function module:PhysicalReflect()
 
 	self:Bar(L["bar_physicalReflect"], timer.reflectDur, icon.physicalReflect, true, color.physicalReflect)
 
-	if not (UnitClass("Player") == "Priest" or UnitClass("Player") == "Mage" or UnitClass("Player") == "Warlock") then
+	if not (UnitClass("Player") == BC["Priest"] or UnitClass("Player") == BC["Mage"] or UnitClass("Player") == BC["Warlock"]) then
 		self:Message(L["msg_physicalReflect"], "Attention", false, nil, false)
 		self:Sound("Beware")
 		self:WarningSign(icon.physicalReflect, 1)

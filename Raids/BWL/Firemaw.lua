@@ -1,5 +1,6 @@
 
 local module, L = BigWigs:ModuleDeclaration("Firemaw", "Blackwing Lair")
+local bbfiremaw = AceLibrary("Babble-Boss-2.2")["Firemaw"]
 
 module.revision = 30085
 module.enabletrigger = module.translatedName
@@ -47,6 +48,52 @@ L:RegisterTranslations("enUS", function() return {
 	
 	trigger_flameBuffetYou = "You are afflicted by Flame Buffet %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 	msg_flameBuffetYou = " Flame Buffet Stacks - Consider losing your stacks",
+} end)
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Firemaw",
+
+	wingbuffet_cmd = "wingbuffet",
+	wingbuffet_name = "龙翼打击警报",
+	wingbuffet_desc = "龙翼打击出现时进行警告",
+
+	shadowflame_cmd = "shadowflame",
+	shadowflame_name = "暗影烈焰警报",
+	shadowflame_desc = "暗影烈焰出现时进行警告",
+
+	flamebuffet_cmd = "flamebuffet",
+	flamebuffet_name = "烈焰打击警报",
+	flamebuffet_desc = "烈焰打击出现时进行警告",
+
+	stacks_cmd = "stacks",
+	stacks_name = "烈焰打击层数过高警报",
+	stacks_desc = "烈焰打击层数过高时进行警告",
+
+
+	trigger_wingBuffet = "费尔默开始施放龙翼打击。", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_wingBuffetCast = "正在施放龙翼打击！",
+	bar_wingBuffetCd = "龙翼打击冷却",
+	msg_wingBuffetCast = "正在施放龙翼打击！",
+	msg_wingBuffetSoon = "2秒后龙翼打击 - 现在嘲讽！",
+
+	trigger_shadowFlame = "费尔默开始施放暗影烈焰。", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_shadowFlameCast = "正在施放暗影烈焰！",
+	bar_shadowFlameCd = "暗影烈焰冷却",
+	msg_shadowFlameCast = "正在施放暗影烈焰！",
+	
+	trigger_flameBuffet = "费尔默的烈焰打击", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+		--Firemaw's Flame Buffet fails. (.+) is immune.
+		--Firemaw's Flame Buffet was resisted by (.+).
+		--Firemaw's Flame Buffet was resisted.
+		--Firemaw's Flame Buffet hits (.+) for (.+) Fire damage.
+		--Firemaw's Flame Buffet is absorbed by (.+).
+		--You absorb Firemaw's Flame Buffet.
+	bar_flameBuffet = "烈焰打击",
+
+	trigger_flameBuffetYou = "你受到了烈焰打击效果的影响%（(.+)%）。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	msg_flameBuffetYou = " 烈焰打击层数 - 考虑清除你的层数",
 } end)
 
 local timer = {
@@ -173,7 +220,7 @@ end
 
 function module:FlameBuffetStacks(stacksNum)
 	--don't bother if you are tanking
-	if UnitName("Target") == "Firemaw" and UnitName("TargetTarget") == UnitName("Player") then return end
+	if UnitName("Target") == bbfiremaw and UnitName("TargetTarget") == UnitName("Player") then return end
 	
 	self:Message(stacksNum..L["msg_flameBuffetYou"], "Personal", false, nil, false)
 	self:WarningSign(icon.flameBuffet, 0.7)

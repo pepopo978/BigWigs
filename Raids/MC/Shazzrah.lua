@@ -1,5 +1,6 @@
 
 local module, L = BigWigs:ModuleDeclaration("Shazzrah", "Molten Core")
+local BC = AceLibrary("Babble-Class-2.2")
 
 module.revision = 30075
 module.enabletrigger = module.translatedName
@@ -48,6 +49,55 @@ L:RegisterTranslations("enUS", function() return {
 	bar_blinkCd = "Blink CD",
 	bar_blinkSoon = "Blink Soon...",
 	msg_blink = "Blink - Aggro Drop!",
+	c_shazzrah = "Shazzrah",
+} end)
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Shazzrah",
+
+	counterspell_cmd = "counterspell",
+	counterspell_name = "法术反制警报",
+	counterspell_desc = "法术反制出现时进行警告",
+
+	curse_cmd = "curse",
+	curse_name = "沙斯拉尔的诅咒警报",
+	curse_desc = "沙斯拉尔的诅咒出现时进行警告",
+
+	deaden_cmd = "deaden",
+	deaden_name = "衰减魔法警报",
+	deaden_desc = "衰减魔法出现时进行警告",
+
+	blink_cmd = "blink",
+	blink_name = "闪现警报",
+	blink_desc = "闪现出现时进行警告",
+	
+	
+	trigger_counterspell = "沙斯拉尔打断了", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	trigger_counterspell2 = "沙斯拉尔的法术反制被(.+)抵抗了。", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_counterspellCd = "法术反制冷却",
+	bar_counterspellSoon = "即将法术反制...",
+	msg_counterspellSoon = "即将法术反制 - 停止施法！",
+	msg_counterspell = "法术反制完毕 - 开始施法！",
+	
+	trigger_curse = "受到了沙斯拉尔的诅咒效果的影响。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_curse2 = "沙斯拉尔的诅咒被(.+)抵抗了。", --CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_curseCd = "沙斯拉尔的诅咒冷却",
+	msg_curse = "沙斯拉尔的诅咒 - 解除诅咒！",
+	
+	trigger_deaden = "沙斯拉尔获得了衰减魔法的效果。", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	trigger_deadenFade = "衰减魔法效果从沙斯拉尔身上消失。", --CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_deadenCd = "衰减魔法冷却",
+	bar_deadenDur = "衰减魔法已开启！",
+	msg_deaden = "衰减魔法 - 驱散它！",
+	
+	--there is no trigger blink
+		--instead, checking for target change, if found, expecting a blink to have happenned
+	bar_blinkCd = "闪现冷却",
+	bar_blinkSoon = "即将闪现...",
+	msg_blink = "闪现 - 仇恨重置！",
+	c_shazzrah = "沙斯拉尔",
 } end)
 
 local timer = {
@@ -136,7 +186,7 @@ function module:OnEngage()
 	if self.db.profile.counterspell then
 		self:Bar(L["bar_counterspellCd"], timer.counterspellFirstCd, icon.counterspell, true, color.counterspellCd)
 		
-		if not (UnitClass("Player") == "Warrior" or UnitClass("Player") == "Rogue" or UnitClass("Player") == "Hunter") then
+		if not (UnitClass("Player") == BC["Warrior"] or UnitClass("Player") == BC["Rogue"] or UnitClass("Player") == BC["Hunter"]) then
 			self:DelayedBar(timer.counterspellFirstCd, L["bar_counterspellSoon"], timer.counterspellSoon, icon.counterspell, true, color.counterspellSoon)
 			self:DelayedWarningSign(timer.counterspellFirstCd - 1, icon.counterspell, timer.counterspellSoon + 1)
 			self:DelayedMessage(timer.counterspellFirstCd - 1, L["msg_counterspellSoon"], "Attention", false, nil, false)
@@ -212,7 +262,7 @@ function module:Counterspell()
 	
 	self:Bar(L["bar_counterspellCd"], timer.counterspellCd, icon.counterspell, true, color.counterspellCd)
 	
-	if not (UnitClass("Player") == "Warrior" or UnitClass("Player") == "Rogue" or UnitClass("Player") == "Hunter") then
+	if not (UnitClass("Player") == BC["Warrior"] or UnitClass("Player") == BC["Rogue"] or UnitClass("Player") == BC["Hunter"]) then
 		self:Message(L["msg_counterspell"], "Positive", false, nil, false)
 		self:Sound("BikeHorn")
 		
@@ -226,7 +276,7 @@ end
 function module:Curse()
 	self:Bar(L["bar_curseCd"], timer.curseCd, icon.curse, true, color.curseCd)
 	
-	if UnitClass("Player") == "Mage" or UnitClass("Player") == "Druid" then
+	if UnitClass("Player") == BC["Mage"] or UnitClass("Player") == BC["Druid"] then
 		self:Message(L["msg_curse"], "Important", false, nil, false)
 		self:Sound("Info")
 		self:WarningSign(icon.curse, 0.7)
@@ -236,7 +286,7 @@ end
 function module:Deaden()
 	self:RemoveBar(L["bar_deadenCd"])
 	
-	if UnitClass("Player") == "Shaman" or UnitClass("Player") == "Priest" then
+	if UnitClass("Player") == BC["Shaman"] or UnitClass("Player") == BC["Priest"] then
 		self:Message(L["msg_deaden"], "Urgent", false, nil, false)
 		self:Sound("Info")
 		self:WarningSign(icon.deaden, timer.deadenDur)
@@ -263,13 +313,13 @@ end
 function module:CheckBlink()
 	--define current shazzTarget first
 	if shazzTarget == nil then
-		if UnitName("Target") == "Shazzrah" then
+		if UnitName("Target") == L["c_shazzrah"] then
 			if UnitName("TargetTarget") ~= nil then
 				shazzTarget = UnitName("TargetTarget")
 			end
 		else 
 			for i=1,GetNumRaidMembers() do
-				if UnitName("raid"..i.."Target") == "Shazzrah" then
+				if UnitName("raid"..i.."Target") == L["c_shazzrah"] then
 					if UnitName("TargetTarget") ~= nil then
 						shazzTarget = UnitName("TargetTarget")
 						break
@@ -280,13 +330,13 @@ function module:CheckBlink()
 	
 	--then check for target change, if changed, guessing it's a blink
 	else
-		if UnitName("Target") == "Shazzrah" and UnitName("TargetTarget") ~= nil then
+		if UnitName("Target") == L["c_shazzrah"] and UnitName("TargetTarget") ~= nil then
 			if shazzTarget ~= UnitName("TargetTarget") then
 				self:Sync(syncName.blink)
 			end
 		else 
 			for i=1,GetNumRaidMembers() do
-				if UnitName("raid"..i.."Target") == "Shazzrah" and UnitName("raid"..i.."TargetTarget") ~= nil then
+				if UnitName("raid"..i.."Target") == L["c_shazzrah"] and UnitName("raid"..i.."TargetTarget") ~= nil then
 					if shazzTarget ~= UnitName("raid"..i.."TargetTarget") then
 						self:Sync(syncName.blink)
 						break

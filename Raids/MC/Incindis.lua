@@ -20,6 +20,18 @@ L:RegisterTranslations("enUS", function() return {
 	msg_fireNova = "FIRE NOVA - RUN AWAY!",
 } end)
 
+L:RegisterTranslations("zhCN", function() return {
+	cmd = "Incindis",
+
+	firenova_cmd = "firenova",
+	firenova_name = "火焰新星警报",
+	firenova_desc = "震颤践踏后提示即将到来的火焰新星",
+
+	trigger_quakingStomp = "因辛迪欧斯的震颤践踏击中(.+)造成",
+	bar_fireNova = "火焰新星！",
+	msg_fireNova = "火焰新星 - 赶快跑开！",
+} end)
+
 local timer = {
 	fireNova = 5.5,
 }

@@ -1,5 +1,6 @@
 
 local module, L = BigWigs:ModuleDeclaration("Golemagg the Incinerator", "Molten Core")
+local BC = AceLibrary("Babble-Class-2.2")
 
 module.revision = 30075
 module.enabletrigger = module.translatedName
@@ -31,6 +32,35 @@ L:RegisterTranslations("enUS", function() return {
 	
 	trigger_magmaSplash = "You are afflicted by Magma Splash %((.+)%).", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
 	msg_magmaSplash = "Warning - High Magma Splash Stacks: ",
+} end)
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Golemagg",
+
+	enrage_cmd = "enrage",
+	enrage_name = "激怒警报",
+	enrage_desc = "激怒出现时进行警告",
+
+	earthquake_cmd = "earthquake",
+	earthquake_name = "地震术警报",
+	earthquake_desc = "地震术出现时进行警告",
+
+	magma_cmd = "magma",
+	magma_name = "熔岩喷溅警报",
+	magma_desc = "熔岩喷溅出现时进行警告",
+	
+	
+	trigger_enrage = "焚化者古雷曼格获得了激怒的效果。", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	msg_enrage = "焚化者古雷曼格激怒了 - 正在施放地震术！",
+	msg_enrageSoon = "即将激怒（在10%时） - 即将地震",
+	
+	trigger_earthquake = "焚化者古雷曼格的地震术", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_earthquake = "地震术",
+	
+	trigger_magmaSplash = "你受到了熔岩喷溅效果的影响%（(.+)%）。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	msg_magmaSplash = "警告 - 熔岩喷溅层数过高：",
 } end)
 
 local timer = {
@@ -127,7 +157,7 @@ end
 function module:EnrageSoon()
 	enrageSoon = true
 	
-	if UnitClass("Player") == "Warrior" or UnitClass("Player") == "Rogue" or UnitClass("Player") == "Paladin" or UnitClass("Player") == "Shaman" or UnitClass("Player") == "Druid" then
+	if UnitClass("Player") == BC["Warrior"] or UnitClass("Player") == BC["Rogue"] or UnitClass("Player") == BC["Paladin"] or UnitClass("Player") == BC["Shaman"] or UnitClass("Player") == BC["Druid"] then
 		self:Message(L["msg_enrageSoon"], "Attention", false, nil, false)
 	end
 end

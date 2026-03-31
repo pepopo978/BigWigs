@@ -22,6 +22,20 @@ L:RegisterTranslations("enUS", function() return {
 
 	bar_respawn = " Respawn",
 	msg_respawn = "Imp Pack will respawn in 7 minutes - Right-click the BigWigs icon to remove the bar",
+	c_flameimp = "Flame Imp",
+} end )
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "FlameImp",
+
+	respawn_cmd = "respawn",
+	respawn_name = "重生警报",
+	respawn_desc = "重生出现时进行警告",
+
+	bar_respawn = " 重生",
+	msg_respawn = "小鬼群将在7分钟后重生 - 点击BigWigs图标以移除计时条",
+	c_flameimp = "烈焰小鬼",
 } end )
 
 local timer = {
@@ -61,7 +75,7 @@ function module:CheckForWipe()
 end
 
 function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
-	if (msg == string.format(UNITDIESOTHER, "Flame Imp")) then
+	if (msg == string.format(UNITDIESOTHER, L["c_flameimp"])) then
 		self:Sync(syncName.dead)
 	end
 end
