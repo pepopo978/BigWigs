@@ -47,7 +47,7 @@ L:RegisterTranslations("zhCN", function() return {
 	despawn_desc = "尸体消失倒计时",
 	
 	
-	trigger_smolder = "熔火恶犬.*开始.*smolder",
+	trigger_smolder = "(.+)倒下并开始冒烟",
 	bar_respawn = "重生",
 	msg_respawn = "在10秒内杀死所有熔火恶犬",
 	bar_despawn = "消失",
