@@ -75,6 +75,7 @@ L:RegisterTranslations("enUS", function()
 		["Dire Maul"] = "DireMaul",
 		["Blackrock Spire"] = "BlackrockSpire",
 		["The Black Morass"] = "BlackMorass",
+		["Timbermaw Hold"] = "TMH",
 		["Silithus"] = true,
 		["Outdoor Raid Bosses"] = "Outdoor",
 		["Outdoor Raid Bosses Zone"] = "Outdoor Raid Bosses", -- DO NOT EVER TRANSLATE untill I find a more elegant option
@@ -1148,7 +1149,7 @@ function BigWigs:ModuleDeclaration(bossName, zoneName)
 
 
 	-- zone
-	local raidZones = { "Blackwing Lair", "Ruins of Ahn'Qiraj", "Ahn'Qiraj", "Molten Core", "Naxxramas", "Emerald Sanctum", "Zul'Gurub" }
+	local raidZones = { "Blackwing Lair", "Ruins of Ahn'Qiraj", "Ahn'Qiraj", "Molten Core", "Naxxramas", "Emerald Sanctum", "Zul'Gurub", "Timbermaw Hold" }
 	local isOutdoorraid = true
 	for i, value in ipairs(raidZones) do
 		if value == zoneName then

@@ -10,7 +10,7 @@ Dependencies: AceLibrary, AceLocale-2.2
 ]]
 
 local MAJOR_VERSION = "Babble-Boss-2.2"
-local MINOR_VERSION = 20007
+local MINOR_VERSION = 20008
 
 if not AceLibrary then error(MAJOR_VERSION .. " requires AceLibrary") end
 
@@ -52,6 +52,14 @@ BabbleBoss:RegisterTranslations("enUS", function()
 		["Sanctum Wyrmkin"] = true,
 		["Sanctum Wyrm"] = true,
 		["Solnius"] = true,
+		["Karrsh the Sentinel"] = true,
+		["Rotgrowl"] = true,
+		["Kodiak"] = true,
+		["Ormanos the Cracked"] = true,
+		["Chieftain Partath"] = true,
+		["Loktanag the Vile"] = true,
+		["Archdruid Kronn"] = true,
+		["Dreamform of Kronn"] = true,
 		["Erennius"] = true,
 		["Dark Rider Champion"] = true,
 		["Lord Blackwald II"] = true,

@@ -377,7 +377,7 @@ function module:UpdateManaboundStatusFrame()
 			tile = true,
 			tileSize = 16,
 			edgeSize = 16,
-			insets = { left = 8, right = 8, top = 8, bottom = 8 }
+			insets = { left = 4, right = 4, top = 4, bottom = 4 }
 		})
 		self.manaboundStatusFrame:SetBackdropColor(0, 0, 0, 1)
 

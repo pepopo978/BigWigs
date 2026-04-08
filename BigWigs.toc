@@ -225,6 +225,13 @@ Raids\EmeraldSanctum\SanctumSupressor.lua
 Raids\EmeraldSanctum\SanctumWyrmkin.lua
 Raids\EmeraldSanctum\SanctumWyrm.lua
 
+Raids\TMH\Karrsh.lua
+Raids\TMH\Kronn.lua
+Raids\TMH\Loktanag.lua
+Raids\TMH\Partath.lua
+Raids\TMH\Ormanos.lua
+Raids\TMH\Rotgrowl.lua
+
 Raids\Karazhan\LordBlackwaldII.lua
 Raids\Karazhan\BroodQueenAraxxna.lua
 Raids\Karazhan\Grizikil.lua
