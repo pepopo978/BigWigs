@@ -108,6 +108,9 @@ end
 function module:OnDisengage()
 	-- Framework auto-restores initialPlayerMarks on disengage (Core.lua:484-488)
 	self.feverTargets = {}
+	if self.hpFrame then
+		self.hpFrame:Hide()
+	end
 end
 
 function module:AfflictionEvent(msg)
