@@ -666,6 +666,9 @@ end
 function module:Victory()
 	-- reset farclip back to saved value
 	SetCVar("farclip", BigWigsFarclip.db.profile.defaultFarclip)
+	-- fall through to the base prototype so the module actually disables
+	-- (Core.lua Victory fires bosskill msg, ends BossRecords, DisableModule)
+	BigWigs.modulePrototype.Victory(self)
 end
 
 function module:MINIMAP_ZONE_CHANGED(msg)
