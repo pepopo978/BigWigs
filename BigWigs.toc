@@ -1,8 +1,8 @@
 ## Interface: 11200
 
-## X-Revision: 30137
+## X-Revision: 30138
 ## X-Fork: Pepo
-## Title: |cFFFF8080Pepopo|r Big Wigs |cff7fff7f30137|r |cffabd473Turtle-WoW|r
+## Title: |cFFFF8080Pepopo|r Big Wigs |cff7fff7f30138|r |cffabd473Turtle-WoW|r
 ## Title-zhCN: |cffabd473Turtle-WoW|r Big Wigs
 ## Notes: Boss Mods with Timer bars.
 ## Notes-esES: Módulos para Jefes con barras temporizadoras.
@@ -224,6 +224,13 @@ Raids\EmeraldSanctum\SanctumDreamer.lua
 Raids\EmeraldSanctum\SanctumSupressor.lua
 Raids\EmeraldSanctum\SanctumWyrmkin.lua
 Raids\EmeraldSanctum\SanctumWyrm.lua
+
+Raids\TMH\Karrsh.lua
+Raids\TMH\Kronn.lua
+Raids\TMH\Loktanag.lua
+Raids\TMH\Partath.lua
+Raids\TMH\Ormanos.lua
+Raids\TMH\Rotgrowl.lua
 
 Raids\Karazhan\LordBlackwaldII.lua
 Raids\Karazhan\BroodQueenAraxxna.lua
