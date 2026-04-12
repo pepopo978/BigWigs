@@ -1,7 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Archdruid Kronn", "Timbermaw Hold")
 
-module.revision = 30001
+module.revision = 30002
 module.enabletrigger = {
 	"Archdruid Kronn",
 	"Dreamform of Kronn",
@@ -11,6 +11,7 @@ module.zonename = "Timbermaw Hold"
 
 module.defaultDB = {
 	hpframe = true,
+	dreamfever = true,
 	-- hpframeposx / hpframeposy computed in UpdateHpFrame on first frame
 	-- creation so GetScreenWidth/Height return real values (they can be
 	-- unreliable at file-load time).
@@ -23,16 +24,13 @@ L:RegisterTranslations("enUS", function() return {
 	hpframe_name = "HP Frame",
 	hpframe_desc = "Shows a frame with the HP of Archdruid Kronn and Dreamform of Kronn",
 
-	kronn_name = "Kronn to |cffffff00kill|r",
-	dream_name = "Dream to |cff00ff00fill|r",
+	kronn_label = "Kronn HP",
+	dream_label = "Dream HP",
 
-	kronn_zero = "DEAD",
-	dream_zero = "WAKING",
-
-	frame_title = "Kronn HP",
+	kronn_dying = "DYING",
+	dream_waking = "WAKING",
 
 	trigger_engage = "You will not awaken him.",
-	trigger_victory = "The Nightmare has ended!",
 
 	dreamfever_cmd = "dreamfever",
 	dreamfever_name = "Dream Fever Alert",
@@ -78,26 +76,24 @@ local syncName = {
 	reformBody = "KronnReformBody"..module.revision,
 }
 
+local feverGainPattern = "^"..syncName.feverGain.."(.+)"
+local feverFadePattern = "^"..syncName.feverFade.."(.+)"
+
 function module:OnSetup()
-	self.kronnHp = nil -- nil means "no value yet"; SetHpText renders "--"
+	self.kronnHp = nil
 	self.dreamHp = nil
+	self.victorySent = nil
+	self.kronnDying = nil
+	self.dreamWaking = nil
 	self.feverTargets = {}
 end
 
 function module:OnEnable()
-	self.kronnHp = nil
-	self.dreamHp = nil
-	self.feverTargets = {}
-
-	self:ThrottleSync(2, syncName.kronnHp)
-	self:ThrottleSync(2, syncName.dreamHp)
-	-- per-target payloads; dedupe is handled by self.feverTargets so any
-	-- throttle here would drop syncs for different players sharing the key
-	self:ThrottleSync(0, syncName.feverGain)
-	self:ThrottleSync(0, syncName.feverFade)
+	self:ThrottleSync(1, syncName.kronnHp)
+	self:ThrottleSync(1, syncName.dreamHp)
 	self:ThrottleSync(5, syncName.returnBody)
 	self:ThrottleSync(5, syncName.reformBody)
-	self:RegisterEvent("UNIT_HEALTH")
+	self:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 	self:RegisterEvent("CHAT_MSG_MONSTER_YELL")
 	self:RegisterEvent("CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE", "CastEvent")
 	self:RegisterEvent("CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE", "AfflictionEvent")
@@ -126,15 +122,23 @@ function module:OnEngage()
 	self.kronnHp = nil
 	self.dreamHp = nil
 	self.victorySent = nil
+	self.kronnDying = nil
+	self.dreamWaking = nil
+	self:CancelScheduledEvent("KronnDyingExpire")
+	self:CancelScheduledEvent("KronnDreamWakeExpire")
 	self.feverTargets = {}
 
 	if self.db.profile.hpframe then
 		self:UpdateHpFrame()
 		self.hpFrame:Show()
 	end
+	self:ScheduleRepeatingEvent("KronnHpPoll", self.PollHp, 1, self)
 end
 
 function module:OnDisengage()
+	self:CancelScheduledEvent("KronnHpPoll")
+	self:CancelScheduledEvent("KronnDyingExpire")
+	self:CancelScheduledEvent("KronnDreamWakeExpire")
 	-- Framework auto-restores initialPlayerMarks on disengage (Core.lua:484-488)
 	self.feverTargets = {}
 	if self.hpFrame then
@@ -144,28 +148,24 @@ end
 
 function module:AfflictionEvent(msg)
 	if string.find(msg, L["trigger_feverYou"]) then
-		self:Sync(syncName.feverGain.." "..UnitName("player"))
+		self:Sync(syncName.feverGain..UnitName("player"))
 		return
 	end
 	local _, _, target = string.find(msg, L["trigger_feverOther"])
 	if target then
-		self:Sync(syncName.feverGain.." "..target)
+		self:Sync(syncName.feverGain..target)
 	end
 end
 
 function module:FadeEvent(msg)
 	if string.find(msg, L["trigger_feverFadeYou"]) then
-		self:Sync(syncName.feverFade.." "..UnitName("player"))
+		self:Sync(syncName.feverFade..UnitName("player"))
 		return
 	end
 	local _, _, target = string.find(msg, L["trigger_feverFadeOther"])
 	if target then
-		self:Sync(syncName.feverFade.." "..target)
+		self:Sync(syncName.feverFade..target)
 	end
-end
-
-function module:UNIT_HEALTH(unit)
-	self:ScanUnit(unit)
 end
 
 function module:ZONE_CHANGED_NEW_AREA()
@@ -174,34 +174,39 @@ function module:ZONE_CHANGED_NEW_AREA()
 	end
 end
 
-function module:ScanUnit(unit)
-	local name = UnitName(unit)
-	if not name then return false end
-	if name ~= realKronn and name ~= dreamKronn then return false end
-
-	-- Archdruid Kronn never actually dies; the fight ends when he becomes
-	-- non-hostile. Dreamform is always friendly, so only check real Kronn.
-	if name == realKronn and UnitExists(unit) and not UnitIsEnemy("player", unit) then
-		if self.engaged and not self.victorySent then
-			self.victorySent = true
-			self:SendBossDeathSync()
-		end
-		return false
-	end
-
-	local h, m = UnitHealth(unit), UnitHealthMax(unit)
-	if h and m and m > 0 then
-		local pct = math.floor((h / m) * 100)
+function module:PollHp()
+	local foundKronn, foundDream = false, false
+	for i = 1, GetNumRaidMembers() do
+		local unit = "raid"..i.."target"
+		local name = UnitName(unit)
 		if name == realKronn then
-			self.kronnHp = pct
-			self:Sync(syncName.kronnHp.." "..pct)
-		else
-			self.dreamHp = pct
-			self:Sync(syncName.dreamHp.." "..pct)
+			foundKronn = true
+			-- Archdruid Kronn never actually dies; the fight ends when he
+			-- becomes non-hostile.
+			if not UnitIsEnemy("player", unit) then
+				if self.engaged and not self.victorySent then
+					self.victorySent = true
+					self:SendBossDeathSync()
+				end
+			else
+				local h, m = UnitHealth(unit), UnitHealthMax(unit)
+				if h and m and m > 0 then
+					local pct = math.floor((h / m) * 100)
+					self.kronnHp = pct
+					self:Sync(syncName.kronnHp.." "..pct)
+				end
+			end
+		elseif name == dreamKronn then
+			foundDream = true
+			local h, m = UnitHealth(unit), UnitHealthMax(unit)
+			if h and m and m > 0 then
+				local pct = math.floor((h / m) * 100)
+				self.dreamHp = pct
+				self:Sync(syncName.dreamHp.." "..pct)
+			end
 		end
-		return true
+		if foundKronn and foundDream then break end
 	end
-	return false
 end
 
 function module:UpdateHpFrame()
@@ -210,7 +215,7 @@ function module:UpdateHpFrame()
 	if not self.hpFrame then
 		local f = CreateFrame("Frame", "BigWigsKronnHpFrame", UIParent)
 		f.module = self
-		local frameW, frameH = 180, 80
+		local frameW, frameH = 200, 60
 		f:SetWidth(frameW)
 		f:SetHeight(frameH)
 		local s = f:GetEffectiveScale()
@@ -246,59 +251,70 @@ function module:UpdateHpFrame()
 
 		local font = "Fonts\\FRIZQT__.TTF"
 		local fs = 12
+		local midX = frameW / 2
 
-		f.title = f:CreateFontString(nil, "ARTWORK")
-		f.title:SetFontObject(GameFontNormal)
-		f.title:SetPoint("TOP", f, "TOP", 0, -10)
-		f.title:SetText(L["frame_title"])
-		f.title:SetFont(font, fs)
-
+		-- Left side: Kronn
 		f.kronnLabel = f:CreateFontString(nil, "ARTWORK")
-		f.kronnLabel:SetPoint("TOPLEFT", f, "TOPLEFT", 15, -30)
+		f.kronnLabel:SetPoint("TOP", f, "TOPLEFT", midX / 2, -12)
 		f.kronnLabel:SetFont(font, fs)
-		f.kronnLabel:SetText(L["kronn_name"])
-		f.kronnLabel:SetTextColor(0.3, 1, 0.3)
+		f.kronnLabel:SetText(L["kronn_label"])
+		f.kronnLabel:SetTextColor(1, 0.8, 0.3)
 
 		f.kronnHpText = f:CreateFontString(nil, "ARTWORK")
-		f.kronnHpText:SetPoint("TOPRIGHT", f, "TOPRIGHT", -15, -30)
-		f.kronnHpText:SetFont(font, fs)
+		f.kronnHpText:SetPoint("TOP", f.kronnLabel, "BOTTOM", 0, -6)
+		f.kronnHpText:SetFont(font, fs + 2)
 
+		-- Right side: Dream
 		f.dreamLabel = f:CreateFontString(nil, "ARTWORK")
-		f.dreamLabel:SetPoint("TOPLEFT", f, "TOPLEFT", 15, -50)
+		f.dreamLabel:SetPoint("TOP", f, "TOPLEFT", midX + midX / 2, -12)
 		f.dreamLabel:SetFont(font, fs)
-		f.dreamLabel:SetText(L["dream_name"])
+		f.dreamLabel:SetText(L["dream_label"])
 		f.dreamLabel:SetTextColor(0.5, 0.5, 1)
 
 		f.dreamHpText = f:CreateFontString(nil, "ARTWORK")
-		f.dreamHpText:SetPoint("TOPRIGHT", f, "TOPRIGHT", -15, -50)
-		f.dreamHpText:SetFont(font, fs)
+		f.dreamHpText:SetPoint("TOP", f.dreamLabel, "BOTTOM", 0, -6)
+		f.dreamHpText:SetFont(font, fs + 2)
 
 		self.hpFrame = f
 	end
 
-	self:SetHpText(self.hpFrame.kronnHpText, self.kronnHp, L["kronn_zero"])
-	self:SetHpText(self.hpFrame.dreamHpText, self.dreamHp and (100 - self.dreamHp) or nil, L["dream_zero"])
-end
+	-- Kronn: locked to DYING on Reform Body cast, otherwise show HP
+	if self.kronnDying then
+		self.hpFrame.kronnHpText:SetText(L["kronn_dying"])
+		self.hpFrame.kronnHpText:SetTextColor(1, 0, 0)
+	elseif self.kronnHp == nil then
+		self.hpFrame.kronnHpText:SetText("--")
+		self.hpFrame.kronnHpText:SetTextColor(0.7, 0.7, 0.7)
+	else
+		self.hpFrame.kronnHpText:SetText(self.kronnHp.."%")
+		-- Green when low (dying), yellow mid, white high
+		if self.kronnHp < 15 then
+			self.hpFrame.kronnHpText:SetTextColor(0.3, 1, 0.3)
+		elseif self.kronnHp < 35 then
+			self.hpFrame.kronnHpText:SetTextColor(1, 1, 0)
+		else
+			self.hpFrame.kronnHpText:SetTextColor(1, 1, 1)
+		end
+	end
 
-function module:SetHpText(fontString, pct, zeroLabel)
-	if not fontString then return end
-	if pct == nil then
-		fontString:SetText("--")
-		fontString:SetTextColor(0.7, 0.7, 0.7)
-		return
+	-- Dream: locked to WAKING on Return to Body cast, otherwise show HP
+	if self.dreamWaking then
+		self.hpFrame.dreamHpText:SetText(L["dream_waking"])
+		self.hpFrame.dreamHpText:SetTextColor(0.3, 1, 0.3)
+	elseif self.dreamHp == nil then
+		self.hpFrame.dreamHpText:SetText("--")
+		self.hpFrame.dreamHpText:SetTextColor(0.7, 0.7, 0.7)
+	else
+		self.hpFrame.dreamHpText:SetText(self.dreamHp.."%")
+		-- Green when high (filling), yellow mid, white low
+		if self.dreamHp > 85 then
+			self.hpFrame.dreamHpText:SetTextColor(0.3, 1, 0.3)
+		elseif self.dreamHp > 65 then
+			self.hpFrame.dreamHpText:SetTextColor(1, 1, 0)
+		else
+			self.hpFrame.dreamHpText:SetTextColor(1, 1, 1)
+		end
 	end
-	local text = pct .. "%"
-	local r, g, b = 1, 1, 1
-	if pct <= 0 then
-		text = zeroLabel or "DEAD"
-		r, g, b = 0.5, 0.5, 0.5
-	elseif pct < 15 then
-		r, g, b = 1, 0, 0
-	elseif pct < 35 then
-		r, g, b = 1, 1, 0
-	end
-	fontString:SetText(text)
-	fontString:SetTextColor(r, g, b)
 end
 
 function module:BigWigs_RecvSync(sync, rest, nick)
@@ -318,18 +334,44 @@ function module:BigWigs_RecvSync(sync, rest, nick)
 				self:UpdateHpFrame()
 			end
 		end
-	elseif sync == syncName.feverGain and rest and self.db.profile.dreamfever then
-		self:FeverGain(rest)
-	elseif sync == syncName.feverFade and rest and self.db.profile.dreamfever then
-		self:FeverFade(rest)
-	elseif sync == syncName.returnBody and self.db.profile.bodycasts then
-		self:RemoveBar(L["bar_returnBody"])
-		self:Bar(L["bar_returnBody"], timer.bodyCast, icon.returnBody, true, "Green")
-		self:Sound("Info")
-	elseif sync == syncName.reformBody and self.db.profile.bodycasts then
-		self:RemoveBar(L["bar_reformBody"])
-		self:Bar(L["bar_reformBody"], timer.bodyCast, icon.reformBody, true, "Red")
-		self:Sound("Info")
+	elseif sync == syncName.returnBody then
+		self.dreamWaking = true
+		self:ScheduleEvent("KronnDreamWakeExpire", function()
+			module.dreamWaking = nil
+			module:UpdateHpFrame()
+		end, timer.bodyCast)
+		if self.db.profile.hpframe then
+			self:UpdateHpFrame()
+		end
+		if self.db.profile.bodycasts then
+			self:RemoveBar(L["bar_returnBody"])
+			self:Bar(L["bar_returnBody"], timer.bodyCast, icon.returnBody, true, "Green")
+			self:Sound("Info")
+		end
+	elseif sync == syncName.reformBody then
+		self.kronnDying = true
+		self:ScheduleEvent("KronnDyingExpire", function()
+			module.kronnDying = nil
+			module:UpdateHpFrame()
+		end, timer.bodyCast)
+		if self.db.profile.hpframe then
+			self:UpdateHpFrame()
+		end
+		if self.db.profile.bodycasts then
+			self:RemoveBar(L["bar_reformBody"])
+			self:Bar(L["bar_reformBody"], timer.bodyCast, icon.reformBody, true, "Red")
+			self:Sound("Info")
+		end
+	elseif self.db.profile.dreamfever then
+		local _, _, feverTarget = string.find(sync, feverGainPattern)
+		if feverTarget then
+			self:FeverGain(feverTarget)
+		else
+			local _, _, fadeTarget = string.find(sync, feverFadePattern)
+			if fadeTarget then
+				self:FeverFade(fadeTarget)
+			end
+		end
 	end
 end
 
@@ -337,16 +379,27 @@ function module:FeverGain(target)
 	if self.feverTargets[target] then return end
 	self.feverTargets[target] = true
 
+	local mark = self:GetAvailableRaidMark()
+	if mark then
+		self:SetRaidTargetForPlayer(target, mark)
+	end
+
 	if target == UnitName("player") then
 		self:Message(L["msg_feverYou"], "Personal", true, "Alarm")
 		self:WarningSign(icon.fever, 3, true)
 	else
-		self:Message(string.format(L["msg_feverOther"], target), "Urgent", false, "Alert")
-	end
-
-	local mark = self:GetAvailableRaidMark()
-	if mark then
-		self:SetRaidTargetForPlayer(target, mark)
+		local nearby = false
+		for i = 1, GetNumRaidMembers() do
+			local unit = "raid"..i
+			if UnitName(unit) == target then
+				nearby = UnitIsVisible(unit) and CheckInteractDistance(unit, 2)
+				break
+			end
+		end
+		if nearby then
+			self:Message(string.format(L["msg_feverOther"], target), "Urgent", false, "Alert")
+			self:WarningSign(icon.fever, 3, true)
+		end
 	end
 end
 
@@ -370,8 +423,8 @@ function module:Test()
 
 	self:Message("Archdruid Kronn test started", "Positive")
 
-	-- k = Kronn current HP (counting down toward 0)
-	-- d = Dream current HP (counting up toward 100)
+	-- k = Kronn HP (counting down), d = Dream HP (counting up)
+	-- cast flags trigger through CastEvent at k=0/d=100
 	local steps = {
 		{t = 1,  k = 95, d = 5  },
 		{t = 3,  k = 80, d = 15 },
@@ -382,24 +435,39 @@ function module:Test()
 		{t = 13, k = 20, d = 75 },
 		{t = 15, k = 12, d = 85 },
 		{t = 17, k = 5,  d = 92 },
-		{t = 19, k = 0,  d = 98 },
-		{t = 21, k = 0,  d = 100},
+		-- t=19: Kronn hits 0 -> Reform Body cast -> DYING for 10s
+		{t = 19, k = 0,  d = 92 },
+		-- t=21: HP updates continue while clamped (display stays DYING/WAKING)
+		{t = 21, k = 0,  d = 95 },
+		{t = 23, k = 0,  d = 98 },
+		-- t=25: Dream hits 100 -> Return to Body cast -> WAKING for 10s
+		{t = 25, k = 0,  d = 100},
+		-- t=27-29: HP fluctuates while clamped — display should stay locked
+		{t = 27, k = 3,  d = 97 },
+		{t = 29, k = 0,  d = 100},
+		-- t=31: 10s after Reform Body (t=19+10=29) — DYING expires, shows HP
+		-- t=35: 10s after Return to Body (t=25+10=35) — WAKING expires, shows HP
+		{t = 32, k = 5,  d = 90 },
+		{t = 36, k = 2,  d = 95 },
 	}
 	for i, e in ipairs(steps) do
 		local k, d = e.k, e.d
 		self:ScheduleEvent("KronnTestHp"..i, function()
 			module.kronnHp = k
 			module.dreamHp = d
+			if k <= 0 then
+				module:CastEvent("Archdruid Kronn begins to cast Reform Body.")
+			end
+			if d >= 100 then
+				module:CastEvent("Dreamform of Kronn begins to cast Return to Body.")
+			end
 			module:UpdateHpFrame()
 		end, e.t)
 	end
 
 	self:ScheduleEvent("KronnTestEnd", function()
-		module.kronnHp = 100
-		module.dreamHp = 0
-		module:UpdateHpFrame()
 		module:Message("Archdruid Kronn test complete", "Positive")
-	end, 24)
+	end, 39)
 	return true
 end
 
@@ -435,6 +503,69 @@ function module:TestFever()
 	self:ScheduleEvent("KronnTestFeverEnd", function()
 		module:Message("Dream Fever test complete", "Positive")
 	end, 14)
+	return true
+end
+
+-- Rapid-fire multi-target fever test. Picks up to 3 distinct raid members and
+-- hits them with fever 0.3s apart (simulating a real AoE application), then
+-- duplicates the first target's sync to exercise the feverTargets dedupe guard.
+-- Fades are staggered. Verifies: per-player throttle, dedupe, multi-mark, and
+-- mark restoration.
+-- Usage: /run local m=BigWigs:GetModule("Archdruid Kronn"); BigWigs:SetupModule("Archdruid Kronn"); m:TestFeverMulti();
+function module:TestFeverMulti()
+	self:OnSetup()
+	self:OnEnable()
+	self:SendEngageSync()
+
+	-- Gather up to 3 unique targets
+	local targets = {}
+	local seen = {}
+	local n = GetNumRaidMembers()
+	for i = 1, n do
+		local name = UnitName("raid"..i)
+		if name and not seen[name] then
+			seen[name] = true
+			table.insert(targets, name)
+			if table.getn(targets) >= 3 then break end
+		end
+	end
+	if table.getn(targets) == 0 then
+		targets[1] = UnitName("player")
+	end
+
+	self:Message("Fever multi-test: "..table.concat(targets, ", "), "Positive")
+
+	local delay = 2
+	for i, target in ipairs(targets) do
+		local isSelf = target == UnitName("player")
+		local gainMsg = isSelf
+			and "You are afflicted by Dream Fever (1)."
+			or (target.." is afflicted by Dream Fever (1).")
+
+		-- Stagger gains 0.3s apart
+		self:ScheduleEvent("KronnTestMFGain"..i, self.AfflictionEvent, delay + (i - 1) * 0.3, self, gainMsg)
+	end
+
+	-- t=3: duplicate the first target's gain to test dedupe
+	local dupeTarget = targets[1]
+	local dupeMsg = dupeTarget == UnitName("player")
+		and "You are afflicted by Dream Fever (1)."
+		or (dupeTarget.." is afflicted by Dream Fever (1).")
+	self:ScheduleEvent("KronnTestMFDupe", self.AfflictionEvent, delay + 1, self, dupeMsg)
+
+	-- Stagger fades
+	for i, target in ipairs(targets) do
+		local isSelf = target == UnitName("player")
+		local fadeMsg = isSelf
+			and "Dream Fever fades from you."
+			or ("Dream Fever fades from "..target..".")
+
+		self:ScheduleEvent("KronnTestMFFade"..i, self.FadeEvent, delay + 10 + (i - 1) * 1, self, fadeMsg)
+	end
+
+	self:ScheduleEvent("KronnTestMFEnd", function()
+		module:Message("Fever multi-test complete", "Positive")
+	end, delay + 14)
 	return true
 end
 
