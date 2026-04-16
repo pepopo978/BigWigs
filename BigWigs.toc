@@ -1,8 +1,8 @@
 ## Interface: 11200
 
-## X-Revision: 30138
+## X-Revision: 30139
 ## X-Fork: Pepo
-## Title: |cFFFF8080Pepopo|r Big Wigs |cff7fff7f30138|r |cffabd473Turtle-WoW|r
+## Title: |cFFFF8080Pepopo|r Big Wigs |cff7fff7f30139|r |cffabd473Turtle-WoW|r
 ## Title-zhCN: |cffabd473Turtle-WoW|r Big Wigs
 ## Notes: Boss Mods with Timer bars.
 ## Notes-esES: Módulos para Jefes con barras temporizadoras.
@@ -231,6 +231,8 @@ Raids\TMH\Loktanag.lua
 Raids\TMH\Partath.lua
 Raids\TMH\Ormanos.lua
 Raids\TMH\Rotgrowl.lua
+Raids\TMH\Ursol.lua
+Raids\TMH\Perotharn.lua
 
 Raids\Karazhan\LordBlackwaldII.lua
 Raids\Karazhan\BroodQueenAraxxna.lua
