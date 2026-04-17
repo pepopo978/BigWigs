@@ -77,7 +77,9 @@ end
 
 function module:UnregisterAbsorbEvents()
 	for _, event in ipairs(absorbEvents) do
-		self:UnregisterEvent(event)
+		if self:IsEventRegistered(event) then
+			self:UnregisterEvent(event)
+		end
 	end
 end
 
