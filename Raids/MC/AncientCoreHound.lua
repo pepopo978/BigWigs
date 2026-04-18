@@ -1,5 +1,6 @@
 
 local module, L = BigWigs:ModuleDeclaration("Ancient Core Hound", "Molten Core")
+local BC = AceLibrary("Babble-Class-2.2")
 
 module.revision = 30074
 module.enabletrigger = module.translatedName
@@ -40,11 +41,11 @@ L:RegisterTranslations("enUS", function() return {
 L:RegisterTranslations("zhCN", function() return {
 	-- Wind汉化修复Turtle-WOW中文数据
 	-- Last update: 2024-06-22
-    cmd = "Corehound",
+	cmd = "Corehound",
 
-    bars_cmd = "bars",
-    bars_name = "切换计时条",
-    bars_desc = "切换显示计时条的状态。",
+	bars_cmd = "bars",
+	bars_name = "切换计时条",
+	bars_desc = "切换显示计时条的状态。",
 
 
 	trigger_debuff = "你受到了(.+)效果的影响。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
@@ -52,24 +53,24 @@ L:RegisterTranslations("zhCN", function() return {
 	trigger_debuffResist = ".*的(.+)被.*抵抗了。", --CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 	bar_debuff = "Debuff",
 
-    msg_ancientDread = "上古恐慌 - 驱散！",
+	msg_ancientDread = "上古恐慌 - 驱散！",
 
-    bar_ancientDespair = "迷惑",
+	bar_ancientDespair = "迷惑",
 
-    bar_groundStomp = "大地践踏",
+	bar_groundStomp = "大地践踏",
 
-    msg_cauterizingFlames = "灼烧之焰 - 驱散！",
+	msg_cauterizingFlames = "灼烧之焰 - 驱散！",
 
-    msg_witheringHeat = "枯萎热浪 - 驱散！",
+	msg_witheringHeat = "枯萎热浪 - 驱散！",
 
-    msg_ancientHysteria = "上古狂乱 - 解除诅咒！",
+	msg_ancientHysteria = "上古狂乱 - 解除诅咒！",
 
-    s_ancientdread = "上古恐慌",
-    s_ancientdespair = "上古绝望",
-    s_groundstomp = "大地践踏",
-    s_cauterizingflames = "灼烧之焰",
-    s_witheringheat = "枯萎热浪",
-    s_ancienthysteria = "上古狂乱",
+	s_ancientdread = "上古恐慌",
+	s_ancientdespair = "上古绝望",
+	s_groundstomp = "大地践踏",
+	s_cauterizingflames = "灼烧之焰",
+	s_witheringheat = "枯萎热浪",
+	s_ancienthysteria = "上古狂乱",
 } end )
 
 local timer = {
@@ -170,7 +171,7 @@ function module:Debuff(rest)
 
 	if rest == L["s_ancientdread"] then
 		self:Bar(L["bar_debuff"], timer.debuff, icon.debuff, true, color.debuff)
-		if UnitClass("Player") == "Priest" or UnitClass("Player") == "Paladin" then
+		if UnitClass("Player") == BC["Priest"] or UnitClass("Player") == BC["Paladin"] then
 			self:Message(L["msg_ancientDread"], "Urgent", false, nil, false)
 			self:Sound("Info")
 			self:WarningSign(icon.ancientDread, 1)
@@ -188,7 +189,7 @@ function module:Debuff(rest)
 
 	elseif rest == L["s_cauterizingflames"] then
 		self:Bar(L["bar_debuff"], timer.debuff, icon.debuff, true, color.debuff)
-		if UnitClass("Player") == "Priest" or UnitClass("Player") == "Paladin" then
+		if UnitClass("Player") == BC["Priest"] or UnitClass("Player") == BC["Paladin"] then
 			self:Message(L["msg_cauterizingFlames"], "Urgent", false, nil, false)
 			self:Sound("Info")
 			self:WarningSign(icon.cauterizingFlames, 1)
@@ -196,7 +197,7 @@ function module:Debuff(rest)
 
 	elseif rest == L["s_witheringheat"] then
 		self:Bar(L["bar_debuff"], timer.debuff, icon.debuff, true, color.debuff)
-		if UnitClass("Player") == "Priest" or UnitClass("Player") == "Paladin" then
+		if UnitClass("Player") == BC["Priest"] or UnitClass("Player") == BC["Paladin"] then
 			self:Message(L["msg_witheringHeat"], "Urgent", false, nil, false)
 			self:Sound("Info")
 			self:WarningSign(icon.witheringHeat, 1)
@@ -204,7 +205,7 @@ function module:Debuff(rest)
 
 	elseif rest == L["s_ancienthysteria"] then
 		self:Bar(L["bar_debuff"], timer.debuff, icon.debuff, true, color.debuff)
-		if UnitClass("Player") == "Mage" or UnitClass("Player") == "Druid" then
+		if UnitClass("Player") == BC["Mage"] or UnitClass("Player") == BC["Druid"] then
 			self:Message(L["msg_ancientHysteria"], "Urgent", false, nil, false)
 			self:Sound("Info")
 			self:WarningSign(icon.ancientHysteria, 1)

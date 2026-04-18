@@ -1,5 +1,6 @@
 
 local module, L = BigWigs:ModuleDeclaration("Broodlord Lashlayer", "Blackwing Lair")
+local bbbroodlordlashlayer = AceLibrary("Babble-Boss-2.2")["Broodlord Lashlayer"]
 
 module.revision = 30085
 module.enabletrigger = module.translatedName
@@ -45,6 +46,51 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_knock = "Broodlord Lashlayer's Knock Away", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 	bar_knockCd = "Knock Away CD",
 	bar_knockSoon = "Knock Away Soon...",
+	you = "you",
+	} end )
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Broodlord",
+	
+	ms_cmd = "ms",
+	ms_name = "致死打击警报",
+	ms_desc = "致死打击出现时进行警告",
+
+	bw_cmd = "bw",
+	bw_name = "冲击波警报",
+	bw_desc = "冲击波出现时进行警告",
+
+	knock_cmd = "knock",
+	knock_name = "击飞警报",
+	knock_desc = "击飞出现时进行警告",
+
+	targeticon_cmd = "targeticon",
+	targeticon_name = "在BOSS的目标上标记骷髅",
+	targeticon_desc = "在BOSS的目标上标记骷髅团队图标",
+
+
+	trigger_engage = "你们这种人都不应该出现在这里！",
+	
+	trigger_msEvade = "勒什雷尔的致死打击被", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	msg_msEvade = "致死打击被闪避了！",
+
+	trigger_msYou = "你受到了致死打击效果的影响。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_msOther = "^(.+)(.+)致死打击效果的影响。", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_msFade = "致死打击效果从(.+)身上消失了。", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_msCd = "致死打击冷却",
+	bar_msSoon = "即将致死打击...",
+	bar_msDur = " 致死打击",
+	msg_ms = " 致死打击",
+
+	trigger_bw = "^(.+)(.+)冲击波效果的影响。", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_bwCd = "冲击波冷却",
+	bar_bwSoon = "即将冲击波...",
+
+	trigger_knock = "勒什雷尔的击退击中", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_knockCd = "击飞冷却",
+	bar_knockSoon = "即将击飞...",
+	you = "你",
 } end )
 
 local timer = {
@@ -137,7 +183,7 @@ end
 
 function module:BroodlordTarget()
 	if UnitName("Target") ~= nil and UnitName("TargetTarget") ~= nil and (IsRaidLeader() or IsRaidOfficer()) then
-		if UnitName("Target") == "Broodlord Lashlayer" then
+		if UnitName("Target") == bbbroodlordlashlayer then
 			SetRaidTarget("TargetTarget",8)
 		end
 	end
@@ -153,7 +199,7 @@ function module:Event(msg)
 	
 	elseif string.find(msg, L["trigger_msFade"]) then
 		local _,_,msFadePerson, _ = string.find(msg, L["trigger_msFade"])
-		if msFadePerson == "you" then msFadePerson = UnitName("Player") end
+		if msFadePerson == L["you"] then msFadePerson = UnitName("Player") end
 		self:Sync(syncName.msFade .. " "..msFadePerson)
 		
 	elseif string.find(msg, L["trigger_msEvade"]) then

@@ -1,5 +1,6 @@
 
 local module, L = BigWigs:ModuleDeclaration("Vaelastrasz the Corrupt", "Blackwing Lair")
+local bbvaelastraszthecorrupt = AceLibrary("Babble-Boss-2.2")["Vaelastrasz the Corrupt"]
 
 module.revision = 30085
 module.enabletrigger = module.translatedName
@@ -57,6 +58,7 @@ L:RegisterTranslations("enUS", function() return {
 	bar_adrenalineCd = "Burning Adrenaline CD",
 	bar_adrenalineDur = " Burning!",
 	msg_adrenaline = " has Burning Adrenaline",
+	msg_adrenalineSay = " has Burning Adrenaline!",
 	
 	trigger_dieYou = "You die.", --CHAT_MSG_COMBAT_FRIENDLY_DEATH
 	trigger_dieOther = "(.+) dies.", --CHAT_MSG_COMBAT_FRIENDLY_DEATH
@@ -78,6 +80,86 @@ L:RegisterTranslations("enUS", function() return {
 	
 	trigger_parryYou = "You attack. Vaelastrasz the Corrupt parries.", --CHAT_MSG_COMBAT_SELF_MISSES
 	msg_parryYou = "Vaelastrasz the Corrupt Parried your attack - Stop killing the tank you idiot!",
+	you = "you",
+} end)
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Vaelastrasz",
+	
+	start_cmd = "start",
+	start_name = "战斗警报",
+	start_desc = "战斗开始时进行警告",
+
+	adrenaline_cmd = "adrenaline",
+	adrenaline_name = "燃烧刺激警报",
+	adrenaline_desc = "燃烧刺激出现时进行警告",
+
+	icon_cmd = "icon",
+	icon_name = "燃烧刺激团队图标",
+	icon_desc = "在燃烧刺激目标上标记骷髅",
+
+	flamebreath_cmd = "flamebreath",
+	flamebreath_name = "火息术警报",
+	flamebreath_desc = "火息术出现时进行警告",
+
+	flamebreathdot_cmd = "flamebreathdot",
+	flamebreathdot_name = "火息术DoT警报",
+	flamebreathdot_desc = "火息术DoT出现时进行警告",
+
+	firenova_cmd = "firenova",
+	firenova_name = "火焰新星警报",
+	firenova_desc = "火焰新星出现时进行警告",
+
+	tailsweep_cmd = "tailsweep",
+	tailsweep_name = "龙尾扫击警报",
+	tailsweep_desc = "龙尾扫击出现时进行警告",
+
+	parry_cmd = "parry",
+	parry_name = "招架警报",
+	parry_desc = "招架出现时进行警告",
+	
+	
+	trigger_gossip1 = "太晚了，朋友们！奈法留斯的腐败已经蔓延", --CHAT_MSG_MONSTER_YELL
+	trigger_gossip2 = "我求求你们，凡人", --CHAT_MSG_MONSTER_YELL
+	trigger_gossip3 = "火焰！死亡！毁灭！", --CHAT_MSG_MONSTER_YELL
+	bar_gossip = "战斗开始",
+	msg_gossip = "瓦拉斯塔兹事件开始了！",
+	
+	trigger_engage = "受到了红龙精华效果的影响。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	
+	--burning adrenaline on mana user every 15sec, every 45s on the tank ALSO
+		-- -5% hp per second
+	trigger_adrenalineYou = "你受到了燃烧刺激效果的影响。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_adrenalineOther = "(.+)受到了燃烧刺激效果的影响。", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_adrenalineFade = "燃烧刺激效果从(.+)身上消失了。", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER --guessing
+	bar_adrenalineCd = "燃烧刺激冷却",
+	bar_adrenalineDur = " 即将爆炸！",
+	msg_adrenaline = " 受到了燃烧刺激",
+	msg_adrenalineSay = " 中了燃烧刺激！",
+	
+	trigger_dieYou = "你死亡了。", --CHAT_MSG_COMBAT_FRIENDLY_DEATH
+	trigger_dieOther = "(.+)死亡了。", --CHAT_MSG_COMBAT_FRIENDLY_DEATH
+	
+	trigger_flameBreath = "堕落的瓦拉斯塔兹开始施放火息术。", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_flameBreathCd = "火息术冷却",
+	bar_flameBreathCast = "正在施放火息术！",
+
+	trigger_flameBreathDotYou = "你受到了火息术效果的影响%（(.+)%）。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_flameBreathDotOther = "(.+)受到了火息术效果的影响%（(.+)%）。", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_flameBreathDotFade = "火息术效果从(.+)身上消失了。", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_flameBreathDot = " 火息术DoT",
+
+	trigger_fireNova = "堕落的瓦拉斯塔兹的火焰新星击中", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_fireNova = "火焰新星冷却",
+
+	trigger_tailSweepYou = "堕落的瓦拉斯塔兹的龙尾扫击击中你", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+	msg_tailSweep = "龙尾扫击击中BOSS后方30码范围内。",
+
+	trigger_parryYou = "你发起了攻击。堕落的瓦拉斯塔兹招架住了。", --CHAT_MSG_COMBAT_SELF_MISSES
+	msg_parryYou = "堕落的瓦拉斯塔兹招架了你的攻击 - 别再害坦克了，笨蛋！",
+	you = "你",
 } end)
 
 local timer = {
@@ -239,7 +321,7 @@ function module:Event(msg)
 		
 	elseif string.find(msg, L["trigger_adrenalineFade"]) then
 		local _,_,adrenalineFadePlayer,_ = string.find(msg, L["trigger_adrenalineFade"])
-		if adrenalineFadePlayer == "you" then adrenalineFadePlayer = UnitName("Player") end
+		if adrenalineFadePlayer == L["you"] then adrenalineFadePlayer = UnitName("Player") end
 		self:Sync(syncName.adrenalinePlayerFade .. " " .. adrenalineFadePlayer)
 	
 	
@@ -264,7 +346,7 @@ function module:Event(msg)
 		
 	elseif string.find(msg, L["trigger_flameBreathDotFade"]) then
 		local _,_,flameBreathDotFadePlayer,_ = string.find(msg, L["trigger_flameBreathDotFade"])
-		if flameBreathDotFadePlayer == "you" then flameBreathDotFadePlayer = UnitName("Player") end
+		if flameBreathDotFadePlayer == L["you"] then flameBreathDotFadePlayer = UnitName("Player") end
 		self:Sync(syncName.flameBreathDotFade .. " " .. flameBreathDotFadePlayer)
 		
 		
@@ -276,7 +358,7 @@ function module:Event(msg)
 		
 	elseif string.find(msg, L["trigger_parryYou"]) and self.db.profile.parry then
 		if UnitName("Target") ~= nil and UnitName("TargetTarget") ~= nil then
-			if UnitName("Target") == "Vaelastrasz the Corrupt" and UnitName("TargetTarget") ~= UnitName("Player") then
+			if UnitName("Target") == bbvaelastraszthecorrupt and UnitName("TargetTarget") ~= UnitName("Player") then
 				self:ParryYou()
 			end
 		end
@@ -360,7 +442,7 @@ function module:AdrenalinePlayer(rest)
 		self:Message(rest..L["msg_adrenaline"], "Urgent", false, nil, false)
 		
 		if rest == UnitName("Player") then
-			SendChatMessage(UnitName("Player").." has Burning Adrenaline!","SAY")
+			SendChatMessage(UnitName("Player")..L["msg_adrenalineSay"],"SAY")
 			self:WarningSign(icon.adrenaline, 1)
 			self:Sound("RunAway")
 		end
@@ -368,7 +450,7 @@ function module:AdrenalinePlayer(rest)
 		if self.db.profile.icon and (IsRaidLeader() or IsRaidOfficer()) then
 			for i=1,GetNumRaidMembers() do
 				if UnitName("Raid"..i) == rest then
-					if UnitName("Raid"..i.."Target") == "Vaelastrasz the Corrupt" and UnitName("Raid"..i.."TargetTarget") ~= nil then
+					if UnitName("Raid"..i.."Target") == bbvaelastraszthecorrupt and UnitName("Raid"..i.."TargetTarget") ~= nil then
 						if UnitName("Raid"..i.."TargetTarget") == rest then
 							SetRaidTarget("Raid"..i, 6)
 						else

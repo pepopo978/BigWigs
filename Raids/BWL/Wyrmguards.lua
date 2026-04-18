@@ -39,7 +39,41 @@ L:RegisterTranslations("enUS", function() return {
 	starfire = "Starfire",
 	thunderfury = "Thunderfury",
 } end )
-
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Wyrmguard",
+	
+	warstomp_cmd = "warstomp",
+	warstomp_name = "战争践踏警报",
+	warstomp_desc = "战争践踏出现时进行警告",
+	
+	vulnerability_cmd = "vulnerability",
+	vulnerability_name = "弱点",
+	vulnerability_desc = "弱点发生变化时进行警告",
+	
+	hit = "击中",
+	crit = "致命一击对",
+	vuln_bar = "%s 弱点",
+	
+	warstomp_trigger = "死爪龙人护卫的战争践踏",
+	warstomp_bar = "战争践踏 CD",
+	
+	vulnerability_direct_test = "^[^%s]+的([^%s]+)[%s]*([^%s]+)死爪龙人护卫造成[%s]*([%d]+)[%s]*点([^%s]+)伤害%。?[%s%(]*([%d]*)?",
+	vulnerability_dots_test = "^[^%s]+的([^%s]+)使死爪龙人护卫受到了(%d+)点([^%s]+)伤害。",
+	vulnerability_message = "弱点：%s！",
+	
+	fire = "火焰",
+	frost = "冰霜",
+	shadow = "暗影",
+	nature = "自然",
+	arcane = "奥术",
+	
+	curseofdoom = "厄运诅咒",
+	ignite = "点燃",
+	starfire = "星火术",
+	thunderfury = "雷霆之怒",
+} end )
 local timer = {
 	warstomp = {8.5, 12.5},
 	vulnerability = 599,
@@ -306,4 +340,3 @@ function module:IdentifyVulnerability(school)
 		bwWyrmguardsShadowBar = true
 	end
 end
-

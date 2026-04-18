@@ -1,5 +1,7 @@
 
 local module, L = BigWigs:ModuleDeclaration("Baron Geddon", "Molten Core")
+local BC = AceLibrary("Babble-Class-2.2")
+local bbbarongeddon = AceLibrary("Babble-Boss-2.2")["Baron Geddon"]
 
 module.revision = 30075
 module.enabletrigger = module.translatedName
@@ -38,6 +40,7 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_bombFade = "Living Bomb fades from (.+).", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
 	bar_bomb = " Bomb!",
 	msg_bomb = " is the Bomb!",
+	msg_bombSay = " is the Bomb!",
 	
 	trigger_inferno = "Baron Geddon gains Inferno.", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
 	trigger_infernoFade = "Inferno fades from Baron Geddon.", --CHAT_MSG_SPELL_AURA_GONE_OTHER
@@ -56,6 +59,60 @@ L:RegisterTranslations("enUS", function() return {
 	trigger_ignite2 = "Ignite Mana was resisted", --CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
 	bar_igniteCd = "Ignite Mana CD",
 	msg_ignite = "Ignite Man - Dispel! (Classes with Mana only)",
+	you = "you",
+} end)
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Baron",
+
+	bomb_cmd = "bomb",
+	bomb_name = "活化炸弹警报",
+	bomb_desc = "活化炸弹出现时进行警告",
+
+	inferno_cmd = "inferno",
+	inferno_name = "地狱火警报",
+	inferno_desc = "地狱火出现时进行警告",
+
+	armageddon_cmd = "armageddon",
+	armageddon_name = "末日决战警报",
+	armageddon_desc = "末日决战出现时进行警告",
+
+	ignite_cmd = "ignite",
+	ignite_name = "点燃法力警报",
+	ignite_desc = "点燃法力出现时进行警告",
+
+	icon_cmd = "icon",
+	icon_name = "炸弹目标团队图标",
+	icon_desc = "在成为炸弹的玩家上标记团队图标。（需要助理或更高权限）",
+	
+	
+	trigger_bombYou = "你受到了活化炸弹效果的影响。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE
+	trigger_bombOther = "(.*)受到了活化炸弹效果的影响。", --CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_bombFade = "活化炸弹效果从(.*)身上消失。", --CHAT_MSG_SPELL_AURA_GONE_SELF // CHAT_MSG_SPELL_AURA_GONE_PARTY // CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_bomb = " 炸弹！",
+	msg_bomb = " 是炸弹！",
+	msg_bombSay = " 是炸弹！",
+	
+	trigger_inferno = "迦顿男爵获得了地狱火的效果。", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	trigger_infernoFade = "地狱火效果从迦顿男爵身上消失。", --CHAT_MSG_SPELL_AURA_GONE_OTHER
+	bar_infernoCd = "地狱火冷却",
+	bar_infernoSoon = "即将地狱火...",
+	bar_infernoChannel = "地狱火！",
+	
+	trigger_infernoYou = "迦顿男爵的地狱火击中你造成", --CHAT_MSG_SPELL_CREATURE_VS_SELF_DAMAGE
+	msg_infernoYou = "远离地狱火！",
+	
+	trigger_armageddon = "迦顿男爵受到了末日决战效果的影响。", --CHAT_MSG_SPELL_PERIODIC_CREATURE_DAMAGE
+	bar_armageddon = "末日决战！",
+	msg_armageddon = "末日决战 - 杀死迦顿男爵！",
+	
+	trigger_ignite = "受到了点燃法力效果的影响", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	trigger_ignite2 = "点燃法力被抵抗了", --CHAT_MSG_SPELL_CREATURE_VS_PARTY_DAMAGE // CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_igniteCd = "点燃法力冷却",
+	msg_ignite = "点燃法力 - 驱散！(仅限有法力值的职业)",
+	you = "你",
 } end)
 
 local timer = {
@@ -159,7 +216,7 @@ function module:Event(msg)
 		
 	elseif string.find(msg, L["trigger_bombFade"]) then
 		local _,_, bombFadePlayer,_ = string.find(msg, L["trigger_bombFade"])
-		if bombFadePlayer == "you" then bombFadePlayer = UnitName("Player") end
+		if bombFadePlayer == L["you"] then bombFadePlayer = UnitName("Player") end
 		self:Sync(syncName.bombFade .. " " .. bombFadePlayer)
 		
 		
@@ -206,7 +263,7 @@ function module:Bomb(rest)
 	self:Message(rest..L["msg_bomb"], "Urgent", false, nil, false)
 	
 	if rest == UnitName("Player") then
-		SendChatMessage(UnitName("Player").." is the Bomb!","SAY")
+		SendChatMessage(UnitName("Player")..L["msg_bombSay"],"SAY")
 		self:WarningSign(icon.bomb, timer.bomb)
 		self:Sound("RunAway")
 	end
@@ -248,7 +305,7 @@ function module:InfernoFade()
 end
 
 function module:InfernoYou()
-	if UnitName("Target") == "Baron Geddon" and UnitName("TargetTarget") == UnitName("Player") then return end
+	if UnitName("Target") == bbbarongeddon and UnitName("TargetTarget") == UnitName("Player") then return end
 	
 	self:Message(L["msg_infernoYou"], "Personal", false, nil, false)
 	self:Sound("Info")
@@ -270,7 +327,7 @@ end
 function module:Ignite()
 	self:IntervalBar(L["bar_igniteCd"], timer.igniteCd[1], timer.igniteCd[2], icon.ignite, true, color.ignite)
 
-	if UnitClass("Player") == "Paladin" or UnitClass("Player") == "Priest" then
+	if UnitClass("Player") == BC["Paladin"] or UnitClass("Player") == BC["Priest"] then
 		self:WarningSign(icon.ignite, 0.7)
 		self:Sound("Info")
 		self:Message(L["msg_ignite"], "Important", false, nil, false)

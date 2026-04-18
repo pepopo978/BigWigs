@@ -1,5 +1,6 @@
 
 local module, L = BigWigs:ModuleDeclaration("Sulfuron Harbinger", "Molten Core")
+local BC = AceLibrary("Babble-Class-2.2")
 
 module.revision = 30078
 module.enabletrigger = module.translatedName
@@ -61,6 +62,67 @@ L:RegisterTranslations("enUS", function() return {
 	msg_immolate = "Immolate - Dispel!",
 	
 	msg_addDead = "/4 Flamewaker Protectors Dead",
+	c_flamewakerpriest = "Flamewaker Priest",
+} end)
+
+L:RegisterTranslations("zhCN", function() return {
+	-- Wind汉化修复Turtle-WOW中文数据
+	-- Last update: 2024-06-22
+	cmd = "Sulfuron",
+
+	knockback_cmd = "knockback",
+	knockback_name = "拉格纳罗斯之手警报",
+	knockback_desc = "拉格纳罗斯之手出现时进行警告",
+
+	heal_cmd = "heal",
+	heal_name = "黑暗治疗警报",
+	heal_desc = "黑暗治疗出现时进行警告",
+	
+	flamespear_cmd = "flamespear",
+	flamespear_name = "烈焰之矛警报",
+	flamespear_desc = "烈焰之矛出现时进行警告",
+	
+	inspire_cmd = "inspire",
+	inspire_name = "灵感警报",
+	inspire_desc = "灵感出现时进行警告",
+	
+	shadowwordpain_cmd = "shadowwordpain",
+	shadowwordpain_name = "暗言术：痛警报",
+	shadowwordpain_desc = "暗言术：痛出现时进行警告",
+	
+	immolate_cmd = "immolate",
+	immolate_name = "献祭警报",
+	immolate_desc = "献祭出现时进行警告",
+	
+	adds_cmd = "adds",
+	adds_name = "小怪死亡警报",
+	adds_desc = "小怪死亡时进行警告",
+	
+	
+	trigger_handOfRagnaros = "受到了拉格纳罗斯之手效果的影响。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	bar_handOfRagnarosCd = "拉格纳罗斯之手冷却",
+	bar_handOfRagnarosDur = "拉格纳罗斯之手昏迷",
+	
+	trigger_darkMending = "烈焰行者祭司开始施放黑暗治疗。", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_BUFF
+	bar_darkMending = "黑暗治疗",
+	msg_darkMending = "黑暗治疗 - 打断！",
+	
+	trigger_flameSpear = "萨弗隆先驱者开始施展烈焰之矛。", --CHAT_MSG_SPELL_CREATURE_VS_CREATURE_DAMAGE
+	bar_flameSpearCd = "烈焰之矛冷却",
+	bar_flameSpearCast = "烈焰之矛！",
+	
+	trigger_inspire = "获得了灵感的效果。", --CHAT_MSG_SPELL_PERIODIC_CREATURE_BUFFS
+	bar_inspireDur = "灵感",
+	msg_inspire = "灵感 - 攻击速度+100% & 伤害+25%",
+	
+	trigger_shadowWordPain = "(.+)受到了暗言术：痛效果的影响。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	msg_shadowWordPain = "暗言术：痛 - 驱散！",
+	
+	trigger_immolate = "(.+)受到了献祭效果的影响。", --CHAT_MSG_SPELL_PERIODIC_SELF_DAMAGE // CHAT_MSG_SPELL_PERIODIC_PARTY_DAMAGE // CHAT_MSG_SPELL_PERIODIC_FRIENDLYPLAYER_DAMAGE
+	msg_immolate = "献祭 - 驱散！",
+	
+	msg_addDead = "/4 烈焰行者护卫死亡",
+	c_flamewakerpriest = "烈焰行者祭司",
 } end)
 
 local timer = {
@@ -154,7 +216,7 @@ end
 function module:CHAT_MSG_COMBAT_HOSTILE_DEATH(msg)
 	BigWigs:CheckForBossDeath(msg, self)
 
-	if (msg == string.format(UNITDIESOTHER, "Flamewaker Priest")) then
+	if (msg == string.format(UNITDIESOTHER, L["c_flamewakerpriest"])) then
 		addDead = addDead + 1
 		if addDead <= 4 then
 			self:Sync(syncName.addDead .. " " .. addDead)
@@ -231,7 +293,7 @@ end
 function module:DarkMending()
 	self:Bar(L["bar_darkMending"], timer.darkMendingCast, icon.darkMending, true, color.darkMendingCast)
 	
-	if UnitClass("Player") == "Rogue" or UnitClass("Player") == "Warrior" or UnitClass("Player") == "Mage" then
+	if UnitClass("Player") == BC["Rogue"] or UnitClass("Player") == BC["Warrior"] or UnitClass("Player") == BC["Mage"] then
 		self:Message(L["msg_darkMending"], "Urgent", false, nil, false)
 		self:Sound("Info")
 		self:WarningSign(icon.darkMending, 0.7)
@@ -251,7 +313,7 @@ function module:Inspire()
 end
 
 function module:ShadowWordPain()
-	if UnitClass("Player") == "Priest" or UnitClass("Player") == "Paladin" then
+	if UnitClass("Player") == BC["Priest"] or UnitClass("Player") == BC["Paladin"] then
 		self:Message(L["msg_shadowWordPain"], "Important", false, nil, false)
 		self:Sound("Info")
 		self:WarningSign(icon.shadowWordPain, 0.7)
@@ -259,7 +321,7 @@ function module:ShadowWordPain()
 end
 
 function module:Immolate()
-	if UnitClass("Player") == "Priest" or UnitClass("Player") == "Paladin" then
+	if UnitClass("Player") == BC["Priest"] or UnitClass("Player") == BC["Paladin"] then
 		self:Message(L["msg_immolate"], "Important", false, nil, false)
 		self:Sound("Info")
 		self:WarningSign(icon.immolate, 0.7)
