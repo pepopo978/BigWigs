@@ -3,7 +3,7 @@ local module, L = BigWigs:ModuleDeclaration("Kruul", "Karazhan")
 -- module variables
 module.revision = 30001
 module.enabletrigger = module.translatedName
-module.toggleoptions = { "markofthelord", "markofthelordmark", "remorsestrikes", "proximity", "bosskill" }
+module.toggleoptions = { "markofthelord", "markofthelordmark", "remorsestrikes", "infernal", "proximity", "bosskill" }
 module.zonename = {
  AceLibrary("AceLocale-2.2"):new("BigWigs")["Tower of Karazhan"],
  AceLibrary("Babble-Zone-2.2")["Tower of Karazhan"],
@@ -64,6 +64,11 @@ L:RegisterTranslations("enUS", function()
   sync_markofthelord = syncName.markofthelord .. "(.*)", -- pattern to isolate player name
   sync_markofthelordfade = syncName.markofthelordFade .. "(.*)", -- pattern to isolate player name
 
+  infernal_cmd = "infernal",
+  infernal_name = "Infernal Spawn Timer",
+  infernal_desc = "Shows a timer for the next Infernal spawn",
+
+  bar_nextInfernal = "Next Infernal",
   bar_nextRemorselessStrikes = "Next Remorseless Strikes",
   trigger_remorselessStrikes = "Kruul's Remorseless Strikes",
 
@@ -85,12 +90,14 @@ local timer = {
  nextCursesEnraged = 15,
  firstRemorselessStrikes = 2,
  remorselessStrikes = 4,
+ infernal = 25,
 }
 
 local icon = {
  markofthelord = "Spell_Shadow_AntiShadow",
  nextCurses = "Spell_Shadow_AntiShadow",
  remorselessStrikes = "Spell_Shadow_RaiseDead",
+ infernal = "Spell_Shadow_Metamorphosis",
 }
 
 local color = {
@@ -139,6 +146,16 @@ function module:OnEngage()
   self:Bar(L["bar_nextRemorselessStrikes"], timer.firstRemorselessStrikes, icon.remorselessStrikes)
  end
 
+ -- Start first Infernal spawn timer (pure schedule, no combat log trigger)
+ if self.db.profile.infernal then
+  self:Bar(L["bar_nextInfernal"], timer.infernal, icon.infernal)
+  self:ScheduleRepeatingEvent("KruulInfernalTimer", function()
+   if self.db.profile.infernal then
+    self:Bar(L["bar_nextInfernal"], timer.infernal, icon.infernal)
+   end
+  end, timer.infernal)
+ end
+
  -- Enable proximity warning
  if self.db.profile.proximity then
   self:Proximity()
@@ -146,6 +163,7 @@ function module:OnEngage()
 end
 
 function module:OnDisengage()
+ self:CancelScheduledEvent("KruulInfernalTimer")
  self:RemoveProximity()
 end
 
