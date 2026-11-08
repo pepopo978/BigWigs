@@ -3453,7 +3453,7 @@ BabbleSpell:RegisterTranslations("ruRU", function()
 		["Goblin Sapper Charge"] = "Гоблинская мина",
 		["Gouge"] = "Парализующий удар",
 		["Grace of Air Totem"] = "Тотем легкости воздуха",
-		["Grace of the Sunwell"] = true,
+		["Grace of the Sunwell"] = "Grace of the Sunwell",
 		["Grasping Vines"] = "Хваткие лозы",
 		["Great Stamina"] = "Повышенная выносливость",
 		["Greater Blessing of Kings"] = "Великое благословение королей",
@@ -3476,7 +3476,7 @@ BabbleSpell:RegisterTranslations("ruRU", function()
 		["Hammer of Justice"] = "Молот правосудия",
 		["Hammer of Wrath"] = "Молот гнева",
 		["Hamstring"] = "Подрезать сухожилия",
-		["Hand of Protection"] = true, -- needs to be translated
+		["Hand of Protection"] = "Благословение защиты",
 		["Harass"] = "Преследование",
 		["Hardiness"] = "Твердость",
 		["Haunting Spirits"] = "Блуждающие духи",
