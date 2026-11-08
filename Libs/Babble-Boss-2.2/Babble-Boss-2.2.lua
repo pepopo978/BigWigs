@@ -947,6 +947,7 @@ BabbleBoss:RegisterTranslations("ruRU", function()
 		["Princess Theradras"] = "Принцесса Терадрас",
 		["Prince Tortheldrin"] = "Принц Тортелдрин",
 		["Pusillin"] = "Пузиллин",
+		["Blackhand Incarcerator"] = "Тюремщик легиона Чернорука",
 		["Pyroguard Emberseer"] = "Пиростраж Углевзор",
 		["Ramstein the Gorger"] = "Рамштайн Ненасытный",
 		["Ras Frostwhisper"] = "Рас Ледяной Шепот",
@@ -958,6 +959,8 @@ BabbleBoss:RegisterTranslations("ruRU", function()
 		["Seeth'rel"] = "Беше'рел",
 		["Shade of Eranikus"] = "Тень Эраникуса",
 		["Shadow Hunter Vosh'gajin"] = "Темная охотница Вос'гаджин",
+		["Rookery Hatcher"] = "Наседка из Питомника",
+		["Rookery Guardian"] = "Страж Гнездовья",
 		["Solakar Flamewreath"] = "Солакарский огнечервь",
 		["Stomper Kreeg"] = "Топотун Криг",
 		["Tendris Warpwood"] = "Тендрис Криводрев",
@@ -1116,10 +1119,10 @@ BabbleBoss:RegisterTranslations("ruRU", function()
 		["Rethilgore"] = "Ретилгор";
 		["Atiesh"] = "Атиеш";
 		["Stratholme Courier"] = "Стратхольмский курьер";
-		["Ancient Core Hound"] = true;
-		["Gurubashi Berserker"] = true;
-		["Elder Mottled Boar"] = true,
-		["Gargoyle"] = true,
+		["Ancient Core Hound"] = "Древняя гончая бездны";
+		["Gurubashi Berserker"] = "Берсерк из племени Гурубаши";
+		["Elder Mottled Boar"] = "Старый крапчатый вепрь",
+		["Gargoyle"] = "Горгулья",
 	}
 end)
 
